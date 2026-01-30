@@ -13,14 +13,14 @@ const SideNav = () => {
   return (
     <div
       className=" bg-violet-500
-        hidden sm:flex
+        hidden md:flex
         w-20 lg:w-[17vw]
         shrink-0
         h-screen overflow-y-auto
         border-r border-zinc-600
         p-3 lg:p-5 xl:p-8
         text-white
-        rounded-r-3xl
+      
       "
     >
       <div className="w-full flex flex-col items-center lg:items-start">
@@ -57,6 +57,10 @@ const SideNav = () => {
           <NavLink to="/leaderboard" className={navLinkClass}>
             <i class="ri-award-fill text-xl"></i>
             <span className="hidden lg:inline ml-3">Leaderboard</span>
+          </NavLink>
+          <NavLink to="/profile" className={navLinkClass}>
+            <i class="ri-user-line text-xl"></i>
+            <span className="hidden lg:inline ml-3">Profile</span>
           </NavLink>
 
         </nav>

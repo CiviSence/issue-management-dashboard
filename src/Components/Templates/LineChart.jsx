@@ -1,10 +1,7 @@
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
-
-
-
-export default function UsersChart({data}) {
+export default function UserChart({ data }) {
   return (
-    <div className="h-115 w-[40%] bg-white p-4 rounded-xl">
+    <div className="w-full lg:w-[48%] h-[300px] sm:h-[400px] bg-white p-4 rounded-xl">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data}>
           <XAxis dataKey="name" />

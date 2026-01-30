@@ -5,6 +5,7 @@ import Dashboard from './Components/Dashboard'
 import ReportedIssues from './Components/ReportedIssues.jsx'
 import ResolvedIssues from './Components/ResolvedIssues.jsx'
 import Leaderboard from './Components/Leaderboard.jsx'
+import Profile from './Components/Profile.jsx'
 
 const App = () => {
   return (
@@ -15,6 +16,7 @@ const App = () => {
       <Route path="/reported-issues" element={<ReportedIssues />} />
       <Route path="/resolved-issues" element={<ResolvedIssues />} />
       <Route path="/leaderboard" element={<Leaderboard />} />
+      <Route path="profile" element={<Profile/>}/>
     </Routes>
     </div>
   )
