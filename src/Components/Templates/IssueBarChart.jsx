@@ -1,10 +1,20 @@
-import { Bar, BarChart, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import {
+  Bar,
+  BarChart,
+  Cell,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 const IssuesBarChart = ({ issuesData = [] }) => {
   if (!issuesData.length) return null;
 
   return (
-    <div className="w-full h-[400px]"> {/* 👈 REQUIRED */}
+    <div className="w-full h-[400px]">
+      {" "}
+      {/* 👈 REQUIRED */}
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={issuesData}>
           <XAxis dataKey="name" />
