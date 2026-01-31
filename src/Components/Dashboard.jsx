@@ -5,6 +5,7 @@ import IssueCard from "./Templates/IssueCard";
 import RecentReportsCard from "./Templates/RecentReportsCard";
 import LineChart from "./Templates/LineChart";
 import TopLocations from "./Templates/TopLocations";
+import BottomNav from "./Templates/BottomNav";
 
 const Dashboard = () => {
   const issues = [
@@ -88,6 +89,7 @@ const Dashboard = () => {
   return (
     <>
       <SideNav />
+      <BottomNav/>
 
       <div className="w-full lg:w-[calc(100vw-15vw)] h-screen overflow-hidden">
         {/* Searchbar */}

@@ -17,7 +17,6 @@ const SideNav = () => {
         w-20 lg:w-[17vw]
         shrink-0
         h-screen overflow-y-auto
-        border-r border-zinc-600
         p-3 lg:p-5 xl:p-8
         text-white
       
@@ -59,7 +58,7 @@ const SideNav = () => {
             <span className="hidden lg:inline ml-3">Leaderboard</span>
           </NavLink>
           <NavLink to="/profile" className={navLinkClass}>
-            <i class="ri-user-line text-xl"></i>
+            <i class="ri-user-fill text-xl"></i>
             <span className="hidden lg:inline ml-3">Profile</span>
           </NavLink>
 
