@@ -3,9 +3,11 @@ import SideNav from "./Templates/SideNav";
 import Searchbar from "./Templates/Searchbar";
 import IssueCard from "./Templates/IssueCard";
 import RecentReportsCard from "./Templates/RecentReportsCard";
-import LineChart from "./Templates/LineChart";
 import TopLocations from "./Templates/TopLocations";
 import BottomNav from "./Templates/BottomNav";
+import PieChartCard from "./Templates/PieChartCard";
+import BarChartCard from "./Templates/BarChartCard";
+import LineChartCard from "./Templates/LineChartCard";
 
 const Dashboard = () => {
   const issues = [
@@ -77,23 +79,22 @@ const Dashboard = () => {
     },
   ];
 
-  const data = [
-    { name: "Jan", users: 400 },
-    { name: "Feb", users: 300 },
-    { name: "Mar", users: 500 },
-    { name: "April", users: 100 },
-    { name: "May", users: 150 },
-    { name: "June", users: 200 },
-  ];
+  // const data = [
+  //   { name: "Jan", users: 400 },
+  //   { name: "Feb", users: 300 },
+  //   { name: "Mar", users: 500 },
+  //   { name: "April", users: 100 },
+  //   { name: "May", users: 150 },
+  //   { name: "June", users: 200 },
+  // ];
 
   return (
     <>
       <SideNav />
-      <BottomNav/>
+      <BottomNav />
 
-      <div className="w-full lg:w-[calc(100vw-15vw)] h-screen overflow-hidden">
-        {/* Searchbar */}
-        <div className="w-full p-4">
+      <div className="w-full p-4 lg:w-[calc(100vw-15vw)] bg-white ">
+        <div className="w-full bg-violet-500 p-4 rounded-2xl">
           <div
             className="
       flex
@@ -101,35 +102,42 @@ const Dashboard = () => {
       sm:flex-row
       sm:items-center
       sm:justify-between
-      gap-4
+      gap-2
     "
           >
             {/* Dashboard Title */}
-            <h1 className="text-2xl sm:text-3xl font-semibold text-[#363434]">
+            <h1 className="text-2xl sm:text-3xl font-semibold text-white">
               Main Dashboard
             </h1>
-
             {/* Searchbar */}
             <Searchbar />
           </div>
         </div>
 
-        <div className="h-full overflow-y-auto pb-10">
+        
           {/* Issue Cards */}
-          <div className="w-full flex flex-wrap gap-4 justify-center mt-5 px-4">
+          <div className="w-full mt-4 gap-2 flex flex-wrap justify-center bg-[#F0EEFF] p-4 rounded-2xl">
             {issues.map((issue, index) => (
               <IssueCard key={index} issue={issue} />
             ))}
           </div>
+          <h1 className="pt-2 pb-1 pl-2 text-xl sm:text-2xl font-semibold text-[#363434]  ">Issue Stats</h1>
+          <div className=" grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 bg-[#F0EEFF] p-4 rounded-2xl">
+            <PieChartCard />
+            <BarChartCard />
+            <LineChartCard />
+            <PieChartCard />
+            <BarChartCard />
+            <LineChartCard />
+          </div>
 
           {/* Reports + Chart */}
-          <div className="mt-10 px-4 flex flex-col lg:flex-row gap-6">
+          {/* <div className="mt-10 flex flex-col lg:flex-row gap-6">
             <RecentReportsCard recentReports={recentReports} />
-            <LineChart data={data} />
             <TopLocations />
-          </div>
+          </div> */}
         </div>
-      </div>
+      
     </>
   );
 };
