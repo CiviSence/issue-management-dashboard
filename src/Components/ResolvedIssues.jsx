@@ -164,11 +164,18 @@ const ResolvedIssues = () => {
             </h2>
 
             <div className="flex gap-2">
-              <select className="border rounded-md px-3 py-1 text-sm">
-                <option>Location: All</option>
+              <select aria-placeholder="Location" className="border rounded-md px-3 py-1 text-sm">
+                <option>All</option>
+                <option>Boys Hostel</option>
+                <option>Girls Hostel</option>
+                <option>Administrative</option>
+               
               </select>
               <select className="border rounded-md px-3 py-1 text-sm">
-                <option>Priority: All</option>
+                <option>All</option>
+                <option>Low</option>
+                <option>Medium</option>
+                <option>High</option>
               </select>
             </div>
           </div>

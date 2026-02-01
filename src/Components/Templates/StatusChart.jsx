@@ -10,11 +10,11 @@ import {
 } from "recharts";
 
 const statusData = [
-  { name: "Open", value: 35, color: "#3b5bdb" },
-  { name: "Pending", value: 20, color: "#fab005" },
-  { name: "In Progress", value: 25, color: "#7950f2" },
-  { name: "Resolved", value: 120, color: "#40c057" },
-  { name: "Closed", value: 10, color: "#6c757d" },
+  { name: "Open", value: 200, color: "#F6D04D" },
+  { name: "Pending", value: 5, color: "#fab005" },
+  { name: "In Progress", value: 100, color: "#3086D5" },
+  { name: "Resolved", value: 56, color: "#40c057" },
+  { name: "Closed", value: 70, color: "#E34A4D" },
 ];
 const StatusChart = () => {
   return (
