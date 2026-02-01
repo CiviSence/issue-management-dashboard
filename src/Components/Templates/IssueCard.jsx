@@ -3,7 +3,7 @@ import React from "react";
 const IssueCard = ({ issue }) => {
   return (
     <div
-      className={`w-full sm:w-[48%] lg:w-[32%] xl:w-[23%]
+      className={`w-full sm:w-[48%] lg:w-[35%] xl:w-[24%]
       bg-linear-to-r ${issue.color} opacity-80
       py-6 px-8 rounded-md
       flex justify-between`}

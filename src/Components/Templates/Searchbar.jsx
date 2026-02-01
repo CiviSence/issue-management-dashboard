@@ -39,14 +39,10 @@ const Searchbar = () => {
         <i className="ri-moon-line text-lg sm:text-xl text-[#aaaaaa]"></i>
 
         {/* User */}
-        <div className="flex items-center gap-1 sm:gap-2">
+        <div className="flex items-center gap-1 sm:gap-2 shrink-0">
           <i className="ri-user-line text-lg sm:text-xl text-[#aaaaaa]"></i>
-
           {/* Hide text on very small screens */}
-          <p className="hidden sm:block text-[#aaaaaa] text-sm">
-            Admin |
-          </p>
-
+          <p className="hidden sm:block text-[#aaaaaa] text-sm">Admin |</p>
           <i className="ri-arrow-down-s-line text-lg sm:text-xl text-[#aaaaaa]"></i>
         </div>
       </div>
@@ -55,4 +51,3 @@ const Searchbar = () => {
 };
 
 export default Searchbar;
-
