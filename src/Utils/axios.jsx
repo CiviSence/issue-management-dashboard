@@ -1,13 +1,23 @@
 import axios from "axios";
 
-
 const instance = axios.create({
-  baseURL: 'https://csmbsckend.onrender.com/api',
+  baseURL: "https://csmbsckend.onrender.com/api",
+  withCredentials: true, // IMPORTANT for session/cookies
   headers: {
-    accept: 'application/json',
-    Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzY5ODU2NTg3LCJqdGkiOiI3OTUyMmFlZS0zNGQ3LTQ0Y2MtYjcxZC05MzU2NmZmY2IxYjMiLCJpYXQiOjE3Njk4NTQ3ODcsInVhIjoiODE2MTQ3YmVkZDg0MzE3YSJ9.mbhz3b3FFaKLmp5GKulHePYscdF-hQxkJV7q3XfzPX4'
-
-},
+    Accept: "application/json",
+  },
 });
+
+// Attach token dynamically (AFTER login)
+instance.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error),
+);
 
 export default instance;

@@ -2,9 +2,27 @@ import SideNav from "./Templates/SideNav";
 import BottomNav from "./Templates/BottomNav";
 import Searchbar from "./Templates/Searchbar";
 import IssueCard from "./Templates/IssueCard";
+import { useEffect, useState } from "react";
+import axios from "../Utils/axios";
 
 const ReportedIssues = () => {
-  const issues = [
+  const [issues, setIssues] = useState([]);
+
+  const getIssues = async () => {
+    try {
+      const { data } = await axios.get("/issues/feed?skip=0&limit=10");
+      console.log(data);
+      setIssues(data);
+    } catch (error) {
+      console.log("Error:", error);
+    }
+  };
+
+  useEffect(() => {
+    getIssues();
+  }, []);
+
+  const issuesD = [
     {
       name: "Total Issues",
       count: 256,
@@ -132,7 +150,7 @@ const ReportedIssues = () => {
       status: "Resolved",
       reported: "3 hours ago",
     },
-    
+
     {
       title: "Broken Window",
       category: "Maintenance",
@@ -183,7 +201,7 @@ const ReportedIssues = () => {
 
         {/* Issue Cards */}
         <div className="w-full mt-4 gap-2 flex flex-wrap justify-center bg-white p-4 rounded-2xl">
-          {issues.map((issue, index) => (
+          {issuesD.map((issue, index) => (
             <IssueCard key={index} issue={issue} />
           ))}
         </div>
@@ -220,19 +238,18 @@ const ReportedIssues = () => {
               </thead>
 
               <tbody>
-                {allissues.map((issue, i) => (
+                {issues?.map((issue, i) => (
                   <tr key={i} className="border-b last:border-none">
                     <td className="p-3 font-medium">{issue.title}</td>
-
                     <td className="p-3">
                       <span
                         className={`px-3 py-1 rounded-full text-xs font-medium ${categoryColor[issue.category]}`}
                       >
-                        {issue.category}
+                        {issue.main_category}
                       </span>
                     </td>
 
-                    <td className="p-3">{issue.location}</td>
+                    <td className="p-3">{issue.location_building}</td>
 
                     <td className="p-3">
                       <span
@@ -248,7 +265,7 @@ const ReportedIssues = () => {
                       </span>
                     </td>
 
-                    <td className="p-3 text-gray-500">{issue.reported}</td>
+                    <td className="p-3 text-gray-500">{issue.updated_at}</td>
 
                     <td className="p-3 text-blue-600 cursor-pointer">Action</td>
                   </tr>

@@ -1,6 +1,8 @@
 import React from "react";
+import { useUser } from "../../Context/UserContext";
 
 const Searchbar = () => {
+  const { profileData } = useUser();
   return (
     <div
       className="
@@ -34,19 +36,21 @@ const Searchbar = () => {
       />
 
       {/* Right Icons */}
-      <div className="flex items-center gap-4 sm:gap-6 mr-2">
+      <div className="flex items-center gap-4 sm:gap-6">
         <i className="ri-notification-3-line text-lg sm:text-xl text-[#aaaaaa]"></i>
         <i className="ri-moon-line text-lg sm:text-xl text-[#aaaaaa]"></i>
 
         {/* User */}
-        <div className="flex items-center gap-1 sm:gap-2 shrink-0">
-          <i className="ri-user-line text-lg sm:text-xl text-[#aaaaaa]"></i>
-          {/* Hide text on very small screens */}
-          <p className="hidden sm:block text-[#aaaaaa] text-sm">Admin |</p>
-          <i className="ri-arrow-down-s-line text-lg sm:text-xl text-[#aaaaaa]"></i>
+       
+          <div className="rounded-full bg-amber-300 h-9 w-9 text-center">
+            <img
+              src={profileData?.avatar_url}
+              alt="Profile"
+              className="w-9 h-9 rounded-full border border-violet-500 object-cover"
+            />
+          </div>
         </div>
       </div>
-    </div>
   );
 };
 

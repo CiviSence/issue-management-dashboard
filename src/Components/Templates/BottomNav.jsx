@@ -16,14 +16,10 @@ const BottomNav = () => {
        bg-violet-500
         rounded-t-3xl
         flex justify-around items-center
-        lg:hidden
+        md:hidden
         z-50
       "
     >
-      <NavLink to="/" className={navClass}>
-        <i className="ri-home-4-fill text-xl"></i>
-        <span className="text-xs">Home</span>
-      </NavLink>
 
       <NavLink to="/dashboard" className={navClass}>
         <i class="ri-dashboard-fill text-xl"></i>
@@ -33,6 +29,11 @@ const BottomNav = () => {
       <NavLink to="/reported-issues" className={navClass}>
         <i class="ri-alarm-warning-fill text-xl"></i>
         <span className="text-xs">Issues</span>
+      </NavLink>
+
+      <NavLink to="/resolved-issues" className={navClass}>
+        <i class="ri-shield-check-fill text-xl"></i>
+        <span className="text-xs">Resolved</span>
       </NavLink>
 
       <NavLink to="/leaderboard" className={navClass}>
