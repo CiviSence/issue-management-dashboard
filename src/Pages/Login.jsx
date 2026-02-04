@@ -7,6 +7,8 @@ import LoginSVG from "../assets/login.svg";
 import { loginUser } from "../Utils/auth-api";
 import { setSession } from "../Utils/auth-utils";
 
+import { useUser } from "../Context/UserContext";
+
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -16,6 +18,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false); // when login button is clicked it shows loading state
 
   const navigate = useNavigate();
+  const { setProfileData } = useUser();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -27,6 +30,11 @@ const Login = () => {
       console.log(data);
 
       setSession(data.access_token, data.user);
+
+      // Update global context state immediately
+      if (setProfileData) {
+        setProfileData(data.user);
+      }
 
       navigate("/dashboard");
     } catch (err) {

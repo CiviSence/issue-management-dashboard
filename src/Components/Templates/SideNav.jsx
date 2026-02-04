@@ -1,20 +1,28 @@
+import { useState } from "react";
 import { useUser } from "../../Context/UserContext";
-import { Link, NavLink,  } from "react-router-dom";
+import { Link, NavLink, } from "react-router-dom";
 import { clearSession } from "../../Utils/auth-utils";
 import { logoutUser as logoutUserApi } from "../../Utils/auth-api";
 
 const SideNav = () => {
-  // const navigate = useNavigate(); i also remove import of useNavigate
   const { profileData } = useUser();
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [logoutInput, setLogoutInput] = useState("");
 
-  const handleLogout = async () => {
+  const handleLogoutClick = () => {
+    setShowLogoutConfirm(true);
+  };
+
+  const handleLogoutConfirm = async () => {
+    if (logoutInput.toLowerCase() !== "logout") return;
+
     try {
       await logoutUserApi();
     } catch (error) {
       console.error("error:", error);
     } finally {
       clearSession();
-      window.location.href = "/"; // Redirect to home page after logout its hardrefresh 
+      window.location.href = "/";
     }
   };
 
@@ -84,10 +92,41 @@ const SideNav = () => {
         </div>
         <div className="hidden lg:inline">
           <p className="text-lg">{profileData?.name}</p>
-          <p className="text-sm" onClick={handleLogout}>Log Out</p>
+          <p className="text-sm cursor-pointer hover:underline" onClick={handleLogoutClick}>Log Out</p>
         </div>
 
       </div>
+
+      {showLogoutConfirm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm">
+            <h3 className="text-xl font-bold mb-4 text-gray-800">Confirm Logout</h3>
+            <p className="mb-4 text-gray-600">Type "logout" below to confirm.</p>
+            <input
+              type="text"
+              value={logoutInput}
+              onChange={(e) => setLogoutInput(e.target.value)}
+              className="w-full border text-red-400 border-gray-300 rounded px-3 py-2 mb-4 outline-none focus:border-violet-500"
+              placeholder="Type 'logout'"
+            />
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => { setShowLogoutConfirm(false); setLogoutInput(""); }}
+                className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleLogoutConfirm}
+                disabled={logoutInput.toLowerCase() !== 'logout'}
+                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Log Out
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );

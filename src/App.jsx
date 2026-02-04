@@ -52,7 +52,7 @@ const App = () => {
         />
 
         {/* PROTECTED (only when logged in) */}
-        
+
 
         <Route
           path="/dashboard"
@@ -98,6 +98,8 @@ const App = () => {
             </PrivateRoute>
           }
         />
+
+
       </Routes>
     </div>
   );

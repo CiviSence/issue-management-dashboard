@@ -1,6 +1,4 @@
-import { getAccessToken } from './auth-utils';
-
-const BASE_URL = 'https://csmbsckend.onrender.com/api';
+import axios from './axios';
 
 /**
  * Logs in the user with email and password
@@ -8,20 +6,12 @@ const BASE_URL = 'https://csmbsckend.onrender.com/api';
  * @returns {Promise<object>} - The response data containing access_token and user info
  */
 export const loginUser = async (credentials) => {
-    const response = await fetch(`${BASE_URL}/auth/login`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(credentials),
-    });
-
-    if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || 'Login failed');
+    try {
+        const { data } = await axios.post('/auth/login', credentials);
+        return data;
+    } catch (error) {
+        throw new Error(error.response?.data?.detail || 'Login failed');
     }
-
-    return response.json();
 };
 
 /**
@@ -30,23 +20,13 @@ export const loginUser = async (credentials) => {
  * @returns {Promise<object>} - The response data
  */
 export const registerUser = async (userData) => {
-    const response = await fetch(`${BASE_URL}/auth/register`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userData),
-    });
-
-    if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Registration failed');
+    try {
+        const { data } = await axios.post('/auth/register', userData);
+        return data;
+    } catch (error) {
+        throw new Error(error.response?.data?.message || 'Registration failed');
     }
-
-    return response.json();
 };
-
-
 
 /**
  * Verifies email with OTP
@@ -54,20 +34,12 @@ export const registerUser = async (userData) => {
  * @returns {Promise<object>} - Response data
  */
 export const verifyEmail = async (data) => {
-    const response = await fetch(`${BASE_URL}/auth/verify-email`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-    });
-
-    if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || 'Verification failed');
+    try {
+        const { data: responseData } = await axios.post('/auth/verify-email', data);
+        return responseData;
+    } catch (error) {
+        throw new Error(error.response?.data?.detail || 'Verification failed');
     }
-
-    return response.json();
 };
 
 /**
@@ -76,20 +48,12 @@ export const verifyEmail = async (data) => {
  * @returns {Promise<object>}
  */
 export const resendOtp = async (data) => {
-    const response = await fetch(`${BASE_URL}/auth/resend-otp`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-    });
-
-    if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || 'Resend failed');
+    try {
+        const { data: responseData } = await axios.post('/auth/resend-otp', data);
+        return responseData;
+    } catch (error) {
+        throw new Error(error.response?.data?.detail || 'Resend failed');
     }
-
-    return response.json();
 };
 
 /**
@@ -97,17 +61,64 @@ export const resendOtp = async (data) => {
  */
 export const logoutUser = async () => {
     try {
-        const token = getAccessToken();
-        if (!token) return;
-
-        await fetch(`${BASE_URL}/auth/logout`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
+        await axios.post('/auth/logout');
     } catch (error) {
         console.error("Logout failed", error);
         // Continue with local logout even if server fails
+    }
+};
+
+/**
+ * Changes the user's password
+ * @param {object} data - { old_password, new_password }
+ * @returns {Promise<object>}
+ */
+export const changePassword = async (data) => {
+    try {
+        const { data: responseData } = await axios.post('/auth/change-password', data);
+        return responseData;
+    } catch (error) {
+        throw new Error(error.response?.data?.detail || 'Failed to change password');
+    }
+};
+
+/**
+ * Requests a password reset link
+ * @param {object} data - { email }
+ * @returns {Promise<object>}
+ */
+export const forgotPassword = async (data) => {
+    try {
+        const { data: responseData } = await axios.post('/auth/forgot-password', data);
+        return responseData;
+    } catch (error) {
+        throw new Error(error.response?.data?.detail || 'Failed to send reset email');
+    }
+};
+
+/**
+ * Resets the password using a token
+ * @param {object} data - { token, new_password }
+ * @returns {Promise<object>}
+ */
+export const resetPassword = async (data) => {
+    try {
+        const { data: responseData } = await axios.post('/auth/reset-password', data);
+        return responseData;
+    } catch (error) {
+        throw new Error(error.response?.data?.detail || 'Password reset failed');
+    }
+};
+
+/**
+ * Deletes the user account
+ * @returns {Promise<object>}
+ */
+export const deleteAccount = async () => {
+    try {
+        const { data } = await axios.delete('/auth/account');
+        return data;
+    } catch (error) {
+        throw new Error(error.response?.data?.detail || 'Failed to delete account');
     }
 };

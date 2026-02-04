@@ -3,6 +3,9 @@ import SideNav from "./Templates/SideNav";
 import BottomNav from "./Templates/BottomNav";
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
+import { useState } from "react";
+import ProfileEditForm from "./Inputs/ProfileEditForm";
+import { updateMyProfile } from "../Utils/profile-api";
 
 const InfoCard = ({ title, children }) => (
   <div className="bg-white shadow-md rounded-lg p-4 h-full">
@@ -26,7 +29,23 @@ const formatDate = (date) =>
   });
 
 const Profile = () => {
-  const { profileData } = useUser();
+  const { profileData, setProfileData } = useUser();
+  const [isEditing, setIsEditing] = useState(false);
+
+  const handleSaveProfile = async (updates) => {
+    try {
+      const updatedProfile = await updateMyProfile(updates);
+      // If setProfileData is available in context, use it to update global state
+      // Otherwise we might need to rely on the page refreshing or context refetching
+      if (setProfileData) {
+        setProfileData(updatedProfile);
+      }
+      setIsEditing(false);
+    } catch (error) {
+      console.error("Failed to update profile", error);
+      throw error;
+    }
+  };
 
   const LoadingSkeleton = () => (
     <SkeletonTheme baseColor="#f3f4f6" highlightColor="#ffffff">
@@ -67,19 +86,26 @@ const Profile = () => {
       {profileData ? (
         <div className="mx-auto w-full shadow-lg overflow-y-auto bg-gray-50 min-h-screen">
           {/* HEADER */}
-          <div className="flex flex-col md:flex-row items-center gap-6 bg-linear-to-r from-violet-600 to-violet-500 p-5 lg:p-15 text-white shadow-md">
+          <div className="flex flex-col md:flex-row items-center gap-6 bg-linear-to-r from-violet-600 to-violet-500 p-5 lg:p-15 text-white shadow-md relative">
             <img
               src={profileData.avatar_url || "/default-avatar.png"}
               alt="Profile"
               className="w-32 h-32 rounded-full border-4 border-white/30 object-cover shadow-2xl"
             />
-            <div className="text-center md:text-left">
+            <div className="text-center md:text-left flex-1">
               <h1 className="text-4xl font-bold tracking-tight">{profileData.name}</h1>
               <p className="opacity-90 text-lg mt-1">{profileData.email}</p>
               <span className="inline-block mt-3 px-4 py-1.5 text-sm font-semibold tracking-wide rounded-full bg-white/20 backdrop-blur-md border border-white/30 capitalize">
                 {profileData.role}
               </span>
             </div>
+            <button
+              onClick={() => setIsEditing(true)}
+              className="absolute top-5 right-5 md:static md:ml-auto bg-white/20 hover:bg-white/30 p-2 rounded-full md:px-4 md:py-2 md:rounded-lg border border-white/30 transition shadow-lg backdrop-blur-sm"
+            >
+              <i className="ri-edit-line md:mr-2"></i>
+              <span className="hidden md:inline">Edit Profile</span>
+            </button>
           </div>
 
           {/* BODY */}
@@ -166,6 +192,14 @@ const Profile = () => {
         </div>
       ) : (
         <LoadingSkeleton />
+      )}
+
+      {isEditing && profileData && (
+        <ProfileEditForm
+          profile={profileData}
+          onSave={handleSaveProfile}
+          onCancel={() => setIsEditing(false)}
+        />
       )}
     </>
   );
