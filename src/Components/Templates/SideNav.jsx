@@ -1,10 +1,10 @@
 import { useUser } from "../../Context/UserContext";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink,  } from "react-router-dom";
 import { clearSession } from "../../Utils/auth-utils";
 import { logoutUser as logoutUserApi } from "../../Utils/auth-api";
 
 const SideNav = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate(); i also remove import of useNavigate
   const { profileData } = useUser();
 
   const handleLogout = async () => {
@@ -14,7 +14,7 @@ const SideNav = () => {
       console.error("error:", error);
     } finally {
       clearSession();
-      navigate("/", { replace: true });
+      window.location.href = "/"; // Redirect to home page after logout its hardrefresh 
     }
   };
 

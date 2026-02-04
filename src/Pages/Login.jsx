@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+//i used a trick to disable the unused variable warning for motion but without it it womt wotk properly
+// eslint-disable-next-line no-unused-vars 
+import { motion } from "framer-motion";
 import LoginSVG from "../assets/login.svg";
 import { loginUser } from "../Utils/auth-api";
 import { setSession } from "../Utils/auth-utils";
@@ -10,12 +13,14 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false); // when login button is clicked it shows loading state
 
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
 
     try {
       const data = await loginUser({ email, password });
@@ -27,6 +32,8 @@ const Login = () => {
     } catch (err) {
       console.log(err);
       setError(err.message || "Login failed");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -39,14 +46,18 @@ const Login = () => {
           className="flex items-center text-gray-500 hover:text-gray-700 transition-colors"
         >
           <i className="ri-arrow-left-s-line"></i>
-
           <span className="text-sm">Back</span>
         </Link>
       </div>
 
       {/* Main Content */}
       <div className="flex-1 flex items-center justify-center px-6 py-8">
-        <div className="w-full max-w-4xl bg-white rounded-2xl shadow-lg overflow-hidden flex min-h-500px">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="w-full max-w-4xl bg-white rounded-2xl shadow-lg overflow-hidden flex min-h-500px"
+        >
           {/* Left Side - Sign In Form */}
           <div className="w-1/2 p-15 flex flex-col justify-center">
             <h2 className="text-3xl font-semibold text-[#7c6bff] text-center mb-8">
@@ -74,12 +85,11 @@ const Login = () => {
                 <div className="flex justify-between items-center mb-1.5">
                   <label className="text-xs text-gray-500">Your Password</label>
                   <button
-                    placeholder="Password"
-                    required
+                    type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="text-xs text-gray-400 flex items-center hover:text-gray-600 transition-colors"
                   >
-                    <svg
+                    {/* <svg
                       className="w-3.5 h-3.5 mr-1"
                       fill="none"
                       stroke="currentColor"
@@ -98,7 +108,7 @@ const Login = () => {
                         d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
                       />
                     </svg>
-                    Hide
+                    {showPassword ? "Hide" : "Show"} */}
                   </button>
                 </div>
                 <input
@@ -146,13 +156,20 @@ const Login = () => {
                   Privacy Policy
                 </a>
               </p>
-              {error && <p className="text-red-500">{error}</p>}
+              {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+
               {/* Sign In Button */}
               <button
                 type="submit"
-                className="w-full bg-[#7c6bff] text-white py-3 rounded-full font-medium hover:bg-[#6b5ce7] shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all"
+                disabled={loading}
+                className="w-full bg-[#7c6bff] text-white py-3 rounded-full font-medium hover:bg-[#6b5ce7] shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all flex justify-center items-center disabled:opacity-70 disabled:cursor-not-allowed"
               >
-                Sign in
+                {loading ? (
+                  <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                ) : "Sign in"}
               </button>
 
               {/* Sign Up Link */}
@@ -170,8 +187,6 @@ const Login = () => {
 
           {/* Right Side - Welcome Back */}
           <div className="w-1/2 bg-linear-to-b from-[#7E70EB] to-[#5A50A6] p-12 flex flex-col items-center justify-center text-white relative overflow-hidden">
-            {/* Decorative circles */}
-
             <h3 className="text-3xl font-semibold mb-8 relative z-10">
               Welcome Back
             </h3>
@@ -184,7 +199,7 @@ const Login = () => {
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );
