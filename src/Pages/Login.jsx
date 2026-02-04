@@ -1,7 +1,8 @@
-import axios from "../Utils/axios";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import LoginSVG from "../assets/login.svg";
+import { loginUser } from "../Utils/auth-api";
+import { setSession } from "../Utils/auth-utils";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -17,20 +18,15 @@ const Login = () => {
     setError("");
 
     try {
-      const res = await axios.post("/auth/login", {
-        email,
-        password,
-      });
-      console.log(res);
+      const data = await loginUser({ email, password });
+      console.log(data);
 
-      localStorage.setItem("token", res.data.access_token);
-      localStorage.setItem("user", JSON.stringify(res.data.user));
+      setSession(data.access_token, data.user);
 
       navigate("/dashboard");
     } catch (err) {
       console.log(err);
-      const errorMessage = err.response?.data?.detail || "Login failed";
-      setError(errorMessage);
+      setError(err.message || "Login failed");
     }
   };
 
@@ -42,7 +38,7 @@ const Login = () => {
           to="/"
           className="flex items-center text-gray-500 hover:text-gray-700 transition-colors"
         >
-          <i class="ri-arrow-left-s-line"></i>
+          <i className="ri-arrow-left-s-line"></i>
 
           <span className="text-sm">Back</span>
         </Link>
@@ -50,7 +46,7 @@ const Login = () => {
 
       {/* Main Content */}
       <div className="flex-1 flex items-center justify-center px-6 py-8">
-        <div className="w-full max-w-4xl bg-white rounded-2xl shadow-lg overflow-hidden flex min-h-[500px]">
+        <div className="w-full max-w-4xl bg-white rounded-2xl shadow-lg overflow-hidden flex min-h-500px">
           {/* Left Side - Sign In Form */}
           <div className="w-1/2 p-15 flex flex-col justify-center">
             <h2 className="text-3xl font-semibold text-[#7c6bff] text-center mb-8">
@@ -154,7 +150,7 @@ const Login = () => {
               {/* Sign In Button */}
               <button
                 type="submit"
-                className="w-full bg-[#7c6bff] text-white py-3 rounded-full font-medium hover:bg-[#6b5ce7] transition-colors shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all"
+                className="w-full bg-[#7c6bff] text-white py-3 rounded-full font-medium hover:bg-[#6b5ce7] shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all"
               >
                 Sign in
               </button>

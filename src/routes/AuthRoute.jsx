@@ -1,7 +1,8 @@
 import { Navigate } from "react-router-dom";
+import { getAccessToken } from "../Utils/auth-utils";
 
 const AuthRoute = ({ children }) => {
-  const token = localStorage.getItem("token");
+  const token = getAccessToken();
 
   return token ? <Navigate to="/dashboard" replace /> : children;
 };

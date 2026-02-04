@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import axios from "../Utils/axios";
+import { verifyEmail, resendOtp } from "../Utils/auth-api";
+import { setSession } from "../Utils/auth-utils";
 
 const Verify = () => {
   const navigate = useNavigate();
@@ -34,24 +35,23 @@ const Verify = () => {
     setLoading(true);
 
     try {
-      const res = await axios.post("/auth/verify-email", {
-        email,
-        otp,
-      });
+      const res = await verifyEmail({ email, otp });
       console.log(res);
 
       // Clear pending email
       localStorage.removeItem("pendingVerificationEmail");
 
       // Store auth token if provided
-      if (res.data.token) {
-        localStorage.setItem("token", res.data.token);
+      if (res.token) {
+        setSession(res.token, res.user); // Assuming res.user checks out, otherwise just token
+      } else if (res.access_token) {
+        setSession(res.access_token, res.user);
       }
 
       // Redirect to login or dashboard
       navigate("/login");
     } catch (err) {
-      setError(err.response?.data?.detail || "Invalid OTP. Please try again.");
+      setError(err.message || "Invalid OTP. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -59,7 +59,7 @@ const Verify = () => {
 
   const handleResendOtp = async () => {
     try {
-      await axios.post("/auth/resend-otp", { email });
+      await resendOtp({ email });
       alert("New OTP sent to your email!");
     } catch (err) {
       setError("Failed to resend OTP. Please try again.");

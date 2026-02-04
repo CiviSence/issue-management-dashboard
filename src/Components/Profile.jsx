@@ -35,6 +35,7 @@ const Profile = () => {
     <>
       <SideNav />
       <BottomNav />
+      
 
       {profileData ? (
         <div className="mx-auto w-full shadow-lg overflow-y-auto">
@@ -119,6 +120,27 @@ const Profile = () => {
       ) : (
         <Loader />
       )}
+
+      {/* Mobile Logout Button */}
+      <div className="md:hidden p-6">
+        <button
+          onClick={async () => {
+            try {
+              const { logoutUser } = await import("../Utils/auth-api");
+              const { clearSession } = await import("../Utils/auth-utils");
+              await logoutUser();
+              clearSession();
+              window.location.href = "/";
+            } catch (e) {
+              console.error(e);
+            }
+          }}
+          className="w-full bg-red-500 text-white py-3 rounded-xl font-semibold shadow-lg active:scale-95 transition-transform"
+        >
+          Log Out
+        </button>
+      </div>
+
     </>
   );
 };

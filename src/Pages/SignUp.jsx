@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "../Utils/axios";
+import { registerUser } from "../Utils/auth-api";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -75,7 +75,7 @@ const SignUp = () => {
         room_number: "string",
       };
 
-      const res = await axios.post("/auth/register", payload);
+      const res = await registerUser(payload);
       console.log(res);
 
       // Store email for OTP verification page
@@ -85,7 +85,7 @@ const SignUp = () => {
       navigate("/verify-otp");
     } catch (err) {
       setError(
-        err.response?.data?.message || "Registration failed. Please try again.",
+        err.message || "Registration failed. Please try again.",
       );
     } finally {
       setLoading(false);
