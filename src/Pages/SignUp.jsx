@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "../Utils/axios";
+//i used a trick to disable the unused variable warning for motion but without it it womt wotk properly
+// eslint-disable-next-line no-unused-vars
+import { motion } from "framer-motion";
+import { registerUser } from "../Utils/auth-api";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -32,7 +35,7 @@ const SignUp = () => {
       return false;
     }
     if (formData.password.length < 6) {
-      setError("Password must be at least 6 characters");
+      setError("Password must be at least 6 characters"); 
       return false;
     }
     if (!formData.email.includes("@")) {
@@ -75,7 +78,7 @@ const SignUp = () => {
         room_number: "string",
       };
 
-      const res = await axios.post("/auth/register", payload);
+      const res = await registerUser(payload);
       console.log(res);
 
       // Store email for OTP verification page
@@ -85,7 +88,7 @@ const SignUp = () => {
       navigate("/verify-otp");
     } catch (err) {
       setError(
-        err.response?.data?.message || "Registration failed. Please try again.",
+        err.message || "Registration failed. Please try again.",
       );
     } finally {
       setLoading(false);
@@ -119,9 +122,14 @@ const SignUp = () => {
 
       {/* Main Content */}
       <div className="flex-1 flex items-center justify-center px-6 py-8">
-        <div className="w-full max-w-4xl bg-white rounded-2xl shadow-lg overflow-hidden flex min-h-[500px]">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.4 }}
+          className="w-full max-w-4xl bg-white rounded-2xl shadow-lg overflow-hidden flex min-h-500px"
+        >
           {/* Left Side - Illustration */}
-          <div className="hidden md:flex w-1/2 bg-gradient-to-b from-[#7E70EB] to-[#5A50A6] p-12 flex-col items-center justify-center text-white relative overflow-hidden">
+          <div className="hidden md:flex w-1/2 bg-linear-to-b from-[#7E70EB] to-[#5A50A6] p-12 flex-col items-center justify-center text-white relative overflow-hidden">
             <div className="absolute top-0 left-0 w-full h-full opacity-10">
               <div className="absolute top-10 left-10 w-32 h-32 rounded-full bg-white"></div>
               <div className="absolute bottom-20 right-10 w-48 h-48 rounded-full bg-white"></div>
@@ -332,7 +340,7 @@ const SignUp = () => {
               </form>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );
