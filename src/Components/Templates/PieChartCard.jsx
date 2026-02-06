@@ -1,3 +1,4 @@
+
 import {
   PieChart as RePieChart,
   Pie,
@@ -14,6 +15,7 @@ const PieChartCard = () => {
     { name: "Facilities", value: 10, color: "#fab005" },
     { name: "Other", value: 5, color: "#6c757d" },
   ];
+
 
   return (
     <div className="bg-white rounded-xl  p-4 w-full h-[300px] ">
