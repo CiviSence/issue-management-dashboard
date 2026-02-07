@@ -1,57 +1,68 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import axios from "../Utils/axios";
-import { getUserData, setSession, clearSession } from "../Utils/auth-utils";
+import { createContext, useContext, useState } from "react";
+import {
+  getUserById,
+  getTopContributors,
+} from "../Utils/users";
 
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-  // Lazy initialization ensures this only runs once on mount
-  const [profileData, setProfileData] = useState(() => getUserData());
+  const [usersCache, setUsersCache] = useState({}); // { userId: userData }
+  const [leaderboard, setLeaderboard] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    let isMounted = true;
+  /**
+   * Fetch public user profile (cached)
+   */
+  const fetchUserById = async (userId) => {
+    if (usersCache[userId]) return usersCache[userId];
 
-    const fetchProfile = async () => {
-      try {
-        const { data } = await axios.get("/auth/me");
-        if (isMounted) {
-          setProfileData(data);
-        }
-      } catch (err) {
-        // If fetch fails with 401, clear everything
-        if (isMounted && err.response && err.response.status === 401) {
-          setProfileData(null);
-          clearSession();
-        }
-      }
-    };
-
-    fetchProfile();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-
-  // Sync profile data changes to persistent storage
-  useEffect(() => {
-    if (profileData) {
-      setSession(null, profileData);
+    try {
+      setLoading(true);
+      const data = await getUserById(userId);
+      setUsersCache((prev) => ({
+        ...prev,
+        [userId]: data,
+      }));
+      return data;
+    } catch (err) {
+      console.error("Failed to fetch user", err);
+      throw err;
+    } finally {
+      setLoading(false);
     }
-  }, [profileData]);
+  };
+
+  /**
+   * Fetch leaderboard (cached)
+   */
+  const fetchLeaderboard = async () => {
+    if (leaderboard.length) return;
+
+    try {
+      setLoading(true);
+      const data = await getTopContributors();
+      setLeaderboard(data.leaderboard);
+    } catch (err) {
+      console.error("Failed to fetch leaderboard", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <UserContext.Provider value={{ profileData, setProfileData }}>
+    <UserContext.Provider
+      value={{
+        usersCache,
+        leaderboard,
+        loading,
+        fetchUserById,
+        fetchLeaderboard,
+      }}
+    >
       {children}
     </UserContext.Provider>
   );
 };
 
-// useUser.js add a new file using the following code: or you can uncomment the code below and place it here
-//i just did it here to reduce the number of files disabled by eslint
-// import { useContext } from "react";
-// import { UserContext } from "./UserContext";
-
-// export const useUser = () => useContext(UserContext);
-// eslint-disable-next-line react-refresh/only-export-components
-export const useUser = () => useContext(UserContext);
+export const useUsers = () => useContext(UserContext);

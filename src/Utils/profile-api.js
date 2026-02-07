@@ -1,4 +1,4 @@
-import axios from './axios';
+import axios from '../Utils/axios';
 
 /**
  * Fetches the current user's profile

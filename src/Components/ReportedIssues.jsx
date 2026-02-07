@@ -1,41 +1,29 @@
 import SideNav from "./Templates/SideNav";
 import BottomNav from "./Templates/BottomNav";
 import Searchbar from "./Templates/Searchbar";
-import { useEffect, useState } from "react";
-import axios from "../Utils/axios";
-import Loader from "./Templates/Loader";
+
+import { useIssues } from "../Context/IssueContext";
+import { useState } from "react";
 
 const ReportedIssues = () => {
-  const [issues, setIssues] = useState([]);
-  const [selectedLocation, setSelectedLocation] = useState("");
-  const [priority, setPriority] = useState("");
-  const filteredIssues = issues.filter((issue) => {
-    const locationMatch = selectedLocation
-      ? issue.location_address === selectedLocation
-      : true;
+  const { issues } = useIssues();
+  const [selectedLocation, setSelectedLocation] = useState("all");
+  const [priority, setPriority] = useState("all");
 
-    const priorityMatch = priority ? issue.priority === priority : true;
+  const filteredIssues = issues.filter((issue) => {
+    const locationMatch =
+      selectedLocation === "all" || issue.location_address === selectedLocation;
+
+    const priorityMatch =
+      priority === "all" ||
+      issue.priority?.toLowerCase() === priority.toLowerCase();
 
     return locationMatch && priorityMatch;
   });
 
   const uniqueLocations = [
-    ...new Set(issues.map((issue) => issue.location_address)),
+    ...new Set(issues.map((i) => i.location_address).filter(Boolean)),
   ];
-
-  const getIssues = async () => {
-    try {
-      const { data } = await axios.get("/issues/feed?skip=0&limit=20");
-      console.log(data);
-      setIssues(data);
-    } catch (error) {
-      console.log("Error:", error);
-    }
-  };
-
-  useEffect(() => {
-    getIssues();
-  }, []);
 
   const categoryColor = {
     Maintenance: "bg-blue-100 text-blue-700",
@@ -90,7 +78,7 @@ const ReportedIssues = () => {
                     onChange={(e) => setSelectedLocation(e.target.value)}
                     className="appearance-none bg-white border border-gray-300 text-gray-700 text-sm rounded-lg px-4 py-2 pr-10 shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition duration-200"
                   >
-                    <option value="">Location: All</option>
+                    <option value="all">Location: All</option>
                     {uniqueLocations.map((location, index) => (
                       <option key={index} value={location}>
                         {location}
@@ -103,7 +91,7 @@ const ReportedIssues = () => {
                     onChange={(e) => setPriority(e.target.value)}
                     className="appearance-none bg-white border border-gray-300 text-gray-700 text-sm rounded-lg px-4 py-2 pr-10 shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition duration-200"
                   >
-                    <option value="">Priority: All</option>
+                    <option value="all">Priority: All</option>
                     <option value="low">Low</option>
                     <option value="medium">Medium</option>
                     <option value="high">High</option>

@@ -22,27 +22,27 @@ const BottomNav = () => {
     >
 
       <NavLink to="/dashboard" className={navClass}>
-        <i class="ri-dashboard-fill text-xl"></i>
+        <i className="ri-dashboard-fill text-xl"></i>
         <span className="text-xs">Dashboard</span>
       </NavLink>
 
       <NavLink to="/reported-issues" className={navClass}>
-        <i class="ri-alarm-warning-fill text-xl"></i>
+        <i className="ri-alarm-warning-fill text-xl"></i>
         <span className="text-xs">Issues</span>
       </NavLink>
 
       <NavLink to="/resolved-issues" className={navClass}>
-        <i class="ri-shield-check-fill text-xl"></i>
+        <i className="ri-shield-check-fill text-xl"></i>
         <span className="text-xs">Resolved</span>
       </NavLink>
 
       <NavLink to="/leaderboard" className={navClass}>
-        <i class="ri-award-fill text-xl"></i>
+        <i className="ri-award-fill text-xl"></i>
         <span className="text-xs">Leaderboard</span>
       </NavLink>
 
       <NavLink to="/profile" className={navClass}>
-        <i class="ri-user-fill text-xl"></i>
+        <i className="ri-user-fill text-xl"></i>
         <span className="text-xs">Profile</span>
       </NavLink>
     </div>
