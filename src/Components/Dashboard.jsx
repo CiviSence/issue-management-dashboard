@@ -1,9 +1,6 @@
-import React from "react";
 import SideNav from "./Templates/SideNav";
 import Searchbar from "./Templates/Searchbar";
 import IssueCard from "./Templates/IssueCard";
-import RecentReportsCard from "./Templates/RecentReportsCard";
-import TopLocations from "./Templates/TopLocations";
 import BottomNav from "./Templates/BottomNav";
 import PieChartCard from "./Templates/PieChartCard";
 import BarChartCard from "./Templates/BarChartCard";
@@ -12,6 +9,8 @@ import StatusChart from "./Templates/StatusChart";
 import UserCard from "./Templates/UserCard";
 
 const Dashboard = () => {
+    
+  
   const issues = [
     {
       name: "Total Issues",
@@ -42,53 +41,6 @@ const Dashboard = () => {
       color2: "bg-[#0D4900]",
     },
   ];
-
-  const recentReports = [
-    {
-      id: 1,
-      issue: "Broken Tap",
-      location: "Boys Hostel",
-      status: "Open",
-      reported: "1 hour ago",
-    },
-    {
-      id: 2,
-      issue: "Water Leakage",
-      location: "Girls Hostel",
-      status: "Open",
-      reported: "12 hours ago",
-    },
-    {
-      id: 3,
-      issue: "Projector not working",
-      location: "Admin Building",
-      status: "In Progress",
-      reported: "Yesterday",
-    },
-    {
-      id: 4,
-      issue: "Broken window",
-      location: "Boys Hostel",
-      status: "Pending",
-      reported: "2 days ago",
-    },
-    {
-      id: 5,
-      issue: "Tube light not working",
-      location: "Boys Hostel",
-      status: "Resolved",
-      reported: "3 days ago",
-    },
-  ];
-
-  // const data = [
-  //   { name: "Jan", users: 400 },
-  //   { name: "Feb", users: 300 },
-  //   { name: "Mar", users: 500 },
-  //   { name: "April", users: 100 },
-  //   { name: "May", users: 150 },
-  //   { name: "June", users: 200 },
-  // ];
 
   return (
     <>
@@ -127,7 +79,7 @@ const Dashboard = () => {
         </h1>
         <div className="bg-[#F0EEFF] p-4 rounded-2xl">
           <div className=" grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 ">
-            <PieChartCard />
+            <PieChartCard/>
             <BarChartCard />
             <LineChartCard />
           </div>

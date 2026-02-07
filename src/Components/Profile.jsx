@@ -1,15 +1,17 @@
-import { useUser } from "../Context/UserContext";
+import { useUser } from "../Context/ProfileContext";
 import SideNav from "./Templates/SideNav";
 import BottomNav from "./Templates/BottomNav";
-import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css';
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 import { useState } from "react";
 import ProfileEditForm from "./Inputs/ProfileEditForm";
 import { updateMyProfile } from "../Utils/profile-api";
 
 const InfoCard = ({ title, children }) => (
   <div className="bg-white shadow-md rounded-lg p-4 h-full">
-    <h2 className="text-xl font-semibold mb-4 text-gray-800 border-b pb-2">{title}</h2>
+    <h2 className="text-xl font-semibold mb-4 text-gray-800 border-b pb-2">
+      {title}
+    </h2>
     <div className="space-y-3">{children}</div>
   </div>
 );
@@ -66,10 +68,22 @@ const Profile = () => {
             <div key={i} className="bg-white shadow-md rounded-lg p-5 h-55">
               <Skeleton width={160} height={28} className="mb-6" />
               <div className="space-y-4">
-                <div className="flex justify-between"><Skeleton width={80} /><Skeleton width={120} /></div>
-                <div className="flex justify-between"><Skeleton width={100} /><Skeleton width={140} /></div>
-                <div className="flex justify-between"><Skeleton width={70} /><Skeleton width={110} /></div>
-                <div className="flex justify-between"><Skeleton width={90} /><Skeleton width={130} /></div>
+                <div className="flex justify-between">
+                  <Skeleton width={80} />
+                  <Skeleton width={120} />
+                </div>
+                <div className="flex justify-between">
+                  <Skeleton width={100} />
+                  <Skeleton width={140} />
+                </div>
+                <div className="flex justify-between">
+                  <Skeleton width={70} />
+                  <Skeleton width={110} />
+                </div>
+                <div className="flex justify-between">
+                  <Skeleton width={90} />
+                  <Skeleton width={130} />
+                </div>
               </div>
             </div>
           ))}
@@ -93,7 +107,9 @@ const Profile = () => {
               className="w-32 h-32 rounded-full border-4 border-white/30 object-cover shadow-2xl"
             />
             <div className="text-center md:text-left flex-1">
-              <h1 className="text-4xl font-bold tracking-tight">{profileData.name}</h1>
+              <h1 className="text-4xl font-bold tracking-tight">
+                {profileData.name}
+              </h1>
               <p className="opacity-90 text-lg mt-1">{profileData.email}</p>
               <span className="inline-block mt-3 px-4 py-1.5 text-sm font-semibold tracking-wide rounded-full bg-white/20 backdrop-blur-md border border-white/30 capitalize">
                 {profileData.role}
@@ -114,7 +130,11 @@ const Profile = () => {
               <Info label="Gender" value={profileData.gender} />
               <Info
                 label="Date of Birth"
-                value={profileData.date_of_birth ? formatDate(profileData.date_of_birth) : null}
+                value={
+                  profileData.date_of_birth
+                    ? formatDate(profileData.date_of_birth)
+                    : null
+                }
               />
               <Info label="Phone" value={profileData.phone_number} />
               <Info label="Pincode" value={profileData.pincode} />

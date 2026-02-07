@@ -10,7 +10,7 @@ export default function Home() {
         </h1>
         <p className="text-slate-300 text-base md:text-lg">
           A simple and transparent platform to report, track, and resolve civic issues efficiently.
-          Stay informed, raise concerns, and make your city better — together.
+          Stay informed, raise concerns, and make your Campus better — together.
         </p>
       </div>
 
@@ -32,7 +32,7 @@ export default function Home() {
 
       {/* Footer Note */}
       <p className="mt-10 text-sm text-slate-400">
-        Built for citizens • Powered by transparency
+        Built for Institutes • Powered by transparency
       </p>
     </div>
   );

@@ -1,5 +1,5 @@
 import React from "react";
-import { useUser } from "../../Context/UserContext";
+import { useUser } from "../../Context/ProfileContext";
 
 const Searchbar = () => {
   const { profileData } = useUser();
@@ -41,16 +41,16 @@ const Searchbar = () => {
         <i className="ri-moon-line text-lg sm:text-xl text-[#aaaaaa]"></i>
 
         {/* User */}
-       
-          <div className="rounded-full bg-amber-300 h-9 w-9 text-center">
-            <img
-              src={profileData?.avatar_url}
-              alt="Profile"
-              className="w-9 h-9 rounded-full border border-violet-500 object-cover"
-            />
-          </div>
+
+        <div className="rounded-full bg-amber-300 h-9 w-9 text-center">
+          <img
+            src={profileData?.avatar_url}
+            alt="Profile"
+            className="w-9 h-9 rounded-full border border-violet-500 object-cover"
+          />
         </div>
       </div>
+    </div>
   );
 };
 
