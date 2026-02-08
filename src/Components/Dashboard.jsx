@@ -141,6 +141,7 @@ const Dashboard = () => {
       description: "Open & In Progress",
       color: "from-[#F5A623] to-[#F8E71C]",
       color2: "bg-[#F5A623]",
+      link: "/pending-issues",
     },
     {
       name: "In Progress",
@@ -148,6 +149,7 @@ const Dashboard = () => {
       description: "Open & In Progress",
       color: "from-[#00284B] to-[#0088FF]",
       color2: "bg-[#00284B]",
+      link: "/in-progress",
     },
     {
       name: "Resolved Issues",

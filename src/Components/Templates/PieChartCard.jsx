@@ -11,7 +11,7 @@ const PieChartCard = ({data}) => {
  
 
   return (
-    <div className="bg-white rounded-xl  p-4 w-full h-[300px] ">
+    <div className="bg-white rounded-xl  p-4 w-full h-75">
       <h2 className="text-lg font-semibold text-gray-700">
         Category Distribution
       </h2>

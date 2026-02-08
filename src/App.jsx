@@ -13,7 +13,7 @@ import Verify from "./Pages/Verify";
 
 const App = () => {
   return (
-    <div className="w-screen h-screen bg-[#F0EEFF] flex">
+    <div className="w-full h-screen bg-[#F0EEFF] flex">
       <Routes>
         <Route
           path="/login"
@@ -95,6 +95,22 @@ const App = () => {
           element={
             <PrivateRoute>
               <Profile />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/pending-issues"
+          element={
+            <PrivateRoute>
+              <ReportedIssues />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/in-progress"
+          element={
+            <PrivateRoute>
+              <ReportedIssues />
             </PrivateRoute>
           }
         />

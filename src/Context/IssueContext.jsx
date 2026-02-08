@@ -12,7 +12,7 @@ export const IssueProvider = ({ children }) => {
 
     try {
       setLoading(true);
-      const data = await getIssuesFeed({ skip: 0, limit: 20 });
+      const data = await getIssuesFeed({ skip: 0, limit: 50 });
       setIssues(data);
     } catch (err) {
       console.error("Failed to fetch issues", err);

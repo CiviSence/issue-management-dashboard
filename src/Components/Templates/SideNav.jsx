@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useUser } from "../../Context/ProfileContext";
 import { Link, NavLink } from "react-router-dom";
 import { clearSession } from "../../Utils/auth-utils";
@@ -8,6 +8,7 @@ const SideNav = () => {
   const { profileData } = useUser();
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [logoutInput, setLogoutInput] = useState("");
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
 
   const handleLogoutClick = () => {
     setShowLogoutConfirm(true);
@@ -41,7 +42,7 @@ const SideNav = () => {
         hidden md:flex flex-col justify-between
         w-20 lg:w-[17vw]
         shrink-0
-        h-screen overflow-y-auto
+        h-screen overflow-x-visible  relative z-40
         p-3 lg:p-5 xl:p-8
         text-white
       
@@ -81,23 +82,61 @@ const SideNav = () => {
           </NavLink>
         </nav>
       </div>
-      <div className="flex items-center justify-start gap-3 hover:bg-violet-400 px-4 py-2 rounded-lg">
-        <div className="rounded-full bg-amber-300 h-9 w-9 text-center">
-          <img
-            src={profileData?.avatar_url}
-            alt="Profile"
-            className="w-10 h-10 rounded-full border border-violet-500 object-cover"
-          />
+      <div className="relative">
+        {/* Profile button */}
+        <div
+         onMouseEnter={() => setShowProfileMenu((prev) => !prev)}
+         
+          className="flex items-center justify-center lg:justify-start gap-3 px-2 py-2 rounded-lg cursor-pointer hover:bg-violet-400 transition"
+        >
+          <div className=" h-10 w-10 rounded-full bg-violet-600 shrink-0 flex items-center justify-center">
+            <img
+              src={profileData?.avatar_url || "/default-avatar.png"}
+              alt="Profile"
+              className="h-9 w-9 rounded-full border border-violet-500 object-cover"
+            />
+          </div>
+
+          <div className="hidden lg:block">
+            <p className="text-s font-medium truncate max-w-[140px]">
+              {profileData?.name}
+            </p>
+            <p className="text-sm text-violet-200">
+              {profileData?.role || "user"}
+            </p>
+          </div>
         </div>
-        <div className="hidden lg:inline">
-          <p className="text-lg">{profileData?.name}</p>
-          <p
-            className="text-sm cursor-pointer hover:underline"
-            onClick={handleLogoutClick}
-          >
-            Log Out
-          </p>
-        </div>
+
+        {/* Dropdown */}
+        {showProfileMenu && (
+          <div className="z-[9999] absolute bottom-14 left-0 w-64 bg-white text-[#2f2f2f] rounded-xl shadow-xl p-2 z-50">
+            {/* Header */}
+            <div className="flex items-center gap-3 px-3 py-2">
+              <div className="h-10 w-10 rounded-full  shrink-0 flex items-center justify-center">
+                <img
+                  src={profileData?.avatar_url || "/default-avatar.png"}
+                  alt="Profile"
+                  className="h-9 w-9 rounded-full border  object-cover"
+                />
+              </div>
+              <div>
+                <p className="text-sm font-medium">{profileData?.name}</p>
+                <p className="text-xs text-gray-400">
+                  {profileData?.email || "user"}
+                </p>
+              </div>
+            </div>
+
+            <hr className="my-2 border-gray-300" />
+
+            <button
+              onClick={handleLogoutClick}
+              className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-500/20 text-sm text-red-400"
+            >
+              <i className="ri-logout-box-r-line text-xl"></i> Log out
+            </button>
+          </div>
+        )}
       </div>
 
       {showLogoutConfirm && (

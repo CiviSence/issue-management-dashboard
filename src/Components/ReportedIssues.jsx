@@ -34,15 +34,14 @@ const IssuesSkeleton = () => {
           {[...Array(6)].map((_, i) => (
             <div
               key={i}
-              className="grid grid-cols-7 gap-4 py-3 border-b last:border-none"
+              className="grid grid-cols-5 gap-4 py-3  last:border-none"
             >
               <Skeleton height={25} />
               <Skeleton height={25} />
               <Skeleton height={25} />
               <Skeleton height={25} />
               <Skeleton height={25} />
-              <Skeleton height={25} />
-              <Skeleton height={25} />
+              
             </div>
           ))}
         </div>
@@ -104,14 +103,14 @@ const ReportedIssues = () => {
 
   const categoryColor = {
     Security: "bg-blue-100 text-blue-800",
-    Maintenance: "bg-red-100 text-red-800",
+    Maintainance: "bg-red-100 text-red-800",
     Infrastructure: "bg-amber-100 text-amber-800",
     Cleanliness: "bg-emerald-100 text-emerald-800",
     Facilities: "bg-purple-100 text-purple-800",
   };
 
   const priorityColor = {
-    critical: "bg-purple-100 text-purple-800",
+    critical: "bg-red-300 text-red-800",
     high: "bg-red-100 text-red-800",
     medium: "bg-amber-100 text-amber-800",
     low: "bg-emerald-100 text-emerald-800",

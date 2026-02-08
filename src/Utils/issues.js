@@ -24,7 +24,7 @@ export const getAllIssues = async (params = {}) => {
  */
 export const getResolvedIssues = async (params = {}) => {
   try {
-    const { data } = await axios.get("/issues/?limit=20&status=resolved", {
+    const { data } = await axios.get("/issues/?limit=50&status=resolved", {
       params,
     });
     return data;

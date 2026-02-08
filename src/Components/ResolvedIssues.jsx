@@ -35,11 +35,11 @@ const SkeletonLoader = () => {
               key={i}
               className="grid grid-cols-5 gap-4 py-3  last:border-none"
             >
-              <Skeleton height={18} />
-              <Skeleton height={18} />
-              <Skeleton height={18} />
-              <Skeleton height={18} />
-              <Skeleton height={18} />
+              <Skeleton height={25} />
+              <Skeleton height={25} />
+              <Skeleton height={25} />
+              <Skeleton height={25} />
+              <Skeleton height={25} />
             </div>
           ))}
         </div>
