@@ -10,22 +10,15 @@ const getInitials = (name = "") =>
     .slice(0, 2);
 
 const UserCard = () => {
-  const { leaderboard, fetchLeaderboard, loading } = useUsers();
+  const { leaderboard, fetchLeaderboard } = useUsers();
 
   useEffect(() => {
     fetchLeaderboard();
   }, []);
 
-
-  if (loading) {
-    return <div className="bg-white rounded-xl p-4">Loading users...</div>;
-  }
-
   return (
     <div className="overflow-x-auto bg-white rounded-xl p-4 pb-10 w-full">
-      <div className="flex items-center justify-between mb-3">
-       
-      </div>
+      <div className="flex items-center justify-between mb-3"></div>
 
       <table className="w-full">
         <thead className="hidden md:table-header-group">

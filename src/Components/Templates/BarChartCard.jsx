@@ -8,18 +8,12 @@ import {
   Cell,
 } from "recharts";
 
-const COLORS = ["#F6DE4B", "#3081CA", "#4ABC33"];
+const COLORS = ["#4ABC33","#F6DE4B", "#3081CA","#E34A4D"];
 
-const BarChartCard = () => {
-  const data = [
-    { status: "Open", count: 80 },
-    { status: "In Progress", count: 40 },
-    { status: "Resolved", count: 30 },
-  ];
-
+const BarChartCard = ({data}) => {
   return (
     <div className="bg-white rounded-xl  p-4 pb-10 w-full h-[300px]">
-      <h2 className="text-lg pb-2 font-semibold text-gray-700">Issues by Status</h2>
+      <h2 className="text-lg pb-2 font-semibold text-gray-700">Issues by Priority</h2>
 
       <ResponsiveContainer width="90%" height="100%">
         <BarChart data={data}>

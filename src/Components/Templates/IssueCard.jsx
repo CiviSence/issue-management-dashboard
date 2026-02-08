@@ -1,8 +1,8 @@
-import React from "react";
+import { Link } from "react-router-dom";
 
 const IssueCard = ({ issue }) => {
   return (
-    <div
+    <Link to={issue.link}
       className={`w-full sm:w-[48%] lg:w-[35%] xl:w-[24%]
       bg-linear-to-r ${issue.color} opacity-80
       py-6 px-8 rounded-md
@@ -20,7 +20,7 @@ const IssueCard = ({ issue }) => {
           {issue.count}
         </span>
       </div>
-    </div>
+    </Link>
   );
 };
 

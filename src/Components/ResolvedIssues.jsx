@@ -3,6 +3,7 @@ import BottomNav from "./Templates/BottomNav";
 import Searchbar from "./Templates/Searchbar";
 import { useEffect, useState } from "react";
 import { getResolvedIssues } from "../Utils/issues";
+import  Loader  from "./Templates/Loader";
 
 const ReportedIssues = () => {
   const [issues, setIssues] = useState([]);
@@ -37,7 +38,7 @@ const ReportedIssues = () => {
     low: "bg-green-500",
   };
 
-    useEffect(() => {
+  useEffect(() => {
     const fetchResolvedIssues = async () => {
       try {
         const data = await getResolvedIssues();
@@ -50,12 +51,11 @@ const ReportedIssues = () => {
     fetchResolvedIssues();
   }, []);
 
-
   return (
     <>
       <SideNav />
       <BottomNav />
-      {issues ? (
+      {issues.length > 0 ? (
         <>
           <div className="w-full p-2 lg:p-4 lg:w-[calc(100vw-15vw)]  overflow-x-auto ">
             <div className="w-full bg-violet-500 p-4 rounded-2xl">

@@ -4,11 +4,13 @@ import Searchbar from "./Templates/Searchbar";
 
 import { useIssues } from "../Context/IssueContext";
 import { useState } from "react";
+import  Loader  from "./Templates/Loader";
 
 const ReportedIssues = () => {
   const { issues } = useIssues();
   const [selectedLocation, setSelectedLocation] = useState("all");
   const [priority, setPriority] = useState("all");
+  console.log(issues);
 
   const filteredIssues = issues.filter((issue) => {
     const locationMatch =
@@ -42,7 +44,7 @@ const ReportedIssues = () => {
     <>
       <SideNav />
       <BottomNav />
-      {issues ? (
+      {issues.length > 0 ? (
         <>
           <div className="w-full p-2 lg:p-4 lg:w-[calc(100vw-15vw)]  overflow-x-auto ">
             <div className="w-full bg-violet-500 p-4 rounded-2xl">
