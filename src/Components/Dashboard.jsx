@@ -8,7 +8,48 @@ import LineChartCard from "./Templates/LineChartCard";
 import StatusChart from "./Templates/StatusChart";
 import UserCard from "./Templates/UserCard";
 import { useIssues } from "../Context/IssueContext";
-import Loader from "./Templates/Loader";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+
+const DashboardSkeleton = () => {
+  return (
+    <div className="w-full h-screen p-2 lg:p-4 lg:w-[calc(100vw-15vw)] bg-white overflow-auto">
+      {/* Header */}
+      <div className="w-full flex justify-between bg-violet-200 p-4 rounded-2xl mb-4">
+        <Skeleton height={40} width={220} borderRadius={8} />
+        <Skeleton height={48} width={320} borderRadius={8} />
+      </div>
+
+      {/* Issue Cards */}
+      <div className="w-full mt-4 gap-2 flex flex-wrap justify-center bg-[#F0EEFF] p-4 rounded-2xl">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="w-full sm:w-[48%] lg:w-[35%] xl:w-[24%]">
+            <Skeleton height={112} borderRadius={12} />
+          </div>
+        ))}
+      </div>
+
+      {/* Charts */}
+      <div className="mt-4 bg-[#F0EEFF] p-4 rounded-2xl">
+        <Skeleton height={24} width={160} className="mb-4" />
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+          <Skeleton height={260} borderRadius={12} />
+          <Skeleton height={260} borderRadius={12} />
+          <Skeleton height={260} borderRadius={12} />
+        </div>
+      </div>
+
+      {/* User card */}
+      <div className="bg-[#F0EEFF] p-4 mt-4 rounded-2xl">
+        <Skeleton height={200} borderRadius={12} />
+      </div>
+
+      <div className="bg-[#F0EEFF] p-4 mt-4 rounded-2xl">
+        <Skeleton height={200} borderRadius={12} />
+      </div>
+    </div>
+  );
+};
 
 const Dashboard = () => {
   //get all issues
@@ -206,7 +247,7 @@ const Dashboard = () => {
           </div>
         </>
       ) : (
-        <Loader />
+        <DashboardSkeleton />
       )}
     </>
   );

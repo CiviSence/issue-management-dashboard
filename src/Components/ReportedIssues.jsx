@@ -4,7 +4,82 @@ import Searchbar from "./Templates/Searchbar";
 
 import { useIssues } from "../Context/IssueContext";
 import { useState } from "react";
-import  Loader  from "./Templates/Loader";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+
+const IssuesSkeleton = () => {
+  return (
+    <div className="w-full p-2 lg:p-4 lg:w-[calc(100vw-15vw)] overflow-x-auto">
+      {/* Header */}
+      <div className="w-full bg-violet-300 p-4 rounded-2xl">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <Skeleton height={36} width={180} />
+          <Skeleton height={44} width={260} />
+        </div>
+      </div>
+
+      {/* Table Container */}
+      <div className="bg-white rounded-xl shadow-sm p-4 md:p-6 w-full mt-4">
+        {/* Table header */}
+        <div className="flex justify-between items-center mb-5">
+          <Skeleton height={24} width={200} />
+          <div className="flex gap-2">
+            <Skeleton height={38} width={140} />
+            <Skeleton height={38} width={140} />
+          </div>
+        </div>
+
+        {/* ===== DESKTOP TABLE SKELETON ===== */}
+        <div className="hidden md:block">
+          {[...Array(6)].map((_, i) => (
+            <div
+              key={i}
+              className="grid grid-cols-7 gap-4 py-3 border-b last:border-none"
+            >
+              <Skeleton height={25} />
+              <Skeleton height={25} />
+              <Skeleton height={25} />
+              <Skeleton height={25} />
+              <Skeleton height={25} />
+              <Skeleton height={25} />
+              <Skeleton height={25} />
+            </div>
+          ))}
+        </div>
+
+        {/* ===== MOBILE CARDS SKELETON ===== */}
+        <div className="md:hidden space-y-4">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="border rounded-lg p-4 shadow-sm space-y-3">
+              <div className="flex justify-between items-center">
+                <Skeleton height={18} width={180} />
+                <Skeleton height={20} width={70} />
+              </div>
+
+              <div className="flex gap-2">
+                <Skeleton height={20} width={80} />
+                <Skeleton height={20} width={80} />
+              </div>
+
+              <Skeleton height={16} width="90%" />
+
+              <div className="flex justify-between">
+                <Skeleton height={14} width={100} />
+                <Skeleton height={14} width={60} />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Pagination */}
+        <div className="flex justify-between items-center mt-6">
+          <Skeleton height={16} width={100} />
+          <Skeleton height={16} width={100} />
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const ReportedIssues = () => {
   const { issues } = useIssues();
@@ -28,16 +103,26 @@ const ReportedIssues = () => {
   ];
 
   const categoryColor = {
-    Maintenance: "bg-blue-100 text-blue-700",
-    Electrical: "bg-red-100 text-red-700",
-    Infrastructure: "bg-yellow-100 text-yellow-800",
-    Cleanliness: "bg-green-100 text-green-700",
+    Security: "bg-blue-100 text-blue-800",
+    Maintenance: "bg-red-100 text-red-800",
+    Infrastructure: "bg-amber-100 text-amber-800",
+    Cleanliness: "bg-emerald-100 text-emerald-800",
+    Facilities: "bg-purple-100 text-purple-800",
   };
 
   const priorityColor = {
-    high: "bg-red-500",
-    medium: "bg-yellow-500",
-    low: "bg-green-500",
+    critical: "bg-purple-100 text-purple-800",
+    high: "bg-red-100 text-red-800",
+    medium: "bg-amber-100 text-amber-800",
+    low: "bg-emerald-100 text-emerald-800",
+  };
+
+  const statusColor = {
+    new: "bg-sky-100 text-sky-800",
+    acknowledged: "bg-indigo-100 text-indigo-800",
+    in_progress: "bg-amber-100 text-amber-800",
+    resolved: "bg-emerald-100 text-emerald-800",
+    closed: "bg-zinc-200 text-zinc-800",
   };
 
   return (
@@ -118,11 +203,11 @@ const ReportedIssues = () => {
 
                   <tbody>
                     {filteredIssues?.map((issue, i) => (
-                      <tr key={i} className="border-b last:border-none">
+                      <tr key={i} className="border-b border-zinc-200 last:border-none">
                         <td className="p-3 font-medium">{issue.title}</td>
                         <td className="p-3">
                           <span
-                            className={`px-3 py-1 rounded-full text-xs font-medium ${categoryColor[issue.main_category]}`}
+                            className={`px-3 py-1 rounded-full text-xs font-semibold ${categoryColor[issue.main_category]}`}
                           >
                             {issue.main_category}
                           </span>
@@ -132,15 +217,17 @@ const ReportedIssues = () => {
 
                         <td className="p-3">
                           <span
-                            className={` text-xs text-center px-3 py-1 rounded-full ${priorityColor[issue.priority]}`}
+                            className={`px-3 py-1 rounded-full text-xs font-semibold ${priorityColor[issue.priority]}`}
                           >
                             {issue.priority}
                           </span>
                         </td>
 
                         <td className="p-3">
-                          <span className="bg-green-500 text-white text-xs px-3 py-1 rounded-full">
-                            {issue.status}
+                          <span
+                            className={`px-3 py-1 rounded-full text-xs font-semibold ${statusColor[issue.status]}`}
+                          >
+                            {issue.status.replace("_", " ")}
                           </span>
                         </td>
 
@@ -158,41 +245,62 @@ const ReportedIssues = () => {
               </div>
 
               {/* ===== MOBILE CARDS ===== */}
-              <div className="md:hidden space-y-4">
+              <div className="md:hidden space-y-3">
                 {filteredIssues.map((issue, i) => (
                   <div
                     key={i}
-                    className="border rounded-lg p-4 shadow-sm space-y-2"
+                    className="
+        bg-white
+        rounded-xl
+        p-4
+        shadow-sm
+        border border-gray-100
+        space-y-3
+        active:scale-[0.98]
+        transition
+      "
                   >
-                    <div className="flex justify-between items-center">
-                      <h3 className="font-semibold">{issue.title}</h3>
+                    {/* Title + Priority */}
+                    <div className="flex items-start justify-between gap-2">
+                      <h3 className="font-semibold text-gray-900 text-sm leading-snug">
+                        {issue.title}
+                      </h3>
+
                       <span
-                        className={`text-white text-xs px-3 py-1 rounded-full`}
+                        className={`shrink-0 px-2.5 py-0.5 rounded-full text-[11px] font-semibold ${priorityColor[issue.priority]}`}
                       >
                         {issue.priority}
                       </span>
                     </div>
 
-                    <div className="flex flex-wrap gap-2 text-xs">
+                    {/* Badges */}
+                    <div className="flex flex-wrap gap-2">
                       <span
-                        className={`px-3 py-1 rounded-full ${categoryColor[issue.main_category]}`}
+                        className={`px-2.5 py-0.5 rounded-full text-[11px] font-medium ${categoryColor[issue.main_category]}`}
                       >
-                        {issue.category}
+                        {issue.main_category}
                       </span>
-                      <span className="bg-green-500 text-white px-3 py-1 rounded-full">
-                        Resolved
+
+                      <span
+                        className={`px-2.5 py-0.5 rounded-full text-[11px] font-medium ${statusColor[issue.status]}`}
+                      >
+                        {issue.status.replace("_", " ")}
                       </span>
                     </div>
 
-                    <p className="text-sm text-gray-600">
-                      📍 {issue.location_address}
-                    </p>
+                    {/* Location */}
+                    <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                      <span>📍</span>
+                      <span>{issue.location_address}</span>
+                    </div>
 
-                    <div className="flex justify-between text-sm text-gray-500">
+                    {/* Footer */}
+                    <div className="flex items-center justify-between pt-1 text-xs text-gray-400">
                       <span>{issue.created_at.split("T")[0]}</span>
-                      <span className="text-blue-600 cursor-pointer">
-                        Action
-                      </span>
+
+                      <button className="text-violet-600 font-medium">
+                        View →
+                      </button>
                     </div>
                   </div>
                 ))}
@@ -209,7 +317,7 @@ const ReportedIssues = () => {
           </div>
         </>
       ) : (
-        <Loader />
+        <IssuesSkeleton />
       )}
     </>
   );
