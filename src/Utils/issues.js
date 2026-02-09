@@ -1,4 +1,5 @@
 import axios from "../Utils/axios";
+import instance from "../Utils/axios";
 
 /**
  * Get issues (admin / filtered list)
@@ -12,9 +13,7 @@ export const getAllIssues = async (params = {}) => {
     });
     return data;
   } catch (error) {
-    throw new Error(
-      error.response?.data?.message || "Failed to fetch issues"
-    );
+    throw new Error(error.response?.data?.message || "Failed to fetch issues");
   }
 };
 
@@ -25,12 +24,12 @@ export const getAllIssues = async (params = {}) => {
 export const getMyIssues = async (userId) => {
   try {
     const { data } = await axios.get("/issues", {
-      params: { user_id: userId }
+      params: { user_id: userId },
     });
     return data;
   } catch (error) {
     throw new Error(
-      error.response?.data?.message || "Failed to fetch your issues"
+      error.response?.data?.message || "Failed to fetch your issues",
     );
   }
 };
@@ -47,9 +46,7 @@ export const getResolvedIssues = async (params = {}) => {
     });
     return data;
   } catch (error) {
-    throw new Error(
-      error.response?.data?.message || "Failed to fetch issues"
-    );
+    throw new Error(error.response?.data?.message || "Failed to fetch issues");
   }
 };
 
@@ -66,7 +63,7 @@ export const getIssuesFeed = async (params = {}) => {
     return data;
   } catch (error) {
     throw new Error(
-      error.response?.data?.message || "Failed to fetch issues feed"
+      error.response?.data?.message || "Failed to fetch issues feed",
     );
   }
 };
@@ -80,9 +77,7 @@ export const getIssueById = async (issueId) => {
     const { data } = await axios.get(`/issues/${issueId}`);
     return data;
   } catch (error) {
-    throw new Error(
-      error.response?.data?.message || "Failed to fetch issue"
-    );
+    throw new Error(error.response?.data?.message || "Failed to fetch issue");
   }
 };
 
@@ -92,12 +87,35 @@ export const getIssueById = async (issueId) => {
  */
 export const createIssue = async (issueData) => {
   try {
-    const { data } = await axios.post("/issues", issueData);
+    const { data } = await instance.post("/issues", issueData);
     return data;
   } catch (error) {
-    throw new Error(
-      error.response?.data?.message || "Failed to create issue"
+    throw new Error(error.response?.data?.message || "Failed to create issue");
+  }
+};
+
+/**
+ * Upload image of any issue
+ * POST /api/upload/issue
+ */
+export const issueImage = async (issueId, imageFile) => {
+  try {
+    const formData = new FormData();
+    formData.append("file", imageFile);
+
+    const { data } = await instance.post(
+      `/upload/issue?issue_id=${issueId}`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      },
     );
+
+    return data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "Failed to upload image");
   }
 };
 
@@ -110,9 +128,7 @@ export const updateIssue = async (issueId, updates) => {
     const { data } = await axios.patch(`/issues/${issueId}`, updates);
     return data;
   } catch (error) {
-    throw new Error(
-      error.response?.data?.message || "Failed to update issue"
-    );
+    throw new Error(error.response?.data?.message || "Failed to update issue");
   }
 };
 
@@ -125,8 +141,6 @@ export const deleteIssue = async (issueId) => {
     const { data } = await axios.delete(`/issues/${issueId}`);
     return data;
   } catch (error) {
-    throw new Error(
-      error.response?.data?.message || "Failed to delete issue"
-    );
+    throw new Error(error.response?.data?.message || "Failed to delete issue");
   }
 };

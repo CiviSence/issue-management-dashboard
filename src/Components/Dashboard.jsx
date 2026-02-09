@@ -5,36 +5,40 @@ import StaffDashboard from "./Dashboards/Staff/StaffDashboard";
 import { Navigate } from "react-router-dom";
 
 const Dashboard = () => {
-    const { profileData } = useUser();
+  const { profileData } = useUser();
 
-    // Loading state handling could be added here if profileData is initially undefined
-    // For now, we assume profileData might be null during fetch, handled by Context or AuthRoute.
+  // Loading state handling could be added here if profileData is initially undefined
+  // For now, we assume profileData might be null during fetch, handled by Context or AuthRoute.
 
-    if (!profileData) {
-        // Option: Return a loading spinner
-        // return <div>Loading...</div>;
-        // Or fallback to generic/admin if we want to be safe, but typically we wait.
-        return <div className="flex h-screen w-full items-center justify-center">Loading...</div>;
-    }
+  if (!profileData) {
+    // Option: Return a loading spinner
+    // return <div>Loading...</div>;
+    // Or fallback to generic/admin if we want to be safe, but typically we wait.
+    return (
+      <div className="flex h-screen w-full items-center justify-center">
+        Loading...
+      </div>
+    );
+  }
 
-    const role = profileData.role?.toLowerCase() || "guest";
+  const role = profileData.role?.toLowerCase() || "guest";
 
-    console.log("Current User Role:", role);
+  console.log("Current User Role:", role);
 
-    if (role === "admin" || role === "institute") {
-        return <AdminDashboard />;
-    }
+  if (role === "admin" || role === "institute") {
+    return <AdminDashboard />;
+  }
 
-    if (role === "student") {
-        return <StudentDashboard />;
-    }
+  if (role === "student") {
+    return <StudentDashboard />;
+  }
 
-    if (role === "staff") {
-        return <StaffDashboard />;
-    }
+  if (role === "staff") {
+    return <StaffDashboard />;
+  }
 
-    // Fallback for unknown roles
-    return <Navigate to="/login" replace />;
+  // Fallback for unknown roles
+  return <Navigate to="/login" replace />;
 };
 
 export default Dashboard;

@@ -28,12 +28,15 @@ instance.interceptors.response.use(
     if (error.response && error.response.status === 401) {
       clearSession();
       // Optionally redirect to login page if not already there
-      if (window.location.pathname !== '/login' && window.location.pathname !== '/') {
-        window.location.href = '/';
+      if (
+        window.location.pathname !== "/login" &&
+        window.location.pathname !== "/"
+      ) {
+        window.location.href = "/";
       }
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 export default instance;

@@ -39,9 +39,9 @@ const HelpSupport = () => {
         <>
             {renderSideNav()}
             <BottomNav />
-            <div className="w-full p-4 lg:p-8 lg:w-[calc(100vw-15vw)] bg-[#F0EEFF] min-h-screen overflow-y-auto">
-                <div className="max-w-4xl mx-auto">
-                    <div className="bg-violet-600 p-8 rounded-3xl text-white shadow-xl mb-8 relative overflow-hidden">
+            <div className="w-full p-4 lg:w-[calc(100vw-15vw)] bg-[#F0EEFF] min-h-screen overflow-y-auto">
+                <div className="w-full mx-auto">
+                    <div className="bg-violet-500 p-6 rounded-3xl text-white shadow-xl mb-8 relative overflow-hidden">
                         <div className="relative z-10">
                             <h1 className="text-3xl font-bold mb-2">Help & Support</h1>
                             <p className="text-violet-100">We're here to help you.</p>

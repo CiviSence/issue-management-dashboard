@@ -233,8 +233,8 @@ const ReportedIssues = () => {
 
                         <td className="p-3">
                           <div className="flex flex-col">
-                            <span className="font-medium text-gray-800">{issue.user_name}</span>
-                            <span className="text-xs text-gray-400">ID: {issue.user_id?.split('-')[0]}</span>
+                            <span className="font-medium text-gray-800">{issue.user.name}</span>
+                            <span className="text-xs text-gray-400">ID: {issue.user.id.split('-')[0]}</span>
                           </div>
                         </td>
 

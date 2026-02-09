@@ -195,7 +195,7 @@ const AdminDashboard = () => {
       <SideNav />
       <BottomNav />
 
-      {issues.length > 0 ? (
+      {issues.length > 0  ? (
         <>
           <div className="w-full p-2 lg:p-4 lg:w-[calc(100vw-15vw)] bg-white overflow-x-auto ">
             <div className="w-full bg-violet-500 p-4 rounded-2xl">

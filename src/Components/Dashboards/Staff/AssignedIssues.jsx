@@ -12,7 +12,7 @@ const AssignedIssues = () => {
             <StaffSideNav />
             <BottomNav />
 
-            <div className="w-full p-4 lg:p-8 lg:w-[calc(100vw-15vw)] bg-[#F0EEFF] min-h-screen overflow-y-auto">
+            <div className="w-full p-4  lg:w-[calc(100vw-15vw)] bg-[#F0EEFF] min-h-screen overflow-y-auto">
                 <div className="w-full bg-violet-600 p-6 rounded-3xl text-white shadow-lg mb-6">
                     <h1 className="text-3xl font-bold mb-2">Assigned Tasks</h1>
                     <p className="text-violet-100">Tasks assigned to you for resolution.</p>
