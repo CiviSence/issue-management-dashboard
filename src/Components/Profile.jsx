@@ -1,5 +1,7 @@
 import { useUser } from "../Context/ProfileContext";
-import SideNav from "./Templates/SideNav";
+import AdminSideNav from "./Dashboards/Admin/AdminSideNav";
+import StudentSideNav from "./Dashboards/Student/StudentSideNav";
+import StaffSideNav from "./Dashboards/Staff/StaffSideNav";
 import BottomNav from "./Templates/BottomNav";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
@@ -33,6 +35,13 @@ const formatDate = (date) =>
 const Profile = () => {
   const { profileData, setProfileData } = useUser();
   const [isEditing, setIsEditing] = useState(false);
+
+  const renderSideNav = () => {
+    const role = profileData?.role?.toLowerCase();
+    if (role === "student") return <StudentSideNav />;
+    if (role === "staff") return <StaffSideNav />;
+    return <AdminSideNav />; // Default/Admin
+  };
 
   const handleSaveProfile = async (updates) => {
     try {
@@ -94,7 +103,7 @@ const Profile = () => {
 
   return (
     <>
-      <SideNav />
+      {renderSideNav()}
       <BottomNav />
 
       {profileData ? (
