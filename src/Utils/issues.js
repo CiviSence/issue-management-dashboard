@@ -17,6 +17,24 @@ export const getAllIssues = async (params = {}) => {
     );
   }
 };
+
+/**
+ * Get issues reported by current user
+ * GET /api/issues/?reporter_id={user_id}
+ */
+export const getMyIssues = async (userId) => {
+  try {
+    const { data } = await axios.get("/issues", {
+      params: { user_id: userId }
+    });
+    return data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch your issues"
+    );
+  }
+};
+
 /**
  * Get Resolved Issues
  * GET /api/issues/?status=resolved

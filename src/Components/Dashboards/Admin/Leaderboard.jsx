@@ -1,7 +1,8 @@
-import SideNav from "./Templates/SideNav";
-import BottomNav from "./Templates/BottomNav";
-import Searchbar from "./Templates/Searchbar";
-import UserCard from "./Templates/UserCard";
+import SideNav from "./AdminSideNav";
+import BottomNav from "../../Templates/BottomNav";
+import Searchbar from "../../Templates/Searchbar";
+// import { useUsers } from "../../../Context/UserContext";
+import UserCard from "../../Templates/UserCard";
 
 const Leaderboard = () => {
   return (

@@ -1,10 +1,13 @@
 import { Routes, Route } from "react-router-dom";
 import Home from "./Components/Home";
 import Dashboard from "./Components/Dashboard";
-import ReportedIssues from "./Components/ReportedIssues";
-import ResolvedIssues from "./Components/ResolvedIssues";
-import Leaderboard from "./Components/Leaderboard";
+import ReportedIssues from "./Components/Dashboards/Admin/ReportedIssues";
+import ResolvedIssues from "./Components/Dashboards/Admin/ResolvedIssues";
+import Leaderboard from "./Components/Dashboards/Admin/Leaderboard";
 import Profile from "./Components/Profile";
+import AssignedIssues from "./Components/Dashboards/Staff/AssignedIssues";
+
+import HelpSupport from "./Components/Dashboards/Common/HelpSupport";
 import Login from "./Pages/Login";
 import PrivateRoute from "./routes/PrivateRoute";
 import AuthRoute from "./routes/AuthRoute";
@@ -116,6 +119,24 @@ const App = () => {
         />
 
 
+        <Route
+          path="/assigned-issues"
+          element={
+            <PrivateRoute>
+              <AssignedIssues />
+            </PrivateRoute>
+          }
+        />
+
+
+        <Route
+          path="/help-support"
+          element={
+            <PrivateRoute>
+              <HelpSupport />
+            </PrivateRoute>
+          }
+        />
       </Routes>
     </div>
   );

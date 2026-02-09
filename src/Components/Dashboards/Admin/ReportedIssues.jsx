@@ -1,8 +1,8 @@
-import SideNav from "./Templates/SideNav";
-import BottomNav from "./Templates/BottomNav";
-import Searchbar from "./Templates/Searchbar";
+import SideNav from "./AdminSideNav";
+import BottomNav from "../../Templates/BottomNav";
+import Searchbar from "../../Templates/Searchbar";
 
-import { useIssues } from "../Context/IssueContext";
+import { useIssues } from "../../../Context/IssueContext";
 import { useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
@@ -41,7 +41,7 @@ const IssuesSkeleton = () => {
               <Skeleton height={25} />
               <Skeleton height={25} />
               <Skeleton height={25} />
-              
+
             </div>
           ))}
         </div>
@@ -195,7 +195,8 @@ const ReportedIssues = () => {
                       <th className="text-left p-3">Location</th>
                       <th className="text-left p-3">Priority</th>
                       <th className="text-left p-3">Status</th>
-                      <th className="text-left p-3">Reported</th>
+                      <th className="text-left p-3">Reported By</th>
+                      <th className="text-left p-3">Reported Date</th>
                       <th className="text-left p-3">Action</th>
                     </tr>
                   </thead>
@@ -228,6 +229,13 @@ const ReportedIssues = () => {
                           >
                             {issue.status.replace("_", " ")}
                           </span>
+                        </td>
+
+                        <td className="p-3">
+                          <div className="flex flex-col">
+                            <span className="font-medium text-gray-800">{issue.user_name}</span>
+                            <span className="text-xs text-gray-400">ID: {issue.user_id?.split('-')[0]}</span>
+                          </div>
                         </td>
 
                         <td className="p-3 text-gray-500">
@@ -291,6 +299,11 @@ const ReportedIssues = () => {
                     <div className="flex items-center gap-1.5 text-xs text-gray-500">
                       <span>📍</span>
                       <span>{issue.location_address}</span>
+                    </div>
+
+                    <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                      <span>👤</span>
+                      <span>{issue.user_name} <span className="text-gray-400">({issue.user_id?.split('-')[0]})</span></span>
                     </div>
 
                     {/* Footer */}
