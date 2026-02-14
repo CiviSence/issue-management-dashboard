@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useUser } from "../../../Context/ProfileContext";
 import { Link, NavLink } from "react-router-dom";
+import defaultProfile from "../../../assets/default-avatar.jpg";
 
 export const NavItem = ({ to, icon, label }) => {
   const navLinkClass = ({ isActive }) =>
@@ -73,11 +74,11 @@ const SideNavLayout = ({ children }) => {
           onMouseEnter={() => setShowProfileMenu((prev) => !prev)}
           className="flex items-center justify-center lg:justify-start gap-3 px-2 py-2 rounded-lg cursor-pointer hover:bg-violet-400 transition"
         >
-          <div className="h-10 w-10 rounded-full bg-violet-600 shrink-0 flex items-center justify-center">
+          <div className="h-10 w-10 rounded-full  shrink-0 flex items-center justify-center">
             <img
-              src={profileData?.avatar_url || "/default-avatar.png"}
+              src={profileData?.avatar_url || defaultProfile}
               alt="Profile"
-              className="h-9 w-9 rounded-full border border-violet-500 object-cover"
+              className="h-9 w-9 rounded-full border border-black object-cover"
             />
           </div>
 
@@ -98,7 +99,7 @@ const SideNavLayout = ({ children }) => {
             <div className="flex items-center gap-3 px-3 py-2">
               <div className="h-10 w-10 rounded-full shrink-0 flex items-center justify-center">
                 <img
-                  src={profileData?.avatar_url || "/default-avatar.png"}
+                  src={profileData?.avatar_url || defaultProfile}
                   alt="Profile"
                   className="h-9 w-9 rounded-full border object-cover"
                 />

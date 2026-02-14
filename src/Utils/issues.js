@@ -87,10 +87,16 @@ export const getIssueById = async (issueId) => {
  */
 export const createIssue = async (issueData) => {
   try {
+    console.log("Sending data:", issueData); // Debug
     const { data } = await instance.post("/issues", issueData);
     return data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || "Failed to create issue");
+    console.log("Full error:", error);
+    console.log("Response status:", error.response?.status);
+    console.log("Response data:", error.response?.data);
+    console.log("Request URL:", error.config?.url);
+    console.log("Request headers:", error.config?.headers);
+    throw new Error(error.response?.data?.detail || error.response?.data?.message || "Failed to create issue");
   }
 };
 

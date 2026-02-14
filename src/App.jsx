@@ -13,6 +13,8 @@ import PrivateRoute from "./routes/PrivateRoute";
 import AuthRoute from "./routes/AuthRoute";
 import SignUp from "./Pages/SignUp";
 import Verify from "./Pages/Verify";
+import IssueFeed from "./Components/Dashboards/Student/IssueFeed";
+import MyIssues from "./Components/Dashboards/Student/MyIssues";
 
 const App = () => {
   return (
@@ -128,6 +130,23 @@ const App = () => {
           }
         />
 
+
+        <Route
+          path="/feed"
+          element={
+            <PrivateRoute>
+              <IssueFeed/>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/my-issues"
+          element={
+            <PrivateRoute>
+              <MyIssues/>
+            </PrivateRoute>
+          }
+        />
 
         <Route
           path="/help-support"

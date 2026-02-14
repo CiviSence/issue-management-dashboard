@@ -35,7 +35,7 @@ const SignUp = () => {
       return false;
     }
     if (formData.password.length < 6) {
-      setError("Password must be at least 6 characters"); 
+      setError("Password must be at least 6 characters");
       return false;
     }
     if (!formData.email.includes("@")) {
@@ -64,19 +64,20 @@ const SignUp = () => {
         name: `${formData.firstName} ${formData.lastName}`.trim(),
         password: formData.password,
         registration_number: formData.registration_number,
-        gender: "male",
-        date_of_birth: "2026-02-03",
-        phone_number: "0697283824",
-        pincode: "764250",
+        gender: "prefer_not_to_say",
+        date_of_birth: "2000-01-01",
+        phone_number: "0000000000",
+        pincode: "000000",
         department: "string",
-        course: "string",
-        year: 1,
-        semester: 1,
-        designation: "string",
+        course: "Btech",
+        year: 0,
+        semester: 0,
+        designation: "Student",
         is_hosteler: false,
         hostel_name: "string",
-        room_number: "string",
+        room_number: "000",
       };
+      console.log("Payload being sent:", payload);
 
       const res = await registerUser(payload);
       console.log(res);
@@ -87,8 +88,11 @@ const SignUp = () => {
       // Redirect to OTP verification page
       navigate("/verify-otp");
     } catch (err) {
+      console.log("Full error:", err);
+      console.log("Response:", err.response);
+      console.log("Backend message:", err.response?.data);
       setError(
-        err.message || "Registration failed. Please try again.",
+        err.response?.data?.message || "Registration failed. Please try again.",
       );
     } finally {
       setLoading(false);

@@ -49,7 +49,7 @@ const Verify = () => {
       }
 
       // Redirect to login or dashboard
-      navigate("/login");
+      navigate("/dashboard");
     } catch (err) {
       setError(err.message || "Invalid OTP. Please try again.");
     } finally {
@@ -62,7 +62,7 @@ const Verify = () => {
       await resendOtp({ email });
       alert("New OTP sent to your email!");
     } catch (err) {
-      setError("Failed to resend OTP. Please try again.",err);
+      setError("Failed to resend OTP. Please try again.", err);
     }
   };
 

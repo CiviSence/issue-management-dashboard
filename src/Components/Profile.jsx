@@ -8,6 +8,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 import { useState } from "react";
 import ProfileEditForm from "./Inputs/ProfileEditForm";
 import { updateMyProfile } from "../Utils/profile-api";
+import defaultProfile from "../assets/default-avatar.jpg";
 
 const InfoCard = ({ title, children }) => (
   <div className="bg-white shadow-md rounded-lg p-4 h-full">
@@ -111,7 +112,7 @@ const Profile = () => {
           {/* HEADER */}
           <div className="flex flex-col md:flex-row items-center gap-6 bg-linear-to-r from-violet-600 to-violet-500 p-5 lg:p-15 text-white shadow-md relative">
             <img
-              src={profileData.avatar_url || "/default-avatar.png"}
+              src={profileData.avatar_url || defaultProfile}
               alt="Profile"
               className="w-32 h-32 rounded-full border-4 border-white/30 object-cover shadow-2xl"
             />

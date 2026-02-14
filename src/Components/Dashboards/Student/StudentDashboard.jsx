@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import StudentSideNav from "./StudentSideNav";
 import BottomNav from "../../Templates/BottomNav";
-import Searchbar from "../../Templates/Searchbar";
 import UserCard from "../../Templates/UserCard";
 import { useUser } from "../../../Context/ProfileContext";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import {
+
   createIssue,
   getMyIssues,
   updateIssue,
@@ -14,55 +16,24 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
 const formatSmartTime = (dateString) => {
-  const date = new Date(dateString);
+  // Force UTC by adding Z
+  const date = new Date(dateString + "Z");
   const now = new Date();
+
   const diffInSeconds = Math.floor((now - date) / 1000);
   const diffInMinutes = Math.floor(diffInSeconds / 60);
   const diffInHours = Math.floor(diffInMinutes / 60);
-  const diffInDays = Math.floor(diffInHours / 24);
 
-  // Less than 1 minute
-  if (diffInSeconds < 60) {
-    return "Just now";
-  }
-
-  // Less than 1 hour
-  if (diffInMinutes < 60) {
+  if (diffInSeconds < 60) return "Just now";
+  if (diffInMinutes < 60)
     return `${diffInMinutes} ${diffInMinutes === 1 ? "minute" : "minutes"} ago`;
-  }
-
-  // Less than 24 hours
-  if (diffInHours < 24) {
+  if (diffInHours < 24)
     return `${diffInHours} ${diffInHours === 1 ? "hour" : "hours"} ago`;
-  }
 
-  // Today (check if same day)
-  const isToday = date.toDateString() === now.toDateString();
-  if (isToday) {
-    return `Today, ${date.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })}`;
-  }
-
-  // Yesterday
-  const yesterday = new Date(now);
-  yesterday.setDate(yesterday.getDate() - 1);
-  if (date.toDateString() === yesterday.toDateString()) {
-    return `Yesterday, ${date.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })}`;
-  }
-
-  // Less than 7 days - show day name
-  if (diffInDays < 7) {
-    return date.toLocaleDateString("en-IN", {
-      weekday: "long",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  }
-
-  // Older - show date
   return date.toLocaleDateString("en-IN", {
     day: "numeric",
     month: "short",
-    year: diffInDays > 365 ? "numeric" : undefined,
+    year: "numeric",
     hour: "2-digit",
     minute: "2-digit",
   });
@@ -90,6 +61,8 @@ const StudentDashboard = () => {
   const [location_ward, setLocationWard] = useState("");
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  console.log(myIssues);
 
   // Status styles
   const getStatusStyle = (status) =>
@@ -122,6 +95,7 @@ const StudentDashboard = () => {
       setMyIssues(data);
     } catch (error) {
       console.error("Failed to fetch my issues", error);
+      toast.error("Failed to fetch issues. Please try again.");
     } finally {
       setLoadingIssues(false);
     }
@@ -146,52 +120,55 @@ const StudentDashboard = () => {
 
   const handleReportIssue = async (e) => {
     e.preventDefault();
-    if (!title || !description || !location_address)
-      return alert("Please fill all fields");
+
+    // Validation checks
+    if (!title.trim()) {
+      toast.warning("Please enter an issue title");
+      return;
+    }
+    if (!description.trim() || description.length < 10) {
+      // Adjust min length as needed
+      toast.warning("Description must be at least 10 characters");
+      return;
+    }
+    if (!location_address) {
+      toast.warning("Please select a building");
+      return;
+    }
 
     try {
       setIsSubmitting(true);
 
-      if (editMode) {
-        // Update existing issue
-        setIsEditing(true);
-        const updates = {
-          title,
-          description,
-          main_category,
-          sub_category,
-          location_address,
-          location_building,
-          location_ward,
-        };
+      const issuePayload = {
+        title: title.trim(),
+        description: description.trim(), // Make sure it's not empty
+        main_category: main_category,
+        sub_category: sub_category || "general",
+        location_address,
+        location_building: location_building || "",
+        location_ward: location_ward || "",
+        media_urls: ["string"], // just for testing, replace with actual media handling logic
+      };
 
-        const updated = await updateIssue(editIssueId, updates);
+      console.log("Payload:", issuePayload); // Debug
+
+      if (editMode) {
+        setIsEditing(true);
+        const updated = await updateIssue(editIssueId, issuePayload);
         setMyIssues((prev) =>
           prev.map((i) => (i.id === updated.id ? updated : i)),
         );
-        alert("Issue updated successfully!");
+        toast.success("Issue updated successfully!");
       } else {
-        // Create new issue
-        await createIssue({
-          title,
-          description,
-          main_category,
-          sub_category,
-          location_address,
-          location_building,
-          location_ward,
-        });
-        await fetchMyIssues(); // Refresh list
-        alert("Issue reported successfully!");
+        await createIssue(issuePayload);
+        await fetchMyIssues();
+        toast.success("Issue reported successfully!");
       }
 
       handleCloseModal();
     } catch (error) {
       console.error(error);
-      alert(
-        error.message ||
-          `Failed to ${editMode ? "update" : "report"} issue. Please try again.`,
-      );
+      toast.error(error.message || "Failed to submit. Please try again.");
     } finally {
       setIsSubmitting(false);
       setIsEditing(false);
@@ -218,9 +195,9 @@ const StudentDashboard = () => {
     try {
       await deleteIssue(id);
       setMyIssues((prev) => prev.filter((i) => i.id !== id));
-      alert("Issue deleted successfully!");
+      toast.success("Issue deleted successfully!");
     } catch (error) {
-      alert(error.message || "Failed to delete issue");
+      toast.error(error.message || "Failed to delete issue");
     } finally {
       setIsDeleting(null);
     }
@@ -228,6 +205,18 @@ const StudentDashboard = () => {
 
   return (
     <>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={true}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
       <StudentSideNav />
       <BottomNav />
 
@@ -240,7 +229,7 @@ const StudentDashboard = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="col-span-2 space-y-6">
+          <div className="col-span-2 space-y-3">
             {/* Quick Action */}
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between">
               <div>
@@ -627,7 +616,8 @@ const StudentDashboard = () => {
               {/* Description */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Description
+                  Description{" "}
+                  <span className="text-gray-400 text-xs">(min 10 chars)</span>
                 </label>
                 <textarea
                   value={description}
@@ -635,7 +625,13 @@ const StudentDashboard = () => {
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 h-28 resize-none focus:border-violet-500 outline-none"
                   placeholder="Describe the issue in detail..."
                   required
+                  minLength={10}
                 />
+                <p
+                  className={`text-xs mt-1 ${description.length < 10 ? "text-red-500" : "text-green-500"}`}
+                >
+                  {description.length} characters
+                </p>
               </div>
 
               {/* Buttons */}

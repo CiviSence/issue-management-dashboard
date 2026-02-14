@@ -6,10 +6,10 @@ export default function Home() {
       {/* Header Section */}
       <div className="text-center max-w-2xl mb-10">
         <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-          Civic Issue Management System
+          College Issue Management System
         </h1>
         <p className="text-slate-300 text-base md:text-lg">
-          A simple and transparent platform to report, track, and resolve civic issues efficiently.
+          A simple and transparent platform to report, track, and resolve college issues efficiently.
           Stay informed, raise concerns, and make your Campus better — together.
         </p>
       </div>
