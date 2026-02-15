@@ -27,7 +27,7 @@ const Login = () => {
 
     try {
       const data = await loginUser({ email, password });
-      console.log(data);
+     
 
       setSession(data.access_token, data.user);
 

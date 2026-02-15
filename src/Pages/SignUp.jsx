@@ -77,10 +77,10 @@ const SignUp = () => {
         hostel_name: "string",
         room_number: "000",
       };
-      console.log("Payload being sent:", payload);
+      
 
       const res = await registerUser(payload);
-      console.log(res);
+      
 
       // Store email for OTP verification page
       localStorage.setItem("pendingVerificationEmail", formData.email);
@@ -88,9 +88,7 @@ const SignUp = () => {
       // Redirect to OTP verification page
       navigate("/verify-otp");
     } catch (err) {
-      console.log("Full error:", err);
-      console.log("Response:", err.response);
-      console.log("Backend message:", err.response?.data);
+     
       setError(
         err.response?.data?.message || "Registration failed. Please try again.",
       );

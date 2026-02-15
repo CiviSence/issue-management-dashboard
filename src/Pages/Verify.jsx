@@ -36,7 +36,6 @@ const Verify = () => {
 
     try {
       const res = await verifyEmail({ email, otp });
-      console.log(res);
 
       // Clear pending email
       localStorage.removeItem("pendingVerificationEmail");

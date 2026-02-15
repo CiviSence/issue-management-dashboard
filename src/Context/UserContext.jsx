@@ -1,14 +1,12 @@
 import { createContext, useContext, useState } from "react";
-import {
-  getUserById,
-  getTopContributors,
-} from "../Utils/users";
+import { getUserById, getTopContributors, getStaff } from "../Utils/users";
 
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   const [usersCache, setUsersCache] = useState({}); // { userId: userData }
   const [leaderboard, setLeaderboard] = useState([]);
+  const [staff, setStaff] = useState([]);
   const [loading, setLoading] = useState(false);
 
   /**
@@ -36,15 +34,27 @@ export const UserProvider = ({ children }) => {
   /**
    * Fetch leaderboard (cached)
    */
-  const fetchLeaderboard = async () => {
-    if (leaderboard.length) return;
-
+  const fetchLeaderboard = async (timePeriod = "all") => {
     try {
       setLoading(true);
-      const data = await getTopContributors();
+      const data = await getTopContributors(timePeriod);
       setLeaderboard(data.leaderboard);
     } catch (err) {
       console.error("Failed to fetch leaderboard", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchStaff = async () => {
+    if (staff?.length) return;
+    try {
+      setLoading(true);
+      const data = await getStaff();
+      // console.log("Staff data:", data);
+      setStaff(data.users);
+    } catch (err) {
+      console.error("Failed to fetch staff", err);
     } finally {
       setLoading(false);
     }
@@ -56,6 +66,8 @@ export const UserProvider = ({ children }) => {
         usersCache,
         leaderboard,
         loading,
+        staff,
+        fetchStaff,
         fetchUserById,
         fetchLeaderboard,
       }}

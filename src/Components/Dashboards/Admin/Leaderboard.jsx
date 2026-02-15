@@ -38,6 +38,7 @@ const Leaderboard = () => {
           </div>
 
           <UserCard />
+          
         </div>
       </div>
     </>

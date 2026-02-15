@@ -1,13 +1,13 @@
 import SideNav from "./AdminSideNav";
 import BottomNav from "../../Templates/BottomNav";
 import Searchbar from "../../Templates/Searchbar";
-
 import { useIssues } from "../../../Context/IssueContext";
 import { useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import { deleteIssue, updateIssue } from "../../../Utils/issues";
+import { assignIssue,  deleteIssue, updateIssue } from "../../../Utils/issues";
 import { toast, ToastContainer } from "react-toastify";
+import { useUsers } from "../../../Context/UserContext";
 
 //skeleton component for loading
 const IssuesSkeleton = () => {
@@ -82,6 +82,16 @@ const ReportedIssues = () => {
   const [priority, setPriority] = useState("all");
   const [openDropdown, setOpenDropdown] = useState(null);
   const [activeSubMenu, setActiveSubMenu] = useState(null);
+  const { staff, fetchStaff } = useUsers();
+  const [selectedIssue, setSelectedIssue] = useState(null);
+  const [showAssignModal, setShowAssignModal] = useState(false);
+
+  console.log("Staff in ReportedIssues:", staff);
+
+  const openAssignModal = (issueId) => {
+    setSelectedIssue(issueId);
+    setShowAssignModal(true);
+  };
 
   //delete issue handler
   const handleDelete = async (issueId) => {
@@ -140,6 +150,34 @@ const ReportedIssues = () => {
       toast.error("Failed to update priority.");
     }
   };
+  const handleMarkSpam = async (issueId) => {
+    const previousIssues = issues;
+
+    setIssues((prev) =>
+      prev.map((issue) =>
+        issue.id === issueId ? { ...issue, status: "spam" } : issue,
+      ),
+    );
+
+    try {
+      await updateIssue(issueId, { status: "spam" });
+      toast.success("Issue marked as spam!");
+    } catch (error) {
+      setIssues(previousIssues);
+      toast.error("Failed to mark issue as spam.");
+    }
+  };
+
+  const handleAssign = async (staffId) => {
+    try {
+      await assignIssue(selectedIssue, staffId);
+
+      toast.success("Staff assigned successfully!");
+      setShowAssignModal(false);
+    } catch (error) {
+      toast.error("Failed to assign staff");
+    }
+  };
 
   //filtering issues based on location and priority for the dropdowns
   const filteredIssues = issues.filter((issue) => {
@@ -185,6 +223,7 @@ const ReportedIssues = () => {
   };
 
   useEffect(() => {
+    fetchStaff();
     const handleClickOutside = () => setOpenDropdown(null);
     window.addEventListener("click", handleClickOutside);
     return () => window.removeEventListener("click", handleClickOutside);
@@ -427,8 +466,11 @@ const ReportedIssues = () => {
                               <div className="border-t border-gray-100 my-1"></div>
 
                               {/* Assign */}
-                              <button className="w-full text-left px-4 py-2 hover:bg-gray-50">
-                                Assign To
+                              <button
+                                onClick={() => openAssignModal(issue.id)}
+                                className="w-full text-left px-4 py-2 hover:bg-gray-50"
+                              >
+                                Assign
                               </button>
 
                               {/* Mark Spam */}
@@ -474,7 +516,7 @@ const ReportedIssues = () => {
                         </p>
                       </div>
 
-                      {/* STATUS - More Highlighted */}
+                      {/* STATUS */}
                       <span
                         className={`px-3 py-1 rounded-full text-xs font-semibold shadow-sm ${statusColor[issue.status]}`}
                       >
@@ -514,19 +556,53 @@ const ReportedIssues = () => {
                   </div>
                 ))}
               </div>
-
-              {/* Pagination */}
-              {/* <div className="flex justify-between items-center mt-6 text-sm">
-                <span className="text-gray-400 cursor-not-allowed">
-                  ← Prev Page
-                </span>
-                <span className="cursor-pointer font-medium">Next Page →</span>
-              </div> */}
             </div>
           </div>
         </>
       ) : (
         <IssuesSkeleton />
+      )}
+      {showAssignModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          {/* Blurred Background */}
+          <div
+            className="absolute inset-0 bg-black/30 backdrop-blur-sm"
+            onClick={() => setShowAssignModal(false)}
+          ></div>
+
+          {/* Modal Content */}
+          <div className="relative bg-white p-6 rounded-2xl w-96 shadow-2xl animate-scaleIn">
+            <h2 className="text-lg font-semibold mb-4">Assign Staff</h2>
+
+            <select
+              className="w-full border rounded-lg p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              onChange={(e) => handleAssign(e.target.value)}
+            >
+              <option value="">Select Staff</option>
+              {staff.map((member) => (
+                <option key={member.id} value={member.id}>
+                  {member.name}
+                </option>
+              ))}
+            </select>
+
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setShowAssignModal(false)}
+                className="px-4 py-2 border rounded-lg hover:bg-gray-100"
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={() => setShowAssignModal(false)}
+                className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
+              >
+                Done
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </>
   );

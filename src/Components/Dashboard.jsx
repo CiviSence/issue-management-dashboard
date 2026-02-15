@@ -23,7 +23,6 @@ const Dashboard = () => {
 
   const role = profileData.role?.toLowerCase() || "guest";
 
-  console.log("Current User Role:", role);
 
   if (role === "admin" || role === "institute") {
     return <AdminDashboard />;
