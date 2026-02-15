@@ -131,7 +131,7 @@ const StudentDashboard = () => {
       toast.warning("Description must be at least 10 characters");
       return;
     }
-    if (!location_address) {
+    if (!location_building) {
       toast.warning("Please select a building");
       return;
     }
@@ -144,8 +144,8 @@ const StudentDashboard = () => {
         description: description.trim(), // Make sure it's not empty
         main_category: main_category,
         sub_category: sub_category || "general",
-        location_address,
-        location_building: location_building || "",
+        location_address: location_address || "spnrec campus",
+        location_building: location_building,
         location_ward: location_ward || "",
         media_urls: ["string"], // just for testing, replace with actual media handling logic
       };
@@ -544,10 +544,11 @@ const StudentDashboard = () => {
                 >
                   <option value="">Select Category</option>
                   <option value="security">Security</option>
-                  <option value="Cleanliness">Cleanliness</option>
-                  <option value="maintainance">Maintainance</option>
+                  <option value="cleanliness">Cleanliness</option>
+                  <option value="maintenance">Maintenance</option>
                   <option value="infrastructure">Infrastructure</option>
                   <option value="facilities">Facilities</option>
+                  <option value="other">Other</option>
                 </select>
               </div>
 
@@ -571,16 +572,17 @@ const StudentDashboard = () => {
                   Location Building
                 </label>
                 <select
-                  value={location_address}
-                  onChange={(e) => setLocationAddress(e.target.value)}
+                  value={location_building}
+                  onChange={(e) => setLocationBuilding(e.target.value)}
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-violet-500 outline-none"
                   required
                 >
                   <option value="">Select Building</option>
                   <option value="boys-hostel">Boys Hostel</option>
                   <option value="girls-hostel">Girls Hostel</option>
-                  <option value="campus">Campus</option>
                   <option value="admin-building">Admin Building</option>
+                  <option value="faculty-building">Faculty Building</option>
+                  <option value="campus">Campus</option>
                   <option value="other">other</option>
                 </select>
               </div>

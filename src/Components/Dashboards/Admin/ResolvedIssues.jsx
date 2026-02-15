@@ -2,7 +2,6 @@ import SideNav from "./AdminSideNav";
 import BottomNav from "../../Templates/BottomNav";
 import Searchbar from "../../Templates/Searchbar";
 import { useEffect, useState } from "react";
-import { useIssues } from "../../../Context/IssueContext";
 import { getResolvedIssues } from "../../../Utils/issues";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
