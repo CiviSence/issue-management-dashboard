@@ -150,3 +150,20 @@ export const deleteIssue = async (issueId) => {
     throw new Error(error.response?.data?.message || "Failed to delete issue");
   }
 };
+
+/**
+ * Get issues assigned to a specific staff member
+ * GET /api/issues/?assigned_to={staff_id}
+ */
+export const getAssignedIssues = async (staffId) => {
+  try {
+    const { data } = await axios.get("/issues", {
+      params: { assigned_to: staffId },
+    });
+    return data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch assigned issues",
+    );
+  }
+};
