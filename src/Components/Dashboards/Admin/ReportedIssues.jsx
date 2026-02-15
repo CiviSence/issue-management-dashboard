@@ -3,10 +3,13 @@ import BottomNav from "../../Templates/BottomNav";
 import Searchbar from "../../Templates/Searchbar";
 
 import { useIssues } from "../../../Context/IssueContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import { deleteIssue, updateIssue } from "../../../Utils/issues";
+import { toast, ToastContainer } from "react-toastify";
 
+//skeleton component for loading
 const IssuesSkeleton = () => {
   return (
     <div className="w-full p-2 lg:p-4 lg:w-[calc(100vw-15vw)] overflow-x-auto">
@@ -41,7 +44,6 @@ const IssuesSkeleton = () => {
               <Skeleton height={25} />
               <Skeleton height={25} />
               <Skeleton height={25} />
-
             </div>
           ))}
         </div>
@@ -69,26 +71,81 @@ const IssuesSkeleton = () => {
             </div>
           ))}
         </div>
-
-        {/* Pagination */}
-        <div className="flex justify-between items-center mt-6">
-          <Skeleton height={16} width={100} />
-          <Skeleton height={16} width={100} />
-        </div>
       </div>
     </div>
   );
 };
 
 const ReportedIssues = () => {
-  const { issues } = useIssues();
+  const { issues, setIssues } = useIssues();
   const [selectedLocation, setSelectedLocation] = useState("all");
   const [priority, setPriority] = useState("all");
-  console.log(issues);
+  const [openDropdown, setOpenDropdown] = useState(null);
+  const [activeSubMenu, setActiveSubMenu] = useState(null);
 
+  //delete issue handler
+  const handleDelete = async (issueId) => {
+    if (!window.confirm("Are you sure you want to delete this issue?")) return;
+
+    const previousIssues = issues;
+
+    // to remove immidiatly from UI
+    setIssues((prev) => prev.filter((issue) => issue.id !== issueId));
+
+    try {
+      await deleteIssue(issueId);
+      toast.success("Issue deleted successfully!");
+    } catch (error) {
+      console.log(error);
+      setIssues(previousIssues);
+      toast.error("Failed to delete issue.");
+    }
+  };
+
+  //status handler to change status of issue
+  const handleSetStatus = async (issueId, newStatus) => {
+    const previousIssues = issues;
+
+    //update UI instantly
+    setIssues((prev) =>
+      prev.map((issue) =>
+        issue.id === issueId ? { ...issue, status: newStatus } : issue,
+      ),
+    );
+
+    try {
+      await updateIssue(issueId, { status: newStatus });
+      toast.success("Issue status updated!");
+    } catch (error) {
+      setIssues(previousIssues);
+      toast.error("Failed to update issue status.");
+    }
+  };
+
+  //set priority of the issue
+  const handleSetPriority = async (issueId, newPriority) => {
+    const previousIssues = issues;
+
+    setIssues((prev) =>
+      prev.map((issue) =>
+        issue.id === issueId ? { ...issue, priority: newPriority } : issue,
+      ),
+    );
+
+    try {
+      await updateIssue(issueId, { priority: newPriority });
+      toast.success("Priority updated!");
+    } catch (error) {
+      setIssues(previousIssues);
+      toast.error("Failed to update priority.");
+    }
+  };
+
+  //filtering issues based on location and priority for the dropdowns
   const filteredIssues = issues.filter((issue) => {
     const locationMatch =
-      selectedLocation === "all" || issue.location_address === selectedLocation;
+      selectedLocation === "all" ||
+      issue.location_building === selectedLocation;
 
     const priorityMatch =
       priority === "all" ||
@@ -98,15 +155,17 @@ const ReportedIssues = () => {
   });
 
   const uniqueLocations = [
-    ...new Set(issues.map((i) => i.location_address).filter(Boolean)),
+    ...new Set(issues.map((i) => i.location_building).filter(Boolean)),
   ];
 
+  //color codes for different categories, priority and status
   const categoryColor = {
-    Security: "bg-blue-100 text-blue-800",
-    Maintainance: "bg-red-100 text-red-800",
-    Infrastructure: "bg-amber-100 text-amber-800",
-    Cleanliness: "bg-emerald-100 text-emerald-800",
-    Facilities: "bg-purple-100 text-purple-800",
+    security: "bg-blue-100 text-blue-800",
+    maintenance: "bg-red-100 text-red-800",
+    infrastructure: "bg-amber-100 text-amber-800",
+    cleanliness: "bg-emerald-100 text-emerald-800",
+    facilities: "bg-purple-100 text-purple-800",
+    other: "bg-gray-100 text-gray-800",
   };
 
   const priorityColor = {
@@ -122,10 +181,29 @@ const ReportedIssues = () => {
     in_progress: "bg-amber-100 text-amber-800",
     resolved: "bg-emerald-100 text-emerald-800",
     closed: "bg-zinc-200 text-zinc-800",
+    spam: "bg-yellow-100 text-yellow-800",
   };
+
+  useEffect(() => {
+    const handleClickOutside = () => setOpenDropdown(null);
+    window.addEventListener("click", handleClickOutside);
+    return () => window.removeEventListener("click", handleClickOutside);
+  }, []);
 
   return (
     <>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={true}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
       <SideNav />
       <BottomNav />
       {issues.length > 0 ? (
@@ -203,23 +281,31 @@ const ReportedIssues = () => {
 
                   <tbody>
                     {filteredIssues?.map((issue, i) => (
-                      <tr key={i} className="border-b border-zinc-200 last:border-none">
+                      <tr
+                        key={i}
+                        className="border-b border-zinc-200 last:border-none"
+                      >
                         <td className="p-3 font-medium">{issue.title}</td>
                         <td className="p-3">
                           <span
                             className={`px-3 py-1 rounded-full text-xs font-semibold ${categoryColor[issue.main_category]}`}
                           >
-                            {issue.main_category}
+                            {issue.main_category.charAt(0).toUpperCase() +
+                              issue.main_category.slice(1)}
                           </span>
                         </td>
 
-                        <td className="p-3">{issue.location_address}</td>
+                        <td className="p-3">
+                          {issue.location_building.charAt(0).toUpperCase() +
+                            issue.location_building.slice(1)}
+                        </td>
 
                         <td className="p-3">
                           <span
                             className={`px-3 py-1 rounded-full text-xs font-semibold ${priorityColor[issue.priority]}`}
                           >
-                            {issue.priority}
+                            {issue.priority.charAt(0).toUpperCase() +
+                              issue.priority.slice(1)}
                           </span>
                         </td>
 
@@ -227,14 +313,19 @@ const ReportedIssues = () => {
                           <span
                             className={`px-3 py-1 rounded-full text-xs font-semibold ${statusColor[issue.status]}`}
                           >
-                            {issue.status.replace("_", " ")}
+                            {issue.status.charAt(0).toUpperCase() +
+                              issue.status.slice(1).replace("_", " ")}
                           </span>
                         </td>
 
                         <td className="p-3">
                           <div className="flex flex-col">
-                            <span className="font-medium text-gray-800">{issue.user.name}</span>
-                            <span className="text-xs text-gray-400">ID: {issue.user.id.split('-')[0]}</span>
+                            <span className="font-medium text-gray-800">
+                              {issue.user_name}
+                            </span>
+                            <span className="text-xs text-gray-400">
+                              ID: {issue.user_id?.split("-")[0]}
+                            </span>
                           </div>
                         </td>
 
@@ -242,8 +333,121 @@ const ReportedIssues = () => {
                           {issue.created_at.split("T")[0]}
                         </td>
 
-                        <td className="p-3 text-blue-600 cursor-pointer">
-                          Action
+                        <td className="p-3 relative">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setOpenDropdown(
+                                openDropdown === issue.id ? null : issue.id,
+                              );
+                            }}
+                            className="text-blue-600 hover:underline"
+                          >
+                            Action
+                          </button>
+
+                          {openDropdown === issue.id && (
+                            <div
+                              onMouseLeave={() => setActiveSubMenu(null)}
+                              className="absolute right-0  mt-2 w-52 bg-white rounded-xl shadow-lg border border-gray-100 z-50 text-sm"
+                            >
+                              {/* Set Status */}
+                              <div className="relative">
+                                <button
+                                  onMouseEnter={() =>
+                                    setActiveSubMenu("status")
+                                  }
+                                  className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 flex justify-between items-center"
+                                >
+                                  Set Status
+                                  <span>›</span>
+                                </button>
+
+                                {activeSubMenu === "status" && (
+                                  <div className="absolute right-full top-1 mr-1 w-44 bg-white rounded-xl shadow-lg border border-gray-100 z-50">
+                                    {[
+                                      "new",
+                                      "acknowledged",
+                                      "in_progress",
+                                      "resolved",
+                                      "closed",
+                                    ].map((status) => (
+                                      <button
+                                        key={status}
+                                        onClick={() => {
+                                          handleSetStatus(issue.id, status);
+                                          setActiveSubMenu(null);
+                                          setOpenDropdown(null);
+                                        }}
+                                        className="w-full text-left px-4 py-2 hover:bg-gray-50"
+                                      >
+                                        {status.replace("_", " ")}
+                                      </button>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+
+                              {/* Set Priority */}
+                              <div className="relative">
+                                <button
+                                  onMouseEnter={() =>
+                                    setActiveSubMenu("priority")
+                                  }
+                                  className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 flex justify-between items-center"
+                                >
+                                  Set Priority
+                                  <span>›</span>
+                                </button>
+
+                                {activeSubMenu === "priority" && (
+                                  <div
+                                    className="absolute right-full mr-1 top-0
+ w-44 bg-white rounded-xl shadow-lg border border-gray-100"
+                                  >
+                                    {["critical", "high", "medium", "low"].map(
+                                      (level) => (
+                                        <button
+                                          key={level}
+                                          onClick={() => {
+                                            handleSetPriority(issue.id, level);
+                                            setActiveSubMenu(null);
+                                            setOpenDropdown(null);
+                                          }}
+                                          className="w-full text-left px-4 py-2 hover:bg-gray-50"
+                                        >
+                                          {level}
+                                        </button>
+                                      ),
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+
+                              <div className="border-t border-gray-100 my-1"></div>
+
+                              {/* Assign */}
+                              <button className="w-full text-left px-4 py-2 hover:bg-gray-50">
+                                Assign To
+                              </button>
+
+                              {/* Mark Spam */}
+                              <button
+                                onClick={() => handleMarkSpam(issue.id)}
+                                className="w-full text-left px-4 py-2 text-yellow-600 hover:bg-yellow-50"
+                              >
+                                Mark as Spam
+                              </button>
+
+                              {/* Delete */}
+                              <button
+                                onClick={() => handleDelete(issue.id)}
+                                className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50"
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          )}
                         </td>
                       </tr>
                     ))}
@@ -252,36 +456,34 @@ const ReportedIssues = () => {
               </div>
 
               {/* ===== MOBILE CARDS ===== */}
-              <div className="md:hidden space-y-3">
+              <div className="md:hidden space-y-4">
                 {filteredIssues.map((issue, i) => (
                   <div
                     key={i}
-                    className="
-        bg-white
-        rounded-xl
-        p-4
-        shadow-sm
-        border border-gray-100
-        space-y-3
-        active:scale-[0.98]
-        transition
-      "
+                    className="bg-white rounded-2xl p-4 shadow-md border border-gray-100 space-y-4 transition active:scale-[0.98]"
                   >
-                    {/* Title + Priority */}
-                    <div className="flex items-start justify-between gap-2">
-                      <h3 className="font-semibold text-gray-900 text-sm leading-snug">
-                        {issue.title}
-                      </h3>
+                    {/* Top Section */}
+                    <div className="flex justify-between items-start gap-3">
+                      <div>
+                        <h3 className="font-semibold text-gray-900 text-sm leading-snug">
+                          {issue.title}
+                        </h3>
 
+                        <p className="text-xs text-gray-500 mt-1">
+                          {issue.location_building}
+                        </p>
+                      </div>
+
+                      {/* STATUS - More Highlighted */}
                       <span
-                        className={`shrink-0 px-2.5 py-0.5 rounded-full text-[11px] font-semibold ${priorityColor[issue.priority]}`}
+                        className={`px-3 py-1 rounded-full text-xs font-semibold shadow-sm ${statusColor[issue.status]}`}
                       >
-                        {issue.priority}
+                        {issue.status.replace("_", " ")}
                       </span>
                     </div>
 
-                    {/* Badges */}
-                    <div className="flex flex-wrap gap-2">
+                    {/* Category + Priority Row */}
+                    <div className="flex justify-between items-center">
                       <span
                         className={`px-2.5 py-0.5 rounded-full text-[11px] font-medium ${categoryColor[issue.main_category]}`}
                       >
@@ -289,42 +491,37 @@ const ReportedIssues = () => {
                       </span>
 
                       <span
-                        className={`px-2.5 py-0.5 rounded-full text-[11px] font-medium ${statusColor[issue.status]}`}
+                        className={`px-2.5 py-0.5 rounded-full text-[11px] font-semibold ${priorityColor[issue.priority]}`}
                       >
-                        {issue.status.replace("_", " ")}
+                        {issue.priority} Priority
                       </span>
                     </div>
 
-                    {/* Location */}
-                    <div className="flex items-center gap-1.5 text-xs text-gray-500">
-                      <span>📍</span>
-                      <span>{issue.location_address}</span>
-                    </div>
+                    {/* User + Date */}
+                    <div className="flex justify-between items-center text-xs text-gray-500">
+                      <div className="flex items-center gap-1.5">
+                        <i className="ri-user-line"></i>
+                        <span>{issue.user_name}</span>
+                      </div>
 
-                    <div className="flex items-center gap-1.5 text-xs text-gray-500">
-                      <span>👤</span>
-                      <span>{issue.user_name} <span className="text-gray-400">({issue.user_id?.split('-')[0]})</span></span>
-                    </div>
-
-                    {/* Footer */}
-                    <div className="flex items-center justify-between pt-1 text-xs text-gray-400">
                       <span>{issue.created_at.split("T")[0]}</span>
-
-                      <button className="text-violet-600 font-medium">
-                        View →
-                      </button>
                     </div>
+
+                    {/* View Button */}
+                    <button className="w-full bg-violet-50 text-violet-600 text-sm font-medium py-2 rounded-lg hover:bg-violet-100 transition">
+                      View Details →
+                    </button>
                   </div>
                 ))}
               </div>
 
               {/* Pagination */}
-              <div className="flex justify-between items-center mt-6 text-sm">
+              {/* <div className="flex justify-between items-center mt-6 text-sm">
                 <span className="text-gray-400 cursor-not-allowed">
                   ← Prev Page
                 </span>
                 <span className="cursor-pointer font-medium">Next Page →</span>
-              </div>
+              </div> */}
             </div>
           </div>
         </>

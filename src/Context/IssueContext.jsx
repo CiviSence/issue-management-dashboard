@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { getIssuesFeed } from "../Utils/issues";
+import { getAllIssues } from "../Utils/issues";
 
 const IssueContext = createContext();
 
@@ -12,7 +12,7 @@ export const IssueProvider = ({ children }) => {
 
     try {
       setLoading(true);
-      const data = await getIssuesFeed({ skip: 0, limit: 50 });
+      const data = await getAllIssues({ skip: 0, limit: 50 });
       setIssues(data);
     } catch (err) {
       console.error("Failed to fetch issues", err);
