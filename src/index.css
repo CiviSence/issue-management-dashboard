@@ -1,5 +1,79 @@
 @import "tailwindcss";
 
+@theme {
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+}
+
+:root {
+  /* Light Theme */
+  --background: #F6F6FC;
+  --foreground: #1a1a1a;
+
+  --primary: #5E65AC;
+  --primary-foreground: #ffffff;
+
+  --secondary: #A6ABD2;
+  --secondary-foreground: #ffffff;
+
+  --card: #FFFFFF;
+  --card-foreground: #1a1a1a;
+
+  --muted: #E1E4F3;
+  /* using accent as muted bg since actual muted hex is dark */
+  --muted-foreground: #A4A6BF;
+
+  --accent: #E1E4F3;
+  --accent-foreground: #5E65AC;
+
+  --border: #CACCDC;
+  --input: #CACCDC;
+}
+
+.dark {
+  /* Dark Theme */
+  --background: #1E1F2F;
+  --foreground: #E1E4F3;
+  /* using accent as foreground text */
+
+  --primary: #A6ABD2;
+  --primary-foreground: #1E1F2F;
+
+  --secondary: #5E65AC;
+  --secondary-foreground: #ffffff;
+
+  --card: #2A2C44;
+  --card-foreground: #E1E4F3;
+
+  --muted: #2A2C44;
+  /* matching card/surface for muted bg in dark mode to avoid high contrast */
+  --muted-foreground: #8B8FB8;
+
+  --accent: #2A2C44;
+  /* toned down accent for dark mode bg, original E1E4F3 is too bright for bg */
+  --accent-foreground: #E1E4F3;
+
+  --border: #3A3D66;
+  --input: #3A3D66;
+}
 
 ::-webkit-scrollbar {
   display: none;
@@ -9,4 +83,3 @@
   background: rgba(255, 255, 255, 0.15);
   border-radius: 6px;
 }
-
