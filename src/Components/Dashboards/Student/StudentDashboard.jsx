@@ -489,7 +489,7 @@ const StudentDashboard = () => {
           </div>
 
           <div>
-            <UserCard />
+            <UserCard limit={3} />
 
             <div className="bg-violet-600 text-white p-6 rounded-2xl shadow-lg relative overflow-hidden mt-2 lg:mt-4">
               <div className="relative z-10">

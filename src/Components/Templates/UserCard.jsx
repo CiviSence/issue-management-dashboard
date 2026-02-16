@@ -149,7 +149,7 @@ const UserCard = ({ limit }) => {
                       </td>
 
                       <td className="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm">
-                        {user.reputation_points}
+                        {statistics.resolved_issues*10 + " " + "points"}
                       </td>
 
                       <td className="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm hidden sm:table-cell">

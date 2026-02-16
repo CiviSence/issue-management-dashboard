@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-//i used a trick to disable the unused variable warning for motion but without it it womt wotk properly
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
 import { registerUser } from "../Utils/auth-api";
@@ -11,8 +10,9 @@ const SignUp = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Keep only essential form fields visible to user
+  // Add userType to form state
   const [formData, setFormData] = useState({
+    userType: "", // 'student' | 'staff' | 'admin'
     firstName: "",
     lastName: "",
     email: "",
@@ -42,8 +42,16 @@ const SignUp = () => {
       setError("Please enter a valid email");
       return false;
     }
-    if (!formData.registration_number.trim()) {
-      setError("Registration number is required");
+    if (!formData.userType) {
+      setError("Please select a user type");
+      return false;
+    }
+    // Only validate registration number for students
+    if (
+      formData.userType === "student" &&
+      !formData.registration_number.trim()
+    ) {
+      setError("Registration number is required for students");
       return false;
     }
     return true;
@@ -58,37 +66,43 @@ const SignUp = () => {
     setLoading(true);
 
     try {
-      // Send visible fields + default values for extra fields
+      // Determine role based on userType
+
       const payload = {
         email: formData.email,
         name: `${formData.firstName} ${formData.lastName}`.trim(),
         password: formData.password,
-        registration_number: formData.registration_number,
+        // Only include registration_number for students, empty string for others
+        registration_number:
+          formData.userType === "student" ? formData.registration_number : "",
         gender: "prefer_not_to_say",
         date_of_birth: "2000-01-01",
         phone_number: "0000000000",
         pincode: "000000",
         department: "string",
-        course: "Btech",
-        year: 0,
-        semester: 0,
-        designation: "Student",
+        course: formData.userType === "student" ? "Btech" : "N/A",
+        year: formData.userType === "student" ? 0 : 0,
+        semester: formData.userType === "student" ? 0 : 0,
+        role: formData.userType, // This differentiates user types
+        designation:
+          formData.userType === "student"
+            ? "Student"
+            : formData.userType === "staff"
+              ? "Staff"
+              : "Admin",
         is_hosteler: false,
         hostel_name: "string",
         room_number: "000",
       };
-      
+
+      console.log("Registration payload:", payload);
 
       const res = await registerUser(payload);
-      
+      console.log(res);
 
-      // Store email for OTP verification page
       localStorage.setItem("pendingVerificationEmail", formData.email);
-
-      // Redirect to OTP verification page
       navigate("/verify-otp");
     } catch (err) {
-     
       setError(
         err.response?.data?.message || "Registration failed. Please try again.",
       );
@@ -128,7 +142,7 @@ const SignUp = () => {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.4 }}
-          className="w-full max-w-4xl bg-white rounded-2xl shadow-lg overflow-hidden flex min-h-500px"
+          className="w-full max-w-6xl bg-white rounded-2xl shadow-lg overflow-hidden flex min-h-500px"
         >
           {/* Left Side - Illustration */}
           <div className="hidden md:flex w-1/2 bg-linear-to-b from-[#7E70EB] to-[#5A50A6] p-12 flex-col items-center justify-center text-white relative overflow-hidden">
@@ -177,6 +191,30 @@ const SignUp = () => {
               )}
 
               <form onSubmit={handleSubmit} className="space-y-4">
+                {/* User Type Selection */}
+                <div className="space-y-1">
+                  <div className="grid grid-cols-3 gap-2">
+                    {["student", "staff", "admin"].map((type) => (
+                      <button
+                        key={type}
+                        type="button"
+                        name="userType"
+                        value={type}
+                        onClick={() =>
+                          setFormData((prev) => ({ ...prev, userType: type }))
+                        }
+                        className={`py-2 px-3 rounded-lg border text-sm font-medium capitalize transition-all ${
+                          formData.userType === type
+                            ? "bg-[#6366f1] text-white border-[#6366f1]"
+                            : "bg-white text-gray-600 border-gray-200 hover:border-[#6366f1] hover:text-[#6366f1]"
+                        }`}
+                      >
+                        {type}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
                 {/* Name Row */}
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1">
@@ -222,20 +260,22 @@ const SignUp = () => {
                   />
                 </div>
 
-                {/* University Registration */}
-                <div className="space-y-1">
-                  <label className="text-xs font-medium text-gray-500 ml-1">
-                    University Registration number
-                  </label>
-                  <input
-                    type="text"
-                    name="registration_number"
-                    value={formData.registration_number}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-[#6366f1] focus:ring-2 focus:ring-[#6366f1]/20 outline-none transition-all text-sm"
-                  />
-                </div>
+                {/* Conditional Registration Number - Only for Students */}
+                {formData.userType === "student" && (
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-gray-500 ml-1">
+                      University Registration number
+                    </label>
+                    <input
+                      type="text"
+                      name="registration_number"
+                      value={formData.registration_number}
+                      onChange={handleChange}
+                      required
+                      className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-[#6366f1] focus:ring-2 focus:ring-[#6366f1]/20 outline-none transition-all text-sm"
+                    />
+                  </div>
+                )}
 
                 {/* Password Row */}
                 <div className="grid grid-cols-2 gap-4">

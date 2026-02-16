@@ -27,7 +27,6 @@ const Login = () => {
 
     try {
       const data = await loginUser({ email, password });
-     
 
       setSession(data.access_token, data.user);
 
@@ -59,12 +58,12 @@ const Login = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex items-center justify-center px-6 py-8">
+      <div className="flex-1 flex items-center justify-center px-6 py-10">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="w-full max-w-4xl bg-white rounded-2xl shadow-lg overflow-hidden flex min-h-500px"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.4 }}
+          className="w-full max-w-5xl bg-white rounded-2xl shadow-lg overflow-hidden flex min-h-500px"
         >
           {/* Left Side - Sign In Form */}
           <div className="w-full md:w-1/2 p-15 flex flex-col justify-center">
@@ -97,7 +96,7 @@ const Login = () => {
                     onClick={() => setShowPassword(!showPassword)}
                     className="text-xs text-gray-400 flex items-center hover:text-gray-600 transition-colors"
                   >
-                    {/* <svg
+                    <svg
                       className="w-3.5 h-3.5 mr-1"
                       fill="none"
                       stroke="currentColor"
@@ -116,7 +115,7 @@ const Login = () => {
                         d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
                       />
                     </svg>
-                    {showPassword ? "Hide" : "Show"} */}
+                    {showPassword ? "Hide" : "Show"}
                   </button>
                 </div>
                 <input
@@ -219,7 +218,6 @@ const Login = () => {
               Welcome Back
             </h3>
 
-          
             <div className="bg-white rounded-2xl p-6 w-64 h-64 flex items-center justify-center relative z-10 shadow-xl">
               <div className="text-center">
                 <img src={LoginSVG} alt="" />

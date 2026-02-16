@@ -29,14 +29,7 @@ const Leaderboard = () => {
             <Searchbar />
           </div>
         </div>
-        <div className=" mx-auto">
-          {/* Header */}
-          <div>
-            <p className="text-sm text-gray-500 mt-4">
-              Community contributors ranked by issues reported
-            </p>
-          </div>
-
+        <div className=" mx-auto mt-2 lg:mt-4">
           <UserCard />
         </div>
       </div>
