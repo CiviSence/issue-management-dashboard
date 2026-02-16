@@ -11,48 +11,88 @@ const getInitials = (name = "") =>
 
 const UserCard = ({ limit }) => {
   const { leaderboard, fetchLeaderboard } = useUsers();
+  const [loading, setLoading] = useState(false);
   const periods = [
     { label: "All Time", value: "all" },
     { label: "Weekly", value: "week" },
     { label: "This Month", value: "month" },
     { label: "Yearly", value: "year" },
-   
   ];
 
   const [timePeriod, setTimePeriod] = useState("month");
-  
 
   useEffect(() => {
-    fetchLeaderboard(timePeriod);
+    const loadLeaderboard = async () => {
+      setLoading(true);
+
+      await fetchLeaderboard(timePeriod);
+
+      setLoading(false);
+    };
+
+    loadLeaderboard();
   }, [timePeriod]);
 
   const displayedUsers = limit ? leaderboard.slice(0, limit) : leaderboard;
+  const SkeletonRow = () => (
+    <tr className="animate-pulse border-b border-gray-100">
+      <td className="py-4 px-4">
+        <div className="h-4 w-10 bg-gray-300 rounded"></div>
+      </td>
+
+      <td className="py-4 px-4">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 bg-gray-300 rounded-full"></div>
+
+          <div className="h-4 w-32 bg-gray-300 rounded"></div>
+        </div>
+      </td>
+
+      <td className="py-4 px-4">
+        <div className="h-4 w-16 bg-gray-300 rounded"></div>
+      </td>
+
+      <td className="py-4 px-4">
+        <div className="h-4 w-16 bg-gray-300 rounded"></div>
+      </td>
+
+      <td className="py-4 px-4">
+        <div className="h-4 w-16 bg-gray-300 rounded"></div>
+      </td>
+
+      <td className="py-4 px-4">
+        <div className="h-4 w-12 bg-gray-300 rounded"></div>
+      </td>
+    </tr>
+  );
 
   return (
     <div className="bg-white rounded-xl p-4 w-full">
-      <div className="inline-flex bg-gray-200 rounded-xl p-1">
-        {periods.map((item) => (
-          <button
-            key={item.value}
-            onClick={() => setTimePeriod(item.value)}
-            className={`px-6 py-2 text-sm font-medium rounded-lg transition-all duration-200
+      {/* PERIOD BUTTONS */}
+      <div className="flex overflow-x-auto">
+        <div className="inline-flex bg-gray-200 rounded-xl p-1 min-w-max">
+          {periods.map((item) => (
+            <button
+              key={item.value}
+              onClick={() => setTimePeriod(item.value)}
+              className={`px-3 md:px-4 py-2 text-xs font-medium rounded-lg transition-all duration-200 whitespace-nowrap
           ${
             timePeriod === item.value
               ? "bg-violet-500 text-white shadow-sm"
               : "text-gray-500 hover:bg-gray-300"
-          }
-        `}
-          >
-            {item.label}
-          </button>
-        ))}
+          }`}
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
       </div>
-      <div className="overflow-x-auto">
-        <table className="w-full table-fixed border-collapse">
+      <div className=" overflow-x-auto mt-4">
+        <table className="w-full border-collapse">
           {/* HEADER */}
           <thead>
             <tr className="border-b border-gray-200 text-left">
-              <th className="py-3 px-4 text-sm font-medium text-gray-500 w-[80px]">
+              <th className="py-3 px-4 text-sm font-medium text-gray-500">
                 Rank
               </th>
 
@@ -60,17 +100,19 @@ const UserCard = ({ limit }) => {
                 Name
               </th>
 
-              <th className="py-3 px-4 text-sm font-medium text-gray-500 w-[100px] shrink-0">
+              <th className="py-3 px-4 text-sm font-medium text-gray-500">
                 Reputation
               </th>
-              <th className="py-3 px-4 text-sm font-medium text-gray-500 w-[100px] shrink-0">
+
+              <th className="py-3 px-4 text-sm font-medium text-gray-500">
                 Total Issues
               </th>
-              <th className="py-3 px-4 text-sm font-medium text-gray-500 w-[100px] shrink-0">
-                Resolved Issues
+
+              <th className="py-3 px-4 text-sm font-medium text-gray-500">
+                Resolved
               </th>
 
-              <th className="py-3 px-4 text-sm font-medium text-gray-500 w-[140px]">
+              <th className="py-3 px-4 text-sm font-medium text-gray-500">
                 Success Rate
               </th>
             </tr>
@@ -78,63 +120,55 @@ const UserCard = ({ limit }) => {
 
           {/* BODY */}
           <tbody>
-            {displayedUsers.map((item) => {
-              const { rank, statistics, user } = item;
+            {loading
+              ? Array.from({ length: displayedUsers.length }).map((_, i) => (
+                  <SkeletonRow key={i} />
+                ))
+              : displayedUsers.map((item) => {
+                  const { rank, statistics, user } = item;
 
-              return (
-                <tr
-                  key={user.id}
-                  className="border-b border-gray-100 hover:bg-gray-50 transition"
-                >
-                  {/* Rank */}
-                  <td className="py-3 px-4 font-semibold text-gray-800">
-                    #{rank}
-                  </td>
+                  return (
+                    <tr
+                      key={user.id}
+                      className="border-b border-gray-100 hover:bg-gray-50 transition"
+                    >
+                      <td className="py-3 px-4 font-semibold">#{rank}</td>
 
-                  {/* Name */}
-                  <td className="py-3 px-4">
-                    <div className="flex items-center gap-3">
-                      {/* Avatar */}
-                      <div className="w-9 h-9 rounded-full overflow-hidden flex-shrink-0">
-                        {user.avatar_url ? (
-                          <img
-                            src={user.avatar_url}
-                            alt={user.name}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <div className="w-full h-full bg-[#243b8c] text-white flex items-center justify-center text-xs font-semibold">
-                            {getInitials(user.name)}
+                      {/* USER */}
+                      <td className="py-3 px-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-full overflow-hidden">
+                            {user.avatar_url ? (
+                              <img
+                                src={user.avatar_url}
+                                alt=""
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <div className="w-full h-full bg-[#243b8c] text-white flex items-center justify-center text-xs font-semibold">
+                                {getInitials(user.name)}
+                              </div>
+                            )}
                           </div>
-                        )}
-                      </div>
 
-                      {/* Name */}
-                      <span className="font-medium text-gray-900 truncate">
-                        {user.name}
-                      </span>
-                    </div>
-                  </td>
+                          <span className="font-medium">{user.name}</span>
+                        </div>
+                      </td>
 
-                  <td className="py-3 px-4 text-gray-700">
-                    {user.reputation_points}
-                  </td>
+                      <td className="py-3 px-4">{user.reputation_points}</td>
 
-                  {/* Issues */}
-                  <td className="py-3 px-4 text-gray-700">
-                    {statistics.total_issues}
-                  </td>
-                  <td className="py-3 px-4 text-gray-700">
-                    {statistics.resolved_issues}
-                  </td>
+                      <td className="py-3 px-4">{statistics.total_issues}</td>
 
-                  {/* Success Rate */}
-                  <td className="py-3 px-4 font-medium text-gray-800">
-                    {statistics.success_rate}%
-                  </td>
-                </tr>
-              );
-            })}
+                      <td className="py-3 px-4">
+                        {statistics.resolved_issues}
+                      </td>
+
+                      <td className="py-3 px-4 font-medium">
+                        {statistics.success_rate}%
+                      </td>
+                    </tr>
+                  );
+                })}
           </tbody>
         </table>
       </div>
