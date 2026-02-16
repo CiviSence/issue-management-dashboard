@@ -15,149 +15,152 @@ import SignUp from "./Pages/SignUp";
 import Verify from "./Pages/Verify";
 import IssueFeed from "./Components/Dashboards/Student/IssueFeed";
 import MyIssues from "./Components/Dashboards/Student/MyIssues";
+import { ThemeProvider } from "./Context/ThemeContext";
 
 const App = () => {
   return (
-    <div className="w-full h-screen bg-[#F0EEFF] flex">
-      <Routes>
-        <Route
-          path="/login"
-          element={
-            <AuthRoute>
-              <Login />
-            </AuthRoute>
-          }
-        />
+    <ThemeProvider>
+      <div className="w-full h-screen bg-background text-foreground flex transition-colors duration-200">
+        <Routes>
+          <Route
+            path="/login"
+            element={
+              <AuthRoute>
+                <Login />
+              </AuthRoute>
+            }
+          />
 
-        <Route
-          path="/signup"
-          element={
-            <AuthRoute>
-              <SignUp />
-            </AuthRoute>
-          }
-        />
+          <Route
+            path="/signup"
+            element={
+              <AuthRoute>
+                <SignUp />
+              </AuthRoute>
+            }
+          />
 
-        <Route
-          path="/verify-otp"
-          element={
-            <AuthRoute>
-              <Verify />
-            </AuthRoute>
-          }
-        />
+          <Route
+            path="/verify-otp"
+            element={
+              <AuthRoute>
+                <Verify />
+              </AuthRoute>
+            }
+          />
 
-        <Route
-          path="/"
-          element={
-            <AuthRoute>
-              <Home />
-            </AuthRoute>
-          }
-        />
+          <Route
+            path="/"
+            element={
+              <AuthRoute>
+                <Home />
+              </AuthRoute>
+            }
+          />
 
-        {/* PROTECTED (only when logged in) */}
-
-
-        <Route
-          path="/dashboard"
-          element={
-            <PrivateRoute>
-              <Dashboard />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="/reported-issues"
-          element={
-            <PrivateRoute>
-              <ReportedIssues />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="/resolved-issues"
-          element={
-            <PrivateRoute>
-              <ResolvedIssues />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="/leaderboard"
-          element={
-            <PrivateRoute>
-              <Leaderboard />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="/profile"
-          element={
-            <PrivateRoute>
-              <Profile />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/pending-issues"
-          element={
-            <PrivateRoute>
-              <ReportedIssues />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/in-progress"
-          element={
-            <PrivateRoute>
-              <ReportedIssues />
-            </PrivateRoute>
-          }
-        />
+          {/* PROTECTED (only when logged in) */}
 
 
-        <Route
-          path="/assigned-issues"
-          element={
-            <PrivateRoute>
-              <AssignedIssues />
-            </PrivateRoute>
-          }
-        />
+          <Route
+            path="/dashboard"
+            element={
+              <PrivateRoute>
+                <Dashboard />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/reported-issues"
+            element={
+              <PrivateRoute>
+                <ReportedIssues />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/resolved-issues"
+            element={
+              <PrivateRoute>
+                <ResolvedIssues />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/leaderboard"
+            element={
+              <PrivateRoute>
+                <Leaderboard />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/profile"
+            element={
+              <PrivateRoute>
+                <Profile />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/pending-issues"
+            element={
+              <PrivateRoute>
+                <ReportedIssues />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/in-progress"
+            element={
+              <PrivateRoute>
+                <ReportedIssues />
+              </PrivateRoute>
+            }
+          />
 
 
-        <Route
-          path="/feed"
-          element={
-            <PrivateRoute>
-              <IssueFeed/>
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/my-issues"
-          element={
-            <PrivateRoute>
-              <MyIssues/>
-            </PrivateRoute>
-          }
-        />
+          <Route
+            path="/assigned-issues"
+            element={
+              <PrivateRoute>
+                <AssignedIssues />
+              </PrivateRoute>
+            }
+          />
 
-        <Route
-          path="/help-support"
-          element={
-            <PrivateRoute>
-              <HelpSupport />
-            </PrivateRoute>
-          }
-        />
-      </Routes>
-    </div>
+
+          <Route
+            path="/feed"
+            element={
+              <PrivateRoute>
+                <IssueFeed />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/my-issues"
+            element={
+              <PrivateRoute>
+                <MyIssues />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/help-support"
+            element={
+              <PrivateRoute>
+                <HelpSupport />
+              </PrivateRoute>
+            }
+          />
+        </Routes>
+      </div>
+    </ThemeProvider>
   );
 };
 
