@@ -111,6 +111,46 @@ export const resetPassword = async (data) => {
 };
 
 /**
+ * Logs out from all active sessions
+ * @returns {Promise<object>}
+ */
+export const logoutAllSessions = async () => {
+    try {
+        const { data } = await axios.post('/auth/logout-all');
+        return data;
+    } catch (error) {
+        throw new Error(error.response?.data?.detail || 'Logout from all sessions failed');
+    }
+};
+
+/**
+ * Gets all active sessions for the current user
+ * @returns {Promise<string[]>} - List of session IDs or info
+ */
+export const getActiveSessions = async () => {
+    try {
+        const { data } = await axios.get('/auth/sessions');
+        return data;
+    } catch (error) {
+        throw new Error(error.response?.data?.detail || 'Failed to fetch active sessions');
+    }
+};
+
+/**
+ * Revokes a specific session
+ * @param {number|string} sessionId
+ * @returns {Promise<object>}
+ */
+export const revokeSession = async (sessionId) => {
+    try {
+        const { data } = await axios.delete(`/auth/sessions/${sessionId}`);
+        return data;
+    } catch (error) {
+        throw new Error(error.response?.data?.detail || 'Failed to revoke session');
+    }
+};
+
+/**
  * Deletes the user account
  * @returns {Promise<object>}
  */

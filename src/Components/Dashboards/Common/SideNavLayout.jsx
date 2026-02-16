@@ -7,11 +7,10 @@ export const NavItem = ({ to, icon, label }) => {
   const navLinkClass = ({ isActive }) =>
     `flex items-center justify-center lg:justify-start
      rounded-lg px-4 py-3 transition
-     ${
-       isActive
-         ? "bg-white text-violet-600 font-semibold"
-         : "hover:text-white hover:bg-violet-400"
-     }`;
+     ${isActive
+      ? "bg-white text-violet-600 font-semibold"
+      : "hover:text-white hover:bg-violet-400"
+    }`;
 
   return (
     <NavLink to={to} className={navLinkClass}>
@@ -22,13 +21,15 @@ export const NavItem = ({ to, icon, label }) => {
 };
 
 import { clearSession } from "../../../Utils/auth-utils";
-import { logoutUser as logoutUserApi } from "../../../Utils/auth-api";
+import { logoutUser as logoutUserApi, logoutAllSessions } from "../../../Utils/auth-api";
 
 const SideNavLayout = ({ children }) => {
   const { profileData } = useUser();
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [logoutInput, setLogoutInput] = useState("");
+  const [logoutType, setLogoutType] = useState("current"); // "current" | "all"
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const handleLogoutClick = () => {
     setShowLogoutConfirm(true);
@@ -37,11 +38,17 @@ const SideNavLayout = ({ children }) => {
   const handleLogoutConfirm = async () => {
     if (logoutInput.toLowerCase() !== "logout") return;
 
+    setIsLoggingOut(true);
     try {
-      await logoutUserApi();
+      if (logoutType === "all") {
+        await logoutAllSessions();
+      } else {
+        await logoutUserApi();
+      }
     } catch (error) {
-      console.error("error:", error);
+      console.error("Logout failed:", error);
     } finally {
+      setIsLoggingOut(false);
       clearSession();
       window.location.href = "/";
     }
@@ -125,35 +132,71 @@ const SideNavLayout = ({ children }) => {
       {showLogoutConfirm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm">
-            <h3 className="text-xl font-bold mb-4 text-gray-800">
+            <h3 className="text-xl font-bold mb-4 text-gray-800 text-center">
               Confirm Logout
             </h3>
-            <p className="mb-4 text-gray-600">
-              Type "logout" below to confirm.
+
+            <div className="space-y-3 mb-6">
+              <label className="flex items-center gap-3 p-3 rounded-lg border border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors has-[:checked]:border-violet-600 has-[:checked]:bg-violet-50">
+                <input
+                  type="radio"
+                  name="logoutType"
+                  value="current"
+                  checked={logoutType === "current"}
+                  onChange={(e) => setLogoutType(e.target.value)}
+                  className="w-4 h-4 text-violet-600 focus:ring-violet-500"
+                />
+                <div className="flex-1">
+                  <p className="text-sm font-semibold text-gray-800 shadow-none">This device only</p>
+                  <p className="text-xs text-gray-500 shadow-none">Logout from your current session</p>
+                </div>
+              </label>
+
+              <label className="flex items-center gap-3 p-3 rounded-lg border border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors has-[:checked]:border-red-600 has-[:checked]:bg-red-50">
+                <input
+                  type="radio"
+                  name="logoutType"
+                  value="all"
+                  checked={logoutType === "all"}
+                  onChange={(e) => setLogoutType(e.target.value)}
+                  className="w-4 h-4 text-red-600 focus:ring-red-500"
+                />
+                <div className="flex-1">
+                  <p className="text-sm font-semibold text-gray-800 shadow-none text-red-600">All devices</p>
+                  <p className="text-xs text-gray-500 shadow-none">Logout across all active sessions</p>
+                </div>
+              </label>
+            </div>
+
+            <p className="mb-2 text-sm text-gray-600 text-center">
+              Type <span className="font-bold text-red-500">logout</span> to confirm.
             </p>
             <input
               type="text"
               value={logoutInput}
               onChange={(e) => setLogoutInput(e.target.value)}
-              className="w-full border text-red-400 border-gray-300 rounded px-3 py-2 mb-4 outline-none focus:border-violet-600"
-              placeholder="Type 'logout'"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2.5 mb-6 text-center outline-none focus:border-violet-600 transition-all font-medium text-red-500"
+              placeholder="Confirm logout"
             />
-            <div className="flex justify-end gap-3">
+
+            <div className="flex gap-3">
               <button
                 onClick={() => {
                   setShowLogoutConfirm(false);
                   setLogoutInput("");
+                  setLogoutType("current");
                 }}
-                className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded"
+                disabled={isLoggingOut}
+                className="flex-1 px-4 py-2.5 text-gray-600 font-medium hover:bg-gray-100 rounded-lg transition-colors border border-gray-200"
               >
                 Cancel
               </button>
               <button
                 onClick={handleLogoutConfirm}
-                disabled={logoutInput.toLowerCase() !== "logout"}
-                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={logoutInput.toLowerCase() !== "logout" || isLoggingOut}
+                className="flex-1 px-4 py-2.5 bg-red-500 text-white font-bold rounded-lg hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-red-500/30"
               >
-                Log Out
+                {isLoggingOut ? "Logging out..." : "Logout"}
               </button>
             </div>
           </div>

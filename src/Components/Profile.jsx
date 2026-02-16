@@ -5,10 +5,10 @@ import StaffSideNav from "./Dashboards/Staff/StaffSideNav";
 import BottomNav from "./Templates/BottomNav";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import { useState } from "react";
-import ProfileEditForm from "./Inputs/ProfileEditForm";
 import { updateMyProfile } from "../Utils/profile-api";
+import { getActiveSessions, revokeSession } from "../Utils/auth-api";
 import defaultProfile from "../assets/default-avatar.jpg";
+import { useEffect } from "react";
 
 const InfoCard = ({ title, children }) => (
   <div className="bg-white shadow-md rounded-lg p-4 h-full">
@@ -33,15 +33,134 @@ const formatDate = (date) =>
     year: "numeric",
   });
 
+const SessionsCard = () => {
+  const [sessions, setSessions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [revokingId, setRevokingId] = useState(null);
+
+  const fetchSessions = async () => {
+    try {
+      const data = await getActiveSessions();
+      setSessions(data);
+    } catch (error) {
+      console.error("Failed to fetch sessions", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchSessions();
+  }, []);
+
+  const handleRevoke = async (sessionId) => {
+    if (!window.confirm("Are you sure you want to revoke this session?")) return;
+    setRevokingId(sessionId);
+    try {
+      await revokeSession(sessionId);
+      setSessions((prev) => prev.filter((s) => s !== sessionId && s.id !== sessionId));
+      // Refresh to be sure
+      fetchSessions();
+    } catch (error) {
+      alert("Failed to revoke session");
+    } finally {
+      setRevokingId(null);
+    }
+  };
+
+  return (
+    <div className="bg-white shadow-md rounded-lg p-4 h-full border border-gray-100">
+      <div className="flex justify-between items-center mb-4 border-b pb-2">
+        <h2 className="text-xl font-semibold text-gray-800">
+          Active Sessions
+        </h2>
+        <button
+          onClick={fetchSessions}
+          className="text-violet-600 hover:text-violet-700 p-1"
+          title="Refresh"
+        >
+          <i className="ri-refresh-line"></i>
+        </button>
+      </div>
+
+      {loading ? (
+        <div className="space-y-3">
+          {[1, 2].map((i) => (
+            <div key={i} className="h-12 bg-gray-100 animate-pulse rounded-lg"></div>
+          ))}
+        </div>
+      ) : sessions.length > 0 ? (
+        <div className="space-y-3">
+          {sessions.map((session, index) => {
+            // The API returns strings or objects based on the schema
+            const id = typeof session === 'object' ? session.id : session;
+            const label = typeof session === 'object' ? session.device_info || `Session ${id}` : `Session ${index + 1}`;
+
+            return (
+              <div key={id || index} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-gray-100 hover:border-violet-200 transition-colors">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-violet-100 text-violet-600 rounded-lg">
+                    <i className="ri-device-line text-lg"></i>
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-gray-800">{label}</p>
+                    <p className="text-[10px] text-gray-400 uppercase tracking-wider">Active Now</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => handleRevoke(id)}
+                  disabled={revokingId === id}
+                  className="text-xs text-red-500 hover:text-red-700 font-medium px-3 py-1.5 rounded-md hover:bg-red-50 transition-colors disabled:opacity-50"
+                >
+                  {revokingId === id ? "Revoking..." : "Revoke"}
+                </button>
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="text-center py-6">
+          <p className="text-gray-400 text-sm">No other active sessions found.</p>
+        </div>
+      )}
+    </div>
+  );
+};
+
 const Profile = () => {
   const { profileData, setProfileData } = useUser();
   const [isEditing, setIsEditing] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [logoutInput, setLogoutInput] = useState("");
+  const [logoutType, setLogoutType] = useState("current");
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const renderSideNav = () => {
     const role = profileData?.role?.toLowerCase();
     if (role === "student") return <StudentSideNav />;
     if (role === "staff") return <StaffSideNav />;
     return <AdminSideNav />; // Default/Admin
+  };
+
+  const handleLogoutConfirm = async () => {
+    if (logoutInput.toLowerCase() !== "logout") return;
+    setIsLoggingOut(true);
+    try {
+      const { logoutUser } = await import("../Utils/auth-api");
+      if (logoutType === "all") {
+        await logoutAllSessions();
+      } else {
+        await logoutUser();
+      }
+      const { clearSession } = await import("../Utils/auth-utils");
+      clearSession();
+      window.location.href = "/";
+    } catch (e) {
+      console.error(e);
+      alert("Logout failed");
+    } finally {
+      setIsLoggingOut(false);
+    }
   };
 
   const handleSaveProfile = async (updates) => {
@@ -198,22 +317,14 @@ const Profile = () => {
                 }
               />
             </InfoCard>
+
+            <SessionsCard />
           </div>
 
           {/* Mobile Logout Button Section */}
           <div className="md:hidden px-6 pb-24">
             <button
-              onClick={async () => {
-                try {
-                  const { logoutUser } = await import("../Utils/auth-api");
-                  const { clearSession } = await import("../Utils/auth-utils");
-                  await logoutUser();
-                  clearSession();
-                  window.location.href = "/";
-                } catch (e) {
-                  console.error(e);
-                }
-              }}
+              onClick={() => setShowLogoutConfirm(true)}
               className="w-full bg-red-500 hover:bg-red-600 text-white py-4 rounded-2xl font-bold shadow-xl active:scale-[0.98] transition-all"
             >
               Log Out
@@ -222,6 +333,80 @@ const Profile = () => {
         </div>
       ) : (
         <LoadingSkeleton />
+      )}
+
+      {showLogoutConfirm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-[100]">
+          <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-sm">
+            <h3 className="text-xl font-bold mb-4 text-gray-800 text-center">
+              Confirm Logout
+            </h3>
+
+            <div className="space-y-3 mb-6">
+              <label className="flex items-center gap-3 p-3 rounded-xl border border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors has-[:checked]:border-violet-600 has-[:checked]:bg-violet-50">
+                <input
+                  type="radio"
+                  name="logoutType"
+                  value="current"
+                  checked={logoutType === "current"}
+                  onChange={(e) => setLogoutType(e.target.value)}
+                  className="w-4 h-4 text-violet-600 focus:ring-violet-500"
+                />
+                <div className="flex-1">
+                  <p className="text-sm font-semibold text-gray-800">This device only</p>
+                  <p className="text-xs text-gray-500">Logout from this session</p>
+                </div>
+              </label>
+
+              <label className="flex items-center gap-3 p-3 rounded-xl border border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors has-[:checked]:border-red-600 has-[:checked]:bg-red-50">
+                <input
+                  type="radio"
+                  name="logoutType"
+                  value="all"
+                  checked={logoutType === "all"}
+                  onChange={(e) => setLogoutType(e.target.value)}
+                  className="w-4 h-4 text-red-600 focus:ring-red-500"
+                />
+                <div className="flex-1">
+                  <p className="text-sm font-semibold text-gray-800 text-red-600">All devices</p>
+                  <p className="text-xs text-gray-500">Logout everywhere</p>
+                </div>
+              </label>
+            </div>
+
+            <p className="mb-2 text-sm text-gray-600 text-center">
+              Type <span className="font-bold text-red-500">logout</span> to confirm.
+            </p>
+            <input
+              type="text"
+              value={logoutInput}
+              onChange={(e) => setLogoutInput(e.target.value)}
+              className="w-full border border-gray-300 rounded-xl px-3 py-3 mb-6 text-center outline-none focus:border-violet-600 transition-all font-medium text-red-500"
+              placeholder="Confirm logout"
+            />
+
+            <div className="flex flex-col gap-2">
+              <button
+                onClick={handleLogoutConfirm}
+                disabled={logoutInput.toLowerCase() !== "logout" || isLoggingOut}
+                className="w-full py-4 bg-red-500 text-white font-bold rounded-xl hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-red-500/30"
+              >
+                {isLoggingOut ? "Logging out..." : "Log Out"}
+              </button>
+              <button
+                onClick={() => {
+                  setShowLogoutConfirm(false);
+                  setLogoutInput("");
+                  setLogoutType("current");
+                }}
+                disabled={isLoggingOut}
+                className="w-full py-3 text-gray-500 font-medium hover:bg-gray-50 rounded-xl transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {isEditing && profileData && (

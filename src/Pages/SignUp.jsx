@@ -17,6 +17,7 @@ const SignUp = () => {
     lastName: "",
     email: "",
     registration_number: "",
+    designation: "",
     password: "",
     confirmPassword: "",
   });
@@ -72,26 +73,24 @@ const SignUp = () => {
         email: formData.email,
         name: `${formData.firstName} ${formData.lastName}`.trim(),
         password: formData.password,
-        // Only include registration_number for students, empty string for others
+        // Only include registration_number for students, null for others to avoid UNIQUE constraint collisions
         registration_number:
-          formData.userType === "student" ? formData.registration_number : "",
+          formData.userType === "student" ? formData.registration_number : null,
         gender: "prefer_not_to_say",
         date_of_birth: "2000-01-01",
-        phone_number: "0000000000",
-        pincode: "000000",
-        department: "string",
+        phone_number: null, // Set to null to avoid unique constraint collisions with default '0000000000'
+        pincode: null,
+        department: "General",
         course: formData.userType === "student" ? "Btech" : "N/A",
-        year: formData.userType === "student" ? 0 : 0,
-        semester: formData.userType === "student" ? 0 : 0,
+        year: formData.userType === "student" ? 1 : 0,
+        semester: formData.userType === "student" ? 1 : 0,
         role: formData.userType, // This differentiates user types
         designation:
           formData.userType === "student"
             ? "Student"
-            : formData.userType === "staff"
-              ? "Staff"
-              : "Admin",
+            : formData.designation,
         is_hosteler: false,
-        hostel_name: "string",
+        hostel_name: "N/A",
         room_number: "000",
       };
 
@@ -203,11 +202,10 @@ const SignUp = () => {
                         onClick={() =>
                           setFormData((prev) => ({ ...prev, userType: type }))
                         }
-                        className={`py-2 px-3 rounded-lg border text-sm font-medium capitalize transition-all ${
-                          formData.userType === type
-                            ? "bg-[#6366f1] text-white border-[#6366f1]"
-                            : "bg-white text-gray-600 border-gray-200 hover:border-[#6366f1] hover:text-[#6366f1]"
-                        }`}
+                        className={`py-2 px-3 rounded-lg border text-sm font-medium capitalize transition-all ${formData.userType === type
+                          ? "bg-[#6366f1] text-white border-[#6366f1]"
+                          : "bg-white text-gray-600 border-gray-200 hover:border-[#6366f1] hover:text-[#6366f1]"
+                          }`}
                       >
                         {type}
                       </button>
@@ -272,6 +270,22 @@ const SignUp = () => {
                       value={formData.registration_number}
                       onChange={handleChange}
                       required
+                      className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-[#6366f1] focus:ring-2 focus:ring-[#6366f1]/20 outline-none transition-all text-sm"
+                    />
+                  </div>
+                )}
+
+                {/* Conditional Designation - for Staff/Admin */}
+                {(formData.userType === "staff" || formData.userType === "admin") && (
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-gray-500 ml-1">
+                      Designation
+                    </label>
+                    <input
+                      type="text"
+                      name="designation"
+                      value={formData.designation}
+                      onChange={handleChange}
                       className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-[#6366f1] focus:ring-2 focus:ring-[#6366f1]/20 outline-none transition-all text-sm"
                     />
                   </div>
