@@ -491,7 +491,7 @@ const StudentDashboard = () => {
           <div>
             <UserCard />
 
-            <div className="bg-violet-900 text-white p-6 rounded-2xl shadow-lg relative overflow-hidden mt-2 lg:mt-4">
+            <div className="bg-violet-600 text-white p-6 rounded-2xl shadow-lg relative overflow-hidden mt-2 lg:mt-4">
               <div className="relative z-10">
                 <h3 className="text-lg font-bold mb-1">Campus News</h3>
                 <p className="text-violet-200 text-sm">

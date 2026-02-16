@@ -110,7 +110,7 @@ const Profile = () => {
       {profileData ? (
         <div className="mx-auto w-full shadow-lg overflow-y-auto bg-gray-50 min-h-screen">
           {/* HEADER */}
-          <div className="flex flex-col md:flex-row items-center gap-6 bg-linear-to-r from-violet-600 to-violet-600 p-5 lg:p-15 text-white shadow-md relative">
+          <div className="flex flex-col md:flex-row items-center gap-6 bg-linear-to-r from-violet-500 to-violet-600 p-5 lg:p-15 text-white shadow-md relative">
             <img
               src={profileData.avatar_url || defaultProfile}
               alt="Profile"
