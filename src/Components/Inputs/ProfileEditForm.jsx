@@ -21,7 +21,7 @@ const InputField = ({
       onChange={onChange}
       disabled={disabled}
       required={required}
-      className="border border-gray-300 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-violet-500 disabled:bg-gray-100 disabled:text-gray-500"
+      className="border border-gray-300 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-violet-600 disabled:bg-gray-100 disabled:text-gray-500"
     />
   </div>
 );
@@ -252,7 +252,7 @@ const ProfileEditForm = ({ profile, onSave, onCancel }) => {
                   name="gender"
                   value={formData.gender || ""}
                   onChange={handleChange}
-                  className="border border-gray-300 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-violet-500"
+                  className="border border-gray-300 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-violet-600"
                 >
                   <option value="">Select</option>
                   <option value="male">Male</option>
@@ -269,7 +269,7 @@ const ProfileEditForm = ({ profile, onSave, onCancel }) => {
                   name="department"
                   value={formData.department || ""}
                   onChange={handleChange}
-                  className="border border-gray-300 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-violet-500"
+                  className="border border-gray-300 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-violet-600"
                 >
                   <option value="">Select Department</option>
                   <option value="CSE">Computer Science (CSE)</option>
@@ -287,7 +287,7 @@ const ProfileEditForm = ({ profile, onSave, onCancel }) => {
                   name="course"
                   value={formData.course || ""}
                   onChange={handleChange}
-                  className="border border-gray-300 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-violet-500"
+                  className="border border-gray-300 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-violet-600"
                 >
                   <option value="">Select Course</option>
                   <option value="B.Tech">B.Tech</option>
@@ -303,7 +303,7 @@ const ProfileEditForm = ({ profile, onSave, onCancel }) => {
                   name="year"
                   value={formData.year || ""}
                   onChange={handleChange}
-                  className="border border-gray-300 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-violet-500"
+                  className="border border-gray-300 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-violet-600"
                 >
                   <option value="">Select Year</option>
                   <option value="1">1st Year</option>
@@ -321,7 +321,7 @@ const ProfileEditForm = ({ profile, onSave, onCancel }) => {
                   name="semester"
                   value={formData.semester || ""}
                   onChange={handleChange}
-                  className="border border-gray-300 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-violet-500"
+                  className="border border-gray-300 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-violet-600"
                 >
                   <option value="">Select Semester</option>
                   <option value="1">Semester 1</option>
@@ -359,7 +359,7 @@ const ProfileEditForm = ({ profile, onSave, onCancel }) => {
                       name="hostel_name"
                       value={formData.hostel_name || ""}
                       onChange={handleChange}
-                      className="border border-gray-300 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-violet-500"
+                      className="border border-gray-300 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-violet-600"
                     >
                       <option value="">Select Hostel</option>
                       <option value="Boys Hostel 1">Boys Hostel</option>

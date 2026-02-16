@@ -6,7 +6,6 @@ import { useUser } from "../../../Context/ProfileContext";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {
-
   createIssue,
   getMyIssues,
   updateIssue,
@@ -61,8 +60,6 @@ const StudentDashboard = () => {
   const [location_ward, setLocationWard] = useState("");
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  
 
   // Status styles
   const getStatusStyle = (status) =>
@@ -141,16 +138,14 @@ const StudentDashboard = () => {
 
       const issuePayload = {
         title: title.trim(),
-        description: description.trim(), // Make sure it's not empty
+        description: description.trim(),
         main_category: main_category,
         sub_category: sub_category || "general",
-        location_address: location_address || "spnrec campus",
+        location_address: location_address,
         location_building: location_building,
         location_ward: location_ward || "",
         media_urls: ["string"], // just for testing, replace with actual media handling logic
       };
-
-      
 
       if (editMode) {
         setIsEditing(true);
@@ -220,37 +215,51 @@ const StudentDashboard = () => {
       <StudentSideNav />
       <BottomNav />
 
-      <div className="w-full p-4 lg:w-[calc(100vw-15vw)] bg-[#F0EEFF] overflow-y-auto h-screen">
-        <div className="w-full bg-violet-600 p-6 rounded-3xl text-white shadow-lg mb-6">
-          <h1 className="text-3xl font-bold mb-2">Student Dashboard</h1>
-          <p className="text-violet-100">
-            Welcome back! Track your reported issues here.
-          </p>
+      <div className="w-full p-2 lg:p-4 lg:w-[calc(100vw-15vw)] bg-[#F0EEFF] overflow-y-auto h-screen">
+        {/* header */}
+        <div className="w-full bg-violet-600 p-4 sm:p-5  lg:p-6 rounded-2xl md:rounded-3xl text-white shadow-md mb-4 md:mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+            {/* LEFT */}
+            <div>
+              <h1 className="text-xl sm:text-xl md:text-2xl lg:text-3xl font-bold leading-tight">
+                Student Dashboard
+              </h1>
+
+              <p className="text-violet-100 text-sm sm:text-base md:text-lg mt-1">
+                Welcome back! Track your reported issues here.
+              </p>
+            </div>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="col-span-2 space-y-3">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 lg:gap-6">
+          <div className="lg:col-span-2 space-y-2 lg:space-y-4">
             {/* Quick Action */}
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between">
+            <div className="bg-white p-4 sm:p-5 md:p-6 rounded-xl md:rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div>
-                <h2 className="text-xl font-bold text-gray-800">
+                <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-800">
                   Have a problem?
                 </h2>
-                <p className="text-gray-500">Report a new issue on campus.</p>
+
+                <p className="text-gray-500 text-sm sm:text-base">
+                  Report a new issue on campus.
+                </p>
               </div>
+
+              {/* BUTTON */}
               <button
                 onClick={() => {
                   resetForm();
                   setShowReportModal(true);
                 }}
-                className="bg-violet-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-violet-700 transition shadow-lg shadow-violet-200"
+                className="w-full sm:w-auto bg-violet-600 text-white px-5 py-2.5 sm:px-6 sm:py-3 rounded-lg sm:rounded-xl font-semibold hover:bg-violet-700 transition shadow-md sm:shadow-lg shadow-violet-200 text-sm sm:text-base"
               >
                 + Report Issue
               </button>
             </div>
 
             {/* Recent Activity */}
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 min-h-[300px]">
+            <div className="bg-white p-3 lg:p-6 rounded-xl md:rounded-2xl shadow-sm border border-gray-100 min-h-[300px]">
               <h3 className="text-lg font-bold text-gray-800 mb-4">
                 Your Recent Reports
               </h3>
@@ -337,11 +346,11 @@ const StudentDashboard = () => {
                               />
                             </svg>
                             <span className="font-medium text-gray-700">
-                              {issue.location_address}
+                              {issue.location_building.replace("-", " ")}
                             </span>
-                            {issue.location_building && (
+                            {issue.location_address && (
                               <span className="text-gray-400">
-                                • {issue.location_building}
+                                • {issue.location_address}
                               </span>
                             )}
                           </div>
@@ -479,11 +488,10 @@ const StudentDashboard = () => {
             </div>
           </div>
 
-          <div className="space-y-2">
-            <p className="text-2xl font-semibold">Top Reporters</p>
+          <div>
             <UserCard />
 
-            <div className="bg-violet-900 text-white p-6 rounded-2xl shadow-lg relative overflow-hidden">
+            <div className="bg-violet-900 text-white p-6 rounded-2xl shadow-lg relative overflow-hidden mt-2 lg:mt-4">
               <div className="relative z-10">
                 <h3 className="text-lg font-bold mb-1">Campus News</h3>
                 <p className="text-violet-200 text-sm">
@@ -494,7 +502,7 @@ const StudentDashboard = () => {
                 </div>
               </div>
               {/* Decor */}
-              <div className="absolute top-0 right-0 w-32 h-32 bg-violet-500 rounded-full blur-3xl opacity-50 -mr-10 -mt-10"></div>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-violet-600 rounded-full blur-3xl opacity-50 -mr-10 -mt-10"></div>
             </div>
           </div>
         </div>
@@ -525,7 +533,7 @@ const StudentDashboard = () => {
                 <input
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-violet-500 outline-none"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-violet-600 outline-none"
                   placeholder="e.g. Broken projector in Room 301"
                   required
                 />
@@ -539,7 +547,7 @@ const StudentDashboard = () => {
                 <select
                   value={main_category}
                   onChange={(e) => setMainCategory(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-violet-500 outline-none"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-violet-600 outline-none"
                   required
                 >
                   <option value="">Select Category</option>
@@ -560,7 +568,7 @@ const StudentDashboard = () => {
                 <input
                   value={sub_category}
                   onChange={(e) => setSubCategory(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-violet-500 outline-none"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-violet-600 outline-none"
                   placeholder="e.g. Leakage, Fan not working"
                   required
                 />
@@ -574,7 +582,7 @@ const StudentDashboard = () => {
                 <select
                   value={location_building}
                   onChange={(e) => setLocationBuilding(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-violet-500 outline-none"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-violet-600 outline-none"
                   required
                 >
                   <option value="">Select Building</option>
@@ -593,9 +601,9 @@ const StudentDashboard = () => {
                   Address
                 </label>
                 <input
-                  value={location_building}
-                  onChange={(e) => setLocationBuilding(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-violet-500 outline-none"
+                  value={location_address}
+                  onChange={(e) => setLocationAddress(e.target.value)}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-violet-600 outline-none"
                   placeholder="e.g. Block A"
                   required
                 />
@@ -609,7 +617,7 @@ const StudentDashboard = () => {
                 <input
                   value={location_ward}
                   onChange={(e) => setLocationWard(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-violet-500 outline-none"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-violet-600 outline-none"
                   placeholder="e.g. 3rd Floor"
                   required
                 />
@@ -624,7 +632,7 @@ const StudentDashboard = () => {
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 h-28 resize-none focus:border-violet-500 outline-none"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 h-28 resize-none focus:border-violet-600 outline-none"
                   placeholder="Describe the issue in detail..."
                   required
                   minLength={10}

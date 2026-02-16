@@ -5,7 +5,7 @@ import { useIssues } from "../../../Context/IssueContext";
 import { useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import { assignIssue,  deleteIssue, updateIssue } from "../../../Utils/issues";
+import { assignIssue, deleteIssue, updateIssue } from "../../../Utils/issues";
 import { toast, ToastContainer } from "react-toastify";
 import { useUsers } from "../../../Context/UserContext";
 
@@ -248,7 +248,7 @@ const ReportedIssues = () => {
       {issues.length > 0 ? (
         <>
           <div className="w-full p-2 lg:p-4 lg:w-[calc(100vw-15vw)]  overflow-x-auto ">
-            <div className="w-full bg-violet-500 p-4 rounded-2xl">
+            <div className="w-full bg-violet-600 p-4 rounded-2xl">
               <div
                 className="
       flex
@@ -279,7 +279,7 @@ const ReportedIssues = () => {
                   <select
                     value={selectedLocation}
                     onChange={(e) => setSelectedLocation(e.target.value)}
-                    className="appearance-none bg-white border border-gray-300 text-gray-700 text-sm rounded-lg px-4 py-2 pr-10 shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition duration-200"
+                    className="appearance-none bg-white border border-gray-300 text-gray-700 text-sm rounded-lg px-4 py-2 pr-10 shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-600 focus:border-violet-600 transition duration-200"
                   >
                     <option value="all">Location: All</option>
                     {uniqueLocations.map((location, index) => (
@@ -292,7 +292,7 @@ const ReportedIssues = () => {
                   <select
                     value={priority}
                     onChange={(e) => setPriority(e.target.value)}
-                    className="appearance-none bg-white border border-gray-300 text-gray-700 text-sm rounded-lg px-4 py-2 pr-10 shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition duration-200"
+                    className="appearance-none bg-white border border-gray-300 text-gray-700 text-sm rounded-lg px-4 py-2 pr-10 shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-600 focus:border-violet-600 transition duration-200"
                   >
                     <option value="all">Priority: All</option>
                     <option value="low">Low</option>

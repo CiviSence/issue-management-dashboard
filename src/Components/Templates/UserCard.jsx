@@ -12,6 +12,7 @@ const getInitials = (name = "") =>
 const UserCard = ({ limit }) => {
   const { leaderboard, fetchLeaderboard } = useUsers();
   const [loading, setLoading] = useState(false);
+
   const periods = [
     { label: "All Time", value: "all" },
     { label: "Weekly", value: "week" },
@@ -24,96 +25,85 @@ const UserCard = ({ limit }) => {
   useEffect(() => {
     const loadLeaderboard = async () => {
       setLoading(true);
-
       await fetchLeaderboard(timePeriod);
-
       setLoading(false);
     };
-
     loadLeaderboard();
   }, [timePeriod]);
 
   const displayedUsers = limit ? leaderboard.slice(0, limit) : leaderboard;
+
   const SkeletonRow = () => (
     <tr className="animate-pulse border-b border-gray-100">
-      <td className="py-4 px-4">
-        <div className="h-4 w-10 bg-gray-300 rounded"></div>
+      <td className="py-3 px-2 sm:px-4">
+        <div className="h-3 sm:h-4 w-6 sm:w-10 bg-gray-300 rounded"></div>
       </td>
-
-      <td className="py-4 px-4">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 bg-gray-300 rounded-full"></div>
-
-          <div className="h-4 w-32 bg-gray-300 rounded"></div>
+      <td className="py-3 px-2 sm:px-4">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="w-7 h-7 sm:w-9 sm:h-9 bg-gray-300 rounded-full"></div>
+          <div className="h-3 sm:h-4 w-20 sm:w-32 bg-gray-300 rounded"></div>
         </div>
       </td>
-
-      <td className="py-4 px-4">
-        <div className="h-4 w-16 bg-gray-300 rounded"></div>
+      <td className="py-3 px-2 sm:px-4">
+        <div className="h-3 sm:h-4 w-10 sm:w-16 bg-gray-300 rounded"></div>
       </td>
-
-      <td className="py-4 px-4">
-        <div className="h-4 w-16 bg-gray-300 rounded"></div>
+      <td className="py-3 px-2 sm:px-4 hidden sm:table-cell">
+        <div className="h-3 sm:h-4 w-10 sm:w-16 bg-gray-300 rounded"></div>
       </td>
-
-      <td className="py-4 px-4">
-        <div className="h-4 w-16 bg-gray-300 rounded"></div>
+      <td className="py-3 px-2 sm:px-4 hidden md:table-cell">
+        <div className="h-3 sm:h-4 w-10 sm:w-16 bg-gray-300 rounded"></div>
       </td>
-
-      <td className="py-4 px-4">
-        <div className="h-4 w-12 bg-gray-300 rounded"></div>
+      <td className="py-3 px-2 sm:px-4">
+        <div className="h-3 sm:h-4 w-10 sm:w-12 bg-gray-300 rounded"></div>
       </td>
     </tr>
   );
 
   return (
-    <div className="bg-white rounded-xl p-4 w-full">
-      {/* PERIOD BUTTONS */}
-      <div className="flex overflow-x-auto">
+    <div className="bg-white rounded-xl p-3 sm:p-4 w-full">
+      {/* filter buttons */}
+      <div className="flex overflow-x-auto scrollbar-hide">
         <div className="inline-flex bg-gray-200 rounded-xl p-1 min-w-max">
           {periods.map((item) => (
             <button
               key={item.value}
               onClick={() => setTimePeriod(item.value)}
-              className={`px-3 md:px-4 py-2 text-xs font-medium rounded-lg transition-all duration-200 whitespace-nowrap
-          ${
-            timePeriod === item.value
-              ? "bg-violet-500 text-white shadow-sm"
-              : "text-gray-500 hover:bg-gray-300"
-          }`}
+              className={`px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 text-xs font-medium rounded-lg transition-all duration-200 whitespace-nowrap
+                ${
+                  timePeriod === item.value
+                    ? "bg-violet-600 text-white shadow-sm"
+                    : "text-gray-500 hover:bg-gray-300"
+                }`}
             >
               {item.label}
             </button>
           ))}
         </div>
       </div>
-      <div className=" overflow-x-auto mt-4">
-        <table className="w-full border-collapse">
-          {/* HEADER */}
+
+      {/* TABLE CONTAINER - Horizontal scroll on mobile */}
+      <div className="overflow-x-auto mt-3 sm:mt-4 -mx-3 sm:mx-0 px-3 sm:px-0">
+        <table className="w-full border-collapse min-w-[600px] sm:min-w-0">
+          {/* HEADER - Responsive text and padding */}
           <thead>
             <tr className="border-b border-gray-200 text-left">
-              <th className="py-3 px-4 text-sm font-medium text-gray-500">
+              <th className="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm font-medium text-gray-500 w-12 sm:w-16">
                 Rank
               </th>
-
-              <th className="py-3 px-4 text-sm font-medium text-gray-500">
+              <th className="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm font-medium text-gray-500">
                 Name
               </th>
-
-              <th className="py-3 px-4 text-sm font-medium text-gray-500">
-                Reputation
+              <th className="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm font-medium text-gray-500">
+                Rep
               </th>
-
-              <th className="py-3 px-4 text-sm font-medium text-gray-500">
-                Total Issues
+              <th className="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm font-medium text-gray-500 hidden sm:table-cell">
+                Issues
               </th>
-
-              <th className="py-3 px-4 text-sm font-medium text-gray-500">
+              <th className="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm font-medium text-gray-500 hidden md:table-cell">
                 Resolved
               </th>
-
-              <th className="py-3 px-4 text-sm font-medium text-gray-500">
-                Success Rate
+              <th className="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm font-medium text-gray-500">
+                Rate
               </th>
             </tr>
           </thead>
@@ -121,9 +111,9 @@ const UserCard = ({ limit }) => {
           {/* BODY */}
           <tbody>
             {loading
-              ? Array.from({ length: displayedUsers.length }).map((_, i) => (
-                  <SkeletonRow key={i} />
-                ))
+              ? Array.from({ length: displayedUsers.length || 5 }).map(
+                  (_, i) => <SkeletonRow key={i} />,
+                )
               : displayedUsers.map((item) => {
                   const { rank, statistics, user } = item;
 
@@ -132,12 +122,14 @@ const UserCard = ({ limit }) => {
                       key={user.id}
                       className="border-b border-gray-100 hover:bg-gray-50 transition"
                     >
-                      <td className="py-3 px-4 font-semibold">#{rank}</td>
+                      <td className="py-2 sm:py-3 px-2 sm:px-4 font-semibold text-xs sm:text-sm">
+                        #{rank}
+                      </td>
 
-                      {/* USER */}
-                      <td className="py-3 px-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-full overflow-hidden">
+                      {/* USER - Compact on mobile */}
+                      <td className="py-2 sm:py-3 px-2 sm:px-4">
+                        <div className="flex items-center gap-2 sm:gap-3">
+                          <div className="w-7 h-7 sm:w-9 sm:h-9 rounded-full overflow-hidden flex-shrink-0">
                             {user.avatar_url ? (
                               <img
                                 src={user.avatar_url}
@@ -145,25 +137,30 @@ const UserCard = ({ limit }) => {
                                 className="w-full h-full object-cover"
                               />
                             ) : (
-                              <div className="w-full h-full bg-[#243b8c] text-white flex items-center justify-center text-xs font-semibold">
+                              <div className="w-full h-full bg-[#243b8c] text-white flex items-center justify-center text-[10px] sm:text-xs font-semibold">
                                 {getInitials(user.name)}
                               </div>
                             )}
                           </div>
-
-                          <span className="font-medium">{user.name}</span>
+                          <span className="font-medium text-xs sm:text-sm truncate max-w-[100px] sm:max-w-none">
+                            {user.name}
+                          </span>
                         </div>
                       </td>
 
-                      <td className="py-3 px-4">{user.reputation_points}</td>
+                      <td className="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm">
+                        {user.reputation_points}
+                      </td>
 
-                      <td className="py-3 px-4">{statistics.total_issues}</td>
+                      <td className="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm hidden sm:table-cell">
+                        {statistics.total_issues}
+                      </td>
 
-                      <td className="py-3 px-4">
+                      <td className="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm hidden md:table-cell">
                         {statistics.resolved_issues}
                       </td>
 
-                      <td className="py-3 px-4 font-medium">
+                      <td className="py-2 sm:py-3 px-2 sm:px-4 font-medium text-xs sm:text-sm">
                         {statistics.success_rate}%
                       </td>
                     </tr>

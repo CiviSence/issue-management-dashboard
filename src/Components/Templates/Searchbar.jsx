@@ -46,7 +46,7 @@ const Searchbar = () => {
           <img
             src={profileData?.avatar_url}
             alt="Profile"
-            className="w-9 h-9 rounded-full border border-violet-500 object-cover"
+            className="w-9 h-9 rounded-full border border-violet-600 object-cover"
           />
         </div>
       </div>

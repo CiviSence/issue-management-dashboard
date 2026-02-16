@@ -9,7 +9,7 @@ export const NavItem = ({ to, icon, label }) => {
      rounded-lg px-4 py-3 transition
      ${
        isActive
-         ? "bg-white text-violet-500 font-semibold"
+         ? "bg-white text-violet-600 font-semibold"
          : "hover:text-white hover:bg-violet-400"
      }`;
 
@@ -49,7 +49,7 @@ const SideNavLayout = ({ children }) => {
 
   return (
     <div
-      className="bg-violet-500
+      className="bg-violet-600
         hidden md:flex flex-col justify-between
         w-20 lg:w-[17vw]
         shrink-0
@@ -135,7 +135,7 @@ const SideNavLayout = ({ children }) => {
               type="text"
               value={logoutInput}
               onChange={(e) => setLogoutInput(e.target.value)}
-              className="w-full border text-red-400 border-gray-300 rounded px-3 py-2 mb-4 outline-none focus:border-violet-500"
+              className="w-full border text-red-400 border-gray-300 rounded px-3 py-2 mb-4 outline-none focus:border-violet-600"
               placeholder="Type 'logout'"
             />
             <div className="flex justify-end gap-3">

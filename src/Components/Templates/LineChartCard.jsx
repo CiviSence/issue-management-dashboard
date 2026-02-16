@@ -47,14 +47,12 @@ const LineChartCard = () => {
     <div className="bg-white rounded-xl p-5 w-full h-[300px]">
       {/* Header */}
       <div className="flex justify-between items-center mb-2">
-        <h2 className="text-lg font-semibold text-gray-700">
-          Issues Trend
-        </h2>
+        <h2 className="text-lg font-semibold text-gray-700">Issues Trend</h2>
 
         <select
           value={period}
           onChange={(e) => setPeriod(e.target.value)}
-          className="appearance-none bg-white border border-gray-300 text-gray-700 text-xs rounded px-2 py-1  focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition duration-200"
+          className="appearance-none bg-white border border-gray-300 text-gray-700 text-xs rounded px-2 py-1  focus:outline-none focus:ring-2 focus:ring-violet-600 focus:border-violet-600 transition duration-200"
         >
           <option value="7d">Last 7 Days</option>
           <option value="30d">Last 30 Days</option>

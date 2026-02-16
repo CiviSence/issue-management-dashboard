@@ -7,8 +7,7 @@ const BottomNav = () => {
 
   const navClass = ({ isActive }) =>
     `flex flex-col items-center justify-center gap-1
-     ${isActive ? "text-white scale-110 transition-all" : "text-gray-200"
-    }`;
+     ${isActive ? "text-white scale-110 transition-all" : "text-gray-200"}`;
 
   return (
     <div
@@ -16,7 +15,7 @@ const BottomNav = () => {
         fixed bottom-0 left-0
         w-full
         h-16
-       bg-violet-500
+       bg-violet-600
         rounded-t-3xl
         flex justify-around items-center
         md:hidden
@@ -39,7 +38,6 @@ const BottomNav = () => {
             <i className="ri-shield-check-fill text-xl"></i>
             <span className="text-xs">Resolved</span>
           </NavLink>
-
         </>
       )}
 
@@ -61,7 +59,6 @@ const BottomNav = () => {
       {/* STUDENT LINKS */}
       {role === "student" && (
         <>
-
           <NavLink to="/help-support" className={navClass}>
             <i className="ri-customer-service-2-fill text-xl"></i>
             <span className="text-xs">Help</span>
