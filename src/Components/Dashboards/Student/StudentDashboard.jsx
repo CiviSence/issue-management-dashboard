@@ -62,7 +62,7 @@ const StudentDashboard = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  console.log(myIssues);
+  
 
   // Status styles
   const getStatusStyle = (status) =>
@@ -150,7 +150,7 @@ const StudentDashboard = () => {
         media_urls: ["string"], // just for testing, replace with actual media handling logic
       };
 
-      console.log("Payload:", issuePayload); // Debug
+      
 
       if (editMode) {
         setIsEditing(true);

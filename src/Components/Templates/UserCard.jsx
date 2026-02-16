@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useUsers } from "../../Context/UserContext";
 
 const getInitials = (name = "") =>
@@ -9,133 +9,135 @@ const getInitials = (name = "") =>
     .toUpperCase()
     .slice(0, 2);
 
-const UserCard = () => {
+const UserCard = ({ limit }) => {
   const { leaderboard, fetchLeaderboard } = useUsers();
+  const periods = [
+    { label: "All Time", value: "all" },
+    { label: "Weekly", value: "week" },
+    { label: "This Month", value: "month" },
+    { label: "Yearly", value: "year" },
+   
+  ];
+
+  const [timePeriod, setTimePeriod] = useState("month");
+  
 
   useEffect(() => {
-    fetchLeaderboard();
-  }, []);
+    fetchLeaderboard(timePeriod);
+  }, [timePeriod]);
+
+  const displayedUsers = limit ? leaderboard.slice(0, limit) : leaderboard;
 
   return (
-    <div className="overflow-x-auto bg-white rounded-xl p-4 pb-10 w-full">
-      <div className="flex items-center justify-between mb-3"></div>
+    <div className="bg-white rounded-xl p-4 w-full">
+      <div className="inline-flex bg-gray-200 rounded-xl p-1">
+        {periods.map((item) => (
+          <button
+            key={item.value}
+            onClick={() => setTimePeriod(item.value)}
+            className={`px-6 py-2 text-sm font-medium rounded-lg transition-all duration-200
+          ${
+            timePeriod === item.value
+              ? "bg-violet-500 text-white shadow-sm"
+              : "text-gray-500 hover:bg-gray-300"
+          }
+        `}
+          >
+            {item.label}
+          </button>
+        ))}
+      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full table-fixed border-collapse">
+          {/* HEADER */}
+          <thead>
+            <tr className="border-b border-gray-200 text-left">
+              <th className="py-3 px-4 text-sm font-medium text-gray-500 w-[80px]">
+                Rank
+              </th>
 
-      <table className="w-full">
-        <thead className="hidden md:table-header-group">
-          <tr className="border-b border-gray-200">
-            <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">
-              Rank
-            </th>
-            <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">
-              Name
-            </th>
-            <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">
-              Issues
-            </th>
-            <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">
-              Status
-            </th>
-            <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">
-              Resolved
-            </th>
-          </tr>
-        </thead>
+              <th className="py-3 px-4 text-sm font-medium text-gray-500">
+                Name
+              </th>
 
-        <tbody className="block md:table-row-group">
-          {leaderboard.map((item) => {
-            const { rank, statistics, user } = item;
+              <th className="py-3 px-4 text-sm font-medium text-gray-500 w-[100px] shrink-0">
+                Reputation
+              </th>
+              <th className="py-3 px-4 text-sm font-medium text-gray-500 w-[100px] shrink-0">
+                Total Issues
+              </th>
+              <th className="py-3 px-4 text-sm font-medium text-gray-500 w-[100px] shrink-0">
+                Resolved Issues
+              </th>
 
-            return (
-              <tr
-                key={user.id}
-                className="
-          block md:table-row
-          border border-gray-200 md:border-0
-          rounded-lg md:rounded-none
-          mb-4 md:mb-0
-          p-3 md:p-0
-          hover:bg-gray-50
-        "
-              >
-                {/* Rank */}
-                <td className="block md:table-cell py-2 px-2 md:px-4">
-                  <span className="md:hidden text-xs text-gray-400 mr-2">
-                    Rank
-                  </span>
-                  <span className="font-semibold">#{rank}</span>
-                </td>
-
-                {/* Name */}
-                <td className="block md:table-cell py-2 px-2 md:px-4">
-                  <span className="md:hidden text-xs text-gray-400">User</span>
-                  <div className="flex items-center gap-3 mt-1">
-                    <div className="w-8 h-8 rounded-full overflow-hidden">
-                      {user.avatar_url ? (
-                        <img
-                          src={user.avatar_url}
-                          alt={user.name}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-[#243b8c] text-white flex items-center justify-center text-xs font-semibold">
-                          {getInitials(user.name)}
-                        </div>
-                      )}
-                    </div>
-
-                    <div>
-                      <p className="font-medium text-gray-900">{user.name}</p>
-                      <p className="text-xs text-gray-500">
-                        {user.department} • Year {user.year}
-                      </p>
-                    </div>
-                  </div>
-                </td>
-
-                {/* Issues */}
-                <td className="block md:table-cell py-2 px-2 md:px-4">
-                  <span className="md:hidden text-xs text-gray-400 mr-2">
-                    Issues
-                  </span>
-                  {statistics.total_issues}
-                </td>
-
-                {/* Status */}
-                <td className="block md:table-cell py-2 px-2 md:px-4">
-                  <span className="md:hidden text-xs text-gray-400 mr-2">
-                    Status
-                  </span>
-                  <span
-                    className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      statistics.active_issues > 0
-                        ? "bg-yellow-100 text-yellow-700"
-                        : "bg-green-100 text-green-700"
-                    }`}
-                  >
-                    {statistics.active_issues > 0 ? "Active" : "Resolved"}
-                  </span>
-                </td>
-
-                {/* Success */}
-                <td className="block md:table-cell py-2 px-2 md:px-4">
-                  <span className="md:hidden text-xs text-gray-400 mr-2">
-                    Resolved
-                  </span>
-                  {statistics.success_rate}%
-                </td>
-              </tr>
-            );
-          })}
-
-          {!leaderboard.length && (
-            <tr>
-              <td colSpan="5" className="text-center py-6 text-gray-500">
-                No users found
-              </td>
+              <th className="py-3 px-4 text-sm font-medium text-gray-500 w-[140px]">
+                Success Rate
+              </th>
             </tr>
-          )}
-        </tbody>
-      </table>
+          </thead>
+
+          {/* BODY */}
+          <tbody>
+            {displayedUsers.map((item) => {
+              const { rank, statistics, user } = item;
+
+              return (
+                <tr
+                  key={user.id}
+                  className="border-b border-gray-100 hover:bg-gray-50 transition"
+                >
+                  {/* Rank */}
+                  <td className="py-3 px-4 font-semibold text-gray-800">
+                    #{rank}
+                  </td>
+
+                  {/* Name */}
+                  <td className="py-3 px-4">
+                    <div className="flex items-center gap-3">
+                      {/* Avatar */}
+                      <div className="w-9 h-9 rounded-full overflow-hidden flex-shrink-0">
+                        {user.avatar_url ? (
+                          <img
+                            src={user.avatar_url}
+                            alt={user.name}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-[#243b8c] text-white flex items-center justify-center text-xs font-semibold">
+                            {getInitials(user.name)}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Name */}
+                      <span className="font-medium text-gray-900 truncate">
+                        {user.name}
+                      </span>
+                    </div>
+                  </td>
+
+                  <td className="py-3 px-4 text-gray-700">
+                    {user.reputation_points}
+                  </td>
+
+                  {/* Issues */}
+                  <td className="py-3 px-4 text-gray-700">
+                    {statistics.total_issues}
+                  </td>
+                  <td className="py-3 px-4 text-gray-700">
+                    {statistics.resolved_issues}
+                  </td>
+
+                  {/* Success Rate */}
+                  <td className="py-3 px-4 font-medium text-gray-800">
+                    {statistics.success_rate}%
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

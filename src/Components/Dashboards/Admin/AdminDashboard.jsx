@@ -10,6 +10,7 @@ import UserCard from "../../Templates/UserCard";
 import { useIssues } from "../../../Context/IssueContext";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import { Link } from "react-router-dom";
 
 const DashboardSkeleton = () => {
   return (
@@ -54,8 +55,6 @@ const DashboardSkeleton = () => {
 const AdminDashboard = () => {
   //get all issues
   const { issues } = useIssues();
-  console.log(issues);
-
   const initialStats = {
     category: {
       maintenance: 0,
@@ -120,11 +119,7 @@ const AdminDashboard = () => {
 
   const { category, status, priority, location } = stats;
 
-  console.log(priority);
-  console.log(category);
-  console.log(status);
-  console.log(location);
-
+  
   //issue card colors and count
   const statusCards = [
     {
@@ -195,7 +190,7 @@ const AdminDashboard = () => {
       <SideNav />
       <BottomNav />
 
-      {issues.length > 0  ? (
+      {issues.length > 0 ? (
         <>
           <div className="w-full p-2 lg:p-4 lg:w-[calc(100vw-15vw)] bg-white overflow-x-auto ">
             <div className="w-full bg-violet-500 p-4 rounded-2xl">
@@ -217,7 +212,6 @@ const AdminDashboard = () => {
                 <Searchbar />
               </div>
             </div>
-
             {/* Issue Cards */}
             <div className="w-full mt-4 gap-2 flex flex-wrap justify-center bg-[#F0EEFF] p-4 rounded-2xl">
               {statusCards.map((item, index) => (
@@ -237,10 +231,31 @@ const AdminDashboard = () => {
                 <StatusChart data={locationData} />
               </div>
             </div>
-            <div className="bg-[#F0EEFF] p-4 mt-4 rounded-2xl">
-              <UserCard />
-            </div>
+            <h1 className="pt-2 pb-1 pl-2 text-xl sm:text-2xl font-semibold text-[#363434]  ">
+              Top Reporters
+            </h1>{" "}
+            <div className="bg-[#F0EEFF] p-4 mt-1 rounded-2xl">
+              {/* Top 3 Users */}
 
+              <UserCard limit={3} />
+
+              {/* View Full Leaderboard Link */}
+              <div className="flex justify-end mt-3">
+                <Link
+                  to="/leaderboard"
+                  className="
+        text-sm
+        font-semibold
+        text-[#243b8c]
+        hover:text-[#1b2f6b]
+        hover:underline
+        transition
+      "
+                >
+                  View Full Leaderboard →
+                </Link>
+              </div>
+            </div>
             {/* Reports + Chart */}
             {/* <div className="mt-10 flex flex-col lg:flex-row gap-6">
             <RecentReportsCard recentReports={recentReports} />

@@ -8,9 +8,7 @@ import instance from "../Utils/axios";
  */
 export const getAllIssues = async (params = {}) => {
   try {
-    const { data } = await axios.get("/issues", {
-      params,
-    });
+    const { data } = await axios.get("/issues", { params });
     return data;
   } catch (error) {
     throw new Error(error.response?.data?.message || "Failed to fetch issues");
@@ -23,27 +21,20 @@ export const getAllIssues = async (params = {}) => {
  */
 export const getMyIssues = async (userId) => {
   try {
-    const { data } = await axios.get("/issues", {
-      params: { user_id: userId },
-    });
+    const { data } = await axios.get("/issues", { params: { user_id: userId } });
     return data;
   } catch (error) {
-    throw new Error(
-      error.response?.data?.message || "Failed to fetch your issues",
-    );
+    throw new Error(error.response?.data?.message || "Failed to fetch your issues");
   }
 };
 
 /**
  * Get Resolved Issues
  * GET /api/issues/?status=resolved
- * @param {object} params - status, priority, location, skip, limit
  */
 export const getResolvedIssues = async (params = {}) => {
   try {
-    const { data } = await axios.get("/issues/?limit=50&status=resolved", {
-      params,
-    });
+    const { data } = await axios.get("/issues/?limit=50&status=resolved", { params });
     return data;
   } catch (error) {
     throw new Error(error.response?.data?.message || "Failed to fetch issues");
@@ -53,18 +44,13 @@ export const getResolvedIssues = async (params = {}) => {
 /**
  * Get social feed issues
  * GET /api/issues/feed
- * @param {object} params - skip, limit
  */
 export const getIssuesFeed = async (params = {}) => {
   try {
-    const { data } = await axios.get("/issues/feed", {
-      params,
-    });
+    const { data } = await axios.get("/issues/feed", { params });
     return data;
   } catch (error) {
-    throw new Error(
-      error.response?.data?.message || "Failed to fetch issues feed",
-    );
+    throw new Error(error.response?.data?.message || "Failed to fetch issues feed");
   }
 };
 
@@ -87,16 +73,14 @@ export const getIssueById = async (issueId) => {
  */
 export const createIssue = async (issueData) => {
   try {
-    console.log("Sending data:", issueData); // Debug
     const { data } = await instance.post("/issues", issueData);
     return data;
   } catch (error) {
-    console.log("Full error:", error);
-    console.log("Response status:", error.response?.status);
-    console.log("Response data:", error.response?.data);
-    console.log("Request URL:", error.config?.url);
-    console.log("Request headers:", error.config?.headers);
-    throw new Error(error.response?.data?.detail || error.response?.data?.message || "Failed to create issue");
+    throw new Error(
+      error.response?.data?.detail ||
+      error.response?.data?.message ||
+      "Failed to create issue"
+    );
   }
 };
 
@@ -112,11 +96,7 @@ export const issueImage = async (issueId, imageFile) => {
     const { data } = await instance.post(
       `/upload/issue?issue_id=${issueId}`,
       formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      },
+      { headers: { "Content-Type": "multipart/form-data" } }
     );
 
     return data;
@@ -157,13 +137,26 @@ export const deleteIssue = async (issueId) => {
  */
 export const getAssignedIssues = async (staffId) => {
   try {
-    const { data } = await axios.get("/issues", {
-      params: { assigned_to: staffId },
+    const { data } = await axios.get("/issues", { params: { assigned_to: staffId } });
+    return data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "Failed to fetch assigned issues");
+  }
+};
+
+/**
+ * Assign issue to a staff member
+ * POST /api/assignments
+ */
+export const assignIssue = async (issueId, staffId, notes = "") => {
+  try {
+    const { data } = await instance.post("/assignments", {
+      issue_id: issueId,
+      staff_user_id: staffId,
+      notes,
     });
     return data;
   } catch (error) {
-    throw new Error(
-      error.response?.data?.message || "Failed to fetch assigned issues",
-    );
+    throw new Error(error.response?.data?.message || "Failed to assign staff to issue");
   }
 };
