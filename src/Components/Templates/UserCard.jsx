@@ -13,6 +13,8 @@ const UserCard = ({ limit }) => {
   const { leaderboard, fetchLeaderboard } = useUsers();
   const [loading, setLoading] = useState(false);
 
+  console.log(leaderboard);
+
   const periods = [
     { label: "All Time", value: "all" },
     { label: "Weekly", value: "week" },

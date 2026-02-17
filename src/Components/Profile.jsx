@@ -6,9 +6,9 @@ import BottomNav from "./Templates/BottomNav";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { updateMyProfile } from "../Utils/profile-api";
-import { getActiveSessions, revokeSession } from "../Utils/auth-api";
+import { getActiveSessions, logoutAllSessions, revokeSession } from "../Utils/auth-api";
 import defaultProfile from "../assets/default-avatar.jpg";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const InfoCard = ({ title, children }) => (
   <div className="bg-white shadow-md rounded-lg p-4 h-full">
