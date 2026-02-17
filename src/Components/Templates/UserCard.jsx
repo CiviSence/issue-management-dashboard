@@ -73,7 +73,7 @@ const UserCard = ({ limit }) => {
               className={`px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 text-xs font-medium rounded-lg transition-all duration-200 whitespace-nowrap
                 ${
                   timePeriod === item.value
-                    ? "bg-violet-600 text-white shadow-sm"
+                    ? "bg-violet-500 text-white shadow-sm"
                     : "text-gray-500 hover:bg-gray-300"
                 }`}
             >
@@ -85,7 +85,7 @@ const UserCard = ({ limit }) => {
 
       {/* TABLE CONTAINER - Horizontal scroll on mobile */}
       <div className="overflow-x-auto mt-3 sm:mt-4 -mx-3 sm:mx-0 px-3 sm:px-0">
-        <table className="w-full border-collapse min-w-[600px] sm:min-w-0">
+        <table className="w-full border-collapse min-w-150 sm:min-w-0">
           {/* HEADER - Responsive text and padding */}
           <thead>
             <tr className="border-b border-gray-200 text-left">
@@ -131,7 +131,7 @@ const UserCard = ({ limit }) => {
                       {/* USER - Compact on mobile */}
                       <td className="py-2 sm:py-3 px-2 sm:px-4">
                         <div className="flex items-center gap-2 sm:gap-3">
-                          <div className="w-7 h-7 sm:w-9 sm:h-9 rounded-full overflow-hidden flex-shrink-0">
+                          <div className="w-7 h-7 sm:w-9 sm:h-9 rounded-full overflow-hidden shrink-0">
                             {user.avatar_url ? (
                               <img
                                 src={user.avatar_url}
@@ -144,14 +144,14 @@ const UserCard = ({ limit }) => {
                               </div>
                             )}
                           </div>
-                          <span className="font-medium text-xs sm:text-sm truncate max-w-[100px] sm:max-w-none">
+                          <span className="font-medium text-xs sm:text-sm truncate max-w-25 sm:max-w-none">
                             {user.name}
                           </span>
                         </div>
                       </td>
 
                       <td className="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm">
-                        {statistics.resolved_issues*10 + " " + "points"}
+                        {statistics.resolved_issues * 10 + " " + "points"}
                       </td>
 
                       <td className="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm hidden sm:table-cell">

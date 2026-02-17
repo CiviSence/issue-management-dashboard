@@ -5,8 +5,13 @@ import StaffSideNav from "./Dashboards/Staff/StaffSideNav";
 import BottomNav from "./Templates/BottomNav";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import ProfileEditForm from "../Components/Inputs/ProfileEditForm";
 import { updateMyProfile } from "../Utils/profile-api";
-import { getActiveSessions, logoutAllSessions, revokeSession } from "../Utils/auth-api";
+import {
+  getActiveSessions,
+  logoutAllSessions,
+  revokeSession,
+} from "../Utils/auth-api";
 import defaultProfile from "../assets/default-avatar.jpg";
 import { useEffect, useState } from "react";
 
@@ -54,11 +59,14 @@ const SessionsCard = () => {
   }, []);
 
   const handleRevoke = async (sessionId) => {
-    if (!window.confirm("Are you sure you want to revoke this session?")) return;
+    if (!window.confirm("Are you sure you want to revoke this session?"))
+      return;
     setRevokingId(sessionId);
     try {
       await revokeSession(sessionId);
-      setSessions((prev) => prev.filter((s) => s !== sessionId && s.id !== sessionId));
+      setSessions((prev) =>
+        prev.filter((s) => s !== sessionId && s.id !== sessionId),
+      );
       // Refresh to be sure
       fetchSessions();
     } catch (error) {
@@ -71,9 +79,7 @@ const SessionsCard = () => {
   return (
     <div className="bg-white shadow-md rounded-lg p-4 h-full border border-gray-100">
       <div className="flex justify-between items-center mb-4 border-b pb-2">
-        <h2 className="text-xl font-semibold text-gray-800">
-          Active Sessions
-        </h2>
+        <h2 className="text-xl font-semibold text-gray-800">Active Sessions</h2>
         <button
           onClick={fetchSessions}
           className="text-violet-600 hover:text-violet-700 p-1"
@@ -86,25 +92,38 @@ const SessionsCard = () => {
       {loading ? (
         <div className="space-y-3">
           {[1, 2].map((i) => (
-            <div key={i} className="h-12 bg-gray-100 animate-pulse rounded-lg"></div>
+            <div
+              key={i}
+              className="h-12 bg-gray-100 animate-pulse rounded-lg"
+            ></div>
           ))}
         </div>
       ) : sessions.length > 0 ? (
         <div className="space-y-3">
           {sessions.map((session, index) => {
             // The API returns strings or objects based on the schema
-            const id = typeof session === 'object' ? session.id : session;
-            const label = typeof session === 'object' ? session.device_info || `Session ${id}` : `Session ${index + 1}`;
+            const id = typeof session === "object" ? session.id : session;
+            const label =
+              typeof session === "object"
+                ? session.device_info || `Session ${id}`
+                : `Session ${index + 1}`;
 
             return (
-              <div key={id || index} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-gray-100 hover:border-violet-200 transition-colors">
+              <div
+                key={id || index}
+                className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-gray-100 hover:border-violet-200 transition-colors"
+              >
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-violet-100 text-violet-600 rounded-lg">
                     <i className="ri-device-line text-lg"></i>
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-gray-800">{label}</p>
-                    <p className="text-[10px] text-gray-400 uppercase tracking-wider">Active Now</p>
+                    <p className="text-sm font-semibold text-gray-800">
+                      {label}
+                    </p>
+                    <p className="text-[10px] text-gray-400 uppercase tracking-wider">
+                      Active Now
+                    </p>
                   </div>
                 </div>
                 <button
@@ -120,7 +139,9 @@ const SessionsCard = () => {
         </div>
       ) : (
         <div className="text-center py-6">
-          <p className="text-gray-400 text-sm">No other active sessions found.</p>
+          <p className="text-gray-400 text-sm">
+            No other active sessions found.
+          </p>
         </div>
       )}
     </div>
@@ -182,7 +203,7 @@ const Profile = () => {
     <SkeletonTheme baseColor="#f3f4f6" highlightColor="#ffffff">
       <div className="w-full h-full overflow-hidden bg-gray-50">
         {/* Header Skeleton */}
-        <div className="flex flex-col md:flex-row items-center gap-6 bg-violet-600/10 p-5 lg:p-15 border-b border-violet-100">
+        <div className="flex flex-col md:flex-row items-center gap-6 bg-violet-500/10 p-5 lg:p-15 border-b border-violet-100">
           <Skeleton circle width={128} height={128} className="shadow-lg" />
           <div className="flex flex-col gap-3 items-center md:items-start w-full max-w-sm">
             <Skeleton width={240} height={36} />
@@ -229,7 +250,7 @@ const Profile = () => {
       {profileData ? (
         <div className="mx-auto w-full shadow-lg overflow-y-auto bg-gray-50 min-h-screen">
           {/* HEADER */}
-          <div className="flex flex-col md:flex-row items-center gap-6 bg-linear-to-r from-violet-500 to-violet-600 p-5 lg:p-15 text-white shadow-md relative">
+          <div className="flex flex-col md:flex-row items-center gap-6 bg-linear-to-r from-violet-600 to-purple-600 p-5 lg:p-15 text-white shadow-md relative">
             <img
               src={profileData.avatar_url || defaultProfile}
               alt="Profile"
@@ -353,8 +374,12 @@ const Profile = () => {
                   className="w-4 h-4 text-violet-600 focus:ring-violet-500"
                 />
                 <div className="flex-1">
-                  <p className="text-sm font-semibold text-gray-800">This device only</p>
-                  <p className="text-xs text-gray-500">Logout from this session</p>
+                  <p className="text-sm font-semibold text-gray-800">
+                    This device only
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    Logout from this session
+                  </p>
                 </div>
               </label>
 
@@ -368,14 +393,17 @@ const Profile = () => {
                   className="w-4 h-4 text-red-600 focus:ring-red-500"
                 />
                 <div className="flex-1">
-                  <p className="text-sm font-semibold text-gray-800 text-red-600">All devices</p>
+                  <p className="text-sm font-semibold text-gray-800 text-red-600">
+                    All devices
+                  </p>
                   <p className="text-xs text-gray-500">Logout everywhere</p>
                 </div>
               </label>
             </div>
 
             <p className="mb-2 text-sm text-gray-600 text-center">
-              Type <span className="font-bold text-red-500">logout</span> to confirm.
+              Type <span className="font-bold text-red-500">logout</span> to
+              confirm.
             </p>
             <input
               type="text"
@@ -388,7 +416,9 @@ const Profile = () => {
             <div className="flex flex-col gap-2">
               <button
                 onClick={handleLogoutConfirm}
-                disabled={logoutInput.toLowerCase() !== "logout" || isLoggingOut}
+                disabled={
+                  logoutInput.toLowerCase() !== "logout" || isLoggingOut
+                }
                 className="w-full py-4 bg-red-500 text-white font-bold rounded-xl hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-red-500/30"
               >
                 {isLoggingOut ? "Logging out..." : "Log Out"}

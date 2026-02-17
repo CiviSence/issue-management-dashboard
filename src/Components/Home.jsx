@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 export default function Home() {
   return (
-    <div className="min-h-screen w-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 px-4">
+    <div className="min-h-screen w-full flex flex-col items-center justify-center bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 px-4">
       {/* Header Section */}
       <div className="text-center max-w-2xl mb-10">
         <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
@@ -10,7 +10,7 @@ export default function Home() {
         </h1>
         <p className="text-slate-300 text-base md:text-lg">
           A simple and transparent platform to report, track, and resolve college issues efficiently.
-          Stay informed, raise concerns, and make your Campus better — together.
+          Stay informed, raise concerns, and make your Campus better together.
         </p>
       </div>
 

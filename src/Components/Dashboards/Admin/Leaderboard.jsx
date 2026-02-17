@@ -10,7 +10,7 @@ const Leaderboard = () => {
       <SideNav />
       <BottomNav />
       <div className="min-h-screen w-full  p-4 overflow-x-auto">
-        <div className="w-full bg-violet-600 p-4 rounded-2xl">
+        <div className="w-full bg-violet-500 p-4 rounded-2xl">
           <div
             className="
       flex

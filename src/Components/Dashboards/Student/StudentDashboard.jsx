@@ -217,7 +217,7 @@ const StudentDashboard = () => {
 
       <div className="w-full p-2 lg:p-4 lg:w-[calc(100vw-15vw)] bg-[#F0EEFF] overflow-y-auto h-screen">
         {/* header */}
-        <div className="w-full bg-violet-600 p-4 sm:p-5  lg:p-6 rounded-2xl md:rounded-3xl text-white shadow-md mb-4 md:mb-6">
+        <div className="w-full bg-violet-500 p-4 sm:p-5  lg:p-6 rounded-2xl md:rounded-3xl text-white shadow-md mb-4 md:mb-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             {/* LEFT */}
             <div>
@@ -252,7 +252,7 @@ const StudentDashboard = () => {
                   resetForm();
                   setShowReportModal(true);
                 }}
-                className="w-full sm:w-auto bg-violet-600 text-white px-5 py-2.5 sm:px-6 sm:py-3 rounded-lg sm:rounded-xl font-semibold hover:bg-violet-700 transition shadow-md sm:shadow-lg shadow-violet-200 text-sm sm:text-base"
+                className="w-full sm:w-auto bg-violet-500 text-white px-5 py-2.5 sm:px-6 sm:py-3 rounded-lg sm:rounded-xl font-semibold hover:bg-violet-700 transition shadow-md sm:shadow-lg shadow-violet-200 text-sm sm:text-base"
               >
                 + Report Issue
               </button>
@@ -491,7 +491,7 @@ const StudentDashboard = () => {
           <div>
             <UserCard limit={3} />
 
-            <div className="bg-violet-600 text-white p-6 rounded-2xl shadow-lg relative overflow-hidden mt-2 lg:mt-4">
+            <div className="bg-violet-500 text-white p-6 rounded-2xl shadow-lg relative overflow-hidden mt-2 lg:mt-4">
               <div className="relative z-10">
                 <h3 className="text-lg font-bold mb-1">Campus News</h3>
                 <p className="text-violet-200 text-sm">
@@ -502,7 +502,7 @@ const StudentDashboard = () => {
                 </div>
               </div>
               {/* Decor */}
-              <div className="absolute top-0 right-0 w-32 h-32 bg-violet-600 rounded-full blur-3xl opacity-50 -mr-10 -mt-10"></div>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-violet-500 rounded-full blur-3xl opacity-50 -mr-10 -mt-10"></div>
             </div>
           </div>
         </div>
@@ -657,7 +657,7 @@ const StudentDashboard = () => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-4 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 font-medium disabled:opacity-50"
+                  className="px-4 py-2 bg-violet-500 text-white rounded-lg hover:bg-violet-700 font-medium disabled:opacity-50"
                 >
                   {isSubmitting
                     ? editMode

@@ -46,7 +46,7 @@ const HelpSupport = () => {
       <div className="w-full p-4 lg:w-[calc(100vw-15vw)] bg-[#F0EEFF] min-h-screen overflow-y-auto">
         <div className="w-full mx-auto">
           {/* header */}
-          <div className="w-full bg-violet-600 p-4 sm:p-5  lg:p-6 rounded-2xl md:rounded-3xl text-white shadow-md mb-4 md:mb-6">
+          <div className="w-full bg-violet-500 p-4 sm:p-5  lg:p-6 rounded-2xl md:rounded-3xl text-white shadow-md mb-4 md:mb-6">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
               {/* LEFT */}
               <div>
@@ -125,7 +125,7 @@ const HelpSupport = () => {
                 </div>
                 <button
                   type="button"
-                  className="bg-violet-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-violet-700 transition w-full md:w-auto"
+                  className="bg-violet-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-violet-700 transition w-full md:w-auto"
                 >
                   Send Message
                 </button>

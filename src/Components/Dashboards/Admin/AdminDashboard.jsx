@@ -16,7 +16,7 @@ const DashboardSkeleton = () => {
   return (
     <div className="w-full h-screen p-2 lg:p-4 lg:w-[calc(100vw-15vw)] bg-white overflow-auto">
       {/* Header */}
-      <div className="w-full flex justify-between bg-violet-200 p-4 rounded-2xl mb-4">
+      <div className="w-full flex flex-col lg:flex-row justify-between bg-violet-200 p-4 rounded-2xl mb-4">
         <Skeleton height={40} width={220} borderRadius={8} />
         <Skeleton height={48} width={320} borderRadius={8} />
       </div>
@@ -192,7 +192,7 @@ const AdminDashboard = () => {
       {issues.length > 0 ? (
         <>
           <div className="w-full p-2 lg:p-4 lg:w-[calc(100vw-15vw)] bg-white overflow-x-auto ">
-            <div className="w-full bg-violet-600 p-4 rounded-2xl">
+            <div className="w-full bg-violet-500 p-4 rounded-2xl">
               <div
                 className="
       flex

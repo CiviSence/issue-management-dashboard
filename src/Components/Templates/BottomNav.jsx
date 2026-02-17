@@ -15,7 +15,7 @@ const BottomNav = () => {
         fixed bottom-0 left-0
         w-full
         h-16
-       bg-violet-600
+       bg-violet-500
         rounded-t-3xl
         flex justify-around items-center
         md:hidden
