@@ -357,14 +357,14 @@ const Profile = () => {
       )}
 
       {showLogoutConfirm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-[100]">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-100">
           <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-sm">
             <h3 className="text-xl font-bold mb-4 text-gray-800 text-center">
               Confirm Logout
             </h3>
 
             <div className="space-y-3 mb-6">
-              <label className="flex items-center gap-3 p-3 rounded-xl border border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors has-[:checked]:border-violet-600 has-[:checked]:bg-violet-50">
+              <label className="flex items-center gap-3 p-3 rounded-xl border border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors has-checked:border-violet-600 has-checked:bg-violet-50">
                 <input
                   type="radio"
                   name="logoutType"
@@ -383,7 +383,7 @@ const Profile = () => {
                 </div>
               </label>
 
-              <label className="flex items-center gap-3 p-3 rounded-xl border border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors has-[:checked]:border-red-600 has-[:checked]:bg-red-50">
+              <label className="flex items-center gap-3 p-3 rounded-xl border border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors has-checked:border-red-600 has-checked:bg-red-50">
                 <input
                   type="radio"
                   name="logoutType"
@@ -393,7 +393,7 @@ const Profile = () => {
                   className="w-4 h-4 text-red-600 focus:ring-red-500"
                 />
                 <div className="flex-1">
-                  <p className="text-sm font-semibold text-gray-800 text-red-600">
+                  <p className="text-sm font-semibold text-gray-800">
                     All devices
                   </p>
                   <p className="text-xs text-gray-500">Logout everywhere</p>

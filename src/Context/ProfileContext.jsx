@@ -46,7 +46,7 @@ export const ProfileDataProvider = ({ children }) => {
     </ProfileContext.Provider>
   );
 };
-
+  
 // useUser.js add a new file using the following code: or you can uncomment the code below and place it here
 //i just did it here to reduce the number of files disabled by eslint
 // import { useContext } from "react";

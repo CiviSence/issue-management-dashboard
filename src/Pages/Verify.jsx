@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { verifyEmail, resendOtp } from "../Utils/auth-api";
 import { setSession } from "../Utils/auth-utils";
+import { useUser } from "../Context/ProfileContext";
 
 const Verify = () => {
+  const { setProfileData } = useUser();
   const navigate = useNavigate();
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
@@ -43,8 +45,10 @@ const Verify = () => {
       // Store auth token if provided
       if (res.token) {
         setSession(res.token, res.user); // Assuming res.user checks out, otherwise just token
+        setProfileData(res.user);
       } else if (res.access_token) {
         setSession(res.access_token, res.user);
+        setProfileData(res.user);
       }
 
       // Redirect to login or dashboard

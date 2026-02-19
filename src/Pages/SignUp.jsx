@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
@@ -35,7 +35,7 @@ const SignUp = () => {
       setError("Passwords do not match");
       return false;
     }
-    if (formData.password.length < 6) {
+    if (formData.password.length <= 6) {
       setError("Password must be at least 6 characters");
       return false;
     }
