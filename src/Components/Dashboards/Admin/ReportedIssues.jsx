@@ -415,12 +415,12 @@ const ReportedIssues = () => {
 
                         <td className="p-3">
                           {issue.location_building
-                            .split("-")
+                            ?.split("-")
                             .map(
                               (word) =>
                                 word.charAt(0).toUpperCase() + word.slice(1),
                             )
-                            .join(" ")}
+                            .join(" ") || "Not Available"}
                         </td>
 
                         <td className="p-3">
