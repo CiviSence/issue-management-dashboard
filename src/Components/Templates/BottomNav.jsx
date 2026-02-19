@@ -59,9 +59,11 @@ const BottomNav = () => {
       {/* STUDENT LINKS */}
       {role === "student" && (
         <>
+          <NavLink to="/feed" className={navClass}>
+            <i className="ri-rss-fill text-xl"></i> <span className="text-xs">Feed</span>
+          </NavLink>
           <NavLink to="/help-support" className={navClass}>
-            <i className="ri-customer-service-2-fill text-xl"></i>
-            <span className="text-xs">Help</span>
+            <i className="ri-customer-service-2-fill text-xl"></i> <span className="text-xs">Help</span>
           </NavLink>
         </>
       )}
