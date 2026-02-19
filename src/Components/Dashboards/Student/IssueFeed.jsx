@@ -4,16 +4,26 @@ import UserCard from "../../Templates/UserCard";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { createIssue, getIssuesFeed } from "../../../Utils/issues";
+import {
+  createIssue,
+  downvoteIssue,
+  getIssuesFeed,
+  upvoteIssue,
+} from "../../../Utils/issues";
 import Loader from "../../Templates/Loader";
+import defaultAvatar from "../../../assets/default-avatar.jpg";
 
 const IssueFeed = () => {
   const [issues, setIssues] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const [skip, setSkip] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
   const limit = 10;
 
   const fetchIssues = async () => {
+    if (isLoading || !hasMore) return;
+
+    setIsLoading(true);
     try {
       const newIssues = await getIssuesFeed({
         skip,
@@ -22,7 +32,13 @@ const IssueFeed = () => {
         order: "desc",
       });
 
-      setIssues((prev) => [...prev, ...newIssues]);
+      setIssues((prev) => {
+        const existingIds = new Set(prev.map((issue) => issue.id));
+        const uniqueNew = newIssues.filter(
+          (issue) => !existingIds.has(issue.id),
+        );
+        return [...prev, ...uniqueNew];
+      });
 
       setSkip((prev) => prev + limit);
 
@@ -31,6 +47,8 @@ const IssueFeed = () => {
       }
     } catch (err) {
       console.error(err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -117,6 +135,24 @@ const IssueFeed = () => {
     }
   };
 
+  const handleUpvote = (issueId) => async () => {
+    try {
+      await upvoteIssue(issueId);
+      toast.success("Issue upvoted successfully!");
+    } catch (error) {
+      toast.error(error.message || "Failed to upvote issue");
+    }
+  };
+
+  const handleDownvote = (issueId) => async () => {
+    try {
+      await downvoteIssue(issueId);
+      toast.success("Issue downvoted successfully!");
+    } catch (error) {
+      toast.error(error.message || "Failed to downvote issue");
+    }
+  };
+
   useEffect(() => {
     fetchIssues();
   }, []);
@@ -171,7 +207,7 @@ const IssueFeed = () => {
                 + Report Issue
               </button>
             </div>
-            <div className="bg-white p-3 lg:p-6 rounded-xl md:rounded-2xl shadow-sm border border-gray-100 min-h-75">
+            <div className=" p-3 lg:p-6 rounded-xl md:rounded-2xl  border border-gray-100 min-h-75">
               <h3 className="text-lg font-bold text-gray-800 mb-4">
                 Social Feed
               </h3>
@@ -180,7 +216,7 @@ const IssueFeed = () => {
                   dataLength={issues.length}
                   next={fetchIssues}
                   hasMore={hasMore}
-                  loader={<Loader />}
+                  loader={<Loader/>}
                   scrollableTarget="leftScroll"
                   endMessage={
                     <p style={{ textAlign: "center" }}>No more issues</p>
@@ -195,7 +231,7 @@ const IssueFeed = () => {
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex items-center gap-3">
                           <img
-                            src={issue.user.avatar_url}
+                            src={issue.user.avatar_url || defaultAvatar}
                             alt={issue.user.name}
                             className="w-10 h-10 rounded-full object-cover border-2 border-gray-50"
                           />
@@ -242,14 +278,12 @@ const IssueFeed = () => {
                       {/* CONTENT */}
                       <div className="mb-4">
                         <div className="flex items-center gap-2 mb-2">
-                          <span className="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded-md font-medium uppercase tracking-wide">
-                            {issue.main_category}
-                          </span>
-                          {issue.priority === "high" && (
-                            <span className="px-2 py-0.5 bg-red-50 text-red-600 text-xs rounded-md font-medium">
-                              High Priority
-                            </span>
-                          )}
+                          {issue.priority === "high" ||
+                            (issue.priority === "critical" && (
+                              <span className="px-2 py-0.5 bg-red-50 text-red-600 text-xs rounded-md font-medium">
+                                High Priority
+                              </span>
+                            ))}
                         </div>
 
                         <h3 className="font-bold text-gray-900 text-lg leading-tight mb-2">
@@ -296,10 +330,12 @@ const IssueFeed = () => {
                         <div className="flex items-center gap-6">
                           {/* Vote Group */}
                           <div className="flex items-center bg-gray-50 rounded-lg p-1">
+                            {/* Upvote Button */}
                             <button
+                              onClick={() => handleUpvote(issue.id)}
                               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md transition-all ${
-                                issue.engagement.user_voted === "up"
-                                  ? "bg-white text-green-600 shadow-sm"
+                                issue.engagement.user_voted
+                                  ? " text-green-600 shadow-sm"
                                   : "text-gray-500 hover:text-green-600 hover:bg-white"
                               }`}
                             >
@@ -317,10 +353,12 @@ const IssueFeed = () => {
 
                             <div className="w-px h-4 bg-gray-300 mx-1" />
 
+                            {/* Downvote Button */}
                             <button
+                              onClick={() => handleDownvote(issue.id)}
                               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md transition-all ${
-                                issue.engagement.user_voted === "down"
-                                  ? "bg-white text-red-600 shadow-sm"
+                                issue.engagement.user_vote === null
+                                  ? " text-red-600 shadow-sm"
                                   : "text-gray-500 hover:text-red-600 hover:bg-white"
                               }`}
                             >
@@ -378,14 +416,6 @@ const IssueFeed = () => {
                             </div>
                           </button>
                         </div>
-
-                        {/* Net Score */}
-                        <div className="flex items-center gap-1.5 text-sm">
-                         
-                          
-                            
-                          
-                        </div>
                       </div>
 
                       {/* Recent Comments Preview */}
@@ -395,15 +425,15 @@ const IssueFeed = () => {
                             .slice(0, 2)
                             .map((comment, idx) => (
                               <div key={idx} className="flex gap-2 text-sm">
-                                <span className="font-semibold text-gray-900">
-                                  {comment.user_name}:
+                                <span className="font-normal text-gray-900">
+                                  {comment.user.name} :
                                 </span>
                                 <span className="text-gray-600 line-clamp-1">
                                   {comment.text}
                                 </span>
                               </div>
                             ))}
-                          {issue.recent_comments.length > 2 && (
+                          {issue.recent_comments.length > 1 && (
                             <button className="text-violet-600 text-sm font-medium hover:underline">
                               View all {issue.recent_comments.length} comments
                             </button>

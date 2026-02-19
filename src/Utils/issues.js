@@ -3,7 +3,7 @@ import instance from "../Utils/axios";
 
 /**
  * Get issues (admin / filtered list)
- * GET /api/issues/
+ * GET /api/analytics/dashboard-stats
  * @param {object} params - status, priority, location, skip, limit
  */
 export const getStats = async () => {
@@ -174,3 +174,31 @@ export const assignIssue = async (issueId, staffId, notes = "") => {
     throw new Error(error.response?.data?.message || "Failed to assign staff to issue");
   }
 };
+
+/**
+ * Upvote an issue
+ * POST /api/issues/{issue_id}/upvote
+ */
+export const upvoteIssue = async (issueId) => {
+  try {
+    const { data } = await instance.post(`/issues/${issueId}/upvote`);
+    return data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "Failed to upvote issue");
+  }
+};
+
+/**
+ * Downvote an issue
+ * POST /api/issues/{issue_id}/downvote
+ */
+export const downvoteIssue = async (issueId) => {
+  try {
+    const { data } = await instance.post(`/issues/${issueId}/downvote`);
+    return data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "Failed to downvote issue");
+  }
+};
+
+
