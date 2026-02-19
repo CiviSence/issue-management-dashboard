@@ -1,33 +1,82 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { getAllIssues } from "../Utils/issues";
+import { getAllIssues, getResolvedIssues, getStats } from "../Utils/issues";
 
 const IssueContext = createContext();
 
 export const IssueProvider = ({ children }) => {
   const [issues, setIssues] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [resolvedIssues, setResolvedIssues] = useState([]);
+  const [allstats, setAllStats] = useState(null);
 
+  const [loadingIssues, setLoadingIssues] = useState(true);
+  const [loadingStats, setLoadingStats] = useState(true);
+
+  // Fetch all Issues
   const fetchIssues = async () => {
-    if (issues.length) return;
-
     try {
-      setLoading(true);
-      const data = await getAllIssues({ skip: 0, limit: 50 });
+      setLoadingIssues(true);
+
+      const data = await getAllIssues({
+        skip: 0,
+        limit: 50,
+      });
+
       setIssues(data);
     } catch (err) {
       console.error("Failed to fetch issues", err);
     } finally {
-      setLoading(false);
+      setLoadingIssues(false);
     }
   };
 
- 
+  const fetchResolvedIssues = async () => {
+    try {
+      const data = await getResolvedIssues();
+
+      setResolvedIssues(data?.issues || data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // Fetch Stats
+  const fetchStats = async () => {
+    try {
+      setLoadingStats(true);
+
+      const data = await getStats();
+
+      setAllStats(data);
+    } catch (err) {
+      console.error("Failed to fetch stats", err);
+    } finally {
+      setLoadingStats(false);
+    }
+  };
+
+  // Load both on first app load
   useEffect(() => {
     fetchIssues();
+    (fetchResolvedIssues(), fetchStats());
   }, []);
 
   return (
-    <IssueContext.Provider value={{ issues, setIssues, fetchIssues, loading }}>
+    <IssueContext.Provider
+      value={{
+        issues,
+        resolvedIssues,
+        allstats,
+
+
+        fetchIssues,
+        fetchResolvedIssues,
+        fetchStats,
+
+        setIssues,
+        setResolvedIssues,
+        setAllStats,
+      }}
+    >
       {children}
     </IssueContext.Provider>
   );

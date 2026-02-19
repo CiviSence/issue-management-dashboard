@@ -6,6 +6,20 @@ import instance from "../Utils/axios";
  * GET /api/issues/
  * @param {object} params - status, priority, location, skip, limit
  */
+export const getStats = async () => {
+  try {
+    const { data } = await axios.get("/analytics/dashboard-stats");
+    console.log(data);
+    return data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "Failed to fetch issues");
+  }
+};
+/**
+ * Get issues (admin / filtered list)
+ * GET /api/issues/
+ * @param {object} params - status, priority, location, skip, limit
+ */
 export const getAllIssues = async (params = {}) => {
   try {
     const { data } = await axios.get("/issues", { params });
@@ -34,7 +48,7 @@ export const getMyIssues = async (userId) => {
  */
 export const getResolvedIssues = async (params = {}) => {
   try {
-    const { data } = await axios.get("/issues/?limit=50&status=resolved", { params });
+    const { data } = await axios.get("/issues/?limit=50&status=new", { params });
     return data;
   } catch (error) {
     throw new Error(error.response?.data?.message || "Failed to fetch issues");
@@ -132,12 +146,12 @@ export const deleteIssue = async (issueId) => {
 };
 
 /**
- * Get issues assigned to a specific staff member
- * GET /api/issues/?assigned_to={staff_id}
+ * Get issues assigned to a me(staff member)
+ * GET /api/assignments/my-tasks
  */
-export const getAssignedIssues = async (staffId) => {
+export const getAssignedIssues = async () => {
   try {
-    const { data } = await axios.get("/issues", { params: { assigned_to: staffId } });
+    const { data } = await axios.get("assignments/my-tasks");
     return data;
   } catch (error) {
     throw new Error(error.response?.data?.message || "Failed to fetch assigned issues");

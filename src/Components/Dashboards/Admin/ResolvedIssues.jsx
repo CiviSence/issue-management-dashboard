@@ -1,70 +1,12 @@
 import SideNav from "./AdminSideNav";
 import BottomNav from "../../Templates/BottomNav";
 import Searchbar from "../../Templates/Searchbar";
-import { useEffect, useState } from "react";
-import { getResolvedIssues } from "../../../Utils/issues";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import { useIssues } from "../../../Context/IssueContext";
+import { useState } from "react";
 
-
-
-const ResolvedIssues = () => {
-  const [issues, setIssues] = useState([]);
-  const [selectedLocation, setSelectedLocation] = useState("all");
-  const [priority, setPriority] = useState("all");
-
-  const filteredIssues = issues.filter((issue) => {
-    const locationMatch =
-      selectedLocation === "all" || issue.location_address === selectedLocation;
-
-    const priorityMatch =
-      priority === "all" ||
-      issue.priority?.toLowerCase() === priority.toLowerCase();
-
-    return locationMatch && priorityMatch;
-  });
-
-  const uniqueLocations = [
-    ...new Set(issues.map((i) => i.location_address).filter(Boolean)),
-  ];
-
-  const categoryColor = {
-    Security: "bg-blue-100 text-blue-800",
-    Maintenance: "bg-red-100 text-red-800",
-    Infrastructure: "bg-amber-100 text-amber-800",
-    Cleanliness: "bg-emerald-100 text-emerald-800",
-    Facilities: "bg-purple-100 text-purple-800",
-  };
-
-  const priorityColor = {
-    critical: "bg-purple-100 text-purple-800",
-    high: "bg-red-100 text-red-800",
-    medium: "bg-amber-100 text-amber-800",
-    low: "bg-emerald-100 text-emerald-800",
-  };
-
-  const statusColor = {
-    new: "bg-sky-100 text-sky-800",
-    acknowledged: "bg-indigo-100 text-indigo-800",
-    in_progress: "bg-amber-100 text-amber-800",
-    resolved: "bg-emerald-100 text-emerald-800",
-    closed: "bg-zinc-200 text-zinc-800",
-  };
-
-  useEffect(() => {
-    const fetchResolvedIssues = async () => {
-      try {
-        const data = await getResolvedIssues();
-        setIssues(data?.issues || data); // depends on backend
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchResolvedIssues();
-  }, []);
-
-  const SkeletonLoader = () => {
+const SkeletonLoader = () => {
   return (
     <div className="w-full p-2 lg:p-4 lg:w-[calc(100vw-15vw)] overflow-x-auto">
       {/* Header */}
@@ -125,18 +67,61 @@ const ResolvedIssues = () => {
             </div>
           ))}
         </div>
-
-       
       </div>
     </div>
   );
 };
 
+const ResolvedIssues = () => {
+  const [selectedLocation, setSelectedLocation] = useState("all");
+  const [priority, setPriority] = useState("all");
+  const { resolvedIssues } = useIssues();
+
+  const filteredIssues = resolvedIssues.filter((issue) => {
+    const locationMatch =
+      selectedLocation === "all" || issue.location_address === selectedLocation;
+
+    const priorityMatch =
+      priority === "all" ||
+      issue.priority?.toLowerCase() === priority.toLowerCase();
+
+    return locationMatch && priorityMatch;
+  });
+
+  const uniqueLocations = [
+    ...new Set(resolvedIssues.map((i) => i.location_address).filter(Boolean)),
+  ];
+
+ const categoryColor = {
+    security: "bg-blue-100 text-blue-800",
+    maintenance: "bg-red-100 text-red-800",
+    infrastructure: "bg-amber-100 text-amber-800",
+    cleanliness: "bg-emerald-100 text-emerald-800",
+    facilities: "bg-purple-100 text-purple-800",
+    other: "bg-gray-100 text-gray-800",
+  };
+
+  const priorityColor = {
+    critical: "bg-red-300 text-red-800",
+    high: "bg-red-100 text-red-800",
+    medium: "bg-amber-100 text-amber-800",
+    low: "bg-emerald-100 text-emerald-800",
+  };
+
+  const statusColor = {
+    new: "bg-sky-100 text-sky-800",
+    acknowledged: "bg-indigo-100 text-indigo-800",
+    in_progress: "bg-amber-100 text-amber-800",
+    resolved: "bg-emerald-100 text-emerald-800",
+    closed: "bg-zinc-200 text-zinc-800",
+    spam: "bg-yellow-100 text-yellow-800",
+  };
+
   return (
     <>
       <SideNav />
       <BottomNav />
-      {issues.length > 0 ? (
+      {resolvedIssues.length > 0 ? (
         <>
           <div className="w-full p-2 lg:p-4 lg:w-[calc(100vw-15vw)]  overflow-x-auto ">
             <div className="w-full bg-violet-500 p-4 rounded-2xl">
@@ -152,7 +137,7 @@ const ResolvedIssues = () => {
               >
                 {/* Dashboard Title */}
                 <h1 className="text-2xl sm:text-3xl font-semibold text-white">
-                  All Issues
+                  Pending Issues (Newly Reported)
                 </h1>
                 {/* Searchbar */}
                 <Searchbar />
@@ -314,14 +299,6 @@ const ResolvedIssues = () => {
                     </div>
                   </div>
                 ))}
-              </div>
-
-              {/* Pagination */}
-              <div className="flex justify-between items-center mt-6 text-sm">
-                <span className="text-gray-400 cursor-not-allowed">
-                  ← Prev Page
-                </span>
-                <span className="cursor-pointer font-medium">Next Page →</span>
               </div>
             </div>
           </div>

@@ -1,15 +1,36 @@
 import { Link, useLocation } from "react-router-dom";
 import { LayoutDashboard, CheckSquare, Settings } from "lucide-react";
 import { useTheme } from "../../../Context/ThemeContext";
+import SideNavLayout, { NavItem } from "../Common/SideNavLayout";
 
 const StaffSideNav = () => {
-    const location = useLocation();
-    const { toggleTheme, theme } = useTheme();
+  // const location = useLocation();
+  // const { toggleTheme, theme } = useTheme();
 
-    const isActive = (path) => location.pathname === path;
+  // const isActive = (path) => location.pathname === path;
 
-    return (
-        <div className="hidden lg:flex flex-col w-[15vw] h-screen bg-card border-r border-border fixed left-0 top-0 z-50 transition-colors duration-200">
+  return (
+    <SideNavLayout>
+      <NavItem to="/dashboard" icon="ri-dashboard-fill" label="Dashboard" />
+      <NavItem
+        to="/assigned-issues"
+        icon="ri-check-square-fill"
+        label="Assigned Issues"
+      />
+      <NavItem
+        to="/help-support"
+        icon="ri-customer-service-2-fill"
+        label="Help & Support"
+      />
+      <NavItem to="/profile" icon="ri-user-fill" label="My Profile" />
+    </SideNavLayout>
+  );
+};
+
+export default StaffSideNav;
+
+{
+  /* <div className="hidden lg:flex flex-col w-[15vw] h-screen bg-card border-r border-border fixed left-0 top-0 z-50 transition-colors duration-200">
             <div className="p-6">
                 <h2 className="text-2xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
                     Staff Panel
@@ -47,8 +68,5 @@ const StaffSideNav = () => {
                     </span>
                 </button>
             </div>
-        </div>
-    );
-};
-
-export default StaffSideNav;
+        </div> */
+}
