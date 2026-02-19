@@ -50,29 +50,27 @@
 
 .dark {
   /* Dark Theme */
-  --background: #1E1F2F;
-  --foreground: #E1E4F3;
-  /* using accent as foreground text */
+ --background: #F6F6FC;
+  --foreground: #1a1a1a;
 
-  --primary: #A6ABD2;
-  --primary-foreground: #1E1F2F;
+  --primary: #5E65AC;
+  --primary-foreground: #ffffff;
 
-  --secondary: #5E65AC;
+  --secondary: #A6ABD2;
   --secondary-foreground: #ffffff;
 
-  --card: #2A2C44;
-  --card-foreground: #E1E4F3;
+  --card: #FFFFFF;
+  --card-foreground: #1a1a1a;
 
-  --muted: #2A2C44;
-  /* matching card/surface for muted bg in dark mode to avoid high contrast */
-  --muted-foreground: #8B8FB8;
+  --muted: #E1E4F3;
+  /* using accent as muted bg since actual muted hex is dark */
+  --muted-foreground: #A4A6BF;
 
-  --accent: #2A2C44;
-  /* toned down accent for dark mode bg, original E1E4F3 is too bright for bg */
-  --accent-foreground: #E1E4F3;
+  --accent: #E1E4F3;
+  --accent-foreground: #5E65AC;
 
-  --border: #3A3D66;
-  --input: #3A3D66;
+  --border: #CACCDC;
+  --input: #CACCDC;
 }
 
 ::-webkit-scrollbar {

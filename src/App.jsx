@@ -20,7 +20,7 @@ import { ThemeProvider } from "./Context/ThemeContext";
 const App = () => {
   return (
     <ThemeProvider>
-      <div className="w-full h-screen bg-background text-foreground flex transition-colors duration-200">
+      <div className="w-full h-screen bg-[#F0EEFF] flex ">
         <Routes>
           <Route
             path="/login"
