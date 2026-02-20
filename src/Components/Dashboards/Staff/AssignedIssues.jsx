@@ -1,10 +1,10 @@
 import { useEffect, useState, useCallback } from "react";
 import StaffSideNav from "./StaffSideNav";
 import BottomNav from "../../Templates/BottomNav";
-import Searchbar from "../../Templates/Searchbar";
 import { useUser } from "../../../Context/ProfileContext";
 import { getAssignedIssues } from "../../../Utils/issues";
 import StatusUpdateModal from "./StatusUpdateModal";
+import Loader from "../../Templates/Loader";
 
 const AssignedIssues = () => {
   const { profileData } = useUser();
@@ -62,13 +62,11 @@ const AssignedIssues = () => {
             <h2 className="text-lg font-bold text-card-foreground">
               Task List
             </h2>
-            <Searchbar />
+            
           </div>
 
           {loading ? (
-            <div className="flex justify-center py-12">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-            </div>
+            <Loader/>
           ) : assignedIssues.length > 0 ? (
             <div className="grid grid-cols-1 gap-4">
               {assignedIssues.map((issue) => (

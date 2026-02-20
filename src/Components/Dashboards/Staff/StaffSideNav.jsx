@@ -14,7 +14,7 @@ const StaffSideNav = () => {
       <NavItem to="/dashboard" icon="ri-dashboard-fill" label="Dashboard" />
       <NavItem
         to="/assigned-issues"
-        icon="ri-check-square-fill"
+        icon="ri-file-list-line"
         label="Assigned Issues"
       />
       <NavItem
