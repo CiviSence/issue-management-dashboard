@@ -5,6 +5,8 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useIssues } from "../../../Context/IssueContext";
 import { useState } from "react";
+import { deleteIssue } from "../../../Utils/issues";
+import { toast, ToastContainer } from "react-toastify";
 
 const SkeletonLoader = () => {
   return (
@@ -75,7 +77,22 @@ const SkeletonLoader = () => {
 const ResolvedIssues = () => {
   const [selectedLocation, setSelectedLocation] = useState("all");
   const [priority, setPriority] = useState("all");
-  const { resolvedIssues } = useIssues();
+  const { resolvedIssues, setResolvedIssues } = useIssues();
+
+  const handleDeleteIssue = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this issue?")) return;
+
+    const previousIssues = resolvedIssues;
+    setResolvedIssues((prev) => prev.filter((issue) => issue.id !== id));
+
+    try {
+      await deleteIssue(id);
+      toast.success("Issue deleted successfully!");
+    } catch (error) {
+      setResolvedIssues(previousIssues);
+      toast.error(error.message || "Failed to delete issue");
+    }
+  };
 
   const filteredIssues = resolvedIssues.filter((issue) => {
     const locationMatch =
@@ -92,7 +109,7 @@ const ResolvedIssues = () => {
     ...new Set(resolvedIssues.map((i) => i.location_address).filter(Boolean)),
   ];
 
- const categoryColor = {
+  const categoryColor = {
     security: "bg-blue-100 text-blue-800",
     maintenance: "bg-red-100 text-red-800",
     infrastructure: "bg-amber-100 text-amber-800",
@@ -119,6 +136,18 @@ const ResolvedIssues = () => {
 
   return (
     <>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={true}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
       <SideNav />
       <BottomNav />
       {resolvedIssues.length > 0 ? (
@@ -137,7 +166,7 @@ const ResolvedIssues = () => {
               >
                 {/* Dashboard Title */}
                 <h1 className="text-2xl sm:text-3xl font-semibold text-white">
-                  Pending Issues (Newly Reported)
+                  Resloved Issues
                 </h1>
                 {/* Searchbar */}
                 <Searchbar />
@@ -148,7 +177,7 @@ const ResolvedIssues = () => {
               {/* Header */}
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-5">
                 <h2 className="text-lg font-semibold text-gray-800">
-                  All Reported Issues
+                  All Resolved Issues
                 </h2>
 
                 <div className="flex gap-2">
@@ -230,8 +259,11 @@ const ResolvedIssues = () => {
                           {issue.created_at.split("T")[0]}
                         </td>
 
-                        <td className="p-3 text-blue-600 cursor-pointer">
-                          Action
+                        <td className="p-3 cursor-pointer">
+                          <i
+                            onClick={() => handleDeleteIssue(issue.id)}
+                            className="ri-delete-bin-line text-xl text-gray-400 hover:text-red-500"
+                          ></i>
                         </td>
                       </tr>
                     ))}

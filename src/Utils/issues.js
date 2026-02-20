@@ -48,7 +48,7 @@ export const getMyIssues = async (userId) => {
  */
 export const getResolvedIssues = async (params = {}) => {
   try {
-    const { data } = await axios.get("/issues/?limit=50&status=new", { params });
+    const { data } = await axios.get("/issues/?limit=50&status=resolved", { params });
     return data;
   } catch (error) {
     throw new Error(error.response?.data?.message || "Failed to fetch issues");

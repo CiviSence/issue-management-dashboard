@@ -22,7 +22,7 @@ const Searchbar = () => {
       {/* Search Input */}
       <input
         type="text"
-        placeholder="Search..."
+        placeholder="Search issues"
         className="
           w-full
           md:w-[55%]
