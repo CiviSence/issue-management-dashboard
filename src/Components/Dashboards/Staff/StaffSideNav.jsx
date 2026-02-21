@@ -1,6 +1,6 @@
-import { Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, CheckSquare, Settings } from "lucide-react";
-import { useTheme } from "../../../Context/ThemeContext";
+// import { Link, useLocation } from "react-router-dom";
+// import { LayoutDashboard, CheckSquare, Settings } from "lucide-react";
+// import { useTheme } from "../../../Context/ThemeContext";
 import SideNavLayout, { NavItem } from "../Common/SideNavLayout";
 
 const StaffSideNav = () => {
@@ -14,7 +14,7 @@ const StaffSideNav = () => {
       <NavItem to="/dashboard" icon="ri-dashboard-fill" label="Dashboard" />
       <NavItem
         to="/assigned-issues"
-        icon="ri-check-square-fill"
+        icon="ri-file-list-line"
         label="Assigned Issues"
       />
       <NavItem

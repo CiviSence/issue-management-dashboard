@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import StaffSideNav from "./StaffSideNav";
 import BottomNav from "../../Templates/BottomNav";
-import Searchbar from "../../Templates/Searchbar";
 import { useUser } from "../../../Context/ProfileContext";
 import { getAssignedIssues } from "../../../Utils/issues";
+import Loader from "../../Templates/Loader";
+import IssueCard from "../../Templates/IssueCard";
 
 const StaffDashboard = () => {
   const { profileData } = useUser();
@@ -27,16 +28,42 @@ const StaffDashboard = () => {
     fetchAssigned();
   }, [profileData?.id]);
 
-  const stats = {
-    pending: assignedIssues.filter((i) => i.status === "pending").length,
-    inProgress: assignedIssues.filter((i) => i.status === "in_progress").length,
-    completedToday: assignedIssues.filter((i) => {
-      if (i.status !== "resolved") return false;
-      const updatedAt = new Date(i.updated_at);
-      const today = new Date();
-      return updatedAt.toDateString() === today.toDateString();
-    }).length,
-  };
+  const stats = [
+    {
+      name: "Assigned Issues",
+      count: assignedIssues.length,
+      description: "All assigned issues",
+      color: "from-[#980101] to-[#FF2C2C]",
+      color2: "bg-[#980101]",
+    },
+    {
+      name: "Pending Issues",
+      count: assignedIssues.filter((i) => i.status === "pending").length,
+      description: "Pending",
+      color: "from-[#F5A623] to-[#F8E71C]",
+      color2: "bg-[#F5A623]",
+    },
+    {
+      name: "In Progress",
+      count: assignedIssues.filter((i) => i.status === "in_progress").length,
+      description: "Assigned & In Progress",
+      color: "from-[#00284B] to-[#0088FF]",
+      color2: "bg-[#00284B]",
+    },
+    {
+      name: "Completed Today",
+      count: assignedIssues.filter((i) => {
+        if (i.status !== "resolved") return false;
+        const updatedAt = new Date(i.updated_at);
+        const today = new Date();
+        return updatedAt.toDateString() === today.toDateString();
+      }).length,
+      assigned: assignedIssues.length,
+      description: "Issues Fixed",
+      color: "from-[#0D4900] to-[#2DF300]",
+      color2: "bg-[#0D4900]",
+    },
+  ];
 
   return (
     <>
@@ -60,122 +87,133 @@ const StaffDashboard = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            <div className="bg-card p-4 rounded-xl shadow-sm border border-border">
-              <p className="text-muted-foreground text-sm">Pending Tasks</p>
-              <h3 className="text-2xl font-bold text-primary">
-                {stats?.pending ?? 0}
-              </h3>
-            </div>
-
-            <div className="bg-card p-4 rounded-xl shadow-sm border border-border">
-              <p className="text-muted-foreground text-sm">In Progress</p>
-              <h3 className="text-2xl font-bold text-blue-600">
-                {stats?.inProgress ?? 0}
-              </h3>
-            </div>
-            <div className="bg-card p-4 rounded-xl shadow-sm border border-border">
-              <p className="text-muted-foreground text-sm">Completed Today</p>{" "}
-              <h3 className="text-2xl font-bold text-green-600">
-                {" "}
-                {stats?.completedToday ?? 0}{" "}
-              </h3>{" "}
-            </div>
-
-            <div className="bg-card p-4 rounded-xl shadow-sm border border-border">
-              <p className="text-muted-foreground text-sm">Total Assigned</p>
-              <h3 className="text-2xl font-bold text-amber-500">
-                {assignedIssues?.length ?? 0}
-              </h3>
-            </div>
+          <div className="w-full mt-2 gap-2 flex flex-wrap justify-center bg-[#F0EEFF] p-4 rounded-2xl">
+            {stats.map((item, index) => (
+              <IssueCard key={index} issue={item} />
+            ))}
           </div>
 
           {/* Table */}
-          <div className="bg-card rounded-2xl shadow-sm p-6 border border-border">
+          <div className="bg-card rounded-2xl shadow-sm p-6 ">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-lg font-bold text-card-foreground">
-                Recent Assignments
-              </h2>
+              
             </div>
 
             {loading ? (
-              <div className="flex justify-center py-12">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-              </div>
+              <Loader />
             ) : assignedIssues?.length > 0 ? (
-              <div className="overflow-x-auto">
-                <table className="w-full text-left">
-                  <thead className="text-xs text-muted-foreground uppercase bg-muted">
-                    <tr>
-                      <th className="px-4 py-3">Title</th>
-                      <th className="px-4 py-3">Priority</th>
-                      <th className="px-4 py-3">Status</th>
-                      <th className="px-4 py-3 text-right">Action</th>
-                    </tr>
-                  </thead>
+              <div className="bg-card border border-border rounded-2xl shadow-sm overflow-hidden">
+                {/* Header */}
+                <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+                  <h2 className="text-  lg font-semibold">
+                    Recent Assigned Issues
+                  </h2>
 
-                  <tbody>
-                    {assignedIssues.slice(0, 5).map((issue) => (
-                      <tr
-                        key={issue.id}
-                        className="border-b border-border hover:bg-muted/50 transition-colors"
-                      >
-                        <td className="px-4 py-4 font-medium">
-                          {issue?.title || "No Title"}
-                        </td>
+                  <a
+                    href="/assigned-issues"
+                    className="text-sm font-semibold text-primary hover:underline"
+                  >
+                    View All →
+                  </a>
+                </div>
 
-                        <td className="px-4 py-4">
-                          <span
-                            className={`px-2 py-1 rounded-full text-xs font-semibold
-
-                        ${
-                          issue?.priority === "high"
-                            ? "bg-red-100 text-red-600"
-                            : issue?.priority === "medium"
-                              ? "bg-amber-100 text-amber-600"
-                              : "bg-blue-100 text-blue-600"
-                        }
-                      `}
-                          >
-                            {issue?.priority || "low"}
-                          </span>
-                        </td>
-
-                        <td className="px-4 py-4">
-                          <span
-                            className={`px-2 py-1 rounded-full text-xs font-semibold
-
-                        ${
-                          issue?.status === "pending"
-                            ? "bg-muted text-muted-foreground"
-                            : issue?.status === "in_progress"
-                              ? "bg-blue-100 text-blue-600"
-                              : "bg-green-100 text-green-600"
-                        }
-                      `}
-                          >
-                            {issue?.status
-                              ? issue.status.replace("_", " ")
-                              : "pending"}
-                          </span>
-                        </td>
-
-                        <td className="px-4 py-4 text-right">
-                          <a
-                            href="/assigned-issues"
-                            className="text-primary font-bold hover:underline"
-                          >
-                            View
-                          </a>
-                        </td>
+                {/* Table */}
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-muted/50 text-xs uppercase text-left">
+                      <tr>
+                        <th className="px-6 py-4 font-semibold">Issue</th>
+                        <th className="px-6 py-4 font-semibold">Priority</th>
+                        <th className="px-6 py-4 font-semibold">Status</th>
+                        <th className="px-6 py-4 font-semibold text-right">
+                          Action
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+
+                    <tbody>
+                      {assignedIssues.slice(0, 5).map((issue) => (
+                        <tr
+                          key={issue.id}
+                          className="border-t border-border hover:bg-muted/40 transition-all duration-200"
+                        >
+                          {/* Title */}
+                          <td className="px-6 py-4">
+                            <div className="font-medium">
+                              {issue?.title || "Untitled Issue"}
+                            </div>
+
+                            <div className="text-xs text-muted-foreground">
+                              #{issue.issue_id}
+                            </div>
+                          </td>
+
+                          {/* Priority */}
+                          <td className="px-6 py-4">
+                            <span
+                              className={`px-3 py-1 text-xs font-semibold rounded-full
+
+                  ${
+                    issue?.priority === "high"
+                      ? "bg-red-100 text-red-700"
+                      : issue?.priority === "medium"
+                        ? "bg-amber-100 text-amber-700"
+                        : "bg-blue-100 text-blue-700"
+                  }
+
+                  `}
+                            >
+                              {issue?.priority || "low"}
+                            </span>
+                          </td>
+
+                          {/* Status */}
+                          <td className="px-6 py-4">
+                            <span
+                              className={`px-3 py-1 text-xs font-semibold rounded-full
+
+                  ${
+                    issue?.status === "pending"
+                      ? "bg-gray-200 text-gray-700"
+                      : issue?.status === "in_progress"
+                        ? "bg-blue-100 text-blue-700"
+                        : issue?.status === "resolved"
+                          ? "bg-green-100 text-green-700"
+                          : "bg-muted text-muted-foreground"
+                  }
+
+                  `}
+                            >
+                              {issue?.status?.replace("_", " ") || "pending"}
+                            </span>
+                          </td>
+
+                          {/* Action */}
+                          <td className="px-6 py-4 text-right">
+                            <a
+                              href="/assigned-issues"
+                              className="inline-block px-4 py-1.5 text-xs font-semibold text-white bg-primary rounded-lg hover:opacity-90 transition"
+                            >
+                              View
+                            </a>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             ) : (
-              <div className="text-center py-12 bg-muted rounded-xl border border-dashed border-border">
-                No tasks assigned currently.
+              <div className="text-center py-16 border border-dashed border-border rounded-2xl bg-muted/30">
+                <div className="text-4xl mb-2">📭</div>
+
+                <p className="font-semibold text-muted-foreground">
+                  No assigned issues
+                </p>
+
+                <p className="text-sm text-muted-foreground mt-1">
+                  You're all caught up!
+                </p>
               </div>
             )}
           </div>
