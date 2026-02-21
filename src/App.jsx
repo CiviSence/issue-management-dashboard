@@ -15,7 +15,7 @@ import SignUp from "./Pages/SignUp";
 import Verify from "./Pages/Verify";
 import IssueFeed from "./Components/Dashboards/Student/IssueFeed";
 import MyIssues from "./Components/Dashboards/Student/MyIssues";
-import { ThemeProvider } from "./Context/ThemeContext";
+import { ThemeProvider } from "./Context/ThemeContext.jsx";
 
 const App = () => {
   return (
