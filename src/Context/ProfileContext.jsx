@@ -1,8 +1,7 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "../Utils/axios";
 import { getUserData, setSession, clearSession } from "../Utils/auth-utils";
-
-const ProfileContext = createContext();
+import { ProfileContext } from "./ProfileContext.js"; // Explicitly import the JS file
 
 export const ProfileDataProvider = ({ children }) => {
   // Lazy initialization ensures this only runs once on mount
@@ -46,12 +45,6 @@ export const ProfileDataProvider = ({ children }) => {
     </ProfileContext.Provider>
   );
 };
-  
-// useUser.js add a new file using the following code: or you can uncomment the code below and place it here
-//i just did it here to reduce the number of files disabled by eslint
-// import { useContext } from "react";
-// import { UserContext } from "./UserContext";
 
-// export const useUser = () => useContext(UserContext);
-// eslint-disable-next-line react-refresh/only-export-components
-export const useUser = () => useContext(ProfileContext);
+// ProfileContext.js contains the useUser hook and the Context object.
+// This file only exports the Provider component to keep Vite HMR happy.

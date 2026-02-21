@@ -1,7 +1,6 @@
-import { createContext, useContext, useState } from "react";
+import { useState } from "react";
 import { getUserById, getTopContributors, getStaff } from "../Utils/users";
-
-const UserContext = createContext();
+import { UserContext } from "./UserContext.js";
 
 export const UserProvider = ({ children }) => {
   const [usersCache, setUsersCache] = useState({}); // { userId: userData }
@@ -77,4 +76,4 @@ export const UserProvider = ({ children }) => {
   );
 };
 
-export const useUsers = () => useContext(UserContext);
+// UserContext.js contains the useUsers hook and the Context object.

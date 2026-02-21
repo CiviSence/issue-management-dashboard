@@ -1,11 +1,9 @@
-import axios from "../Utils/axios";
 import instance from "../Utils/axios";
 
-/**
- * Get issues (admin / filtered list)
- * GET /api/analytics/dashboard-stats
- * @param {object} params - status, priority, location, skip, limit
- */
+// Alias for convenience writing axios every time nononono
+const axios = instance;
+
+// Fetch dashboard stats (admin)
 export const getStats = async () => {
   try {
     const { data } = await axios.get("/analytics/dashboard-stats");
@@ -15,11 +13,7 @@ export const getStats = async () => {
     throw new Error(error.response?.data?.message || "Failed to fetch issues");
   }
 };
-/**
- * Get issues (admin / filtered list)
- * GET /api/issues/
- * @param {object} params - status, priority, location, skip, limit
- */
+// Fetch all issues
 export const getAllIssues = async (params = {}) => {
   try {
     const { data } = await axios.get("/issues", { params });
@@ -29,10 +23,7 @@ export const getAllIssues = async (params = {}) => {
   }
 };
 
-/**
- * Get issues reported by current user
- * GET /api/issues/?reporter_id={user_id}
- */
+// Fetch issues reported by a specific user
 export const getMyIssues = async (userId) => {
   try {
     const { data } = await axios.get("/issues", { params: { user_id: userId } });
@@ -42,10 +33,7 @@ export const getMyIssues = async (userId) => {
   }
 };
 
-/**
- * Get Resolved Issues
- * GET /api/issues/?status=resolved
- */
+// Fetch resolved issues
 export const getResolvedIssues = async (params = {}) => {
   try {
     const { data } = await axios.get("/issues/?limit=50&status=resolved", { params });
@@ -55,10 +43,7 @@ export const getResolvedIssues = async (params = {}) => {
   }
 };
 
-/**
- * Get social feed issues
- * GET /api/issues/feed
- */
+// Fetch social feed
 export const getIssuesFeed = async (params = {}) => {
   try {
     const { data } = await axios.get("/issues/feed", { params });
@@ -68,10 +53,7 @@ export const getIssuesFeed = async (params = {}) => {
   }
 };
 
-/**
- * Get single issue by ID
- * GET /api/issues/{issue_id}
- */
+// Fetch a single issue by ID
 export const getIssueById = async (issueId) => {
   try {
     const { data } = await axios.get(`/issues/${issueId}`);
@@ -81,10 +63,7 @@ export const getIssueById = async (issueId) => {
   }
 };
 
-/**
- * Create a new issue
- * POST /api/issues/
- */
+// Create a new issue
 export const createIssue = async (issueData) => {
   try {
     const { data } = await instance.post("/issues", issueData);
@@ -98,10 +77,7 @@ export const createIssue = async (issueData) => {
   }
 };
 
-/**
- * Upload image of any issue
- * POST /api/upload/issue
- */
+// Upload image for an issue
 export const issueImage = async (issueId, imageFile) => {
   try {
     const formData = new FormData();
@@ -119,10 +95,7 @@ export const issueImage = async (issueId, imageFile) => {
   }
 };
 
-/**
- * Update issue
- * PATCH /api/issues/{issue_id}
- */
+// Update issue details
 export const updateIssue = async (issueId, updates) => {
   try {
     const { data } = await axios.patch(`/issues/${issueId}`, updates);
@@ -132,10 +105,7 @@ export const updateIssue = async (issueId, updates) => {
   }
 };
 
-/**
- * Delete issue
- * DELETE /api/issues/{issue_id}
- */
+// Delete an issue
 export const deleteIssue = async (issueId) => {
   try {
     const { data } = await axios.delete(`/issues/${issueId}`);
@@ -145,10 +115,7 @@ export const deleteIssue = async (issueId) => {
   }
 };
 
-/**
- * Get issues assigned to a me(staff member)
- * GET /api/assignments/my-tasks
- */
+// Fetch issues assigned to me (staff)
 export const getAssignedIssues = async () => {
   try {
     const { data } = await axios.get("assignments/my-tasks");
@@ -158,10 +125,7 @@ export const getAssignedIssues = async () => {
   }
 };
 
-/**
- * Assign issue to a staff member
- * POST /api/assignments
- */
+// Assign issue to staff
 export const assignIssue = async (issueId, staffId, notes = "") => {
   try {
     const { data } = await instance.post("/assignments", {
@@ -175,10 +139,7 @@ export const assignIssue = async (issueId, staffId, notes = "") => {
   }
 };
 
-/**
- * Upvote an issue
- * POST /api/issues/{issue_id}/upvote
- */
+// Upvote an issue
 export const upvoteIssue = async (issueId) => {
   try {
     const { data } = await instance.post(`/issues/${issueId}/upvote`);
@@ -188,16 +149,43 @@ export const upvoteIssue = async (issueId) => {
   }
 };
 
-/**
- * Downvote an issue
- * POST /api/issues/{issue_id}/downvote
- */
+// Downvote an issue
 export const downvoteIssue = async (issueId) => {
   try {
     const { data } = await instance.post(`/issues/${issueId}/downvote`);
     return data;
   } catch (error) {
     throw new Error(error.response?.data?.message || "Failed to downvote issue");
+  }
+};
+
+// Remove a vote
+export const removeVote = async (issueId) => {
+  try {
+    const { data } = await instance.delete(`/issues/${issueId}/vote`);
+    return data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "Failed to remove vote");
+  }
+};
+
+// Fetch comments for an issue
+export const fetchComments = async (issueId) => {
+  try {
+    const { data } = await instance.get(`/issues/${issueId}/comments`);
+    return data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "Failed to fetch comments");
+  }
+};
+
+// Post a new comment
+export const addComment = async (issueId, text) => {
+  try {
+    const { data } = await instance.post(`/issues/${issueId}/comments`, { text });
+    return data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "Failed to add comment");
   }
 };
 

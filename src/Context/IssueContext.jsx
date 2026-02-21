@@ -1,7 +1,6 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getAllIssues, getResolvedIssues, getStats } from "../Utils/issues";
-
-const IssueContext = createContext();
+import { IssueContext } from "./IssueContext.js";
 
 export const IssueProvider = ({ children }) => {
   const [issues, setIssues] = useState([]);
@@ -82,4 +81,4 @@ export const IssueProvider = ({ children }) => {
   );
 };
 
-export const useIssues = () => useContext(IssueContext);
+// IssueContext.js contains the useIssues hook and the Context object.

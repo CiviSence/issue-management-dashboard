@@ -1,7 +1,6 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
-
-const ThemeContext = createContext();
+import { ThemeContext } from "./ThemeContext.js";
 
 export const ThemeProvider = ({ children }) => {
     const [theme, setTheme] = useState(Cookies.get("theme") || "light");
@@ -24,4 +23,4 @@ export const ThemeProvider = ({ children }) => {
     );
 };
 
-export const useTheme = () => useContext(ThemeContext);
+// ThemeContext.js contains the useTheme hook and the Context object.
