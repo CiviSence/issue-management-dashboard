@@ -15,7 +15,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false); 
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
   const { setProfileData } = useUser();
@@ -37,8 +37,9 @@ const Login = () => {
 
       navigate("/dashboard");
     } catch (err) {
-      console.log(err);
-      setError(err.message || "Login failed");
+      console.error("Login Error:", err);
+      // Backend returns 401 Incorrect email or password, 422 User account is inactive, etc. in detail and all
+      setError(err.message || "Login failed. Please check your credentials.");
     } finally {
       setLoading(false);
     }

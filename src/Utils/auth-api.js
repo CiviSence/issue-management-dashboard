@@ -10,6 +10,12 @@ export const loginUser = async (credentials) => {
         const { data } = await axios.post('/auth/login', credentials);
         return data;
     } catch (error) {
+        if (error.response?.status === 422) {
+            const detail = error.response.data.detail;
+            if (Array.isArray(detail)) {
+                throw new Error(detail[0]?.msg || 'Invalid input data');
+            }
+        }
         throw new Error(error.response?.data?.detail || 'Login failed');
     }
 };
@@ -38,6 +44,12 @@ export const verifyEmail = async (data) => {
         const { data: responseData } = await axios.post('/auth/verify-email', data);
         return responseData;
     } catch (error) {
+        if (error.response?.status === 422) {
+            const detail = error.response.data.detail;
+            if (Array.isArray(detail)) {
+                throw new Error(detail[0]?.msg || 'Invalid OTP format');
+            }
+        }
         throw new Error(error.response?.data?.detail || 'Verification failed');
     }
 };
