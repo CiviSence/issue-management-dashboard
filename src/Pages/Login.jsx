@@ -15,7 +15,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false); 
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
   const { setProfileData } = useUser();
@@ -27,17 +27,11 @@ const Login = () => {
 
     try {
       const data = await loginUser({ email, password });
-
-      setSession(data.access_token, data.user);
-
-      // Update global context state immediately
-      if (setProfileData) {
-        setProfileData(data.user);
-      }
-
+      setSession(data?.access_token, data.user);
+      setProfileData(data?.user);
       navigate("/dashboard");
     } catch (err) {
-      console.log(err);
+      console.error("Component caught error:", err);
       setError(err.message || "Login failed");
     } finally {
       setLoading(false);
@@ -70,6 +64,11 @@ const Login = () => {
             <h2 className="text-3xl font-semibold text-[#7c6bff] text-center mb-8">
               Sign in
             </h2>
+            {error && (
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm text-center">
+                {error}
+              </div>
+            )}
 
             <form className="space-y-5" onSubmit={handleLogin}>
               {/* Email/Username Input */}
@@ -79,7 +78,7 @@ const Login = () => {
                 </label>
                 <input
                   className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7c6bff] focus:border-transparent transition-all text-sm"
-                  type="email"
+                  // type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Email"
@@ -163,9 +162,6 @@ const Login = () => {
                   Privacy Policy
                 </a>
               </p>
-              {error && (
-                <p className="text-red-500 text-sm text-center">{error}</p>
-              )}
 
               {/* Sign In Button */}
               <button
