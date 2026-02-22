@@ -428,7 +428,14 @@ const StudentProfile = () => {
                         </div>
                     </div>
 
-                    <div className="md:hidden px-6 pb-24">
+                    <div className="md:hidden px-6 pb-24 space-y-3">
+                        <a
+                            href="/help-support"
+                            className="w-full bg-white border border-gray-200 text-gray-700 py-4 rounded-2xl font-bold shadow-sm active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+                        >
+                            <i className="ri-customer-service-2-line text-lg text-violet-600"></i>
+                            Help & Support
+                        </a>
                         <button
                             onClick={() => setShowLogoutConfirm(true)}
                             className="w-full bg-red-500 hover:bg-red-600 text-white py-4 rounded-2xl font-bold shadow-xl active:scale-[0.98] transition-all"
