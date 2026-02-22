@@ -11,6 +11,9 @@ export const ProfileDataProvider = ({ children }) => {
     let isMounted = true;
 
     const fetchProfile = async () => {
+      const token = getAccessToken();
+      if (!token) return;
+
       try {
         const { data } = await axios.get("/auth/me");
         if (isMounted) {

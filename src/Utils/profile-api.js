@@ -23,7 +23,7 @@ export const updateMyProfile = async (updates) => {
         const { data } = await axios.patch('/auth/profile', updates);
         return data;
     } catch (error) {
-        throw new Error('Failed to update profile',error);
+        throw new Error('Failed to update profile', error);
     }
 };
 

@@ -31,8 +31,9 @@ const Login = () => {
       setProfileData(data?.user);
       navigate("/dashboard");
     } catch (err) {
-      console.error("Component caught error:", err);
-      setError(err.message || "Login failed");
+      console.error("Login Error:", err);
+      // Backend returns 401 Incorrect email or password, 422 User account is inactive, etc. in detail and all
+      setError(err.message || "Login failed. Please check your credentials.");
     } finally {
       setLoading(false);
     }

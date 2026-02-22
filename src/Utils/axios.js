@@ -39,8 +39,12 @@ instance.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
+    // List of endpoints that should NOT trigger a refresh
+    const skipRefresh = ["/auth/login", "/auth/signup", "/auth/refresh"];
+    const isSkipRoute = skipRefresh.some(route => originalRequest.url.includes(route));
+
     // Only attempt refresh on 401, and only once per request (_retry flag)
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (error.response?.status === 401 && !originalRequest._retry && !isSkipRoute) {
       // If a refresh is already in flight, queue this request
       if (isRefreshing) {
         return new Promise((resolve, reject) => {

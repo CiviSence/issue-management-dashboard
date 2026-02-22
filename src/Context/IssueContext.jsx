@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getAllIssues, getResolvedIssues, getStats } from "../Utils/issues";
+import { getAccessToken } from "../Utils/auth-utils";
 import { IssueContext } from "./IssueContext.js";
 
 export const IssueProvider = ({ children }) => {
@@ -55,6 +56,13 @@ export const IssueProvider = ({ children }) => {
 
   // Load both on first app load
   useEffect(() => {
+    const token = getAccessToken();
+    if (!token) {
+      setLoadingIssues(false);
+      setLoadingStats(false);
+      return;
+    }
+
     fetchIssues();
     (fetchResolvedIssues(), fetchStats());
   }, []);

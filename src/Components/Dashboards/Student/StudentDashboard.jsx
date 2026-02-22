@@ -6,11 +6,10 @@ import { useUser } from "../../../Context/ProfileContext";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {
-  createIssue,
   getMyIssues,
-  updateIssue,
   deleteIssue,
 } from "../../../Utils/issues";
+import ReportIssueModal from "../../Templates/ReportIssueModal";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
@@ -40,50 +39,12 @@ const formatSmartTime = (dateString) => {
 
 const StudentDashboard = () => {
   const { profileData } = useUser();
-  const [showReportModal, setShowReportModal] = useState(false);
   const [myIssues, setMyIssues] = useState([]);
   const [loadingIssues, setLoadingIssues] = useState(true);
 
-  // Edit Mode State
-  const [editMode, setEditMode] = useState(false);
-  const [editIssueId, setEditIssueId] = useState(null);
-  const [isEditing, setIsEditing] = useState(false);
+  // Modal State
+  const [formModal, setFormModal] = useState(null); // null | { mode: 'create'|'edit', issue? }
   const [isDeleting, setIsDeleting] = useState(null); // Track which issue is being deleted
-
-  // Form State
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [main_category, setMainCategory] = useState("");
-  const [sub_category, setSubCategory] = useState("");
-  const [location_address, setLocationAddress] = useState("");
-  const [location_building, setLocationBuilding] = useState("");
-  const [location_ward, setLocationWard] = useState("");
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // Status styles
-  const getStatusStyle = (status) =>
-    ({
-      open: "bg-amber-50 text-amber-700 border border-amber-200",
-      in_progress: "bg-blue-50 text-blue-700 border border-blue-200",
-      resolved: "bg-emerald-50 text-emerald-700 border border-emerald-200",
-      closed: "bg-gray-100 text-gray-600 border border-gray-200",
-    })[status] || "bg-gray-100 text-gray-600";
-
-  // Priority styles
-  const getPriorityStyle = (priority) =>
-    ({
-      low: "bg-gray-50 text-gray-600 border border-gray-200",
-      medium: "bg-orange-50 text-orange-700 border border-orange-200",
-      high: "bg-rose-50 text-rose-700 border border-rose-200",
-      critical: "bg-red-50 text-red-700 border border-red-200 animate-pulse",
-    })[priority] || "bg-gray-50 text-gray-600";
-
-  useEffect(() => {
-    if (profileData?.id) {
-      fetchMyIssues();
-    }
-  }, [profileData]);
 
   const fetchMyIssues = async () => {
     try {
@@ -98,90 +59,21 @@ const StudentDashboard = () => {
     }
   };
 
-  const resetForm = () => {
-    setTitle("");
-    setDescription("");
-    setMainCategory("");
-    setSubCategory("");
-    setLocationAddress("");
-    setLocationBuilding("");
-    setLocationWard("");
-    setEditMode(false);
-    setEditIssueId(null);
-  };
-
-  const handleCloseModal = () => {
-    setShowReportModal(false);
-    resetForm();
-  };
-
-  const handleReportIssue = async (e) => {
-    e.preventDefault();
-
-    // Validation checks
-    if (!title.trim()) {
-      toast.warning("Please enter an issue title");
-      return;
+  useEffect(() => {
+    if (profileData?.id) {
+      fetchMyIssues();
     }
-    if (!description.trim() || description.length < 10) {
-      // Adjust min length as needed
-      toast.warning("Description must be at least 10 characters");
-      return;
-    }
-    if (!location_building) {
-      toast.warning("Please select a building");
-      return;
-    }
+  }, [profileData]);
 
-    try {
-      setIsSubmitting(true);
-
-      const issuePayload = {
-        title: title.trim(),
-        description: description.trim(),
-        main_category: main_category,
-        sub_category: sub_category || "general",
-        location_address: location_address,
-        location_building: location_building,
-        location_ward: location_ward || "",
-        media_urls: ["string"], // just for testing, replace with actual media handling logic
-      };
-
-      if (editMode) {
-        setIsEditing(true);
-        const updated = await updateIssue(editIssueId, issuePayload);
-        setMyIssues((prev) =>
-          prev.map((i) => (i.id === updated.id ? updated : i)),
-        );
-        toast.success("Issue updated successfully!");
-      } else {
-        await createIssue(issuePayload);
-        await fetchMyIssues();
-        toast.success("Issue reported successfully!");
-      }
-
-      handleCloseModal();
-    } catch (error) {
-      console.error(error);
-      toast.error(error.message || "Failed to submit. Please try again.");
-    } finally {
-      setIsSubmitting(false);
-      setIsEditing(false);
+  const handleSaved = (issue, mode) => {
+    if (mode === "create") {
+      setMyIssues((prev) => [issue, ...prev]);
+    } else {
+      setMyIssues((prev) => prev.map((i) => (i.id === issue.id ? issue : i)));
     }
   };
 
-  const handleEditIssue = (issue) => {
-    setEditMode(true);
-    setEditIssueId(issue.id);
-    setTitle(issue.title);
-    setDescription(issue.description);
-    setMainCategory(issue.main_category);
-    setSubCategory(issue.sub_category);
-    setLocationAddress(issue.location_address);
-    setLocationBuilding(issue.location_building);
-    setLocationWard(issue.location_ward);
-    setShowReportModal(true);
-  };
+  // Modal components logic moved to templates
 
   const handleDeleteIssue = async (id) => {
     if (!window.confirm("Are you sure you want to delete this issue?")) return;
@@ -229,6 +121,55 @@ const StudentDashboard = () => {
                 Welcome back! Track your reported issues here.
               </p>
             </div>
+
+            {/* View Profile Link - NEW */}
+            <a
+              href="/profile"
+              className="hidden sm:flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-xl border border-white/20 transition-all font-medium text-sm backdrop-blur-sm"
+            >
+              <i className="ri-user-smile-line text-lg"></i>
+              My Profile
+            </a>
+          </div>
+        </div>
+
+        {/* Stats Overview - NEW */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 mb-4 md:mb-6">
+          <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-3">
+            <div className="p-2.5 bg-violet-50 text-violet-600 rounded-lg">
+              <i className="ri-file-list-3-line text-lg"></i>
+            </div>
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Total Reports</p>
+              <p className="text-lg font-bold text-gray-900">{myIssues.length}</p>
+            </div>
+          </div>
+          <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-3">
+            <div className="p-2.5 bg-emerald-50 text-emerald-600 rounded-lg">
+              <i className="ri-checkbox-circle-line text-lg"></i>
+            </div>
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Resolved</p>
+              <p className="text-lg font-bold text-gray-900">{myIssues.filter(i => i.status === 'resolved').length}</p>
+            </div>
+          </div>
+          <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-3">
+            <div className="p-2.5 bg-amber-50 text-amber-600 rounded-lg">
+              <i className="ri-copper-coin-line text-lg"></i>
+            </div>
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Reputation</p>
+              <p className="text-lg font-bold text-gray-900">{profileData?.reputation_points || 0}</p>
+            </div>
+          </div>
+          <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-3">
+            <div className="p-2.5 bg-blue-50 text-blue-600 rounded-lg">
+              <i className="ri-line-chart-line text-lg"></i>
+            </div>
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Status</p>
+              <p className="text-lg font-bold text-gray-900">Active</p>
+            </div>
           </div>
         </div>
 
@@ -248,10 +189,7 @@ const StudentDashboard = () => {
 
               {/* BUTTON */}
               <button
-                onClick={() => {
-                  resetForm();
-                  setShowReportModal(true);
-                }}
+                onClick={() => setFormModal({ mode: "create" })}
                 className="w-full sm:w-auto bg-violet-500 text-white px-5 py-2.5 sm:px-6 sm:py-3 rounded-lg sm:rounded-xl font-semibold hover:bg-violet-700 transition shadow-md sm:shadow-lg shadow-violet-200 text-sm sm:text-base"
               >
                 + Report Issue
@@ -271,25 +209,23 @@ const StudentDashboard = () => {
                   {myIssues.map((issue) => (
                     <div
                       key={issue.id}
-                      className={`group relative overflow-hidden rounded-xl border bg-white transition-all duration-300 hover:shadow-md ${
-                        issue.status === "resolved"
-                          ? "border-emerald-200 bg-emerald-50/30"
-                          : issue.status === "in_progress"
-                            ? "border-blue-200 bg-blue-50/30"
-                            : "border-gray-200 hover:border-blue-300"
-                      } ${isDeleting === issue.id ? "opacity-50" : ""}`}
+                      className={`group relative overflow-hidden rounded-xl border bg-white transition-all duration-300 hover:shadow-md ${issue.status === "resolved"
+                        ? "border-emerald-200 bg-emerald-50/30"
+                        : issue.status === "in_progress"
+                          ? "border-blue-200 bg-blue-50/30"
+                          : "border-gray-200 hover:border-blue-300"
+                        } ${isDeleting === issue.id ? "opacity-50" : ""}`}
                     >
                       {/* Status Indicator Strip */}
                       <div
-                        className={`absolute left-0 top-0 bottom-0 w-1 ${
-                          issue.status === "resolved"
-                            ? "bg-emerald-500"
-                            : issue.status === "in_progress"
-                              ? "bg-blue-500"
-                              : issue.status === "open"
-                                ? "bg-amber-500"
-                                : "bg-gray-400"
-                        }`}
+                        className={`absolute left-0 top-0 bottom-0 w-1 ${issue.status === "resolved"
+                          ? "bg-emerald-500"
+                          : issue.status === "in_progress"
+                            ? "bg-blue-500"
+                            : issue.status === "open"
+                              ? "bg-amber-500"
+                              : "bg-gray-400"
+                          }`}
                       />
 
                       <div className="p-5 pl-6">
@@ -305,25 +241,31 @@ const StudentDashboard = () => {
                           </div>
 
                           <span
-                            className={`shrink-0 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${getStatusStyle(issue.status)}`}
+                            className={`shrink-0 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-medium border ${{
+                              new: "bg-violet-50 text-violet-600 border-violet-200",
+                              open: "bg-amber-50 text-amber-700 border-amber-200",
+                              in_progress: "bg-blue-50 text-blue-700 border-blue-200",
+                              resolved: "bg-emerald-50 text-emerald-700 border-emerald-200",
+                              closed: "bg-gray-100 text-gray-600 border-gray-200",
+                            }[issue.status] || "bg-gray-100 text-gray-600 border-gray-200"
+                              }`}
                           >
                             <span
-                              className={`w-1.5 h-1.5 rounded-full ${
-                                issue.status === "resolved"
-                                  ? "bg-emerald-600"
-                                  : issue.status === "in_progress"
-                                    ? "bg-blue-600"
-                                    : issue.status === "open"
-                                      ? "bg-amber-600"
-                                      : "bg-gray-600"
-                              }`}
+                              className={`w-1.5 h-1.5 rounded-full ${issue.status === "resolved"
+                                ? "bg-emerald-600"
+                                : issue.status === "in_progress"
+                                  ? "bg-blue-600"
+                                  : issue.status === "open"
+                                    ? "bg-amber-600"
+                                    : "bg-gray-600"
+                                }`}
                             />
                             {issue.status.replace("_", " ")}
                           </span>
                         </div>
 
                         {/* Meta Row: Location + Time + Priority */}
-                        <div className="flex flex-wrap items-center gap-4 text-xs text-gray-500 mb-4">
+                        <div className="flex flex-wrap items-center gap-4 text-xs text-gray-500 mb-2">
                           {/* Location */}
                           <div className="flex items-center gap-1.5">
                             <svg
@@ -380,62 +322,76 @@ const StudentDashboard = () => {
 
                           {/* Priority Tag */}
                           <span
-                            className={`ml-auto px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wide ${getPriorityStyle(issue.priority)}`}
+                            className={`ml-auto px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wide border ${{
+                              low: "bg-gray-50 text-gray-600 border-gray-200",
+                              medium: "bg-orange-50 text-orange-700 border-orange-200",
+                              high: "bg-rose-50 text-rose-700 border-rose-200",
+                              critical: "bg-red-50 text-red-700 border-red-200",
+                            }[issue.priority] || "bg-gray-50 text-gray-600 border-gray-200"
+                              }`}
                           >
                             {issue.priority}
                           </span>
                         </div>
 
+                        {/* Engagement stats */}
+                        {issue.engagement && (
+                          <div className="flex items-center gap-4 text-xs text-gray-500 mb-4">
+                            <span className="flex items-center gap-1 bg-gray-50 px-2 py-1 rounded-lg">
+                              <svg className="w-3.5 h-3.5 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
+                              </svg>
+                              {issue.engagement.upvotes || 0}
+                            </span>
+                            <span className="flex items-center gap-1 bg-gray-50 px-2 py-1 rounded-lg">
+                              <svg className="w-3.5 h-3.5 text-rose-500" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M18 9.5a1.5 1.5 0 11-3 0v-6a1.5 1.5 0 013 0v6zM14 9.667v-5.43a2 2 0 00-1.105-1.79l-.05-.025A4 4 0 0011.055 2H5.64a2 2 0 00-1.962 1.608l-1.2 6A2 2 0 004.44 12H8v4a2 2 0 002 2 1 1 0 001-1v-.667a4 4 0 01.8-2.4l1.4-1.866a4 4 0 00.8-2.4z" />
+                              </svg>
+                              {issue.engagement.downvotes || 0}
+                            </span>
+                            <span className="flex items-center gap-1 bg-gray-50 px-2 py-1 rounded-lg">
+                              <svg className="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                              </svg>
+                              {issue.engagement.views_count || 0}
+                            </span>
+                            <span className="flex items-center gap-1 bg-gray-50 px-2 py-1 rounded-lg">
+                              <svg className="w-3.5 h-3.5 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                                  d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                              </svg>
+                              {issue.engagement.comment_count ?? 0}
+                            </span>
+                          </div>
+                        )}
+
                         {/* Action Buttons */}
                         <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
                           <button
-                            onClick={() => handleEditIssue(issue)}
-                            disabled={isEditing || isDeleting === issue.id}
+                            onClick={() => setFormModal({ mode: "edit", issue })}
+                            disabled={isDeleting === issue.id}
                             className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-700 bg-gray-50 rounded-lg hover:bg-gray-100 hover:text-blue-600 transition-colors disabled:opacity-50"
                           >
-                            {isEditing && editIssueId === issue.id ? (
-                              <svg
-                                className="w-3.5 h-3.5 animate-spin"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                              >
-                                <circle
-                                  className="opacity-25"
-                                  cx="12"
-                                  cy="12"
-                                  r="10"
-                                  stroke="currentColor"
-                                  strokeWidth="4"
-                                />
-                                <path
-                                  className="opacity-75"
-                                  fill="currentColor"
-                                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                                />
-                              </svg>
-                            ) : (
-                              <svg
-                                className="w-3.5 h-3.5"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                                />
-                              </svg>
-                            )}
-                            {isEditing && editIssueId === issue.id
-                              ? "Saving..."
-                              : "Edit"}
+                            <svg
+                              className="w-3.5 h-3.5"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                              />
+                            </svg>
+                            Edit
                           </button>
 
                           <button
                             onClick={() => handleDeleteIssue(issue.id)}
-                            disabled={isDeleting === issue.id || isEditing}
+                            disabled={isDeleting === issue.id}
                             className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-700 bg-gray-50 rounded-lg hover:bg-red-50 hover:text-red-600 transition-colors disabled:opacity-50"
                           >
                             {isDeleting === issue.id ? (
@@ -508,169 +464,14 @@ const StudentDashboard = () => {
         </div>
       </div>
 
+
       {/* Report Issue Modal */}
-      {showReportModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold text-gray-800">
-                {editMode ? "Edit Issue" : "Report New Issue"}
-              </h2>
-              <button
-                onClick={handleCloseModal}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                <i className="ri-close-line text-2xl"></i>
-              </button>
-            </div>
-
-            <form onSubmit={handleReportIssue} className="space-y-4">
-              {/* Title */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Issue Title
-                </label>
-                <input
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-violet-600 outline-none"
-                  placeholder="e.g. Broken projector in Room 301"
-                  required
-                />
-              </div>
-
-              {/* Main Category */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Main Category
-                </label>
-                <select
-                  value={main_category}
-                  onChange={(e) => setMainCategory(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-violet-600 outline-none"
-                  required
-                >
-                  <option value="">Select Category</option>
-                  <option value="security">Security</option>
-                  <option value="cleanliness">Cleanliness</option>
-                  <option value="maintenance">Maintenance</option>
-                  <option value="infrastructure">Infrastructure</option>
-                  <option value="facilities">Facilities</option>
-                  <option value="other">Other</option>
-                </select>
-              </div>
-
-              {/* Sub Category */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Sub Category
-                </label>
-                <input
-                  value={sub_category}
-                  onChange={(e) => setSubCategory(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-violet-600 outline-none"
-                  placeholder="e.g. Leakage, Fan not working"
-                  required
-                />
-              </div>
-
-              {/* Location Building */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Location Building
-                </label>
-                <select
-                  value={location_building}
-                  onChange={(e) => setLocationBuilding(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-violet-600 outline-none"
-                  required
-                >
-                  <option value="">Select Building</option>
-                  <option value="boys-hostel">Boys Hostel</option>
-                  <option value="girls-hostel">Girls Hostel</option>
-                  <option value="admin-building">Admin Building</option>
-                  <option value="faculty-building">Faculty Building</option>
-                  <option value="campus">Campus</option>
-                  <option value="other">other</option>
-                </select>
-              </div>
-
-              {/* Location Address */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Address
-                </label>
-                <input
-                  value={location_address}
-                  onChange={(e) => setLocationAddress(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-violet-600 outline-none"
-                  placeholder="e.g. Block A"
-                  required
-                />
-              </div>
-
-              {/* Location Ward */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Ward / Floor
-                </label>
-                <input
-                  value={location_ward}
-                  onChange={(e) => setLocationWard(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-violet-600 outline-none"
-                  placeholder="e.g. 3rd Floor"
-                  required
-                />
-              </div>
-
-              {/* Description */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Description{" "}
-                  <span className="text-gray-400 text-xs">(min 10 chars)</span>
-                </label>
-                <textarea
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 h-28 resize-none focus:border-violet-600 outline-none"
-                  placeholder="Describe the issue in detail..."
-                  required
-                  minLength={10}
-                />
-                <p
-                  className={`text-xs mt-1 ${description.length < 10 ? "text-red-500" : "text-green-500"}`}
-                >
-                  {description.length} characters
-                </p>
-              </div>
-
-              {/* Buttons */}
-              <div className="flex justify-end gap-3 mt-6">
-                <button
-                  type="button"
-                  onClick={handleCloseModal}
-                  className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg"
-                >
-                  Cancel
-                </button>
-
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="px-4 py-2 bg-violet-500 text-white rounded-lg hover:bg-violet-700 font-medium disabled:opacity-50"
-                >
-                  {isSubmitting
-                    ? editMode
-                      ? "Updating..."
-                      : "Submitting..."
-                    : editMode
-                      ? "Update Issue"
-                      : "Submit Report"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+      {formModal && (
+        <ReportIssueModal
+          initial={formModal.mode === "edit" ? formModal.issue : null}
+          onClose={() => setFormModal(null)}
+          onSaved={handleSaved}
+        />
       )}
     </>
   );

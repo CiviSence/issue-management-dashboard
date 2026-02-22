@@ -10,23 +10,13 @@ export const loginUser = async (credentials) => {
     const { data } = await axios.post("/auth/login", credentials);
     return data;
   } catch (error) {
-    // Log the FULL error object to see its structure
-    console.log("Full error object:", error);
-    console.log("Error response:", error.response);
-    console.log("Error response data:", error.response?.data);
-    console.log("Error response status:", error.response?.status);
-
-    // Handle both string and array detail formats
-    const detail = error.response?.data?.detail;
-    let message = "Login failed";
-
-    if (typeof detail === "string") {
-      message = detail;
-    } else if (Array.isArray(detail)) {
-      message = detail.map((item) => item.msg).join(", ");
+    if (error.response?.status === 422) {
+      const detail = error.response.data.detail;
+      if (Array.isArray(detail)) {
+        throw new Error(detail[0]?.msg || "Invalid input data");
+      }
     }
-
-    throw new Error(message);
+    throw new Error(error.response?.data?.detail || "Login failed");
   }
 };
 
@@ -54,6 +44,12 @@ export const verifyEmail = async (data) => {
     const { data: responseData } = await axios.post("/auth/verify-email", data);
     return responseData;
   } catch (error) {
+    if (error.response?.status === 422) {
+      const detail = error.response.data.detail;
+      if (Array.isArray(detail)) {
+        throw new Error(detail[0]?.msg || "Invalid OTP format");
+      }
+    }
     throw new Error(error.response?.data?.detail || "Verification failed");
   }
 };
