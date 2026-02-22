@@ -70,10 +70,9 @@ const UserCard = ({ limit }) => {
               key={item.value}
               onClick={() => setTimePeriod(item.value)}
               className={`px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 text-xs font-medium rounded-lg transition-all duration-200 whitespace-nowrap
-                ${
-                  timePeriod === item.value
-                    ? "bg-violet-500 text-white shadow-sm"
-                    : "text-gray-500 hover:bg-gray-300"
+                ${timePeriod === item.value
+                  ? "bg-violet-500 text-white shadow-sm"
+                  : "text-gray-500 hover:bg-gray-300"
                 }`}
             >
               {item.label}
@@ -113,60 +112,60 @@ const UserCard = ({ limit }) => {
           <tbody>
             {loading
               ? Array.from({ length: displayedUsers.length || 5 }).map(
-                  (_, i) => <SkeletonRow key={i} />,
-                )
+                (_, i) => <SkeletonRow key={i} />,
+              )
               : displayedUsers.map((item) => {
-                  const { rank, statistics, user } = item;
+                const { rank, statistics, user } = item;
 
-                  return (
-                    <tr
-                      key={user.id}
-                      className="border-b border-gray-100 hover:bg-gray-50 transition"
-                    >
-                      <td className="py-2 sm:py-3 px-2 sm:px-4 font-semibold text-xs sm:text-sm">
-                        #{rank}
-                      </td>
+                return (
+                  <tr
+                    key={user.id}
+                    className="border-b border-gray-100 hover:bg-gray-50 transition"
+                  >
+                    <td className="py-2 sm:py-3 px-2 sm:px-4 font-semibold text-xs sm:text-sm">
+                      #{rank}
+                    </td>
 
-                      {/* USER - Compact on mobile */}
-                      <td className="py-2 sm:py-3 px-2 sm:px-4">
-                        <div className="flex items-center gap-2 sm:gap-3">
-                          <div className="w-7 h-7 sm:w-9 sm:h-9 rounded-full overflow-hidden shrink-0">
-                            {user.avatar_url ? (
-                              <img
-                                src={user.avatar_url}
-                                alt=""
-                                className="w-full h-full object-cover"
-                              />
-                            ) : (
-                              <div className="w-full h-full bg-[#243b8c] text-white flex items-center justify-center text-[10px] sm:text-xs font-semibold">
-                                {getInitials(user.name)}
-                              </div>
-                            )}
-                          </div>
-                          <span className="font-medium text-xs sm:text-sm truncate max-w-25 sm:max-w-none">
-                            {user.name}
-                          </span>
+                    {/* USER - Compact on mobile */}
+                    <td className="py-2 sm:py-3 px-2 sm:px-4">
+                      <div className="flex items-center gap-2 sm:gap-3">
+                        <div className="w-7 h-7 sm:w-9 sm:h-9 rounded-full overflow-hidden shrink-0">
+                          {user.avatar_url ? (
+                            <img
+                              src={user.avatar_url}
+                              alt=""
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-full h-full bg-[#243b8c] text-white flex items-center justify-center text-[10px] sm:text-xs font-semibold">
+                              {getInitials(user.name)}
+                            </div>
+                          )}
                         </div>
-                      </td>
+                        <span className="font-medium text-xs sm:text-sm truncate max-w-25 sm:max-w-none">
+                          {user.name}
+                        </span>
+                      </div>
+                    </td>
 
-                      <td className="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm">
-                        {statistics.resolved_issues * 10 + " " + "points"}
-                      </td>
+                    <td className="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm">
+                      {statistics.resolved_issues * 10 + " " + "points"}
+                    </td>
 
-                      <td className="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm hidden sm:table-cell">
-                        {statistics.total_issues}
-                      </td>
+                    <td className="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm hidden sm:table-cell">
+                      {statistics.total_issues}
+                    </td>
 
-                      <td className="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm hidden md:table-cell">
-                        {statistics.resolved_issues}
-                      </td>
+                    <td className="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm hidden md:table-cell">
+                      {statistics.resolved_issues}
+                    </td>
 
-                      <td className="py-2 sm:py-3 px-2 sm:px-4 font-medium text-xs sm:text-sm">
-                        {statistics.success_rate}%
-                      </td>
-                    </tr>
-                  );
-                })}
+                    <td className="py-2 sm:py-3 px-2 sm:px-4 font-medium text-xs sm:text-sm">
+                      {statistics.success_rate}%
+                    </td>
+                  </tr>
+                );
+              })}
           </tbody>
         </table>
       </div>
