@@ -15,6 +15,7 @@ import {
 } from "../../../Utils/issues";
 import Loader from "../../Templates/Loader";
 import defaultAvatar from "../../../assets/default-avatar.jpg";
+import ReportIssueModal from "../../Templates/ReportIssueModal";
 
 // Helpers
 
@@ -300,6 +301,15 @@ const IssueCard = ({ issue, onOpenComments }) => {
             </svg>
             <span className="font-medium">{commentCount}</span>
           </button>
+
+          {/* Views */}
+          <div className="flex items-center gap-1.5 text-sm text-gray-500 px-2.5 py-1.5">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+            <span className="font-medium">{issue.engagement.views_count || 0}</span>
+          </div>
         </div>
 
         {/* Category chip */}
@@ -434,145 +444,6 @@ const CommentsModal = ({ issueId, onClose, onCommentAdded }) => {
   );
 };
 
-// Report Issue Modal
-
-const ReportModal = ({ onClose, onSuccess }) => {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [main_category, setMainCategory] = useState("");
-  const [sub_category, setSubCategory] = useState("");
-  const [location_address, setLocationAddress] = useState("");
-  const [location_building, setLocationBuilding] = useState("");
-  const [location_ward, setLocationWard] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!title.trim()) return toast.warning("Please enter an issue title");
-    if (!description.trim() || description.length < 10)
-      return toast.warning("Description must be at least 10 characters");
-    if (!location_building) return toast.warning("Please select a building");
-    if (!main_category) return toast.warning("Please select a category");
-
-    try {
-      setIsSubmitting(true);
-      await createIssue({
-        title: title.trim(),
-        description: description.trim(),
-        main_category,
-        sub_category: sub_category || "general",
-        location_address,
-        location_building,
-        location_ward: location_ward || "",
-        media_urls: [],
-      });
-      toast.success("Issue reported successfully!");
-      onSuccess();
-      onClose();
-    } catch (error) {
-      toast.error(error.message || "Failed to submit. Please try again.");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  return (
-    <div
-      className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 backdrop-blur-sm"
-      onClick={(e) => e.target === e.currentTarget && onClose()}
-    >
-      <div className="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-bold text-gray-800">Report New Issue</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-xl leading-none">✕</button>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {[
-            { label: "Issue Title", value: title, setter: setTitle, placeholder: "e.g. Broken projector in Room 301", type: "input" },
-          ].map(({ label, value, setter, placeholder }) => (
-            <div key={label}>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
-              <input
-                value={value}
-                onChange={(e) => setter(e.target.value)}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:border-violet-500 outline-none text-sm"
-                placeholder={placeholder}
-              />
-            </div>
-          ))}
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Main Category</label>
-            <select value={main_category} onChange={(e) => setMainCategory(e.target.value)}
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:border-violet-500 outline-none text-sm">
-              <option value="">Select Category</option>
-              {["security", "cleanliness", "maintenance", "infrastructure", "facilities", "other"].map(c => (
-                <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Sub Category</label>
-            <input value={sub_category} onChange={(e) => setSubCategory(e.target.value)}
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:border-violet-500 outline-none text-sm"
-              placeholder="e.g. Leakage, Fan not working" />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Location Building</label>
-            <select value={location_building} onChange={(e) => setLocationBuilding(e.target.value)}
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:border-violet-500 outline-none text-sm">
-              <option value="">Select Building</option>
-              {[["boys-hostel", "Boys Hostel"], ["girls-hostel", "Girls Hostel"], ["admin-building", "Admin Building"], ["faculty-building", "Faculty Building"], ["campus", "Campus"], ["other", "Other"]].map(([v, l]) => (
-                <option key={v} value={v}>{l}</option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
-            <input value={location_address} onChange={(e) => setLocationAddress(e.target.value)}
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:border-violet-500 outline-none text-sm"
-              placeholder="e.g. Block A" />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Ward / Floor</label>
-            <input value={location_ward} onChange={(e) => setLocationWard(e.target.value)}
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:border-violet-500 outline-none text-sm"
-              placeholder="e.g. 3rd Floor" />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Description <span className="text-gray-400 text-xs">(min 10 chars)</span>
-            </label>
-            <textarea value={description} onChange={(e) => setDescription(e.target.value)}
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 h-28 resize-none focus:border-violet-500 outline-none text-sm"
-              placeholder="Describe the issue in detail..." minLength={10} />
-            <p className={`text-xs mt-1 ${description.length < 10 ? "text-red-400" : "text-green-500"}`}>
-              {description.length} characters
-            </p>
-          </div>
-
-          <div className="flex justify-end gap-3 pt-2">
-            <button type="button" onClick={onClose}
-              className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg text-sm font-medium">
-              Cancel
-            </button>
-            <button type="submit" disabled={isSubmitting}
-              className="px-5 py-2 bg-violet-500 text-white rounded-lg hover:bg-violet-600 font-semibold disabled:opacity-50 text-sm transition">
-              {isSubmitting ? "Submitting…" : "Submit Report"}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
-};
-
 // Filters
 
 const SORTS = [
@@ -598,11 +469,9 @@ const IssueFeed = () => {
   const [solvedOnly, setSolvedOnly] = useState(undefined); // undefined = all
   const limit = 10;
 
-  // Comments modal state
-  const [commentsModal, setCommentsModal] = useState(null); // { issueId, onIncrement }
-
-  // Report modal
-  const [showReport, setShowReport] = useState(false);
+  // Modal states
+  const [formModal, setFormModal] = useState(null); // null | { mode: 'create'|'edit', issue? }
+  const [commentsModal, setCommentsModal] = useState(null); // { issueId, count, onIncrement }
 
   const isFirstMount = useRef(true);
 
@@ -673,11 +542,12 @@ const IssueFeed = () => {
     setCommentsModal({ issueId, count, onIncrement });
   };
 
-  const handleReportSuccess = () => {
-    // Refresh feed
+  const handleSaved = (issue, mode) => {
+    // For simplicity in feed, we reset and refetch
     setIssues([]);
     setSkip(0);
     setHasMore(true);
+    // fetchIssues(true) will be triggered by issues.length listener
   };
 
   return (
@@ -685,8 +555,8 @@ const IssueFeed = () => {
       <StudentSideNav />
       <BottomNav />
       <div className="w-full p-2 lg:p-4 lg:w-[calc(100vw-15vw)] bg-[#F0EEFF] overflow-y-auto h-screen">
-        {/* Header banner */}
-        <div className="w-full bg-violet-500 p-4 sm:p-5 lg:p-6 rounded-2xl md:rounded-3xl text-white shadow-md mb-4 md:mb-6">
+        {/* Header banner - Hidden on mobile, shown from SM up */}
+        <div className="hidden sm:block w-full bg-violet-500 p-4 sm:p-5 lg:p-6 rounded-2xl md:rounded-3xl text-white shadow-md mb-4 md:mb-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             <div>
               <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold leading-tight">
@@ -697,8 +567,8 @@ const IssueFeed = () => {
               </p>
             </div>
             <button
-              onClick={() => setShowReport(true)}
-              className="w-full sm:w-auto bg-white text-violet-600 font-semibold px-5 py-2.5 rounded-xl hover:bg-violet-50 transition shadow text-sm sm:text-base"
+              onClick={() => setFormModal({ mode: "create" })}
+              className="w-full sm:w-auto bg-white text-violet-600 font-semibold px-5 py-2.5 rounded-xl hover:bg-violet-50 transition shadow text-sm sm:text-base border border-transparent hover:border-violet-100"
             >
               + Report Issue
             </button>
@@ -794,8 +664,8 @@ const IssueFeed = () => {
               <h4 className="font-semibold text-gray-800 mb-1">Have a problem?</h4>
               <p className="text-sm text-gray-500 mb-3">Report a new issue on campus.</p>
               <button
-                onClick={() => setShowReport(true)}
-                className="w-full bg-violet-500 text-white py-2 rounded-xl text-sm font-semibold hover:bg-violet-600 transition"
+                onClick={() => setFormModal({ mode: "create" })}
+                className="w-full bg-violet-500 text-white py-2 rounded-xl text-sm font-semibold hover:bg-violet-600 transition shadow-lg shadow-violet-100"
               >
                 + Report Issue
               </button>
@@ -815,11 +685,20 @@ const IssueFeed = () => {
         />
       )}
 
+      {/* Floating Action Button for Mobile */}
+      <button
+        onClick={() => setFormModal({ mode: "create" })}
+        className="fixed bottom-24 right-5 w-14 h-14 bg-violet-600 text-white rounded-full shadow-2xl flex items-center justify-center lg:hidden z-40 active:scale-95 transition-transform border-4 border-white"
+      >
+        <i className="ri-add-line text-2xl" />
+      </button>
+
       {/* Report Modal */}
-      {showReport && (
-        <ReportModal
-          onClose={() => setShowReport(false)}
-          onSuccess={handleReportSuccess}
+      {formModal && (
+        <ReportIssueModal
+          initial={formModal.mode === "edit" ? formModal.issue : null}
+          onClose={() => setFormModal(null)}
+          onSaved={handleSaved}
         />
       )}
     </>

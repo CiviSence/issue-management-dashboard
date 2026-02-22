@@ -2,6 +2,7 @@ import { useUser } from "../Context/ProfileContext";
 import AdminSideNav from "./Dashboards/Admin/AdminSideNav";
 import StudentSideNav from "./Dashboards/Student/StudentSideNav";
 import StaffSideNav from "./Dashboards/Staff/StaffSideNav";
+import StudentProfile from "./Dashboards/Student/StudentProfile";
 import BottomNav from "./Templates/BottomNav";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
@@ -156,8 +157,14 @@ const Profile = () => {
   const [logoutType, setLogoutType] = useState("current");
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
+  const role = profileData?.role?.toLowerCase();
+
+  // If student (on mobile or desktop), use the specialized StudentProfile component
+  if (role === "student") {
+    return <StudentProfile />;
+  }
+
   const renderSideNav = () => {
-    const role = profileData?.role?.toLowerCase();
     if (role === "student") return <StudentSideNav />;
     if (role === "staff") return <StaffSideNav />;
     return <AdminSideNav />; // Default/Admin
