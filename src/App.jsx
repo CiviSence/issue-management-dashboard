@@ -6,6 +6,7 @@ import ResolvedIssues from "./Components/Dashboards/Admin/ResolvedIssues";
 import Leaderboard from "./Components/Dashboards/Admin/Leaderboard";
 import Profile from "./Components/Profile";
 import AssignedIssues from "./Components/Dashboards/Staff/AssignedIssues";
+import IssueDetails from "./Components/Dashboards/Admin/IssuesDetails";
 
 import HelpSupport from "./Components/Dashboards/Common/HelpSupport";
 import Login from "./Pages/Login";
@@ -128,6 +129,14 @@ const App = () => {
             element={
               <PrivateRoute>
                 <AssignedIssues />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/issues/:id"
+            element={
+              <PrivateRoute>
+                <IssueDetails />
               </PrivateRoute>
             }
           />

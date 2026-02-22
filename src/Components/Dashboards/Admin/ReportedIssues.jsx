@@ -8,6 +8,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 import { assignIssue, deleteIssue, updateIssue } from "../../../Utils/issues";
 import { toast, ToastContainer } from "react-toastify";
 import { useUsers } from "../../../Context/UserContext";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const IssuesSkeleton = () => {
     return (
@@ -80,6 +81,7 @@ const IssuesSkeleton = () => {
 
 
 const ReportedIssues = () => {
+  const navigate = useNavigate();
   const { issues, setIssues } = useIssues();
   const [selectedLocation, setSelectedLocation] = useState("all");
   const [priority, setPriority] = useState("all");
@@ -89,7 +91,12 @@ const ReportedIssues = () => {
   const [selectedIssue, setSelectedIssue] = useState(null);
   const [showAssignModal, setShowAssignModal] = useState(false);
 
+  console.log(issues);
   console.log("Staff in ReportedIssues:", staff);
+
+  const handleSelect = (id) => {
+    navigate(`/issues/${id}`);
+  };
 
   const openAssignModal = (issueId) => {
     setSelectedIssue(issueId);
@@ -219,6 +226,7 @@ const ReportedIssues = () => {
     high: "bg-red-100 text-red-800",
     medium: "bg-amber-100 text-amber-800",
     low: "bg-emerald-100 text-emerald-800",
+    new: "bg-sky-100 text-sky-800",
   };
 
   const statusColor = {
@@ -411,6 +419,13 @@ const ReportedIssues = () => {
                               onMouseLeave={() => setActiveSubMenu(null)}
                               className="absolute right-0  mt-2 w-52 bg-white rounded-xl shadow-lg border border-gray-100 z-50 text-sm"
                             >
+                              {/* details*/}
+                              <button
+                                onClick={() => handleSelect(issue.id)}
+                                className="w-full text-left px-4 py-2 hover:bg-gray-50"
+                              >
+                                Details
+                              </button>
                               {/* Set Status */}
                               <div className="relative">
                                 <button
