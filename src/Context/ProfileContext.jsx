@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "../Utils/axios";
-import { getUserData, setSession, clearSession } from "../Utils/auth-utils";
+import { getUserData, getAccessToken, setSession, clearSession } from "../Utils/auth-utils";
 import { ProfileContext } from "./ProfileContext.js"; // Explicitly import the JS file
 
 export const ProfileDataProvider = ({ children }) => {

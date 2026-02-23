@@ -1,5 +1,5 @@
 import StudentSideNav from "./StudentSideNav";
-import BottomNav from "../../Templates/BottomNav";
+import StudentBottomNav from "./StudentBottomNav";
 import UserCard from "../../Templates/UserCard";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { toast } from "react-toastify";
@@ -135,12 +135,18 @@ const IssueCard = ({ issue, onOpenComments }) => {
       {/* Profile info */}
       <div className="flex items-start justify-between px-5 pt-5 pb-3">
         <div className="flex items-center gap-3">
-          <img
-            src={issue.user?.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(issue.user?.name || "User")}&background=ede9fe&color=7c3aed&bold=true`}
-            alt={issue.user?.name}
-            onError={(e) => { e.target.src = defaultAvatar; }}
-            className="w-10 h-10 rounded-full object-cover border-2 border-violet-100 shrink-0"
-          />
+          {issue.user?.avatar_url ? (
+            <img
+              src={issue.user.avatar_url}
+              alt={issue.user?.name}
+              onError={(e) => { e.target.src = defaultAvatar; }}
+              className="w-10 h-10 rounded-full object-cover border-2 border-violet-100 shrink-0"
+            />
+          ) : (
+            <span className="w-10 h-10 rounded-full bg-violet-100 text-violet-600 flex items-center justify-center text-sm font-bold border-2 border-violet-100 shrink-0">
+              {(issue.user?.name || "U").split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase()}
+            </span>
+          )}
           <div>
             <p className="font-semibold text-gray-900 text-sm leading-tight">
               {issue.user?.name || "Unknown User"}
@@ -188,22 +194,34 @@ const IssueCard = ({ issue, onOpenComments }) => {
 
       {/* Images/Videos */}
       {medias.length > 0 && (
-        <div className="relative bg-gray-100 overflow-hidden" style={{ maxHeight: 340 }}>
-          {isVideo(medias[mediaIndex]) ? (
-            <video
-              src={medias[mediaIndex]}
-              controls
-              className="w-full h-full object-cover"
-              style={{ maxHeight: 340 }}
-            />
-          ) : (
-            <img
-              src={medias[mediaIndex]}
-              alt=""
-              className="w-full object-cover"
-              style={{ maxHeight: 340 }}
-            />
-          )}
+        <div className="relative overflow-hidden">
+          <div className="w-full aspect-[4/3] relative">
+            {/* Blurred background image */}
+            {!isVideo(medias[mediaIndex]) && (
+              <img
+                src={medias[mediaIndex]}
+                alt=""
+                aria-hidden="true"
+                className="absolute inset-0 w-full h-full object-cover scale-110 blur-2xl opacity-40"
+              />
+            )}
+            {/* Dark overlay for readability */}
+            <div className="absolute inset-0 bg-black/10" />
+            {/* Main image/video */}
+            {isVideo(medias[mediaIndex]) ? (
+              <video
+                src={medias[mediaIndex]}
+                controls
+                className="relative w-full h-full object-contain z-10"
+              />
+            ) : (
+              <img
+                src={medias[mediaIndex]}
+                alt=""
+                className="relative w-full h-full object-contain z-10"
+              />
+            )}
+          </div>
           {/* Carousel arrows */}
           {medias.length > 1 && (
             <>
@@ -403,11 +421,18 @@ const CommentsModal = ({ issueId, onClose, onCommentAdded }) => {
           ) : (
             comments.map((c, i) => (
               <div key={c.id ?? i} className="flex gap-3">
-                <img
-                  src={c.user?.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(c.user?.name || "U")}&background=ede9fe&color=7c3aed`}
-                  alt={c.user?.name}
-                  className="w-8 h-8 rounded-full object-cover shrink-0"
-                />
+                {c.user?.avatar_url ? (
+                  <img
+                    src={c.user.avatar_url}
+                    alt={c.user?.name}
+                    onError={(e) => { e.target.src = defaultAvatar; }}
+                    className="w-8 h-8 rounded-full object-cover shrink-0"
+                  />
+                ) : (
+                  <span className="w-8 h-8 rounded-full bg-violet-100 text-violet-600 flex items-center justify-center text-xs font-bold shrink-0">
+                    {(c.user?.name || "U").split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase()}
+                  </span>
+                )}
                 <div className="flex-1">
                   <div className="flex items-baseline gap-2">
                     <span className="text-sm font-semibold text-gray-800">{c.user?.name || "User"}</span>
@@ -553,8 +578,10 @@ const IssueFeed = () => {
   return (
     <>
       <StudentSideNav />
-      <BottomNav />
-      <div className="w-full p-2 lg:p-4 lg:w-[calc(100vw-15vw)] bg-[#F0EEFF] overflow-y-auto h-screen">
+      <StudentBottomNav />
+      <div className="w-full p-2 lg:p-4 lg:w-[calc(100vw-15vw)] bg-[#F0EEFF] overflow-y-auto h-screen" id="mainScroll">
+
+
         {/* Header banner - Hidden on mobile, shown from SM up */}
         <div className="hidden sm:block w-full bg-violet-500 p-4 sm:p-5 lg:p-6 rounded-2xl md:rounded-3xl text-white shadow-md mb-4 md:mb-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
@@ -620,14 +647,14 @@ const IssueFeed = () => {
             {/* Feed */}
             <div
               id="feedScroll"
-              className="h-[calc(100vh-240px)] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200 pr-1"
+              className="lg:h-[calc(100vh-240px)] lg:overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200 pr-1"
             >
               <InfiniteScroll
                 dataLength={issues.length}
                 next={() => fetchIssues(false)}
                 hasMore={hasMore}
                 loader={<Loader />}
-                scrollableTarget="feedScroll"
+                scrollableTarget={window.innerWidth >= 1024 ? "feedScroll" : "mainScroll"}
                 endMessage={
                   <p className="text-center text-gray-400 text-sm py-6">
                     {issues.length === 0 ? "No issues found." : "You've seen it all! 🎉"}
@@ -688,7 +715,7 @@ const IssueFeed = () => {
       {/* Floating Action Button for Mobile */}
       <button
         onClick={() => setFormModal({ mode: "create" })}
-        className="fixed bottom-24 right-5 w-14 h-14 bg-violet-600 text-white rounded-full shadow-2xl flex items-center justify-center lg:hidden z-40 active:scale-95 transition-transform border-4 border-white"
+        className="fixed bottom-28 right-4 w-14 h-14 bg-violet-600 text-white rounded-full shadow-2xl flex items-center justify-center lg:hidden z-40 active:scale-95 transition-transform border-4 border-white"
       >
         <i className="ri-add-line text-2xl" />
       </button>

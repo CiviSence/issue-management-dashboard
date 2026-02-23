@@ -1,6 +1,6 @@
 import { useUser } from "../../../Context/ProfileContext";
 import StudentSideNav from "./StudentSideNav";
-import BottomNav from "../../Templates/BottomNav";
+import StudentBottomNav from "./StudentBottomNav";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import ProfileEditForm from "../../Inputs/ProfileEditForm";
@@ -12,6 +12,7 @@ import {
 } from "../../../Utils/auth-api";
 import defaultProfile from "../../../assets/default-avatar.jpg";
 import { useEffect, useState } from "react";
+import { getMyIssues } from "../../../Utils/issuesStudent";
 
 const InfoCard = ({ title, children, icon }) => (
     <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
@@ -155,6 +156,15 @@ const StudentProfile = () => {
     const [logoutInput, setLogoutInput] = useState("");
     const [logoutType, setLogoutType] = useState("current");
     const [isLoggingOut, setIsLoggingOut] = useState(false);
+    const [myIssues, setMyIssues] = useState([]);
+
+    useEffect(() => {
+        if (profileData?.id) {
+            getMyIssues(profileData.id)
+                .then(setMyIssues)
+                .catch(() => { });
+        }
+    }, [profileData]);
 
     const handleLogoutConfirm = async () => {
         if (logoutInput.toLowerCase() !== "logout") return;
@@ -221,7 +231,7 @@ const StudentProfile = () => {
     return (
         <>
             <StudentSideNav />
-            <BottomNav />
+            <StudentBottomNav />
 
             {profileData ? (
                 <div className="mx-auto w-full overflow-y-auto bg-[#F8F9FF] min-h-screen">
@@ -285,7 +295,7 @@ const StudentProfile = () => {
                                 </div>
                                 <div>
                                     <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">Reports</p>
-                                    <p className="text-xl font-black text-gray-900">{profileData.reputation_points > 50 ? "12" : "3"}</p>
+                                    <p className="text-xl font-black text-gray-900">{myIssues.length}</p>
                                 </div>
                             </div>
                             <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">
@@ -294,7 +304,7 @@ const StudentProfile = () => {
                                 </div>
                                 <div>
                                     <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">Resolved</p>
-                                    <p className="text-xl font-black text-gray-900">{profileData.reputation_points > 50 ? "8" : "1"}</p>
+                                    <p className="text-xl font-black text-gray-900">{myIssues.filter(i => i.status === 'resolved').length}</p>
                                 </div>
                             </div>
                             <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">
@@ -312,7 +322,9 @@ const StudentProfile = () => {
                                 </div>
                                 <div>
                                     <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">Impact</p>
-                                    <p className="text-xl font-black text-gray-900">Good</p>
+                                    <p className="text-xl font-black text-gray-900">
+                                        {(profileData.reputation_points || 0) >= 100 ? "🔥 Legend" : (profileData.reputation_points || 0) >= 50 ? "⭐ Great" : (profileData.reputation_points || 0) >= 20 ? "👍 Good" : "🌱 Rising"}
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -345,15 +357,19 @@ const StudentProfile = () => {
                                 />
                             </InfoCard>
 
-                            <InfoCard title="Hostel Details" icon="ri-hotel-line">
-                                <Info
-                                    label="Hosteler"
-                                    value={profileData.is_hosteler ? "Yes" : "No"}
-                                />
-                                {profileData.is_hosteler && (
+                            <InfoCard title={profileData.is_hosteler ? "Hostel Details" : "Residence"} icon={profileData.is_hosteler ? "ri-hotel-line" : "ri-sun-line"}>
+                                {profileData.is_hosteler ? (
                                     <>
+                                        <Info label="Status" value="🏠 Hosteler" />
                                         <Info label="Hostel Name" value={profileData.hostel_name} />
                                         <Info label="Room Number" value={profileData.room_number} />
+                                    </>
+                                ) : (
+                                    <>
+                                        <Info label="Status" value="Day Scholar" />
+                                        <div className="mt-2 p-3 bg-violet-50 rounded-xl border border-violet-100">
+                                            <p className="text-xs text-violet-700 font-medium text-center">No hostel drama — just vibes, traffic & tiffin boxes!</p>
+                                        </div>
                                     </>
                                 )}
                             </InfoCard>

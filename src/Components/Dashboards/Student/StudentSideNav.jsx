@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { getMyIssues } from "../../../Utils/issuesStudent";
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import { useUser } from "../../../Context/ProfileContext";
 import { clearSession } from "../../../Utils/auth-utils";
@@ -46,6 +47,15 @@ const NavItem = ({ to, icon, label }) => (
 // Profile popup shown on click
 const ProfilePopup = ({ profileData, onLogout, onClose }) => {
     const navigate = useNavigate();
+    const [reportCount, setReportCount] = useState(0);
+
+    useEffect(() => {
+        if (profileData?.id) {
+            getMyIssues(profileData.id)
+                .then((issues) => setReportCount(issues.length))
+                .catch(() => { });
+        }
+    }, [profileData]);
 
     const items = [
         {
@@ -108,6 +118,18 @@ const ProfilePopup = ({ profileData, onLogout, onClose }) => {
                             </p>
                         </div>
                     )}
+                    <div className="bg-white/10 rounded-lg px-3 py-2">
+                        <p className="text-[10px] text-violet-200 uppercase tracking-wide">Residence</p>
+                        <p className="text-xs text-white font-medium truncate">
+                            {profileData?.is_hosteler ? (profileData.hostel_name || "Hosteler") : "Day Scholar"}
+                        </p>
+                    </div>
+                    {profileData?.is_hosteler && profileData?.room_number && (
+                        <div className="bg-white/10 rounded-lg px-3 py-2">
+                            <p className="text-[10px] text-violet-200 uppercase tracking-wide">Room</p>
+                            <p className="text-xs text-white font-medium truncate">{profileData.room_number}</p>
+                        </div>
+                    )}
                 </div>
                 {/* Gender + Role capsules */}
                 <div className="mt-2 flex flex-wrap gap-1.5">
@@ -122,6 +144,10 @@ const ProfilePopup = ({ profileData, onLogout, onClose }) => {
                     <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-white/15 text-white text-[11px] font-medium rounded-full capitalize">
                         <i className="ri-shield-user-line text-xs" />
                         {profileData?.role || "student"}
+                    </span>
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-white/15 text-white text-[11px] font-medium rounded-full">
+                        <i className="ri-file-list-3-line text-xs" />
+                        {reportCount} Reports
                     </span>
                 </div>
             </div>
