@@ -7,7 +7,6 @@ const axios = instance;
 export const getStats = async () => {
   try {
     const { data } = await axios.get("/analytics/dashboard-stats");
-    console.log(data);
     return data;
   } catch (error) {
     throw new Error(error.response?.data?.message || "Failed to fetch issues");

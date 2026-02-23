@@ -1,15 +1,13 @@
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useState } from "react";
 import StudentSideNav from "./StudentSideNav";
-import BottomNav from "../../Templates/BottomNav";
+import StudentBottomNav from "./StudentBottomNav";
 import UserCard from "../../Templates/UserCard";
 import { toast } from "react-toastify";
 import { useUser } from "../../../Context/ProfileContext";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import {
-  getMyIssues,
-  deleteMyIssue,
-} from "../../../Utils/issuesStudent";
+import { deleteMyIssue } from "../../../Utils/issuesStudent";
+import { useIssues } from "../../../Context/IssuesContext";
 import ReportIssueModal from "../../Templates/ReportIssueModal";
 import defaultAvatar from "../../../assets/default-avatar.jpg";
 
@@ -186,11 +184,7 @@ const IssueRow = ({ issue, onEdit, onDelete }) => {
         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-400 mb-3">
           {loc && (
             <span className="flex items-center gap-1">
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-              </svg>
+              <i className="ri-map-pin-line text-sm" />
               <span className="capitalize">{loc}</span>
             </span>
           )}
@@ -200,47 +194,34 @@ const IssueRow = ({ issue, onEdit, onDelete }) => {
             </span>
           )}
           <span className="flex items-center gap-1 ml-auto">
-            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
+            <i className="ri-time-line text-sm" />
             {formatTime(issue.created_at)}
           </span>
         </div>
 
         {/* Engagement stats */}
         {issue.engagement && (
-          <div className="flex items-center gap-4 text-xs text-gray-500 mb-3">
+          <div className="flex items-center gap-3 text-xs text-gray-500 mb-3">
             <span className="flex items-center gap-1 bg-gray-50 px-2 py-1 rounded-lg">
-              <svg className="w-3.5 h-3.5 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.106-1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
-              </svg>
+              <i className="ri-thumb-up-fill text-emerald-500 text-sm" />
               {issue.engagement.upvotes || 0}
             </span>
             <span className="flex items-center gap-1 bg-gray-50 px-2 py-1 rounded-lg">
-              <svg className="w-3.5 h-3.5 text-rose-500" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M18 9.5a1.5 1.5 0 11-3 0v-6a1.5 1.5 0 013 0v6zM14 9.667v-5.43a2 2 0 00-1.105-1.79l-.05-.025A4 4 0 0011.055 2H5.64a2 2 0 00-1.962 1.608l-1.2 6A2 2 0 004.44 12H14 9.667v-5.43a2 2 0 00-1.105-1.79l-.05-.025A4 4 0 0011.055 2H5.64a2 2 0 00-1.962 1.608l-1.2 6A2 2 0 004.44 12H8v4a2 2 0 002 2 1 1 0 001-1v-.667a4 4 0 01.8-2.4l1.4-1.866a4 4 0 00.8-2.4z" />
-              </svg>
+              <i className="ri-thumb-down-fill text-rose-500 text-sm" />
               {issue.engagement.downvotes || 0}
             </span>
             <span className="flex items-center gap-1 bg-gray-50 px-2 py-1 rounded-lg">
-              <svg className="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-              </svg>
+              <i className="ri-eye-line text-gray-400 text-sm" />
               {issue.engagement.views_count || 0}
             </span>
             <span className="flex items-center gap-1 bg-gray-50 px-2 py-1 rounded-lg">
-              <svg className="w-3.5 h-3.5 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                  d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-              </svg>
+              <i className="ri-chat-3-line text-violet-400 text-sm" />
               {issue.engagement.comment_count ?? 0}
             </span>
           </div>
         ) || (
-            <div className="flex items-center gap-4 text-xs text-gray-400 mb-3 italic">
-              No engagement yet
+            <div className="flex items-center gap-3 text-xs text-gray-400 mb-3">
+              <span className="bg-gray-50 px-2.5 py-1 rounded-lg text-gray-400 border border-gray-100">No engagement data</span>
             </div>
           )}
 
@@ -250,20 +231,14 @@ const IssueRow = ({ issue, onEdit, onDelete }) => {
             onClick={() => onEdit(issue)}
             className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-600 bg-gray-50 rounded-lg hover:bg-violet-50 hover:text-violet-600 border border-transparent hover:border-violet-200 transition-all"
           >
-            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-            </svg>
+            <i className="ri-edit-line text-sm" />
             Edit
           </button>
           <button
             onClick={() => onDelete(issue)}
             className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-600 bg-gray-50 rounded-lg hover:bg-red-50 hover:text-red-600 border border-transparent hover:border-red-200 transition-all"
           >
-            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-            </svg>
+            <i className="ri-delete-bin-6-line text-sm" />
             Delete
           </button>
         </div>
@@ -310,29 +285,11 @@ const FILTER_STATUS = ["all", "new", "acknowledged", "in_progress", "resolved", 
 
 const MyIssues = () => {
   const { profileData } = useUser();
-  const [issues, setIssues] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { issues, campusStats, loading, fetchIssues, addIssue, updateIssue, removeIssue } = useIssues();
   const [filterStatus, setFilterStatus] = useState("all");
   const [search, setSearch] = useState("");
-  const [formModal, setFormModal] = useState(null); // null | { mode: 'create'|'edit', issue? }
-  const [deleteModal, setDeleteModal] = useState(null); // null | issue
-
-  const load = async () => {
-    if (!profileData?.id) return;
-    setLoading(true);
-    try {
-      const data = await getMyIssues(profileData.id);
-      setIssues(data);
-    } catch (err) {
-      toast.error(err.message || "Failed to load issues");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (profileData?.id) load();
-  }, [profileData]);
+  const [formModal, setFormModal] = useState(null);
+  const [deleteModal, setDeleteModal] = useState(null);
 
   // Filter & search
   const filtered = issues.filter((i) => {
@@ -349,23 +306,23 @@ const MyIssues = () => {
 
   const handleSaved = (issue, mode) => {
     if (mode === "create") {
-      setIssues((prev) => [issue, ...prev]);
+      addIssue(issue);
     } else {
-      setIssues((prev) => prev.map((i) => (i.id === issue.id ? issue : i)));
+      updateIssue(issue);
     }
   };
 
   const handleDeleted = (id) => {
-    setIssues((prev) => prev.filter((i) => i.id !== id));
+    removeIssue(id);
   };
 
   return (
     <>
       <StudentSideNav />
-      <BottomNav />
+      <StudentBottomNav />
       <div className="w-full p-2 lg:p-4 lg:w-[calc(100vw-15vw)] bg-[#F0EEFF] overflow-y-auto h-screen">
-        {/* Header */}
-        <div className="w-full bg-violet-500 p-4 sm:p-5 lg:p-6 rounded-2xl md:rounded-3xl text-white shadow-md mb-4">
+        {/* Desktop Header */}
+        <div className="hidden sm:block w-full bg-violet-500 p-4 sm:p-5 lg:p-6 rounded-2xl md:rounded-3xl text-white shadow-md mb-4">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
               <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold leading-tight">
@@ -383,6 +340,8 @@ const MyIssues = () => {
             </button>
           </div>
         </div>
+
+
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 lg:gap-6">
           {/* Main column */}
@@ -479,10 +438,11 @@ const MyIssues = () => {
                 + Report New Issue
               </button>
               <button
-                onClick={load}
-                className="w-full bg-gray-50 text-gray-600 py-2.5 rounded-xl text-sm font-medium hover:bg-gray-100 transition border border-gray-200"
+                onClick={() => fetchIssues(true)}
+                className="w-full bg-gray-50 text-gray-600 py-2.5 rounded-xl text-sm font-medium hover:bg-gray-100 transition border border-gray-200 flex items-center justify-center gap-2"
               >
-                ↻ Refresh
+                <i className="ri-refresh-line text-base" />
+                Refresh
               </button>
             </div>
 
@@ -498,6 +458,34 @@ const MyIssues = () => {
                 ))}
               </div>
             </div>
+
+            {/* Campus Overview */}
+            {campusStats && (
+              <div className="mt-4 bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+                <h4 className="font-semibold text-gray-800 mb-3 text-sm flex items-center gap-2">
+                  <i className="ri-bar-chart-2-line text-violet-500" />
+                  Campus Overview
+                </h4>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between py-2 border-b border-gray-50">
+                    <span className="text-xs text-gray-500">Total campus issues</span>
+                    <span className="text-sm font-bold text-gray-800">{campusStats.issues?.total || 0}</span>
+                  </div>
+                  <div className="flex items-center justify-between py-2 border-b border-gray-50">
+                    <span className="text-xs text-gray-500">Reported today</span>
+                    <span className="text-sm font-bold text-gray-800">{campusStats.issues?.today || 0}</span>
+                  </div>
+                  <div className="flex items-center justify-between py-2 border-b border-gray-50">
+                    <span className="text-xs text-gray-500">This week</span>
+                    <span className="text-sm font-bold text-gray-800">{campusStats.issues?.this_week || 0}</span>
+                  </div>
+                  <div className="flex items-center justify-between py-2">
+                    <span className="text-xs text-gray-500">Resolution rate</span>
+                    <span className="text-sm font-bold text-emerald-600">{campusStats.issues?.resolution_rate || 0}%</span>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
