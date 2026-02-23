@@ -26,17 +26,23 @@ export const getAllIssues = async (params = {}) => {
 // Fetch issues reported by a specific user
 export const getMyIssues = async (userId) => {
   try {
-    const { data } = await axios.get("/issues", { params: { user_id: userId } });
+    const { data } = await axios.get("/issues", {
+      params: { user_id: userId },
+    });
     return data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || "Failed to fetch your issues");
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch your issues",
+    );
   }
 };
 
 // Fetch resolved issues
 export const getResolvedIssues = async (params = {}) => {
   try {
-    const { data } = await axios.get("/issues/?limit=50&status=resolved", { params });
+    const { data } = await axios.get("/issues/?limit=50&status=resolved", {
+      params,
+    });
     return data;
   } catch (error) {
     throw new Error(error.response?.data?.message || "Failed to fetch issues");
@@ -49,7 +55,9 @@ export const getIssuesFeed = async (params = {}) => {
     const { data } = await axios.get("/issues/feed", { params });
     return data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || "Failed to fetch issues feed");
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch issues feed",
+    );
   }
 };
 
@@ -71,8 +79,8 @@ export const createIssue = async (issueData) => {
   } catch (error) {
     throw new Error(
       error.response?.data?.detail ||
-      error.response?.data?.message ||
-      "Failed to create issue"
+        error.response?.data?.message ||
+        "Failed to create issue",
     );
   }
 };
@@ -86,7 +94,7 @@ export const issueImage = async (issueId, imageFile) => {
     const { data } = await instance.post(
       `/upload/issue?issue_id=${issueId}`,
       formData,
-      { headers: { "Content-Type": "multipart/form-data" } }
+      { headers: { "Content-Type": "multipart/form-data" } },
     );
 
     return data;
@@ -121,21 +129,26 @@ export const getAssignedIssues = async () => {
     const { data } = await axios.get("assignments/my-tasks");
     return data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || "Failed to fetch assigned issues");
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch assigned issues",
+    );
   }
 };
 
 // Assign issue to staff
 export const assignIssue = async (issueId, staffId, notes = "") => {
+  const payload = {
+    issue_id: Number(issueId),
+    staff_user_id: String(staffId),
+    notes: notes || undefined,
+  };
+  console.log("Sending to /assignments:", payload);
   try {
-    const { data } = await instance.post("/assignments", {
-      issue_id: issueId,
-      staff_user_id: staffId,
-      notes,
-    });
+    const { data } = await instance.post("/assignments", payload);
     return data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || "Failed to assign staff to issue");
+    // Log full error details
+    throw new Error(error.response?.data?.detail || error.message || "Failed to assign issue");
   }
 };
 
@@ -155,7 +168,9 @@ export const downvoteIssue = async (issueId) => {
     const { data } = await instance.post(`/issues/${issueId}/downvote`);
     return data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || "Failed to downvote issue");
+    throw new Error(
+      error.response?.data?.message || "Failed to downvote issue",
+    );
   }
 };
 
@@ -175,18 +190,20 @@ export const fetchComments = async (issueId) => {
     const { data } = await instance.get(`/issues/${issueId}/comments`);
     return data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || "Failed to fetch comments");
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch comments",
+    );
   }
 };
 
 // Post a new comment
 export const addComment = async (issueId, text) => {
   try {
-    const { data } = await instance.post(`/issues/${issueId}/comments`, { text });
+    const { data } = await instance.post(`/issues/${issueId}/comments`, {
+      text,
+    });
     return data;
   } catch (error) {
     throw new Error(error.response?.data?.message || "Failed to add comment");
   }
 };
-
-

@@ -12,53 +12,53 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { Link } from "react-router-dom";
 
- //skeleton loader component for dashboard)
+//skeleton loader component for dashboard)
 const DashboardSkeleton = () => {
-    return (
-      <div className="w-full h-screen p-2 lg:p-4 lg:w-[calc(100vw-15vw)] bg-white overflow-auto">
-        {/* Header */}
-        <div className="w-full flex flex-col lg:flex-row justify-between bg-violet-200 p-4 rounded-2xl mb-4">
-          <Skeleton height={40} width={220} borderRadius={8} />
-          <Skeleton height={48} width={320} borderRadius={8} />
-        </div>
+  return (
+    <div className="w-full h-screen p-2 lg:p-4 lg:w-[calc(100vw-15vw)] bg-white overflow-auto">
+      {/* Header */}
+      <div className="w-full flex flex-col lg:flex-row justify-between bg-violet-200 p-4 rounded-2xl mb-4">
+        <Skeleton height={40} width={220} borderRadius={8} />
+        <Skeleton height={48} width={320} borderRadius={8} />
+      </div>
 
-        {/* Issue Cards */}
-        <div className="w-full mt-4 gap-2 flex flex-wrap justify-center bg-[#F0EEFF] p-4 rounded-2xl">
-          {[...Array(4)].map((_, i) => (
-            <div key={i} className="w-full sm:w-[48%] lg:w-[35%] xl:w-[24%]">
-              <Skeleton height={112} borderRadius={12} />
-            </div>
-          ))}
-        </div>
-
-        {/* Charts */}
-        <div className="mt-4 bg-[#F0EEFF] p-4 rounded-2xl">
-          <Skeleton height={24} width={160} className="mb-4" />
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
-            <Skeleton height={260} borderRadius={12} />
-            <Skeleton height={260} borderRadius={12} />
-            <Skeleton height={260} borderRadius={12} />
+      {/* Issue Cards */}
+      <div className="w-full mt-4 gap-2 flex flex-wrap justify-center bg-[#F0EEFF] p-4 rounded-2xl">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="w-full sm:w-[48%] lg:w-[35%] xl:w-[24%]">
+            <Skeleton height={112} borderRadius={12} />
           </div>
-        </div>
+        ))}
+      </div>
 
-        {/* User card */}
-        <div className="bg-[#F0EEFF] p-4 mt-4 rounded-2xl">
-          <Skeleton height={200} borderRadius={12} />
-        </div>
-
-        <div className="bg-[#F0EEFF] p-4 mt-4 rounded-2xl">
-          <Skeleton height={200} borderRadius={12} />
+      {/* Charts */}
+      <div className="mt-4 bg-[#F0EEFF] p-4 rounded-2xl">
+        <Skeleton height={24} width={160} className="mb-4" />
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+          <Skeleton height={260} borderRadius={12} />
+          <Skeleton height={260} borderRadius={12} />
+          <Skeleton height={260} borderRadius={12} />
         </div>
       </div>
-    );
-  };
+
+      {/* User card */}
+      <div className="bg-[#F0EEFF] p-4 mt-4 rounded-2xl">
+        <Skeleton height={200} borderRadius={12} />
+      </div>
+
+      <div className="bg-[#F0EEFF] p-4 mt-4 rounded-2xl">
+        <Skeleton height={200} borderRadius={12} />
+      </div>
+    </div>
+  );
+};
 
 const AdminDashboard = () => {
   //state for adminstats
   const { allstats } = useIssues();
 
   //get all issues
-  const { issues =[] } = useIssues();
+  const { issues = [] } = useIssues();
   console.log(issues);
 
   //initial stats object for counting categories, priority and location
@@ -175,10 +175,6 @@ const AdminDashboard = () => {
     { name: "Girls Hostel", value: location.girlsHostel, color: "#E34A4D" },
   ];
 
-
-
- 
-
   return (
     <>
       <SideNav />
@@ -207,7 +203,8 @@ const AdminDashboard = () => {
               </div>
             </div>
             {/* Issue Cards */}
-            <div className="w-full mt-4 gap-2 flex flex-wrap justify-center bg-[#F0EEFF] p-4 rounded-2xl">
+            <div className="w-full mt-4 gap-3 sm:gap-4 flex flex-wrap justify-center bg-[#F0EEFF] p-3 sm:p-4 lg:p-6 rounded-2xl">
+              {" "}
               {statusCards.map((item, index) => (
                 <IssueCard key={index} issue={item} />
               ))}
