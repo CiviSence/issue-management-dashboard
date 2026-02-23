@@ -5,11 +5,7 @@ import { useIssues } from "../../../Context/IssueContext";
 import { useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import {
-  assignIssue,
-  deleteIssue,
-  updateIssue,
-} from "../../../Utils/issues";
+import { assignIssue, deleteIssue, updateIssue } from "../../../Utils/issues";
 import { toast, ToastContainer } from "react-toastify";
 import { useUsers } from "../../../Context/UserContext";
 import { Navigate, useNavigate } from "react-router-dom";
@@ -93,7 +89,6 @@ const ReportedIssues = () => {
 
   console.log(issues);
   console.log("Staff in ReportedIssues:", staff);
-
 
   const openAssignModal = (issueId) => {
     setSelectedIssue(issueId);
@@ -187,7 +182,12 @@ const ReportedIssues = () => {
       setShowAssignModal(false);
     } catch (error) {
       console.log(error);
-      toast.error("Failed to assign staff");
+      toast.error(
+        error.response?.data?.message ||
+          error.response?.data?.error ||
+          error.message ||
+          "Failed to assign staff",
+      );
     }
   };
 
