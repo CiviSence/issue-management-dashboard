@@ -130,7 +130,7 @@ const HelpSupport = () => {
       {renderSideNav()}
       <BottomNav />
       <div className="flex-1 bg-[#FBFBFF] min-h-screen overflow-y-auto">
-        <div className="max-w-[1400px] lg:pl-32 xl:pl-44">
+        <div className="max-w-350 lg:pl-32 xl:pl-44">
           {/* HEADER */}
           <div className="relative pt-12 pb-24 md:pt-20 md:pb-32 px-6 overflow-hidden">
             <div className="absolute top-0 right-0 w-96 h-96 bg-violet-200/30 rounded-full blur-[100px] -mr-32 -mt-32"></div>
@@ -156,7 +156,7 @@ const HelpSupport = () => {
                 className="text-4xl md:text-5xl lg:text-7xl font-black text-gray-900 tracking-tight leading-[1.1] mb-6"
               >
                 How can we <br className="hidden md:block" />
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-violet-600 to-indigo-600">help you?</span>
+                <span className="bg-clip-text text-transparent bg-linear-to-r from-violet-600 to-indigo-600">help you?</span>
               </motion.h1>
 
               <motion.div
@@ -176,7 +176,7 @@ const HelpSupport = () => {
                       {activeTab === tab.id && (
                         <motion.div
                           layoutId="activeTab"
-                          className="absolute inset-0 bg-white rounded-xl shadow-lg shadow-violet-100 ring-1 ring-black/[0.03]"
+                          className="absolute inset-0 bg-white rounded-xl shadow-lg shadow-violet-100 ring-1 ring-black/3"
                           transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                         />
                       )}
@@ -198,7 +198,7 @@ const HelpSupport = () => {
                   exit={{ opacity: 0, y: -20 }}
                   className="space-y-6"
                 >
-                  <div className="bg-white/80 backdrop-blur-md rounded-[32px] p-6 md:p-10 shadow-xl shadow-black/5 border border-white/60">
+                  <div className="bg-white/80 backdrop-blur-md rounded-4xl p-6 md:p-10 shadow-xl shadow-black/5 border border-white/60">
                     <div className="flex items-center justify-between mb-8">
                       <h3 className="text-xl md:text-2xl font-black text-gray-900 flex items-center gap-3">
                         <div className="w-10 h-10 bg-violet-600 text-white rounded-xl flex items-center justify-center text-lg shadow-lg shadow-violet-200">
@@ -225,13 +225,13 @@ const HelpSupport = () => {
                   exit={{ opacity: 0, y: -20 }}
                   className="grid grid-cols-1 md:grid-cols-12 gap-6"
                 >
-                  <div className="md:col-span-12 lg:col-span-8 bg-white/80 backdrop-blur-md rounded-[32px] p-6 md:p-10 lg:p-12 shadow-xl shadow-black/5 border border-white/60 relative overflow-hidden">
+                  <div className="md:col-span-12 lg:col-span-8 bg-white/80 backdrop-blur-md rounded-4xl p-6 md:p-10 lg:p-12 shadow-xl shadow-black/5 border border-white/60 relative overflow-hidden">
                     {/* Overlay for deactivated form */}
                     <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-white/10 backdrop-blur-[6px]">
                       <motion.div
                         initial={{ scale: 0.9, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
-                        className="bg-white p-8 rounded-[32px] shadow-2xl shadow-black/10 border border-gray-100 text-center max-w-sm mx-auto"
+                        className="bg-white p-8 rounded-4xl shadow-2xl shadow-black/10 border border-gray-100 text-center max-w-sm mx-auto"
                       >
                         <div className="w-16 h-16 bg-amber-50 text-amber-500 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-6">
                           <i className="ri-error-warning-fill"></i>
@@ -264,7 +264,7 @@ const HelpSupport = () => {
                   </div>
 
                   <div className="md:col-span-12 lg:col-span-4 space-y-6">
-                    <div className="bg-gradient-to-br from-violet-600 to-indigo-700 rounded-[32px] p-10 text-white shadow-xl shadow-violet-200 relative overflow-hidden group">
+                    <div className="bg-linear-to-br from-violet-600 to-indigo-700 rounded-4xl p-10 text-white shadow-xl shadow-violet-200 relative overflow-hidden group">
                       <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-700"></div>
                       <h4 className="text-xl font-black mb-4 flex items-center gap-3">
                         <i className="ri-chat-voice-line text-2xl"></i>
@@ -279,7 +279,7 @@ const HelpSupport = () => {
                       </button>
                     </div>
 
-                    <div className="bg-white rounded-[32px] p-8 shadow-xl shadow-black/5 border border-white/60">
+                    <div className="bg-white rounded-4xl p-8 shadow-xl shadow-black/5 border border-white/60">
                       <h4 className="text-lg font-black text-gray-900 mb-6 flex items-center gap-2">
                         <i className="ri-mail-line text-violet-600"></i>
                         Direct Email
@@ -303,7 +303,7 @@ const HelpSupport = () => {
                   exit={{ opacity: 0, y: -20 }}
                   className="space-y-8"
                 >
-                  <div className="bg-white/80 backdrop-blur-md rounded-[32px] p-6 md:p-12 shadow-xl shadow-black/5 border border-white/60">
+                  <div className="bg-white/80 backdrop-blur-md rounded-4xl p-6 md:p-12 shadow-xl shadow-black/5 border border-white/60">
                     <div className="max-w-3xl mb-12">
                       <h3 className="text-2xl md:text-3xl font-black text-gray-900 mb-4 flex items-center gap-3">
                         <div className="w-10 h-10 bg-blue-600 text-white rounded-xl flex items-center justify-center text-lg shadow-lg shadow-blue-200">
@@ -322,7 +322,7 @@ const HelpSupport = () => {
                         { step: "4", title: "Community Rank", desc: "Earn reputation points for every resolved report and climb the ranks." }
                       ].map((card, i) => (
                         <div key={i} className="flex gap-5 p-6 rounded-2xl hover:bg-violet-50/50 transition-colors group">
-                          <div className="flex-shrink-0 w-12 h-12 bg-white rounded-2xl shadow-sm border border-gray-100 flex items-center justify-center font-black text-violet-600 group-hover:scale-110 transition-transform">
+                          <div className="shrink-0 w-12 h-12 bg-white rounded-2xl shadow-sm border border-gray-100 flex items-center justify-center font-black text-violet-600 group-hover:scale-110 transition-transform">
                             {card.step}
                           </div>
                           <div>
@@ -377,7 +377,7 @@ const HelpSupport = () => {
                   exit={{ opacity: 0, y: -20 }}
                   className="space-y-6"
                 >
-                  <div className="bg-white/80 backdrop-blur-md rounded-[32px] p-6 md:p-12 shadow-xl shadow-black/5 border border-white/60">
+                  <div className="bg-white/80 backdrop-blur-md rounded-4xl p-6 md:p-12 shadow-xl shadow-black/5 border border-white/60">
                     <div className="max-w-2xl mb-12">
                       <h3 className="text-2xl font-black text-gray-900 mb-4 flex items-center gap-3">
                         <div className="w-10 h-10 bg-gray-900 text-white rounded-xl flex items-center justify-center text-lg">
@@ -431,7 +431,7 @@ const HelpSupport = () => {
                     </div>
 
                     <div className="mt-12 p-8 bg-violet-50 rounded-3xl border border-violet-100/50 flex flex-col md:flex-row items-center gap-6">
-                      <div className="w-12 h-12 bg-white rounded-xl flex-shrink-0 flex items-center justify-center text-violet-600 shadow-sm ring-1 ring-black/5">
+                      <div className="w-12 h-12 bg-white rounded-xl shrink-0 flex items-center justify-center text-violet-600 shadow-sm ring-1 ring-black/5">
                         <i className="ri-information-line text-xl"></i>
                       </div>
                       <p className="text-sm font-medium text-violet-900/70 text-center md:text-left">

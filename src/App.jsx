@@ -7,7 +7,6 @@ import Leaderboard from "./Components/Dashboards/Admin/Leaderboard";
 import Profile from "./Components/Profile";
 import AssignedIssues from "./Components/Dashboards/Staff/AssignedIssues";
 import IssueDetails from "./Components/Dashboards/Admin/IssuesDetails";
-
 import HelpSupport from "./Components/Dashboards/Common/HelpSupport";
 import Login from "./Pages/Login";
 import PrivateRoute from "./routes/PrivateRoute";
@@ -17,6 +16,7 @@ import Verify from "./Pages/Verify";
 import IssueFeed from "./Components/Dashboards/Student/IssueFeed";
 import MyIssues from "./Components/Dashboards/Student/MyIssues";
 import { ThemeProvider } from "./Context/ThemeContext.jsx";
+import ProtectedRoute from "./routes/ProtectedRoute.jsx";
 
 const App = () => {
   return (
@@ -59,9 +59,9 @@ const App = () => {
             }
           />
 
-          {/* PROTECTED (only when logged in) */}
+          {/* private routes - requires login/signup */}
 
-
+          {/* dynamic dashboard - redirects to <AdminDashboard/> <StudentDashboard/> and <StaffDashboard/> on the basis of userRole */}
           <Route
             path="/dashboard"
             element={
@@ -70,34 +70,6 @@ const App = () => {
               </PrivateRoute>
             }
           />
-
-          <Route
-            path="/reported-issues"
-            element={
-              <PrivateRoute>
-                <ReportedIssues />
-              </PrivateRoute>
-            }
-          />
-
-          <Route
-            path="/resolved-issues"
-            element={
-              <PrivateRoute>
-                <ResolvedIssues />
-              </PrivateRoute>
-            }
-          />
-
-          <Route
-            path="/leaderboard"
-            element={
-              <PrivateRoute>
-                <Leaderboard />
-              </PrivateRoute>
-            }
-          />
-
           <Route
             path="/profile"
             element={
@@ -107,64 +79,92 @@ const App = () => {
             }
           />
           <Route
-            path="/pending-issues"
-            element={
-              <PrivateRoute>
-                <ReportedIssues />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/in-progress"
-            element={
-              <PrivateRoute>
-                <ReportedIssues />
-              </PrivateRoute>
-            }
-          />
-
-
-          <Route
-            path="/assigned-issues"
-            element={
-              <PrivateRoute>
-                <AssignedIssues />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/issues/:id"
-            element={
-              <PrivateRoute>
-                <IssueDetails />
-              </PrivateRoute>
-            }
-          />
-
-
-          <Route
-            path="/feed"
-            element={
-              <PrivateRoute>
-                <IssueFeed />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/my-issues"
-            element={
-              <PrivateRoute>
-                <MyIssues />
-              </PrivateRoute>
-            }
-          />
-
-          <Route
             path="/help-support"
             element={
               <PrivateRoute>
                 <HelpSupport />
               </PrivateRoute>
+            }
+          />
+          <Route
+            path="/leaderboard"
+            element={
+              <PrivateRoute>
+                <Leaderboard />
+              </PrivateRoute>
+            }
+          />
+
+          {/* protected routes - role based access */}
+
+          <Route
+            path="/reported-issues"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <ReportedIssues />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/resolved-issues"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <ResolvedIssues />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/pending-issues"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <ReportedIssues />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/in-progress"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <ReportedIssues />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/assigned-issues"
+            element={
+              <ProtectedRoute allowedRoles={["staff"]}>
+                <AssignedIssues />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/issues/:id"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <IssueDetails />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/feed"
+            element={
+              <ProtectedRoute allowedRoles={["student"]}>
+                <IssueFeed />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/my-issues"
+            element={
+              <ProtectedRoute allowedRoles={["student"]}>
+                <MyIssues />
+              </ProtectedRoute>
             }
           />
         </Routes>

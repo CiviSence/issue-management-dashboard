@@ -9,7 +9,6 @@ import { assignIssue, deleteIssue, updateIssue } from "../../../Utils/issues";
 import { toast, ToastContainer } from "react-toastify";
 import { useUsers } from "../../../Context/UserContext";
 import { Navigate, useNavigate } from "react-router-dom";
-import { p } from "framer-motion/client";
 
 const IssuesSkeleton = () => {
   return (
@@ -578,7 +577,10 @@ const ReportedIssues = () => {
                     </div>
 
                     {/* View Button */}
-                    <button className="w-full bg-violet-50 text-violet-600 text-sm font-medium py-2 rounded-lg hover:bg-violet-100 transition">
+                    <button onClick={() =>
+                                  navigate(`/issues/${issue.id}`, {
+                                    state: issue,
+                                  })} className="w-full bg-violet-50 text-violet-600 text-sm font-medium py-2 rounded-lg hover:bg-violet-100 transition">
                       View Details →
                     </button>
                   </div>

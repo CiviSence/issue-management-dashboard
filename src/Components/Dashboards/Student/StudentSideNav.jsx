@@ -10,7 +10,7 @@ import {
 import defaultAvatar from "../../../assets/default-avatar.jpg";
 import logoImg from "../../../assets/logo/logowhite.png";
 
-// sidebr links  config
+// sidebar links  config
 const NAV_ITEMS = [
     { to: "/feed", icon: "ri-rss-fill", label: "Issue Feed" },
     { to: "/dashboard", icon: "ri-dashboard-fill", label: "My Dashboard" },
@@ -78,7 +78,7 @@ const ProfilePopup = ({ profileData, onLogout, onClose }) => {
     return (
         <div className="absolute bottom-[calc(100%+8px)] left-0 w-72 bg-white rounded-2xl shadow-2xl overflow-hidden z-50 border border-gray-100">
             {/* Profile hero */}
-            <div className="bg-gradient-to-br from-violet-500 to-purple-600 px-5 py-5">
+            <div className="bg-linear-to-br from-violet-500 to-purple-600 px-5 py-5">
                 <div className="flex items-center gap-4">
                     {/* Square avatar */}
                     <div className="w-14 h-14 rounded-xl border-2 border-white/40 overflow-hidden shrink-0 shadow-lg">
@@ -203,7 +203,7 @@ const LogoutModal = ({ onClose }) => {
     };
 
     return (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-[100]">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-100">
             <div className="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm">
                 <div className="w-12 h-12 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
                     <i className="ri-logout-box-r-line text-2xl text-red-500" />

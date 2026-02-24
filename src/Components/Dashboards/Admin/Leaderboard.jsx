@@ -3,11 +3,29 @@ import BottomNav from "../../Templates/BottomNav";
 import Searchbar from "../../Templates/Searchbar";
 // import { useUsers } from "../../../Context/UserContext";
 import UserCard from "../../Templates/UserCard";
+import { useUser } from "../../../Context/ProfileContext";
+import AdminSideNav from "./AdminSideNav";
+import StudentSideNav from "../Student/StudentSideNav";
+import StaffSideNav from "../Staff/StaffSideNav";
+
+
+
+  
 
 const Leaderboard = () => {
+  const {profileData} = useUser();
+    const role = profileData?.role?.toLowerCase();
+
+
+
+const renderSideNav = () => {
+    if (role === "student") return <StudentSideNav />;
+    if (role === "staff") return <StaffSideNav />;
+    return <AdminSideNav />; // Default/Admin
+  };
   return (
     <>
-      <SideNav />
+      {renderSideNav()}
       <BottomNav />
       <div className="min-h-screen w-full  p-4 overflow-x-auto">
         <div className="w-full bg-violet-500 p-4 rounded-2xl">
