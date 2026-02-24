@@ -78,7 +78,7 @@ const LineChartCard = () => {
 
       {/* Chart */}
       {loading ? (
-        <div className="flex items-center justify-center h-[250px] text-gray-400">
+        <div className="flex items-center justify-center h-62.5 text-gray-400">
           Loading trend...
         </div>
       ) : (

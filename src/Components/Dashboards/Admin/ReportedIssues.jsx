@@ -252,7 +252,7 @@ const ReportedIssues = () => {
       <BottomNav />
       {issues.length > 0 ? (
         <>
-          <div className="w-full p-2 lg:p-4 lg:w-[calc(100vw-15vw)]  overflow-x-auto ">
+          <div className="w-full pb-20 md:pb-2 p-2 lg:p-4 lg:w-[calc(100vw-15vw)]  overflow-x-auto ">
             <div className="w-full bg-violet-500 p-4 rounded-2xl">
               <div
                 className="

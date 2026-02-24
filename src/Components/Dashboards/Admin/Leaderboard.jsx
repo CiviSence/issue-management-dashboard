@@ -27,7 +27,7 @@ const renderSideNav = () => {
     <>
       {renderSideNav()}
       <BottomNav />
-      <div className="min-h-screen w-full  p-4 overflow-x-auto">
+      <div className="pb-20 md:pb-2 min-h-screen w-full  p-4 overflow-x-auto">
         <div className="w-full bg-violet-500 p-4 rounded-2xl">
           <div
             className="

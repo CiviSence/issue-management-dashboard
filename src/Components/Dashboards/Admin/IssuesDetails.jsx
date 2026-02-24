@@ -231,7 +231,7 @@ const IssueDetails = () => {
       <SideNav />
       <BottomNav />
 
-      <div className="w-full p-2 lg:p-4 lg:w-[calc(100vw-15vw)]  overflow-x-auto ">
+      <div className="w-full pb-20 md:pb-2 p-2 lg:p-4 lg:w-[calc(100vw-15vw)]  overflow-x-auto  ">
         <div className="w-full bg-violet-500 p-4 rounded-2xl">
           <div
             className="
@@ -607,7 +607,7 @@ const IssueDetails = () => {
 
                 {/* all Images */}
                 {issue.media_urls?.length > 0 && (
-                  <div className="bg-gray-900">
+                  <div className="bg-gray-900 rounded-t-2xl overflow-hidden">
                     {/* Main Image Display */}
                     <div className="relative aspect-video overflow-hidden group">
                       <img
@@ -680,7 +680,7 @@ const IssueDetails = () => {
                     </div>
 
                     {/* Thumbnails Strip */}
-                    {issue.media_urls.length > 1 && (
+                    {issue.media_urls.length > 1 && !(issue.media_urls[0]==="string") && (
                       <div className="flex gap-1.5 sm:gap-2 p-2 sm:p-3 bg-gray-700 overflow-x-auto scrollbar-hide">
                         {issue.media_urls.map((url, index) => (
                           <button
@@ -784,28 +784,26 @@ const IssueDetails = () => {
                     {/* Badges Row */}
                     <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
                       <span
+                      title="main category"
                         className={`px-2 sm:px-3 py-1 sm:py-1.5 text-xs font-semibold rounded-full ${categoryColor[issue.main_category]}`}
                       >
                         {issue.main_category}
                       </span>
-                      <span className="bg-gray-100 text-gray-700 px-2 py-1 sm:px-3 sm:py-1.5 text-xs rounded-full">
-                        : {issue.sub_category}
-                      </span>
                       <span
+                      title="status"
                         className={`hidden sm:inline px-2 py-1 sm:px-3 sm:py-1.5 text-xs rounded-full ${statusColor[issue.status]}`}
                       >
                         {issue.status}
                       </span>
-
                       {/* Priority Badge */}
                       <span
+                      title="priority"
                         className={`px-2 sm:px-3 py-1 sm:py-1.5 text-xs font-semibold rounded-full  ${
                           priorityColor[issue.priority]
                         }`}
                       >
-                        priority : {issue.priority}
+                      {issue.priority}
                       </span>
-
                       {issue.is_verified && (
                         <span className="px-2 sm:px-3 py-1 sm:py-1.5 text-xs font-medium rounded-full bg-sky-100 text-sky-700 border border-sky-200 flex items-center gap-1">
                           <svg

@@ -1,66 +1,44 @@
+import { Suspense, lazy } from "react";
 import SideNav from "./AdminSideNav";
 import Searchbar from "../../Templates/Searchbar";
 import IssueCard from "../../Templates/IssueCard";
 import BottomNav from "../../Templates/BottomNav";
-import PieChartCard from "../../Templates/PieChartCard";
-import BarChartCard from "../../Templates/BarChartCard";
-import LineChartCard from "../../Templates/LineChartCard";
-import StatusChart from "../../Templates/StatusChart";
 import UserCard from "../../Templates/UserCard";
 import { useIssues } from "../../../Context/IssueContext";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { Link } from "react-router-dom";
 
-//skeleton loader component for dashboard)
-const DashboardSkeleton = () => {
-  return (
-    <div className="w-full h-screen p-2 lg:p-4 lg:w-[calc(100vw-15vw)] bg-white overflow-auto">
-      {/* Header */}
-      <div className="w-full flex flex-col lg:flex-row justify-between bg-violet-200 p-4 rounded-2xl mb-4">
-        <Skeleton height={40} width={220} borderRadius={8} />
-        <Skeleton height={48} width={320} borderRadius={8} />
-      </div>
+// Lazy load heavy chart components
+const PieChartCard = lazy(() => import("../../Templates/PieChartCard"));
+const BarChartCard = lazy(() => import("../../Templates/BarChartCard"));
+const LineChartCard = lazy(() => import("../../Templates/LineChartCard"));
+const StatusChart = lazy(() => import("../../Templates/StatusChart"));
 
-      {/* Issue Cards */}
-      <div className="w-full mt-4 gap-2 flex flex-wrap justify-center bg-[#F0EEFF] p-4 rounded-2xl">
-        {[...Array(4)].map((_, i) => (
-          <div key={i} className="w-full sm:w-[48%] lg:w-[35%] xl:w-[24%]">
-            <Skeleton height={112} borderRadius={12} />
-          </div>
-        ))}
-      </div>
+// ========== SKELETON COMPONENTS ==========
 
-      {/* Charts */}
-      <div className="mt-4 bg-[#F0EEFF] p-4 rounded-2xl">
-        <Skeleton height={24} width={160} className="mb-4" />
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
-          <Skeleton height={260} borderRadius={12} />
-          <Skeleton height={260} borderRadius={12} />
-          <Skeleton height={260} borderRadius={12} />
-        </div>
-      </div>
+const CardSkeleton = () => (
+  <div className="w-full sm:w-[48%] lg:w-[35%] xl:w-[24%]">
+    <Skeleton height={112} borderRadius={12} />
+  </div>
+);
 
-      {/* User card */}
-      <div className="bg-[#F0EEFF] p-4 mt-4 rounded-2xl">
-        <Skeleton height={200} borderRadius={12} />
-      </div>
+const ChartSkeleton = ({ height = 260 }) => (
+  <Skeleton height={height} borderRadius={12} className="w-full" />
+);
 
-      <div className="bg-[#F0EEFF] p-4 mt-4 rounded-2xl">
-        <Skeleton height={200} borderRadius={12} />
-      </div>
-    </div>
-  );
-};
+const UserSectionSkeleton = () => (
+  <div className="bg-[#F0EEFF] p-4 mt-1 rounded-2xl">
+    <Skeleton height={200} borderRadius={12} />
+  </div>
+);
+
+// ========== MAIN DASHBOARD COMPONENT ==========
 
 const AdminDashboard = () => {
-  //state for adminstats
-  const { allstats } = useIssues();
+  const { allstats, issues = [] } = useIssues();
 
-  //get all issues
-  const { issues = [] } = useIssues();
-
-  //initial stats object for counting categories, priority and location
+  // Compute stats from issues (instant)
   const initialStats = {
     category: {
       maintenance: 0,
@@ -69,36 +47,19 @@ const AdminDashboard = () => {
       security: 0,
       infrastructure: 0,
     },
-    priority: {
-      low: 0,
-      medium: 0,
-      high: 0,
-      critical: 0,
-    },
-    location: {
-      boysHostel: 0,
-      girlsHostel: 0,
-      campus: 0,
-      adminBuilding: 0,
-    },
+    priority: { low: 0, medium: 0, high: 0, critical: 0 },
+    location: { boysHostel: 0, girlsHostel: 0, campus: 0, adminBuilding: 0 },
   };
 
   const stats = issues.reduce((acc, issue) => {
-    // normalize once
     const category = issue.main_category?.toLowerCase().trim();
     const priority = issue.priority?.toLowerCase().trim();
     const location = issue.location_address?.toLowerCase().trim();
 
-    // category
-    if (category && acc.category[category] !== undefined) {
+    if (category && acc.category[category] !== undefined)
       acc.category[category] += 1;
-    }
-    // priority
-    if (priority && acc.priority[priority] !== undefined) {
+    if (priority && acc.priority[priority] !== undefined)
       acc.priority[priority] += 1;
-    }
-
-    // location
     if (location === "boys hostel") acc.location.boysHostel += 1;
     if (location === "girls hostel") acc.location.girlsHostel += 1;
     if (location === "campus") acc.location.campus += 1;
@@ -109,11 +70,11 @@ const AdminDashboard = () => {
 
   const { category, priority, location } = stats;
 
-  //issue card colors and count
+  // Status cards data
   const statusCards = [
     {
       name: "Total Issues",
-      count: allstats?.issues.total || 0,
+      count: allstats?.issues?.total || 0,
       description: "All reported issues",
       color: "from-[#980101] to-[#FF2C2C]",
       color2: "bg-[#980101]",
@@ -121,7 +82,7 @@ const AdminDashboard = () => {
     },
     {
       name: "Pending Issues",
-      count: allstats?.issues.by_status.new || 0,
+      count: allstats?.issues?.by_status?.new || 0,
       description: "New & Pending",
       color: "from-[#F5A623] to-[#F8E71C]",
       color2: "bg-[#F5A623]",
@@ -129,7 +90,7 @@ const AdminDashboard = () => {
     },
     {
       name: "In Progress",
-      count: allstats?.issues.by_status.in_progress || 0,
+      count: allstats?.issues?.by_status?.in_progress || 0,
       description: "Assigned & In Progress",
       color: "from-[#00284B] to-[#0088FF]",
       color2: "bg-[#00284B]",
@@ -137,7 +98,7 @@ const AdminDashboard = () => {
     },
     {
       name: "Resolved Issues",
-      count: allstats?.issues.by_status.resolved || 0,
+      count: allstats?.issues?.by_status?.resolved || 0,
       description: "Issues Fixed",
       color: "from-[#0D4900] to-[#2DF300]",
       color2: "bg-[#0D4900]",
@@ -145,8 +106,8 @@ const AdminDashboard = () => {
     },
   ];
 
-  //data for PieChart
-  const PieChartData = [
+  // Chart data
+  const pieChartData = [
     { name: "Maintenance", value: category.maintenance, color: "#3b5bdb" },
     { name: "Cleanliness", value: category.cleanliness, color: "#40c057" },
     { name: "Security", value: category.security, color: "#fa5252" },
@@ -158,7 +119,6 @@ const AdminDashboard = () => {
     },
   ];
 
-  //data for bar chart
   const barChartData = [
     { status: "Low", count: priority.low },
     { status: "Medium", count: priority.medium },
@@ -166,7 +126,6 @@ const AdminDashboard = () => {
     { status: "Critical", count: priority.critical },
   ];
 
-  //Location data to vorizontal bar chart
   const locationData = [
     { name: "Admin Building", value: location.adminBuilding, color: "#F6DE4B" },
     { name: "Campus", value: location.campus, color: "#40c057" },
@@ -174,88 +133,104 @@ const AdminDashboard = () => {
     { name: "Girls Hostel", value: location.girlsHostel, color: "#E34A4D" },
   ];
 
+  const hasIssues = issues.length > 0;
+  const hasAllStats = !!allstats;
+
   return (
     <>
       <SideNav />
       <BottomNav />
 
-      {issues.length > 0 && allstats ? (
-        <>
-          <div className="w-full p-2 lg:p-4 lg:w-[calc(100vw-15vw)] bg-white overflow-x-auto ">
-            <div className="w-full bg-violet-500 p-4 rounded-2xl">
-              <div
-                className="
-      flex
-      flex-col
-      sm:flex-row
-      sm:items-center
-      sm:justify-between
-      gap-2
-    "
-              >
-                {/* Dashboard Title */}
-                <h1 className="text-2xl sm:text-3xl font-semibold text-white">
-                  Main Dashboard
-                </h1>
-                {/* Searchbar */}
-                <Searchbar />
-              </div>
-            </div>
-            {/* Issue Cards */}
-            <div className="w-full mt-4 gap-3 sm:gap-4 flex flex-wrap justify-center bg-[#F0EEFF] p-3 sm:p-4 lg:p-6 rounded-2xl">
-              {" "}
+      <div className="w-full pb-20 md:pb-2 p-2 lg:p-4 lg:w-[calc(100vw-15vw)] bg-white overflow-x-auto">
+        {/* ========== STATIC HEADER ========== */}
+        <div className="w-full bg-violet-500 p-4 rounded-2xl">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+            <h1 className="text-2xl sm:text-3xl font-semibold text-white">
+              Main Dashboard
+            </h1>
+            <Searchbar />
+          </div>
+        </div>
+
+        {/* ========== ISSUE CARDS (All 4 load at the same time) ========== */}
+        <div className="w-full mt-4 gap-3 sm:gap-4 flex flex-wrap justify-center bg-[#F0EEFF] p-3 sm:p-4 lg:p-6 rounded-2xl">
+          {!hasAllStats ? (
+            <>
+              <CardSkeleton />
+              <CardSkeleton />
+              <CardSkeleton />
+              <CardSkeleton />
+            </>
+          ) : (
+            <>
               {statusCards.map((item, index) => (
                 <IssueCard key={index} issue={item} />
               ))}
-            </div>
-            <h1 className="pt-2 pb-1 pl-2 text-xl sm:text-2xl font-semibold text-[#363434]  ">
-              Issue Stats
-            </h1>
-            <div className="bg-[#F0EEFF] p-4 rounded-2xl">
-              <div className=" grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 ">
-                <PieChartCard data={PieChartData} />
-                <BarChartCard data={barChartData} />
-                <LineChartCard />
-              </div>
-              <div className="pt-3">
-                <StatusChart data={locationData} />
-              </div>
-            </div>
-            <h1 className="pt-2 pb-1 pl-2 text-xl sm:text-2xl font-semibold text-[#363434]  ">
-              Top Reporters
-            </h1>{" "}
-            <div className="bg-[#F0EEFF] p-4 mt-1 rounded-2xl">
-              {/* Top 3 Users */}
+            </>
+          )}
+        </div>
 
-              <UserCard limit={3} />
+        {/* ========== ISSUE STATS (All charts load together) ========== */}
+        <h1 className="pt-2 pb-1 pl-2 text-xl sm:text-2xl font-semibold text-[#363434]">
+          Issue Stats
+        </h1>
 
-              {/* View Full Leaderboard Link */}
-              <div className="flex justify-end mt-3">
-                <Link
-                  to="/leaderboard"
-                  className="
-        text-sm
-        font-semibold
-        text-[#243b8c]
-        hover:text-[#1b2f6b]
-        hover:underline
-        transition
-      "
-                >
-                  View Full Leaderboard →
-                </Link>
-              </div>
-            </div>
-            {/* Reports + Chart */}
-            {/* <div className="mt-10 flex flex-col lg:flex-row gap-6">
-            <RecentReportsCard recentReports={recentReports} />
-            <TopLocations />
-          </div> */}
+        <div className="bg-[#F0EEFF] p-4 rounded-2xl">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+            {/* All charts wait for hasIssues - they appear together */}
+            {!hasIssues ? (
+              <>
+                <ChartSkeleton />
+                <ChartSkeleton />
+                <ChartSkeleton />
+              </>
+            ) : (
+              <>
+                <Suspense fallback={<ChartSkeleton />}>
+                  <PieChartCard data={pieChartData} />
+                </Suspense>
+
+                <Suspense fallback={<ChartSkeleton />}>
+                  <BarChartCard data={barChartData} />
+                </Suspense>
+
+                <Suspense fallback={<ChartSkeleton />}>
+                  <LineChartCard />
+                </Suspense>
+              </>
+            )}
           </div>
-        </>
-      ) : (
-        <DashboardSkeleton />
-      )}
+
+          {/* Status Chart - Also waits for hasIssues */}
+          <div className="pt-3">
+            {!hasIssues ? (
+              <ChartSkeleton height={120} />
+            ) : (
+              <Suspense fallback={<ChartSkeleton height={120} />}>
+                <StatusChart data={locationData} />
+              </Suspense>
+            )}
+          </div>
+        </div>
+
+        {/* ========== TOP REPORTERS ========== */}
+        <h1 className="pt-2 pb-1 pl-2 text-xl sm:text-2xl font-semibold text-[#363434]">
+          Top Reporters
+        </h1>
+
+        <div className="bg-[#F0EEFF] p-4 mt-1 rounded-2xl">
+          {!hasAllStats ? <UserSectionSkeleton /> : <UserCard limit={3} />}
+
+          <div className="flex justify-end mt-3">
+            <Link
+              to="/leaderboard"
+              className="text-sm font-semibold text-[#243b8c] hover:text-[#1b2f6b] hover:underline transition"
+            >
+              View Full Leaderboard →
+            </Link>
+          </div>
+        </div>
+      </div>
     </>
   );
 };
