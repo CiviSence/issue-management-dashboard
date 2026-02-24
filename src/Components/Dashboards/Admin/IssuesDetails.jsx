@@ -30,10 +30,9 @@ const IssueDetails = () => {
   const fetchIssue = async () => {
     try {
       const data = await getIssueById(id);
-      console.log(data);
+      console.log("Issue data:", data);
       setIssue(data);
     } catch (error) {
-      console.log(error);
       toast.error("Failed to fetch issue details");
     }
   };
@@ -50,7 +49,6 @@ const IssueDetails = () => {
       await updateIssue(issueId, { status: "spam" });
       toast.success("Issue marked as spam!");
     } catch (error) {
-      console.log(error);
       setIssue((prev) => ({
         ...prev,
         status: previousStatus,
@@ -71,13 +69,25 @@ const IssueDetails = () => {
       await updateIssue(issueId, { status: "new" });
       toast.success("Issue removed from spam!");
     } catch (error) {
-      console.log(error);
-
       setIssue((prev) => ({
         ...prev,
         status: previousStatus,
       }));
       toast.error("Failed to remove from spam");
+    }
+  };
+
+  const banUser = async (userId) => {
+    if (!window.confirm("Are you sure? This will ban the user.")) return;
+
+    try {
+      // Call your API to ban the user
+      await fetch(`/api/admin/unban-user/${userId}`, {
+        method: "POST",
+      });
+      toast.success("User banned successfully!");
+    } catch (error) {
+      toast.error("Failed to ban user.");
     }
   };
 
@@ -91,7 +101,6 @@ const IssueDetails = () => {
       toast.success("Issue deleted!");
       navigate("/reported-issues", { replace: true });
     } catch (error) {
-      console.log(error.message || "Delete Error:", error);
       toast.error(error.message || "Failed to delete");
     } finally {
       setIsDeleting(false);
@@ -148,7 +157,6 @@ const IssueDetails = () => {
       await updateIssue(issueId, { status: newStatus });
       toast.success("Issue status updated!");
     } catch (error) {
-      console.log(error);
       toast.error("Failed to update issue status.");
     }
   };
@@ -163,7 +171,6 @@ const IssueDetails = () => {
       await updateIssue(issueId, { priority: newPriority });
       toast.success("Priority updated!");
     } catch (error) {
-      console.log(error);
       toast.error("Failed to update priority.");
     }
   };
@@ -229,10 +236,9 @@ const IssueDetails = () => {
     "
           >
             {/* Title */}
-            <h1 className="text-2xl sm:text-3xl font-semibold text-white">
+            <h1 className="py-3 text-2xl sm:text-3xl font-semibold text-white">
               Issue Details
             </h1>
-            <Searchbar />
           </div>
         </div>
         {issue ? (
@@ -353,7 +359,7 @@ const IssueDetails = () => {
                           d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
                         />
                       </svg>
-                      <span className="hidden sm:inline">Manage</span>
+                      <span className="hidden sm:inline">Action</span>
                     </button>
                   </div>
                 </div>
@@ -446,7 +452,7 @@ const IssueDetails = () => {
                               disabled={isAssigning}
                               className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent disabled:opacity-50"
                             >
-                              <option value="">Select Staff</option>
+                              <option value="">{issue.assigned_to_name}</option>
                               {staff?.map((person) => (
                                 <option key={person.id} value={person.id}>
                                   {person.name} (ID: {person.id})
@@ -492,6 +498,68 @@ const IssueDetails = () => {
                   </div>
                 )}
               </div>
+
+              {issue.assigned_to ? (
+                <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-linear-to-r from-blue-50 to-indigo-50 shadow-sm hover:shadow-md transition-shadow mt-2 mb-2 sm:mt-3 rounded-xl border border-blue-100">
+                  {/* Avatar Circle */}
+                  <div className="shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-linear-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-sm sm:text-base shadow-md">
+                    {issue.assigned_to_name
+                      ?.split(" ")
+                      .map((n) => n[0])
+                      .join("")
+                      .toUpperCase()
+                      .slice(0, 2) || "👤"}
+                  </div>
+
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs text-blue-600 font-medium uppercase tracking-wider mb-0.5">
+                      Assigned To
+                    </p>
+                    <p className="text-sm sm:text-base font-semibold text-gray-900 truncate">
+                      {issue.assigned_to_name}
+                    </p>
+                  </div>
+
+                  {/* Status Indicator */}
+                  <div
+                    className={`hidden sm:inline px-2 py-1 sm:px-3 sm:py-1.5 text-xs rounded-full ${statusColor[issue.status]}`}
+                  >
+                    {issue.status}
+                  </div>
+                </div>
+              ) : (
+                /* Unassigned State */
+                <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-gray-50 shadow-sm mt-2 mb-2 sm:mt-3 rounded-xl border border-gray-200 border-dashed">
+                  <div className="shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gray-200 flex items-center justify-center text-gray-400">
+                    <svg
+                      className="w-5 h-5 sm:w-6 sm:h-6"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                      />
+                    </svg>
+                  </div>
+
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs text-gray-500 font-medium uppercase tracking-wider mb-0.5">
+                      Assignment Status
+                    </p>
+                    <p className="text-sm sm:text-base font-medium text-gray-500 truncate">
+                      Unassigned
+                    </p>
+                  </div>
+
+                  <span className="shrink-0 px-2 py-1 text-xs font-medium text-gray-500 bg-gray-200 rounded-full">
+                    Open
+                  </span>
+                </div>
+              )}
 
               {/* Main Content Card */}
               <div
@@ -789,27 +857,13 @@ const IssueDetails = () => {
                     {/* Admin Actions on User */}
                     <div className="flex items-center gap-1 sm:gap-2 shrink-0">
                       <button
-                        className="p-1.5 sm:p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-200 rounded-lg transition-colors"
-                        title="View User History"
+                        onClick={() => {
+                          banUser(issue.user_id);
+                        }}
+                        className="px-4 py-2 text-gray-400 bg-red-100 hover:text-red-600 hover:bg-red-200 rounded-lg transition-colors flex items-center gap-1.5 sm:gap-2 whitespace-nowrap "
+                        title="Ban User"
                       >
-                        <svg
-                          className="w-4 h-4 sm:w-5 sm:h-5"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                          />
-                        </svg>
-                      </button>
-                      <button
-                        className="p-1.5 sm:p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                        title="Block User"
-                      >
+                        Ban User
                         <svg
                           className="w-4 h-4 sm:w-5 sm:h-5"
                           fill="none"
@@ -979,7 +1033,7 @@ const IssueDetails = () => {
               </div>
 
               {/* Activity Log - Admin Only */}
-              <div className="mt-4 sm:mt-6 bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-6">
+              <div className="mt-2 sm:mt-3 bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-6">
                 <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-3 sm:mb-4 flex items-center gap-2">
                   <svg
                     className="w-4 h-4 sm:w-5 sm:h-5 text-gray-500"
@@ -997,18 +1051,48 @@ const IssueDetails = () => {
                   Activity Log
                 </h3>
                 <div className="space-y-2 sm:space-y-3">
+                  {/* status */}
                   <div className="flex items-start gap-2 sm:gap-3 p-2.5 sm:p-3 bg-gray-50 rounded-lg">
                     <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-blue-500 rounded-full mt-1.5 sm:mt-2 shrink-0" />
                     <div className="flex-1 min-w-0">
                       <p className="text-xs sm:text-sm text-gray-900">
                         Status changed to{" "}
-                        <span className="font-semibold">Acknowledged</span>
+                        <span className="font-semibold">
+                          {issue.status.replace("_", " ")}
+                        </span>
                       </p>
                       <p className="text-xs text-gray-500 mt-0.5 sm:mt-1">
-                        By Admin • 2 hours ago
+                        {`By Admin • ${issue.updated_at.split("T")[0]} ${new Date(
+                          issue.updated_at,
+                        ).toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}`}
                       </p>
                     </div>
                   </div>
+
+                  {/* assigned */}
+                  <div className="flex items-start gap-2 sm:gap-3 p-2.5 sm:p-3 bg-gray-50 rounded-lg">
+                    <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-yellow-500 rounded-full mt-1.5 sm:mt-2 shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs sm:text-sm text-gray-900">
+                        Issue Assigned to{" "}
+                        <span className="font-semibold">
+                          {issue.assigned_to_name}
+                        </span>
+                      </p>
+                      <p className="text-xs text-gray-500 mt-0.5 sm:mt-1">
+                        {`By Admin • ${issue.updated_at.split("T")[0]} ${new Date(
+                          issue.updated_at,
+                        ).toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}`}
+                      </p>
+                    </div>
+                  </div>
+                  {/* //created */}
                   <div className="flex items-start gap-2 sm:gap-3 p-2.5 sm:p-3 bg-gray-50 rounded-lg">
                     <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-violet-500 rounded-full mt-1.5 sm:mt-2 shrink-0" />
                     <div className="flex-1 min-w-0">
@@ -1017,7 +1101,11 @@ const IssueDetails = () => {
                         <span className="font-semibold">{issue.user_name}</span>
                       </p>
                       <p className="text-xs text-gray-500 mt-0.5 sm:mt-1">
-                        {new Date(issue.created_at).toLocaleString()}
+                        Date : {issue.created_at.split("T")[0]}{" "}
+                        {new Date(issue.created_at).toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
                       </p>
                     </div>
                   </div>

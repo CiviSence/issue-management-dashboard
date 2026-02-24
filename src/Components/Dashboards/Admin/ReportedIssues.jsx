@@ -9,6 +9,7 @@ import { assignIssue, deleteIssue, updateIssue } from "../../../Utils/issues";
 import { toast, ToastContainer } from "react-toastify";
 import { useUsers } from "../../../Context/UserContext";
 import { Navigate, useNavigate } from "react-router-dom";
+import { p } from "framer-motion/client";
 
 const IssuesSkeleton = () => {
   return (
@@ -87,9 +88,6 @@ const ReportedIssues = () => {
   const [selectedIssue, setSelectedIssue] = useState(null);
   const [showAssignModal, setShowAssignModal] = useState(false);
 
-  console.log(issues);
-  console.log("Staff in ReportedIssues:", staff);
-
   const openAssignModal = (issueId) => {
     setSelectedIssue(issueId);
     setShowAssignModal(true);
@@ -108,7 +106,6 @@ const ReportedIssues = () => {
       await deleteIssue(issueId);
       toast.success("Issue deleted successfully!");
     } catch (error) {
-      console.log(error);
       setIssues(previousIssues);
       toast.error("Failed to delete issue.");
     }
@@ -129,7 +126,6 @@ const ReportedIssues = () => {
       await updateIssue(issueId, { status: newStatus });
       toast.success("Issue status updated!");
     } catch (error) {
-      console.log(error);
       setIssues(previousIssues);
       toast.error("Failed to update issue status.");
     }
@@ -149,7 +145,6 @@ const ReportedIssues = () => {
       await updateIssue(issueId, { priority: newPriority });
       toast.success("Priority updated!");
     } catch (error) {
-      console.log(error);
       setIssues(previousIssues);
       toast.error("Failed to update priority.");
     }
@@ -168,7 +163,6 @@ const ReportedIssues = () => {
       await updateIssue(issueId, { status: "spam" });
       toast.success("Issue marked as spam!");
     } catch (error) {
-      console.log(error);
       setIssues(previousIssues);
       toast.error("Failed to mark issue as spam.");
     }
@@ -181,7 +175,6 @@ const ReportedIssues = () => {
       toast.success("Staff assigned successfully!");
       setShowAssignModal(false);
     } catch (error) {
-      console.log(error);
       toast.error(
         error.response?.data?.message ||
           error.response?.data?.error ||
@@ -332,7 +325,8 @@ const ReportedIssues = () => {
                       <th className="text-left p-3">Priority</th>
                       <th className="text-left p-3">Status</th>
                       <th className="text-left p-3">Reported By</th>
-                      <th className="text-left p-3">Reported Date</th>
+                      <th className="text-left p-3">Assigned to</th>
+
                       <th className="text-left p-3">Action</th>
                     </tr>
                   </thead>
@@ -387,13 +381,13 @@ const ReportedIssues = () => {
                               {issue.user_name}
                             </span>
                             <span className="text-xs text-gray-400">
-                              ID: {issue.user_id?.split("-")[0]}
+                              Date: {issue.created_at.split("T")[0]}
                             </span>
                           </div>
                         </td>
 
-                        <td className="p-3 text-gray-500">
-                          {issue.created_at.split("T")[0]}
+                        <td className="p-3 ">
+                          {issue.assigned_to?(issue.assigned_to_name):(<p className="text-red-400">unassigned</p>)}
                         </td>
 
                         <td className="p-3 relative">
@@ -404,9 +398,8 @@ const ReportedIssues = () => {
                                 openDropdown === issue.id ? null : issue.id,
                               );
                             }}
-                            className="text-blue-600 hover:underline cursor-pointer bg-blue-50 px-3 py-1 rounded-lg text-xs font-medium"
                           >
-                            Manage
+                            . . .
                           </button>
 
                           {openDropdown === issue.id && (

@@ -94,10 +94,8 @@ const SignUp = () => {
         room_number: "000",
       };
 
-      console.log("Registration payload:", payload);
 
       const res = await registerUser(payload);
-      console.log(res);
 
       localStorage.setItem("pendingVerificationEmail", formData.email);
       navigate("/verify-otp");

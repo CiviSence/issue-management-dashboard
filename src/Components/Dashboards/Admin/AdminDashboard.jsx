@@ -59,7 +59,6 @@ const AdminDashboard = () => {
 
   //get all issues
   const { issues = [] } = useIssues();
-  console.log(issues);
 
   //initial stats object for counting categories, priority and location
   const initialStats = {

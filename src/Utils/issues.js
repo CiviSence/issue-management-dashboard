@@ -141,7 +141,6 @@ export const assignIssue = async (issueId, staffId, notes = "") => {
     staff_user_id: String(staffId),
     notes: notes || undefined,
   };
-  console.log("Sending to /assignments:", payload);
   try {
     const { data } = await instance.post("/assignments", payload);
     return data;

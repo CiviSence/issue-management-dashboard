@@ -50,7 +50,6 @@ export const UserProvider = ({ children }) => {
     try {
       setLoading(true);
       const data = await getStaff();
-      // console.log("Staff data:", data);
       setStaff(data.users);
     } catch (err) {
       console.error("Failed to fetch staff", err);
