@@ -386,7 +386,11 @@ const ReportedIssues = () => {
                         </td>
 
                         <td className="p-3 ">
-                          {issue.assigned_to?(issue.assigned_to_name):(<p className="text-red-400">unassigned</p>)}
+                          {issue.assigned_to ? (
+                            issue.assigned_to_name
+                          ) : (
+                            <p className="text-red-400">unassigned</p>
+                          )}
                         </td>
 
                         <td className="p-3 relative">
@@ -397,8 +401,18 @@ const ReportedIssues = () => {
                                 openDropdown === issue.id ? null : issue.id,
                               );
                             }}
+                            className="p-2 rounded-lg hover:bg-gray-100 active:bg-gray-200 transition"
                           >
-                            . . .
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="w-5 h-5 text-gray-600"
+                              fill="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <circle cx="12" cy="5" r="2" />
+                              <circle cx="12" cy="12" r="2" />
+                              <circle cx="12" cy="19" r="2" />
+                            </svg>
                           </button>
 
                           {openDropdown === issue.id && (
@@ -577,10 +591,14 @@ const ReportedIssues = () => {
                     </div>
 
                     {/* View Button */}
-                    <button onClick={() =>
-                                  navigate(`/issues/${issue.id}`, {
-                                    state: issue,
-                                  })} className="w-full bg-violet-50 text-violet-600 text-sm font-medium py-2 rounded-lg hover:bg-violet-100 transition">
+                    <button
+                      onClick={() =>
+                        navigate(`/issues/${issue.id}`, {
+                          state: issue,
+                        })
+                      }
+                      className="w-full bg-violet-50 text-violet-600 text-sm font-medium py-2 rounded-lg hover:bg-violet-100 transition"
+                    >
                       View Details →
                     </button>
                   </div>
