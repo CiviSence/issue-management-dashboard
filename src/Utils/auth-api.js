@@ -68,6 +68,8 @@ export const resendOtp = async (data) => {
   }
 };
 
+
+
 /**
  * Logs out the user on the server side
  */
@@ -100,7 +102,7 @@ export const changePassword = async (data) => {
 };
 
 /**
- * Requests a password reset link
+ * send otp to email for forget password reset
  * @param {object} data - { email }
  * @returns {Promise<object>}
  */

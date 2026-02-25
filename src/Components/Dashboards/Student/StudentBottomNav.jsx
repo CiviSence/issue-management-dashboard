@@ -107,7 +107,7 @@ const StudentBottomNav = () => {
                                         alt="Profile"
                                         onError={(e) => { e.target.src = defaultAvatar; }}
                                         className={`
-                        w-[22px] h-[22px] rounded-full object-cover transition-all duration-300
+                        w-5.5 h-5.5 rounded-full object-cover transition-all duration-300
                         ${isActive
                                                 ? "ring-2 ring-violet-500 ring-offset-1"
                                                 : "ring-1 ring-gray-200 group-hover:ring-gray-300"
@@ -116,7 +116,7 @@ const StudentBottomNav = () => {
                                     />
                                 ) : (
                                     <span className={`
-                        w-[22px] h-[22px] rounded-full flex items-center justify-center text-[9px] font-bold bg-violet-100 text-violet-600 transition-all duration-300
+                        w-5.5 h-5.5 rounded-full flex items-center justify-center text-[9px] font-bold bg-violet-100 text-violet-600 transition-all duration-300
                         ${isActive
                                             ? "ring-2 ring-violet-500 ring-offset-1"
                                             : "ring-1 ring-gray-200 group-hover:ring-gray-300"

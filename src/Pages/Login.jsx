@@ -144,12 +144,12 @@ const Login = () => {
                   />
                   Remember me
                 </label>
-                <a
-                  href="#"
-                  className="text-gray-500 hover:text-[#7c6bff] underline transition-colors"
+                <Link
+                  to={"/forgot-password"}
+                  className="text-gray-500 hover:text-[#7c6bff] hover:underline transition-colors"
                 >
                   Forget password
-                </a>
+                </Link>
               </div>
 
               {/* Terms */}

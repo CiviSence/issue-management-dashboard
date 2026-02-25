@@ -14,10 +14,10 @@ import AuthRoute from "./routes/AuthRoute";
 import SignUp from "./Pages/SignUp";
 import Verify from "./Pages/Verify";
 import IssueFeed from "./Components/Dashboards/Student/IssueFeed";
-import StudentDashboard from "./Components/Dashboards/Student/StudentDashboard";
 import MyIssues from "./Components/Dashboards/Student/MyIssues";
 import { ThemeProvider } from "./Context/ThemeContext.jsx";
 import ProtectedRoute from "./routes/ProtectedRoute.jsx";
+import { ForgotPassword, ResetPassword } from "./Pages/forgetPassword.jsx";
 
 const App = () => {
   return (
@@ -50,6 +50,9 @@ const App = () => {
               </AuthRoute>
             }
           />
+
+          <Route path="/forgot-password" element={<AuthRoute><ForgotPassword/></AuthRoute>} />
+          <Route path="/reset-password" element={<AuthRoute><ResetPassword/></AuthRoute>} />
 
           <Route
             path="/"
