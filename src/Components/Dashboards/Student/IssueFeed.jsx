@@ -16,6 +16,7 @@ import {
 import Loader from "../../Templates/Loader";
 import defaultAvatar from "../../../assets/default-avatar.jpg";
 import ReportIssueModal from "../../Templates/ReportIssueModal";
+import { motion, AnimatePresence } from "framer-motion";
 
 // Helpers
 
@@ -52,8 +53,13 @@ const IssueCard = ({ issue, onOpenComments }) => {
   const [upvotes, setUpvotes] = useState(issue.engagement.upvotes);
   const [downvotes, setDownvotes] = useState(issue.engagement.downvotes);
   const [expanded, setExpanded] = useState(false);
-  const [mediaIndex, setMediaIndex] = useState(0);
+  const [[mediaIndex, direction], setMediaStep] = useState([0, 0]);
   const [commentCount, setCommentCount] = useState(issue.engagement.comment_count);
+
+  const paginate = (newDirection) => {
+    const nextIndex = (mediaIndex + newDirection + medias.length) % medias.length;
+    setMediaStep([nextIndex, newDirection]);
+  };
 
   const status = STATUS_MAP[issue.status] || STATUS_MAP.new;
   const descLimit = 160;
@@ -130,6 +136,28 @@ const IssueCard = ({ issue, onOpenComments }) => {
 
   const medias = issue.media_urls?.filter((u) => u && u !== "string") || [];
 
+  const variants = {
+    enter: (direction) => ({
+      x: direction > 0 ? 300 : -300,
+      opacity: 0
+    }),
+    center: {
+      zIndex: 1,
+      x: 0,
+      opacity: 1
+    },
+    exit: (direction) => ({
+      zIndex: 0,
+      x: direction < 0 ? 300 : -300,
+      opacity: 0
+    })
+  };
+
+  const swipeConfidenceThreshold = 10000;
+  const swipePower = (offset, velocity) => {
+    return Math.abs(offset) * velocity;
+  };
+
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm mb-4 hover:shadow-md transition-all duration-300 overflow-hidden">
       {/* Profile info */}
@@ -194,67 +222,105 @@ const IssueCard = ({ issue, onOpenComments }) => {
 
       {/* Images/Videos */}
       {medias.length > 0 && (
-        <div className="relative overflow-hidden">
-          <div className="w-full aspect-[4/3] relative">
-            {/* Blurred background image */}
-            {!isVideo(medias[mediaIndex]) && (
-              <img
-                src={medias[mediaIndex]}
-                alt=""
-                aria-hidden="true"
-                className="absolute inset-0 w-full h-full object-cover scale-110 blur-2xl opacity-40"
-              />
-            )}
-            {/* Dark overlay for readability */}
-            <div className="absolute inset-0 bg-black/10" />
-            {/* Main image/video */}
-            {isVideo(medias[mediaIndex]) ? (
-              <video
-                src={medias[mediaIndex]}
-                controls
-                className="relative w-full h-full object-contain z-10"
-              />
-            ) : (
-              <img
-                src={medias[mediaIndex]}
-                alt=""
-                className="relative w-full h-full object-contain z-10"
-              />
-            )}
+        <div className="relative overflow-hidden bg-black/5">
+          <div className="w-full aspect-[4/3] relative flex items-center justify-center">
+            <AnimatePresence initial={false} custom={direction}>
+              <motion.div
+                key={mediaIndex}
+                custom={direction}
+                variants={variants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={{
+                  x: { type: "spring", stiffness: 300, damping: 30 },
+                  opacity: { duration: 0.2 }
+                }}
+                drag="x"
+                dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={1}
+                onDragEnd={(e, { offset, velocity }) => {
+                  const swipe = swipePower(offset.x, velocity.x);
+
+                  if (swipe < -swipeConfidenceThreshold) {
+                    paginate(1);
+                  } else if (swipe > swipeConfidenceThreshold) {
+                    paginate(-1);
+                  }
+                }}
+                className="absolute inset-0 w-full h-full flex items-center justify-center p-0"
+              >
+                {/* Blurred background image - only for current if needed, but absolute positioning makes it tricky */}
+                {!isVideo(medias[mediaIndex]) && (
+                  <img
+                    src={medias[mediaIndex]}
+                    alt=""
+                    aria-hidden="true"
+                    className="absolute inset-0 w-full h-full object-cover scale-110 blur-2xl opacity-20 pointer-events-none"
+                  />
+                )}
+
+                {/* Main image/video */}
+                {isVideo(medias[mediaIndex]) ? (
+                  <video
+                    src={medias[mediaIndex]}
+                    controls
+                    className="w-full h-full object-contain pointer-events-auto"
+                  />
+                ) : (
+                  <img
+                    src={medias[mediaIndex]}
+                    alt=""
+                    className="w-full h-full object-contain pointer-events-none select-none"
+                  />
+                )}
+              </motion.div>
+            </AnimatePresence>
+
+            {/* Dark overlay for readability (static) */}
+            <div className="absolute inset-0 bg-black/5 pointer-events-none z-10" />
           </div>
+
           {/* Carousel arrows */}
           {medias.length > 1 && (
             <>
               <button
-                onClick={() => setMediaIndex((i) => (i - 1 + medias.length) % medias.length)}
-                className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white rounded-full w-8 h-8 flex items-center justify-center transition"
+                onClick={() => paginate(-1)}
+                className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white rounded-full w-9 h-9 flex items-center justify-center transition-all z-20 backdrop-blur-sm"
               >
-                ‹
+                <i className="ri-arrow-left-s-line text-xl" />
               </button>
               <button
-                onClick={() => setMediaIndex((i) => (i + 1) % medias.length)}
-                className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white rounded-full w-8 h-8 flex items-center justify-center transition"
+                onClick={() => paginate(1)}
+                className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white rounded-full w-9 h-9 flex items-center justify-center transition-all z-20 backdrop-blur-sm"
               >
-                ›
+                <i className="ri-arrow-right-s-line text-xl" />
               </button>
+
+              {/* Counter badge */}
+              <div className="absolute top-3 right-3 bg-black/40 backdrop-blur-md text-white text-[10px] font-bold px-2 py-0.5 rounded-full z-20 tracking-wider">
+                {mediaIndex + 1} / {medias.length}
+              </div>
+
               {/* Dots */}
-              <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5">
+              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-20">
                 {medias.map((_, i) => (
                   <button
                     key={i}
-                    onClick={() => setMediaIndex(i)}
-                    className={`w-2 h-2 rounded-full transition ${i === mediaIndex ? "bg-white" : "bg-white/50"}`}
+                    onClick={() => {
+                      const dir = i > mediaIndex ? 1 : -1;
+                      setMediaStep([i, dir]);
+                    }}
+                    className={`h-1.5 rounded-full transition-all duration-300 ${i === mediaIndex ? "w-6 bg-white" : "w-1.5 bg-white/40 hover:bg-white/60"
+                      }`}
                   />
                 ))}
-              </div>
-              {/* Counter badge */}
-              <div className="absolute top-2 right-2 bg-black/50 text-white text-xs px-2 py-0.5 rounded-full">
-                {mediaIndex + 1} / {medias.length}
               </div>
             </>
           )}
         </div>
-      )}
+      )
+      }
 
       {/* Feed Actions (Upvote, Downvote, Comment) */}
       <div className="flex items-center justify-between px-5 py-3 border-t border-gray-50">
@@ -339,26 +405,28 @@ const IssueCard = ({ issue, onOpenComments }) => {
       </div>
 
       {/* Comments preview */}
-      {issue.recent_comments?.length > 0 && (
-        <div
-          className="px-5 pb-4 pt-0 border-t border-gray-50 space-y-1.5 cursor-pointer"
-          onClick={handleCommentOpen}
-        >
-          {issue.recent_comments.slice(0, 2).map((c, i) => (
-            <div key={i} className="flex gap-1.5 text-xs text-gray-500">
-              <span className="font-semibold text-gray-700 shrink-0">
-                {c.user?.name || "User"}:
+      {
+        issue.recent_comments?.length > 0 && (
+          <div
+            className="px-5 pb-4 pt-0 border-t border-gray-50 space-y-1.5 cursor-pointer"
+            onClick={handleCommentOpen}
+          >
+            {issue.recent_comments.slice(0, 2).map((c, i) => (
+              <div key={i} className="flex gap-1.5 text-xs text-gray-500">
+                <span className="font-semibold text-gray-700 shrink-0">
+                  {c.user?.name || "User"}:
+                </span>
+                <span className="truncate">{c.text}</span>
+              </div>
+            ))}
+            {commentCount > 2 && (
+              <span className="text-xs text-violet-500 font-medium hover:underline">
+                View all {commentCount} comments →
               </span>
-              <span className="truncate">{c.text}</span>
-            </div>
-          ))}
-          {commentCount > 2 && (
-            <span className="text-xs text-violet-500 font-medium hover:underline">
-              View all {commentCount} comments →
-            </span>
-          )}
-        </div>
-      )}
+            )}
+          </div>
+        )
+      }
     </div>
   );
 };
