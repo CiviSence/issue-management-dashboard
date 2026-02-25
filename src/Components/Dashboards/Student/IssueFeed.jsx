@@ -17,6 +17,7 @@ import Loader from "../../Templates/Loader";
 import defaultAvatar from "../../../assets/default-avatar.jpg";
 import ReportIssueModal from "../../Templates/ReportIssueModal";
 import { motion, AnimatePresence } from "framer-motion";
+import { useUser } from "../../../Context/ProfileContext";
 
 // Helpers
 
@@ -561,6 +562,7 @@ const SORTS = [
 // Main Feed Component
 
 const IssueFeed = () => {
+  const { profileData } = useUser();
   const [issues, setIssues] = useState(() => {
     try {
       const cached = localStorage.getItem("csm_cached_feed");
@@ -579,8 +581,14 @@ const IssueFeed = () => {
   // Modal states
   const [formModal, setFormModal] = useState(null); // null | { mode: 'create'|'edit', issue? }
   const [commentsModal, setCommentsModal] = useState(null); // { issueId, count, onIncrement }
+  const [showGreeting, setShowGreeting] = useState(true);
 
   const isFirstMount = useRef(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShowGreeting(false), 5000);
+    return () => clearTimeout(timer);
+  }, []);
 
   const fetchIssues = useCallback(
     async (reset = false) => {
@@ -654,7 +662,30 @@ const IssueFeed = () => {
       <StudentSideNav />
       <StudentBottomNav />
       <div className="w-full p-2 lg:p-4 lg:w-[calc(100vw-15vw)] bg-[#F0EEFF] overflow-y-auto h-screen" id="mainScroll">
-
+        {/* Mobile Greeting - Only on small screens */}
+        <AnimatePresence>
+          {showGreeting && (
+            <motion.div
+              initial={{ height: 0, opacity: 0, marginBottom: 0 }}
+              animate={{ height: "auto", opacity: 1, marginBottom: 12 }}
+              exit={{ height: 0, opacity: 0, marginBottom: 0 }}
+              className="sm:hidden w-full overflow-hidden"
+            >
+              <div className="bg-violet-600 rounded-2xl p-4 text-white shadow-lg flex items-center justify-between">
+                <div>
+                  <h3 className="text-lg font-bold">Hello, {profileData?.name?.split(" ")[0] || "Buddy"}! 👋</h3>
+                  <p className="text-violet-100 text-xs mt-0.5">Welcome back to your campus feed.</p>
+                </div>
+                <button
+                  onClick={() => setShowGreeting(false)}
+                  className="bg-white/20 p-2 rounded-full hover:bg-white/30 transition"
+                >
+                  <i className="ri-close-line"></i>
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Header banner - Hidden on mobile, shown from SM up */}
         <div className="hidden sm:block w-full bg-violet-500 p-4 sm:p-5 lg:p-6 rounded-2xl md:rounded-3xl text-white shadow-md mb-4 md:mb-6">
