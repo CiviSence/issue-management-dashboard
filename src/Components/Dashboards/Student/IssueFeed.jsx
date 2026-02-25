@@ -502,15 +502,23 @@ const IssueFeed = () => {
 
   const fetchIssues = useCallback(
     async (reset = false) => {
-      if (isLoading) return;
+      // Don't skip if it's a reset (force refresh)
+      if (isLoading && !reset) return;
+
       const currentSkip = reset ? 0 : skip;
-      setIsLoading(true);
+      if (reset) {
+        setIsLoading(true); // Immediate feedback for reset
+      } else {
+        setIsLoading(true);
+      }
+
       try {
         const params = { skip: currentSkip, limit, sort };
         if (solvedOnly === true) params.solved_only = true;
         if (solvedOnly === false) params.solved_only = false;
 
         const newIssues = await getIssuesFeed(params);
+
         setIssues((prev) => {
           const base = reset ? [] : prev;
           const existingIds = new Set(base.map((i) => i.id));
@@ -525,6 +533,7 @@ const IssueFeed = () => {
           }
           return updated;
         });
+
         setSkip(currentSkip + limit);
         if (newIssues.length < limit) setHasMore(false);
         else setHasMore(true);
@@ -538,30 +547,13 @@ const IssueFeed = () => {
     [isLoading, skip, sort, solvedOnly, issues.length]
   );
 
-  // Initial load + refetch on filter change
+  // Initial load + filter change
   useEffect(() => {
-    if (isFirstMount.current) {
-      isFirstMount.current = false;
-      // Background fetch on mount
-      fetchIssues(true);
-      return;
-    }
-    setIssues([]);
-    setSkip(0);
     setHasMore(true);
-    // fetchIssues will be called via the issues.length listener below
+    setSkip(0);
+    // Directly call with reset=true to bypass loading check if needed
+    fetchIssues(true);
   }, [sort, solvedOnly]);
-
-  // Trigger fetch when issues array is reset (empty after filter change)
-  const prevLength = useRef(issues.length);
-  useEffect(() => {
-    if (issues.length === 0 && prevLength.current !== 0) {
-      fetchIssues(true);
-    } else if (issues.length === 0 && prevLength.current === 0 && !isLoading && !isFirstMount.current) {
-      fetchIssues(true);
-    }
-    prevLength.current = issues.length;
-  }, [issues.length, isLoading, fetchIssues]);
 
   const handleOpenComments = (issueId, count, onIncrement) => {
     setCommentsModal({ issueId, count, onIncrement });
@@ -655,6 +647,29 @@ const IssueFeed = () => {
                 hasMore={hasMore}
                 loader={<Loader />}
                 scrollableTarget={window.innerWidth >= 1024 ? "feedScroll" : "mainScroll"}
+                pullDownToRefresh
+                pullDownToRefreshThreshold={50}
+                refreshFunction={() => fetchIssues(true)}
+                pullDownToRefreshContent={
+                  <div className="flex flex-col items-center py-4 bg-white/50 backdrop-blur-sm rounded-xl mb-3 border border-violet-100 shadow-sm transition-all animate-pulse">
+                    <div className="p-2 bg-violet-100 rounded-full mb-1">
+                      <svg className="w-5 h-5 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                      </svg>
+                    </div>
+                    <span className="text-violet-600 font-bold text-sm">Pull down to refresh</span>
+                  </div>
+                }
+                releaseToRefreshContent={
+                  <div className="flex flex-col items-center py-4 bg-violet-500 rounded-xl mb-3 shadow-lg shadow-violet-200 border border-violet-400 transition-all scale-105">
+                    <div className="p-2 bg-white/20 rounded-full mb-1">
+                      <svg className="w-5 h-5 text-white animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                      </svg>
+                    </div>
+                    <span className="text-white font-bold text-sm">Release to refresh</span>
+                  </div>
+                }
                 endMessage={
                   <p className="text-center text-gray-400 text-sm py-6">
                     {issues.length === 0 ? "No issues found." : "You've seen it all! 🎉"}
@@ -696,6 +711,21 @@ const IssueFeed = () => {
               >
                 + Report Issue
               </button>
+            </div>
+
+            {/* Help & Support Shortcut */}
+            <div className="mt-4 bg-linear-to-br from-violet-600 to-purple-700 text-white p-5 rounded-2xl shadow-lg relative overflow-hidden group cursor-pointer" onClick={() => window.location.href = "/help-support"}>
+              <div className="relative z-10">
+                <h4 className="font-bold mb-1 flex items-center gap-2">
+                  <i className="ri-customer-service-2-line" />
+                  Need Help?
+                </h4>
+                <p className="text-violet-100 text-[11px] mb-3 leading-relaxed">Check our guides or contact support for assistance.</p>
+                <button className="w-full bg-white/20 hover:bg-white/30 text-white py-2 rounded-xl text-xs font-semibold backdrop-blur-sm transition-all border border-white/20">
+                  Open Support
+                </button>
+              </div>
+              <div className="absolute top-0 right-0 w-24 h-24 bg-white/5 rounded-full -mr-8 -mt-8 blur-2xl" />
             </div>
           </div>
         </div>

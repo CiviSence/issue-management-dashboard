@@ -17,8 +17,8 @@ export const IssuesProvider = ({ children }) => {
     const fetchIssues = useCallback(async (force = false) => {
         if (!profileData?.id) return;
 
-        // Skip if fetched within the last 1 hour (unless forced)
-        if (!force && lastFetched && Date.now() - lastFetched < 7200000) {
+        // Bypass cache if force is true
+        if (!force && lastFetched && Date.now() - lastFetched < 3600000) { // 1 hour cache
             setLoading(false);
             return;
         }
@@ -33,7 +33,7 @@ export const IssuesProvider = ({ children }) => {
         } finally {
             setLoading(false);
         }
-    }, [profileData, lastFetched]);
+    }, [profileData?.id, lastFetched]);
 
     // Fetch campus stats once (background, non-blocking)
     useEffect(() => {

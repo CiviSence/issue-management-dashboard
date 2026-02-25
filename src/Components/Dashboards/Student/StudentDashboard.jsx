@@ -434,6 +434,21 @@ const StudentDashboard = () => {
                 </div>
               </div>
             )}
+
+            {/* Help & Support Shortcut */}
+            <div className="bg-violet-600 text-white p-5 rounded-2xl shadow-lg mt-4 relative overflow-hidden group cursor-pointer" onClick={() => window.location.href = "/help-support"}>
+              <div className="relative z-10">
+                <h3 className="text-lg font-bold mb-1 flex items-center gap-2">
+                  <i className="ri-customer-service-2-fill" />
+                  Help & Support
+                </h3>
+                <p className="text-violet-100 text-xs mb-3">Facing issues? Our support team is here to help you 24/7.</p>
+                <button className="bg-white text-violet-600 px-4 py-1.5 rounded-lg text-xs font-bold hover:bg-violet-50 transition-colors">
+                  Contact Support
+                </button>
+              </div>
+              <i className="ri-question-line absolute -right-4 -bottom-4 text-8xl text-white/10 group-hover:scale-110 transition-transform duration-500" />
+            </div>
           </div>
         </div>
       </div>

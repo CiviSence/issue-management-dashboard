@@ -10,6 +10,7 @@ import { deleteMyIssue } from "../../../Utils/issuesStudent";
 import { useIssues } from "../../../Context/IssuesContext";
 import ReportIssueModal from "../../Templates/ReportIssueModal";
 import defaultAvatar from "../../../assets/default-avatar.jpg";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 // Helpers
 
@@ -412,14 +413,43 @@ const MyIssues = () => {
               </div>
             ) : (
               <div className="space-y-3">
-                {filtered.map((issue) => (
-                  <IssueRow
-                    key={issue.id}
-                    issue={issue}
-                    onEdit={(i) => setFormModal({ mode: "edit", issue: i })}
-                    onDelete={(i) => setDeleteModal(i)}
-                  />
-                ))}
+                <InfiniteScroll
+                  dataLength={filtered.length}
+                  next={() => { }} // No infinite scroll for MyIssues yet, just for pull-to-refresh
+                  hasMore={false}
+                  pullDownToRefresh
+                  pullDownToRefreshThreshold={50}
+                  refreshFunction={() => fetchIssues(true)}
+                  pullDownToRefreshContent={
+                    <div className="flex flex-col items-center py-4 bg-white/50 backdrop-blur-sm rounded-xl mb-3 border border-violet-100 shadow-sm transition-all animate-pulse">
+                      <div className="p-2 bg-violet-100 rounded-full mb-1">
+                        <svg className="w-5 h-5 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                        </svg>
+                      </div>
+                      <span className="text-violet-600 font-bold text-sm">Pull down to refresh</span>
+                    </div>
+                  }
+                  releaseToRefreshContent={
+                    <div className="flex flex-col items-center py-4 bg-violet-500 rounded-xl mb-3 shadow-lg shadow-violet-200 border border-violet-400 transition-all scale-105">
+                      <div className="p-2 bg-white/20 rounded-full mb-1">
+                        <svg className="w-5 h-5 text-white animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                        </svg>
+                      </div>
+                      <span className="text-white font-bold text-sm">Release to refresh</span>
+                    </div>
+                  }
+                >
+                  {filtered.map((issue) => (
+                    <IssueRow
+                      key={issue.id}
+                      issue={issue}
+                      onEdit={(i) => setFormModal({ mode: "edit", issue: i })}
+                      onDelete={(i) => setDeleteModal(i)}
+                    />
+                  ))}
+                </InfiniteScroll>
               </div>
             )}
           </div>
