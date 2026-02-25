@@ -2,6 +2,7 @@ import { useUser } from "../Context/ProfileContext";
 import AdminDashboard from "./Dashboards/Admin/AdminDashboard";
 import StudentDashboard from "./Dashboards/Student/StudentDashboard";
 import StaffDashboard from "./Dashboards/Staff/StaffDashboard";
+import IssueFeed from "./Dashboards/Student/IssueFeed";
 import { Navigate } from "react-router-dom";
 import Loader from "./Templates/Loader";
 

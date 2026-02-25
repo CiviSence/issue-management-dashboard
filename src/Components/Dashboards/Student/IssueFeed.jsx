@@ -55,6 +55,7 @@ const IssueCard = ({ issue, onOpenComments }) => {
   const [expanded, setExpanded] = useState(false);
   const [[mediaIndex, direction], setMediaStep] = useState([0, 0]);
   const [commentCount, setCommentCount] = useState(issue.engagement.comment_count);
+  const [isVoting, setIsVoting] = useState(false);
 
   const paginate = (newDirection) => {
     const nextIndex = (mediaIndex + newDirection + medias.length) % medias.length;
@@ -108,6 +109,9 @@ const IssueCard = ({ issue, onOpenComments }) => {
       }
     }
 
+    if (isVoting) return;
+    setIsVoting(true);
+
     // Optimistic update
     setVoteState(newVote);
     setNetVotes(newNet);
@@ -115,9 +119,15 @@ const IssueCard = ({ issue, onOpenComments }) => {
     setDownvotes(newDown);
 
     try {
-      if (newVote === null) await removeVote(issue.id);
-      else if (newVote === true) await upvoteIssue(issue.id);
-      else await downvoteIssue(issue.id);
+      if (newVote === null) {
+        await removeVote(issue.id);
+      } else {
+        if (prevVote !== null) {
+          await removeVote(issue.id);
+        }
+        if (newVote === true) await upvoteIssue(issue.id);
+        else await downvoteIssue(issue.id);
+      }
     } catch {
       // Revert
       setVoteState(prevVote);
@@ -125,6 +135,8 @@ const IssueCard = ({ issue, onOpenComments }) => {
       setUpvotes(prevUp);
       setDownvotes(prevDown);
       toast.error("Failed to register vote. Please try again.");
+    } finally {
+      setIsVoting(false);
     }
   };
 
@@ -331,7 +343,8 @@ const IssueCard = ({ issue, onOpenComments }) => {
             <button
               onClick={() => handleVote("up")}
               title="Upvote"
-              className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-sm font-medium transition-all ${voteState === true
+              disabled={isVoting}
+              className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-sm font-medium transition-all ${isVoting ? "opacity-50 cursor-not-allowed" : ""} ${voteState === true
                 ? "text-violet-600 bg-violet-50"
                 : "text-gray-500 hover:text-violet-600 hover:bg-white"
                 }`}
@@ -362,7 +375,8 @@ const IssueCard = ({ issue, onOpenComments }) => {
             <button
               onClick={() => handleVote("down")}
               title="Downvote"
-              className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-sm font-medium transition-all ${voteState === false
+              disabled={isVoting}
+              className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-sm font-medium transition-all ${isVoting ? "opacity-50 cursor-not-allowed" : ""} ${voteState === false
                 ? "text-red-500 bg-red-50"
                 : "text-gray-500 hover:text-red-500 hover:bg-white"
                 }`}

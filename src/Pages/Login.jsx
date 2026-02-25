@@ -29,7 +29,13 @@ const Login = () => {
       const data = await loginUser({ email, password });
       setSession(data?.access_token, data.user);
       setProfileData(data?.user);
-      navigate("/dashboard");
+
+      const role = data.user?.role?.toLowerCase();
+      if (role === "student") {
+        navigate("/feed");
+      } else {
+        navigate("/dashboard");
+      }
     } catch (err) {
       console.error("Login Error:", err);
       // Backend returns 401 Incorrect email or password, 422 User account is inactive, etc. in detail and all

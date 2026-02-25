@@ -5,16 +5,16 @@ import defaultAvatar from "../../../assets/default-avatar.jpg";
 
 const tabs = [
     {
-        to: "/dashboard",
-        icon: "ri-dashboard-line",
-        activeIcon: "ri-dashboard-fill",
-        label: "Home",
-    },
-    {
         to: "/feed",
         icon: "ri-compass-3-line",
         activeIcon: "ri-compass-3-fill",
         label: "Feed",
+    },
+    {
+        to: "/dashboard",
+        icon: "ri-dashboard-line",
+        activeIcon: "ri-dashboard-fill",
+        label: "Home",
     },
     {
         to: "/my-issues",
