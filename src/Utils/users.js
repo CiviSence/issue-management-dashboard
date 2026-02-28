@@ -36,7 +36,7 @@ export const getTopContributors = async (timePeriod = "all") => {
  */
 export const getStaff = async () => {
   try {
-    const { data } = await axios.get("analytics/users-by-role", {
+    const { data } = await axios.get("/analytics/users-by-role", {
       params: {
         role: "staff",
         include_details: false,

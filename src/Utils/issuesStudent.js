@@ -3,7 +3,7 @@ import instance from "./axios";
 // Fetch all issues for the current user
 export const getMyIssues = async (userId) => {
     try {
-        const { data } = await instance.get("/issues", {
+        const { data } = await instance.get("/issues/", {
             params: { user_id: userId },
         });
         return data;
@@ -17,7 +17,7 @@ export const getMyIssues = async (userId) => {
 // Create a new issue
 export const createMyIssue = async (payload) => {
     try {
-        const { data } = await instance.post("/issues", payload);
+        const { data } = await instance.post("/issues/", payload);
         return data;
     } catch (error) {
         throw new Error(

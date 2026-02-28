@@ -15,7 +15,7 @@ export const getStats = async () => {
 // Fetch all issues
 export const getAllIssues = async (params = {}) => {
   try {
-    const { data } = await axios.get("/issues", { params });
+    const { data } = await axios.get("/issues/", { params });
     return data;
   } catch (error) {
     throw new Error(error.response?.data?.message || "Failed to fetch issues");
@@ -25,7 +25,7 @@ export const getAllIssues = async (params = {}) => {
 // Fetch issues reported by a specific user
 export const getMyIssues = async (userId) => {
   try {
-    const { data } = await axios.get("/issues", {
+    const { data } = await axios.get("/issues/", {
       params: { user_id: userId },
     });
     return data;
@@ -39,8 +39,8 @@ export const getMyIssues = async (userId) => {
 // Fetch resolved issues
 export const getResolvedIssues = async (params = {}) => {
   try {
-    const { data } = await axios.get("/issues/?limit=50&status=resolved", {
-      params,
+    const { data } = await axios.get("/issues/", {
+      params: { limit: 50, status: "resolved", ...params },
     });
     return data;
   } catch (error) {
@@ -73,13 +73,13 @@ export const getIssueById = async (issueId) => {
 // Create a new issue
 export const createIssue = async (issueData) => {
   try {
-    const { data } = await instance.post("/issues", issueData);
+    const { data } = await instance.post("/issues/", issueData);
     return data;
   } catch (error) {
     throw new Error(
       error.response?.data?.detail ||
-        error.response?.data?.message ||
-        "Failed to create issue",
+      error.response?.data?.message ||
+      "Failed to create issue",
     );
   }
 };
@@ -125,7 +125,7 @@ export const deleteIssue = async (issueId) => {
 // Fetch issues assigned to me (staff)
 export const getAssignedIssues = async () => {
   try {
-    const { data } = await axios.get("assignments/my-tasks");
+    const { data } = await axios.get("/assignments/my-tasks");
     return data;
   } catch (error) {
     throw new Error(

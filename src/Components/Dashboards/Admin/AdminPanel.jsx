@@ -69,7 +69,7 @@ const AdminPanel = () => {
   const [notificationForm, setNotificationForm] = useState({
     title: "",
     message: "",
-    role: "user",
+    role: "student",
     userId: "",
     priority: "normal",
   });
@@ -162,7 +162,7 @@ const AdminPanel = () => {
       setNotificationStats(response.data);
     } catch (error) {
       console.error("Error fetching notification stats:", error);
-      // toast.error("Failed to fetch notification stats");
+      toast.error(error.response?.data?.detail || "Failed to fetch notification stats");
     }
   };
 
@@ -243,38 +243,56 @@ const AdminPanel = () => {
   };
 
   const handleAddReputation = async (userId, points) => {
+    const reason = window.prompt(`Enter reason for ${points >= 0 ? 'adding' : 'removing'} ${Math.abs(points)} points:`);
+    if (!reason) return;
+
     try {
       const response = await axios.post(`/admin/add-reputation/${userId}`, {
         points,
+        reason,
       });
-      console.log(response);
       if (response.status === 200) {
-        toast.success(`Added ${points} reputation points`);
+        toast.success(response.data.message || `Reputation updated successfully`);
         if (selectedUser) fetchUserDetails(userId);
       }
     } catch (error) {
-      console.error("Error adding reputation:", error);
-      toast.error("Failed to add reputation");
+      console.error("Error updating reputation:", error);
+      toast.error(error.response?.data?.detail || "Failed to update reputation");
     }
   };
 
   const handleBanUser = async (userId) => {
-    if (!window.confirm("Are you sure? This will ban the user.")) return;
+    const reason = window.prompt("Enter reason for ban (minimum 10 characters):");
+    if (!reason) return;
+
+    if (reason.length < 10) {
+      toast.error("Reason must be at least 10 characters long.");
+      return;
+    }
 
     try {
-      // Call your API to ban the user
-      await fetch(`/api/admin/unban-user/${userId}`, {
-        method: "POST",
+      const response = await axios.post(`/admin/ban-user/${userId}`, {
+        reason,
+        delete_content: false,
+        notify_user: true
       });
-      toast.success("User banned successfully!");
+      if (response.status === 200) {
+        toast.success("User banned successfully!");
+        fetchBannedUsers();
+        fetchDashboardStats();
+      }
     } catch (error) {
-      toast.error("Failed to ban user.");
+      console.error("Error banning user:", error);
+      toast.error(error.response?.data?.detail || "Failed to ban user.");
     }
   };
 
   const handleUnbanUser = async (userId) => {
+    if (!window.confirm("Are you sure you want to unban this user?")) return;
     try {
-      const response = await axios.post(`/admin/unban-user/${userId}`);
+      const response = await axios.post(`/admin/unban-user/${userId}`, {
+        notify_user: true
+      });
       if (response.status === 200) {
         toast.success("User unbanned successfully");
         fetchBannedUsers();
@@ -282,7 +300,7 @@ const AdminPanel = () => {
       }
     } catch (error) {
       console.error("Error unbanning user:", error);
-      toast.error("Failed to unban user");
+      toast.error(error.response?.data?.detail || "Failed to unban user");
     }
   };
 
@@ -295,6 +313,7 @@ const AdminPanel = () => {
       title: notificationForm.title,
       message: notificationForm.message,
       priority: notificationForm.priority,
+      channels: ["in_app", "websocket"],
     };
 
     if (notificationType === "broadcast") {
@@ -304,19 +323,19 @@ const AdminPanel = () => {
       payload.role = notificationForm.role;
     } else if (notificationType === "user") {
       endpoint = "/notifications/send-to-user";
-      payload.userId = notificationForm.userId;
+      payload.user_id = notificationForm.userId;
     }
 
     try {
       const response = await axios.post(endpoint, payload);
 
-      if (response.status === 200) {
+      if (response.status === 200 || response.status === 201) {
         toast.success("Notification sent successfully");
         setShowNotificationModal(false);
         setNotificationForm({
           title: "",
           message: "",
-          role: "user",
+          role: "student",
           userId: "",
           priority: "normal",
         });
@@ -634,7 +653,7 @@ const AdminPanel = () => {
             {
               label: "System Logs",
               icon: Activity,
-              action: () => {},
+              action: () => { },
               color: "text-gray-600 bg-gray-50",
             },
           ].map((action, idx) => (
@@ -786,11 +805,10 @@ const AdminPanel = () => {
                   {user.name?.[0]?.toUpperCase()}
                 </div>
                 <div
-                  className={`absolute -bottom-1 -right-1 w-4 h-4 border-2 border-white rounded-full ${
-                    user.verification_status === "verified"
-                      ? "bg-green-500"
-                      : "bg-yellow-500"
-                  }`}
+                  className={`absolute -bottom-1 -right-1 w-4 h-4 border-2 border-white rounded-full ${user.verification_status === "verified"
+                    ? "bg-green-500"
+                    : "bg-yellow-500"
+                    }`}
                 />
               </div>
               <div className="min-w-0">
@@ -996,11 +1014,10 @@ const AdminPanel = () => {
             {/* Filter Toggle */}
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                showFilters
-                  ? "bg-violet-100 text-violet-700"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-              }`}
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${showFilters
+                ? "bg-violet-100 text-violet-700"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
             >
               <Filter className="w-4 h-4" />
               Filters
@@ -1281,8 +1298,8 @@ const AdminPanel = () => {
         {filteredUsers.length === 0 && (
           <div className="text-center py-16 bg-white rounded-xl border border-gray-200">
             {searchQuery ||
-            filters.status !== "all" ||
-            filters.role !== "all" ? (
+              filters.status !== "all" ||
+              filters.role !== "all" ? (
               <>
                 <Search className="w-12 h-12 text-gray-300 mx-auto mb-4" />
                 <p className="text-gray-500 font-medium">No users found</p>
@@ -1743,11 +1760,10 @@ const AdminPanel = () => {
                 <button
                   key={type.id}
                   onClick={() => setNotificationType(type.id)}
-                  className={`p-4 rounded-xl border-2 transition-all flex flex-col items-center space-y-2 ${
-                    notificationType === type.id
-                      ? "border-violet-500 bg-violet-50 text-violet-700"
-                      : "border-gray-200 hover:border-violet-200"
-                  }`}
+                  className={`p-4 rounded-xl border-2 transition-all flex flex-col items-center space-y-2 ${notificationType === type.id
+                    ? "border-violet-500 bg-violet-50 text-violet-700"
+                    : "border-gray-200 hover:border-violet-200"
+                    }`}
                 >
                   <type.icon className="w-6 h-6" />
                   <span className="text-sm font-medium">{type.label}</span>
@@ -1808,10 +1824,10 @@ const AdminPanel = () => {
                     }
                     className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-violet-500 focus:ring-2 focus:ring-violet-200 outline-none"
                   >
-                    <option value="user">All Users</option>
-                    <option value="trusted">Trusted Users</option>
-                    <option value="admin">Admins Only</option>
-                    <option value="moderator">Moderators</option>
+                    <option value="student">Students</option>
+                    <option value="staff">Staff</option>
+                    <option value="admin">Admins</option>
+                    <option value="developer">Developers</option>
                   </select>
                 </div>
               )}
@@ -1861,13 +1877,12 @@ const AdminPanel = () => {
                         className="w-4 h-4 text-violet-600 focus:ring-violet-500"
                       />
                       <span
-                        className={`text-sm capitalize ${
-                          priority === "urgent"
-                            ? "text-red-600 font-medium"
-                            : priority === "high"
-                              ? "text-orange-600"
-                              : "text-gray-600"
-                        }`}
+                        className={`text-sm capitalize ${priority === "urgent"
+                          ? "text-red-600 font-medium"
+                          : priority === "high"
+                            ? "text-orange-600"
+                            : "text-gray-600"
+                          }`}
                       >
                         {priority}
                       </span>
@@ -1903,23 +1918,29 @@ const AdminPanel = () => {
             {notificationStats ? (
               <div className="space-y-4">
                 <div className="p-4 bg-violet-50 rounded-xl">
-                  <p className="text-sm text-gray-600 mb-1">Total Sent (24h)</p>
+                  <p className="text-sm text-gray-600 mb-1">Total Sent</p>
                   <p className="text-2xl font-bold text-violet-700">
-                    {notificationStats.last24Hours || 0}
+                    {notificationStats.total_sent || 0}
+                  </p>
+                </div>
+                <div className="p-4 bg-amber-50 rounded-xl">
+                  <p className="text-sm text-gray-600 mb-1">Pending</p>
+                  <p className="text-2xl font-bold text-amber-700">
+                    {notificationStats.total_pending || 0}
                   </p>
                 </div>
                 <div className="p-4 bg-green-50 rounded-xl">
                   <p className="text-sm text-gray-600 mb-1">
-                    Successful Deliveries
+                    Delivery Rate
                   </p>
                   <p className="text-2xl font-bold text-green-700">
-                    {notificationStats.successful || 0}
+                    {notificationStats.delivery_rate || 0}%
                   </p>
                 </div>
                 <div className="p-4 bg-blue-50 rounded-xl">
-                  <p className="text-sm text-gray-600 mb-1">Open Rate</p>
+                  <p className="text-sm text-gray-600 mb-1">Read Rate</p>
                   <p className="text-2xl font-bold text-blue-700">
-                    {notificationStats.openRate || 0}%
+                    {notificationStats.read_rate || 0}%
                   </p>
                 </div>
               </div>
@@ -2022,21 +2043,19 @@ const AdminPanel = () => {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center space-x-2 px-6 py-3 rounded-xl font-medium transition-all whitespace-nowrap ${
-                activeTab === tab.id
-                  ? "bg-violet-500 text-white shadow-lg shadow-violet-200"
-                  : "bg-white text-gray-600 hover:bg-gray-100"
-              }`}
+              className={`flex items-center space-x-2 px-6 py-3 rounded-xl font-medium transition-all whitespace-nowrap ${activeTab === tab.id
+                ? "bg-violet-500 text-white shadow-lg shadow-violet-200"
+                : "bg-white text-gray-600 hover:bg-gray-100"
+                }`}
             >
               <tab.icon className="w-5 h-5" />
               <span>{tab.label}</span>
               {tab.badge > 0 && (
                 <span
-                  className={`px-2 py-0.5 rounded-full text-xs ${
-                    activeTab === tab.id
-                      ? "bg-white text-violet-600"
-                      : "bg-violet-100 text-violet-600"
-                  }`}
+                  className={`px-2 py-0.5 rounded-full text-xs ${activeTab === tab.id
+                    ? "bg-white text-violet-600"
+                    : "bg-violet-100 text-violet-600"
+                    }`}
                 >
                   {tab.badge}
                 </span>
@@ -2228,7 +2247,7 @@ const AdminPanel = () => {
         )}
       </div>
 
-      <style jsx>{`
+      <style>{`
         @keyframes fade-in {
           from {
             opacity: 0;
