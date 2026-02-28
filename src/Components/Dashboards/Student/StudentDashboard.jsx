@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import StudentSideNav from "./StudentSideNav";
 import StudentBottomNav from "./StudentBottomNav";
 import UserCard from "../../Templates/UserCard";
@@ -10,6 +10,7 @@ import { deleteIssue } from "../../../Utils/issues";
 import ReportIssueModal from "../../Templates/ReportIssueModal";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import axios from "../../../Utils/axios";
 
 const getGreeting = () => {
   const hour = new Date().getHours();
@@ -45,6 +46,59 @@ const StudentDashboard = () => {
   const { issues: myIssues, campusStats, loading: loadingIssues, addIssue, updateIssue, removeIssue } = useIssues();
   const [formModal, setFormModal] = useState(null);
   const [isDeleting, setIsDeleting] = useState(null);
+  const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [loadingNotifications, setLoadingNotifications] = useState(true);
+
+  // Fetch notifications
+  const fetchNotifications = async () => {
+    try {
+      const response = await axios.get("/notifications/my-notifications");
+      setNotifications(response.data);
+      setUnreadCount(response.data.filter(n => n.is_unread).length);
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
+    } finally {
+      setLoadingNotifications(false);
+    }
+  };
+
+  const handleMarkAsRead = async (notificationId) => {
+    try {
+      await axios.patch("/notifications/mark-as-read", {
+        notification_ids: [notificationId],
+      });
+      setNotifications(prev =>
+        prev.map(n =>
+          n.id === notificationId ? { ...n, is_unread: false, status: "read" } : n
+        )
+      );
+      setUnreadCount(prev => Math.max(0, prev - 1));
+    } catch (error) {
+      console.error("Error marking notification as read:", error);
+    }
+  };
+
+  const handleMarkAllAsRead = async () => {
+    const unreadIds = notifications.filter(n => n.is_unread).map(n => n.id);
+    if (unreadIds.length === 0) return;
+    try {
+      await axios.patch("/notifications/mark-as-read", {
+        notification_ids: unreadIds,
+      });
+      setNotifications(prev =>
+        prev.map(n => ({ ...n, is_unread: false, status: "read" }))
+      );
+      setUnreadCount(0);
+      toast.success("All notifications marked as read");
+    } catch (error) {
+      console.error("Error marking all as read:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchNotifications();
+  }, []);
 
   const handleSaved = (issue, mode) => {
     if (mode === "create") {
@@ -373,6 +427,67 @@ const StudentDashboard = () => {
 
           <div>
             <UserCard limit={3} />
+
+            {/* Notifications Panel */}
+            <div className="bg-white border border-gray-100 p-5 rounded-2xl shadow-sm mt-2 lg:mt-4">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-sm font-bold text-gray-800 flex items-center gap-2">
+                  <i className="ri-notification-3-line text-violet-500" />
+                  Notifications
+                  {unreadCount > 0 && (
+                    <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
+                      {unreadCount}
+                    </span>
+                  )}
+                </h3>
+                {unreadCount > 0 && (
+                  <button
+                    onClick={handleMarkAllAsRead}
+                    className="text-[10px] font-medium text-violet-600 hover:text-violet-800 transition-colors"
+                  >
+                    Mark all read
+                  </button>
+                )}
+              </div>
+
+              {loadingNotifications ? (
+                <Skeleton count={3} height={50} className="mb-2 rounded-lg" />
+              ) : notifications.length > 0 ? (
+                <div className="space-y-2 max-h-64 overflow-y-auto">
+                  {notifications.slice(0, 10).map((notif) => (
+                    <div
+                      key={notif.id}
+                      onClick={() => notif.is_unread && handleMarkAsRead(notif.id)}
+                      className={`relative p-3 rounded-xl border transition-all cursor-pointer ${notif.is_unread
+                          ? "bg-violet-50/60 border-violet-200 hover:bg-violet-50"
+                          : "bg-gray-50/50 border-gray-100 hover:bg-gray-50"
+                        }`}
+                    >
+                      {notif.is_unread && (
+                        <span className="absolute top-3 right-3 w-2 h-2 bg-violet-500 rounded-full" />
+                      )}
+                      <p className={`text-xs font-semibold leading-snug mb-0.5 pr-4 ${notif.is_unread ? "text-gray-900" : "text-gray-600"
+                        }`}>
+                        {notif.title}
+                      </p>
+                      <p className="text-[11px] text-gray-500 line-clamp-2 leading-relaxed">
+                        {notif.message}
+                      </p>
+                      <p className="text-[10px] text-gray-400 mt-1">
+                        {formatSmartTime(notif.sent_at)}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="py-6 flex flex-col items-center text-center">
+                  <div className="w-10 h-10 bg-violet-50 rounded-xl flex items-center justify-center mb-2">
+                    <i className="ri-notification-off-line text-xl text-violet-300" />
+                  </div>
+                  <p className="text-xs text-gray-400">No notifications yet</p>
+                </div>
+              )}
+            </div>
 
             {/* Activity Highlights */}
             <div className="bg-white border border-gray-100 p-5 rounded-2xl shadow-sm mt-2 lg:mt-4">
