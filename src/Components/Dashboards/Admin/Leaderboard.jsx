@@ -47,7 +47,7 @@ const renderSideNav = () => {
             <Searchbar />
           </div>
         </div>
-        <div className=" mx-auto mt-2 lg:mt-4">
+        <div className=" mx-auto mt-2">
           <UserCard />
         </div>
       </div>

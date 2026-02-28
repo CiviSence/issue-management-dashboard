@@ -4,6 +4,7 @@ import Searchbar from "../../Templates/Searchbar";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
+import profileSvg from "../../../assets/default-avatar.jpg"
 import {
   assignIssue,
   deleteIssue,
@@ -241,6 +242,7 @@ const IssueDetails = () => {
       sm:items-center
       sm:justify-between
       gap-2
+      
     "
           >
             {/* Title */}
@@ -251,10 +253,10 @@ const IssueDetails = () => {
         </div>
         {issue ? (
           <>
-            <div className="mx-auto p-1 sm:p-2 lg:p-3 xl:p-5 w-full">
+            <div className="mx-auto w-full">
               {/* Admin Action Bar - Sticky Top */}
-              <div className="sticky top-0 sm:top-4 z-20 mb-4 sm:mb-6">
-                <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-2 sm:p-3 flex  sm:flex-row flex-wrap items-stretch sm:items-center justify-between gap-2 sm:gap-3">
+              <div className="sticky top-0 sm:top-4 z-20 mt-2 shadow-md">
+                <div className="bg-white rounded-xl border border-gray-200 p-2 sm:p-3 flex  sm:flex-row flex-wrap items-stretch sm:items-center justify-between gap-2 sm:gap-3">
                   <div className="flex items-center gap-2 justify-between sm:justify-start">
                     <span className="hidden  px-2 sm:px-3 py-1.5 bg-indigo-100 text-indigo-700 rounded-lg text-xs sm:text-sm font-semibold sm:flex items-center gap-1.5">
                       <svg
@@ -508,7 +510,7 @@ const IssueDetails = () => {
               </div>
 
               {issue.assigned_to ? (
-                <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-linear-to-r from-blue-50 to-indigo-50 shadow-sm hover:shadow-md transition-shadow mt-2 mb-2 sm:mt-3 rounded-xl border border-blue-100">
+                <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-linear-to-r from-blue-50 to-indigo-50 shadow-sm hover:shadow-md transition-shadow  rounded-xl border border-blue-100 mt-2 mb-2">
                   {/* Avatar Circle */}
                   <div className="shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-linear-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-sm sm:text-base shadow-md">
                     {issue.assigned_to_name
@@ -537,7 +539,7 @@ const IssueDetails = () => {
                 </div>
               ) : (
                 /* Unassigned State */
-                <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-gray-50 shadow-sm mt-2 mb-2 sm:mt-3 rounded-xl border border-gray-200 border-dashed">
+                <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-gray-50 shadow-sm   rounded-xl border border-gray-200 border-dashed mt-2 mb-2">
                   <div className="shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gray-200 flex items-center justify-center text-gray-400">
                     <svg
                       className="w-5 h-5 sm:w-6 sm:h-6"
@@ -680,36 +682,37 @@ const IssueDetails = () => {
                     </div>
 
                     {/* Thumbnails Strip */}
-                    {issue.media_urls.length > 1 && !(issue.media_urls[0]==="string") && (
-                      <div className="flex gap-1.5 sm:gap-2 p-2 sm:p-3 bg-gray-700 overflow-x-auto scrollbar-hide">
-                        {issue.media_urls.map((url, index) => (
-                          <button
-                            key={index}
-                            onClick={() => setCurrentImageIndex(index)}
-                            className={`relative shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden transition-all duration-200 ${
-                              (currentImageIndex || 0) === index
-                                ? "ring-2 ring-violet-500 ring-offset-2 ring-offset-gray-800"
-                                : "opacity-60 hover:opacity-100"
-                            }`}
-                          >
-                            <img
-                              src={url}
-                              alt={`Thumbnail ${index + 1}`}
-                              className="w-full h-full object-cover"
-                            />
-                            {(currentImageIndex || 0) === index && (
-                              <div className="absolute inset-0 bg-violet-500/20" />
-                            )}
-                          </button>
-                        ))}
-                      </div>
-                    )}
+                    {issue.media_urls.length > 1 &&
+                      !(issue.media_urls[0] === "string") && (
+                        <div className="flex gap-1.5 sm:gap-2 p-2 sm:p-3 bg-gray-700 overflow-x-auto scrollbar-hide">
+                          {issue.media_urls.map((url, index) => (
+                            <button
+                              key={index}
+                              onClick={() => setCurrentImageIndex(index)}
+                              className={`relative shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden transition-all duration-200 ${
+                                (currentImageIndex || 0) === index
+                                  ? "ring-2 ring-violet-500 ring-offset-2 ring-offset-gray-800"
+                                  : "opacity-60 hover:opacity-100"
+                              }`}
+                            >
+                              <img
+                                src={url}
+                                alt={`Thumbnail ${index + 1}`}
+                                className="w-full h-full object-cover"
+                              />
+                              {(currentImageIndex || 0) === index && (
+                                <div className="absolute inset-0 bg-violet-500/20" />
+                              )}
+                            </button>
+                          ))}
+                        </div>
+                      )}
                   </div>
                 )}
 
                 <div className="p-4 sm:p-6 lg:p-8">
                   {/* Title & Meta */}
-                  <div className="mb-4 sm:mb-6">
+                  <div>
                     <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 sm:gap-4 mb-3 sm:mb-4">
                       <h1
                         className={`text-xl sm:text-2xl lg:text-3xl font-bold leading-tight ${
@@ -781,31 +784,40 @@ const IssueDetails = () => {
                       </div>
                     </div>
 
-                    {/* Badges Row */}
-                    <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                    {/* category - priority - status badge*/}
+                    <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-2">
                       <span
-                      title="main category"
-                        className={`px-2 sm:px-3 py-1 sm:py-1.5 text-xs font-semibold rounded-full ${categoryColor[issue.main_category]}`}
+                        title="main category"
+                        className={`inline-flex items-center gap-1 px-2 sm:px-3 py-1 sm:py-1.5 text-xs font-semibold rounded-full ${categoryColor[issue.main_category]}`}
                       >
+                        <span className="hidden sm:inline text-[10px] uppercase tracking-wider opacity-70 mr-0.5">
+                          Cat:
+                        </span>
                         {issue.main_category}
                       </span>
+
                       <span
-                      title="status"
-                        className={`hidden sm:inline px-2 py-1 sm:px-3 sm:py-1.5 text-xs rounded-full ${statusColor[issue.status]}`}
+                        title="status"
+                        className={`inline-flex items-center gap-1 px-2 py-1 sm:px-3 sm:py-1.5 text-xs rounded-full ${statusColor[issue.status]}`}
                       >
+                        <span className="hidden sm:inline text-[10px] uppercase tracking-wider opacity-70 mr-0.5">
+                          Status:
+                        </span>
                         {issue.status}
                       </span>
-                      {/* Priority Badge */}
+
                       <span
-                      title="priority"
-                        className={`px-2 sm:px-3 py-1 sm:py-1.5 text-xs font-semibold rounded-full  ${
-                          priorityColor[issue.priority]
-                        }`}
+                        title="priority"
+                        className={`inline-flex items-center gap-1 px-2 sm:px-3 py-1 sm:py-1.5 text-xs font-semibold rounded-full ${priorityColor[issue.priority]}`}
                       >
-                      {issue.priority}
+                        <span className="hidden sm:inline text-[10px] uppercase tracking-wider opacity-70 mr-0.5">
+                          Priority:
+                        </span>
+                        {issue.priority}
                       </span>
+
                       {issue.is_verified && (
-                        <span className="px-2 sm:px-3 py-1 sm:py-1.5 text-xs font-medium rounded-full bg-sky-100 text-sky-700 border border-sky-200 flex items-center gap-1">
+                        <span className="inline-flex items-center gap-1 px-2 sm:px-3 py-1 sm:py-1.5 text-xs font-medium rounded-full bg-sky-100 text-sky-700 border border-sky-200">
                           <svg
                             className="w-3 h-3 sm:w-3.5 sm:h-3.5"
                             fill="currentColor"
@@ -817,7 +829,9 @@ const IssueDetails = () => {
                               clipRule="evenodd"
                             />
                           </svg>
-                          <span className="hidden sm:inline">Verified</span>
+                          <span className="text-[10px] uppercase tracking-wider opacity-70 mr-0.5">
+                            Verified
+                          </span>
                         </span>
                       )}
                     </div>
@@ -826,8 +840,7 @@ const IssueDetails = () => {
                   {/* Reporter Info Card */}
                   <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-gray-50 rounded-xl border border-gray-100 mb-4 sm:mb-6">
                     <img
-                      src={issue.user_avatar}
-                      alt={issue.user_name}
+                      src={issue.user_avatar || profileSvg}
                       className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover ring-2 ring-white shadow-sm shrink-0"
                     />
                     <div className="flex-1 min-w-0">
@@ -966,7 +979,7 @@ const IssueDetails = () => {
 
                             <button
                               onClick={() => {
-                                // toggleBanUser(issue.user_id);
+                                banUser(issue.user_id);
                                 setUserMenuOpen(null);
                               }}
                               className="w-full text-left px-4 py-2.5 text-red-600 hover:bg-red-50 flex items-center gap-2"
@@ -1230,25 +1243,27 @@ const IssueDetails = () => {
                   </div>
 
                   {/* assigned */}
-                  <div className="flex items-start gap-2 sm:gap-3 p-2.5 sm:p-3 bg-gray-50 rounded-lg">
-                    <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-yellow-500 rounded-full mt-1.5 sm:mt-2 shrink-0" />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs sm:text-sm text-gray-900">
-                        Issue Assigned to{" "}
-                        <span className="font-semibold">
-                          {issue.assigned_to_name}
-                        </span>
-                      </p>
-                      <p className="text-xs text-gray-500 mt-0.5 sm:mt-1">
-                        {`By Admin • ${issue.updated_at.split("T")[0]} ${new Date(
-                          issue.updated_at,
-                        ).toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}`}
-                      </p>
+                  {issue.assigned_to && (
+                    <div className="flex items-start gap-2 sm:gap-3 p-2.5 sm:p-3 bg-gray-50 rounded-lg">
+                      <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-yellow-500 rounded-full mt-1.5 sm:mt-2 shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs sm:text-sm text-gray-900">
+                          Issue Assigned to{" "}
+                          <span className="font-semibold">
+                            {issue.assigned_to_name}
+                          </span>
+                        </p>
+                        <p className="text-xs text-gray-500 mt-0.5 sm:mt-1">
+                          {`By Admin • ${issue.updated_at.split("T")[0]} ${new Date(
+                            issue.updated_at,
+                          ).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}`}
+                        </p>
+                      </div>
                     </div>
-                  </div>
+                  )}
                   {/* //created */}
                   <div className="flex items-start gap-2 sm:gap-3 p-2.5 sm:p-3 bg-gray-50 rounded-lg">
                     <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-violet-500 rounded-full mt-1.5 sm:mt-2 shrink-0" />

@@ -218,13 +218,13 @@ const AdminDashboard = () => {
           Top Reporters
         </h1>
 
-        <div className="bg-[#F0EEFF] p-4 mt-1 rounded-2xl">
+        <div className="bg-[#F0EEFF] p-2 lg:p-4 mt-1 rounded-2xl">
           {!hasAllStats ? <UserSectionSkeleton /> : <UserCard limit={3} />}
 
           <div className="flex justify-end mt-3">
             <Link
               to="/leaderboard"
-              className="text-sm font-semibold text-[#243b8c] hover:text-[#1b2f6b] hover:underline transition"
+              className="text-xs lg:text-sm font-semibold text-[#243b8c] hover:text-[#1b2f6b] hover:underline transition"
             >
               View Full Leaderboard →
             </Link>

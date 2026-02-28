@@ -18,12 +18,14 @@ import MyIssues from "./Components/Dashboards/Student/MyIssues";
 import { ThemeProvider } from "./Context/ThemeContext.jsx";
 import ProtectedRoute from "./routes/ProtectedRoute.jsx";
 import { ForgotPassword, ResetPassword } from "./Pages/forgetPassword.jsx";
+import AdminPanel from "./Components/Dashboards/Admin/AdminPanel.jsx";
 
 const App = () => {
   return (
     <ThemeProvider>
       <div className="w-full h-screen bg-[#F0EEFF] flex ">
         <Routes>
+          {/* Auth Routs - login / signup / verify / forget password */}
           <Route
             path="/login"
             element={
@@ -51,8 +53,23 @@ const App = () => {
             }
           />
 
-          <Route path="/forgot-password" element={<AuthRoute><ForgotPassword/></AuthRoute>} />
-          <Route path="/reset-password" element={<AuthRoute><ResetPassword/></AuthRoute>} />
+          <Route
+            path="/forgot-password"
+            element={
+              <AuthRoute>
+                <ForgotPassword />
+              </AuthRoute>
+            }
+          />
+
+          <Route
+            path="/reset-password"
+            element={
+              <AuthRoute>
+                <ResetPassword />
+              </AuthRoute>
+            }
+          />
 
           <Route
             path="/"
@@ -101,6 +118,7 @@ const App = () => {
 
           {/* protected routes - role based access */}
 
+          {/* admin */}
           <Route
             path="/reported-issues"
             element={
@@ -138,15 +156,6 @@ const App = () => {
           />
 
           <Route
-            path="/assigned-issues"
-            element={
-              <ProtectedRoute allowedRoles={["staff"]}>
-                <AssignedIssues />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
             path="/issues/:id"
             element={
               <ProtectedRoute allowedRoles={["admin"]}>
@@ -155,6 +164,19 @@ const App = () => {
             }
           />
 
+          {/* staff */}
+          <Route
+            path="/assigned-issues"
+            element={
+              <ProtectedRoute allowedRoles={["staff"]}>
+                <AssignedIssues />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route path="/admin-panel" element={<AdminPanel />} />
+
+          {/* students */}
           <Route
             path="/feed"
             element={
