@@ -27,7 +27,7 @@ const IssuesSkeleton = () => {
         {/* Table header */}
         <div className="flex justify-between items-center mb-5">
           <Skeleton height={24} width={200} />
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-col md:flex-row">
             <Skeleton height={38} width={140} />
             <Skeleton height={38} width={140} />
           </div>
@@ -38,7 +38,7 @@ const IssuesSkeleton = () => {
           {[...Array(16)].map((_, i) => (
             <div
               key={i}
-              className="grid grid-cols-5 gap-4 py-3  last:border-none"
+              className="grid grid-cols-5 gap-4 py-3 border-none"
             >
               <Skeleton height={25} />
               <Skeleton height={25} />
@@ -52,7 +52,7 @@ const IssuesSkeleton = () => {
         {/* ===== MOBILE CARDS SKELETON ===== */}
         <div className="md:hidden space-y-4">
           {[...Array(10)].map((_, i) => (
-            <div key={i} className="border rounded-lg p-4 shadow-sm space-y-3">
+            <div key={i} className="rounded-lg p-4 shadow-sm space-y-3">
               <div className="flex justify-between items-center">
                 <Skeleton height={18} width={180} />
                 <Skeleton height={20} width={70} />

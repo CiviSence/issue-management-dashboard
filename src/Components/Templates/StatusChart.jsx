@@ -12,12 +12,12 @@ import {
 
 const StatusChart = ({data}) => {
   return (
-    <div className="bg-white rounded-xl p-3 sm:p-4 w-full">
+    <div className="bg-white rounded-xl p-3 sm:p-4 w-full h-75">
   <h2 className="text-base sm:text-lg font-semibold text-gray-700 mb-2">
     Status Distribution
   </h2>
-  <div className="h-50 sm:h-55 md:h-60 outline-none focus:outline-none">
-    <ResponsiveContainer width="100%" height="100%">
+  <div className="h-full outline-none focus:outline-none">
+    <ResponsiveContainer width="100%" height="90%">
       <BarChart data={data} layout="vertical" margin={{ left: 0, right: 20 }}>
         <CartesianGrid
           strokeDasharray="3 3"

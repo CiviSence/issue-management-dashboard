@@ -57,20 +57,269 @@ import {
 } from "lucide-react";
 import Skeleton from "react-loading-skeleton";
 
+const NotificationsTab = ({
+  notificationType,
+  setNotificationType,
+  notificationForm,
+  setNotificationForm,
+  handleSendNotification,
+  loading,
+  notificationStats,
+  sentNotifications,
+}) => (
+  <div className="space-y-6">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      {/* Send Notification Panel */}
+      <div className="lg:col-span-2 space-y-6">
+        <div className="bg-white rounded-2xl p-6 shadow-lg">
+          <h3 className="text-lg font-semibold text-gray-800 mb-6 flex items-center">
+            <Send className="w-5 h-5 mr-2 text-violet-500" />
+            Send Notification
+          </h3>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            {[
+              { id: "custom", label: "Custom", icon: Edit3 },
+              { id: "broadcast", label: "Broadcast", icon: Mail },
+              { id: "role", label: "To Role", icon: Users },
+              { id: "user", label: "To User", icon: UserCheck },
+            ].map((type) => (
+              <button
+                key={type.id}
+                type="button"
+                onClick={() => setNotificationType(type.id)}
+                className={`p-4 rounded-xl border-2 transition-all flex flex-col items-center space-y-2 ${
+                  notificationType === type.id
+                    ? "border-violet-500 bg-violet-50 text-violet-700"
+                    : "border-gray-200 hover:border-violet-200"
+                }`}
+              >
+                <type.icon className="w-6 h-6" />
+                <span className="text-sm font-medium">{type.label}</span>
+              </button>
+            ))}
+          </div>
+
+          <form onSubmit={handleSendNotification} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Title
+              </label>
+              <input
+                type="text"
+                value={notificationForm.title}
+                onChange={(e) =>
+                  setNotificationForm({
+                    ...notificationForm,
+                    title: e.target.value,
+                  })
+                }
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-violet-500 focus:ring-2 focus:ring-violet-200 outline-none transition-all"
+                placeholder="Enter notification title..."
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Message
+              </label>
+              <textarea
+                value={notificationForm.message}
+                onChange={(e) =>
+                  setNotificationForm({
+                    ...notificationForm,
+                    message: e.target.value,
+                  })
+                }
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-violet-500 focus:ring-2 focus:ring-violet-200 outline-none transition-all h-32 resize-none"
+                placeholder="Enter your message..."
+                required
+              />
+            </div>
+
+            {notificationType === "role" && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Target Role
+                </label>
+                <select
+                  value={notificationForm.role}
+                  onChange={(e) =>
+                    setNotificationForm({
+                      ...notificationForm,
+                      role: e.target.value,
+                    })
+                  }
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-violet-500 focus:ring-2 focus:ring-violet-200 outline-none"
+                >
+                  <option value="student">Students</option>
+                  <option value="staff">Staff</option>
+                  <option value="admin">Admins</option>
+                  <option value="developer">Developers</option>
+                </select>
+              </div>
+            )}
+
+            {notificationType === "user" && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  User ID
+                </label>
+                <input
+                  type="text"
+                  value={notificationForm.userId}
+                  onChange={(e) =>
+                    setNotificationForm({
+                      ...notificationForm,
+                      userId: e.target.value,
+                    })
+                  }
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-violet-500 focus:ring-2 focus:ring-violet-200 outline-none"
+                  placeholder="Enter user ID..."
+                  required
+                />
+              </div>
+            )}
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Priority
+              </label>
+              <div className="flex gap-4">
+                {["low", "normal", "high", "urgent"].map((priority) => (
+                  <label
+                    key={priority}
+                    className="flex items-center space-x-2 cursor-pointer"
+                  >
+                    <input
+                      type="radio"
+                      name="priority"
+                      value={priority}
+                      checked={notificationForm.priority === priority}
+                      onChange={(e) =>
+                        setNotificationForm({
+                          ...notificationForm,
+                          priority: e.target.value,
+                        })
+                      }
+                      className="w-4 h-4 text-violet-600 focus:ring-violet-500"
+                    />
+                    <span
+                      className={`text-sm capitalize ${
+                        priority === "urgent"
+                          ? "text-red-600 font-medium"
+                          : priority === "high"
+                            ? "text-orange-600"
+                            : "text-gray-600"
+                      }`}
+                    >
+                      {priority}
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-3 bg-violet-500 text-white rounded-xl font-semibold hover:bg-violet-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+            >
+              {loading ? (
+                <RefreshCw className="w-5 h-5 animate-spin" />
+              ) : (
+                <>
+                  <Send className="w-5 h-5" />
+                  <span>Send Notification</span>
+                </>
+              )}
+            </button>
+          </form>
+        </div>
+      </div>
+
+      {/* Stats Panel */}
+      <div className="space-y-6">
+        <div className="bg-white rounded-2xl p-6 shadow-lg">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">
+            Notification Stats
+          </h3>
+          {notificationStats ? (
+            <div className="space-y-4">
+              <div className="p-4 bg-violet-50 rounded-xl">
+                <p className="text-sm text-gray-600 mb-1">Total Sent</p>
+                <p className="text-2xl font-bold text-violet-700">
+                  {notificationStats.total_sent || 0}
+                </p>
+              </div>
+              <div className="p-4 bg-amber-50 rounded-xl">
+                <p className="text-sm text-gray-600 mb-1">Pending</p>
+                <p className="text-2xl font-bold text-amber-700">
+                  {notificationStats.total_pending || 0}
+                </p>
+              </div>
+              <div className="p-4 bg-green-50 rounded-xl">
+                <p className="text-sm text-gray-600 mb-1">Delivery Rate</p>
+                <p className="text-2xl font-bold text-green-700">
+                  {notificationStats.delivery_rate || 0}%
+                </p>
+              </div>
+              <div className="p-4 bg-blue-50 rounded-xl">
+                <p className="text-sm text-gray-600 mb-1">Read Rate</p>
+                <p className="text-2xl font-bold text-blue-700">
+                  {notificationStats.read_rate || 0}%
+                </p>
+              </div>
+            </div>
+          ) : (
+            <Skeleton count={3} height={80} className="rounded-xl" />
+          )}
+        </div>
+
+        <div className="bg-white rounded-2xl p-6 shadow-lg">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">
+            Recent Sent
+          </h3>
+          <div className="space-y-3 max-h-64 overflow-y-auto">
+            {sentNotifications?.map((notif, idx) => (
+              <div key={idx} className="p-3 bg-gray-50 rounded-xl text-sm">
+                <p className="font-medium text-gray-800 truncate">
+                  {notif.title}
+                </p>
+                <p className="text-gray-500 text-xs mt-1">
+                  Sent to : {notif.recipient_type} • on{" "}
+                  {notif.created_at.split("T")[0]}
+                </p>
+              </div>
+            ))}
+            {sentNotifications.length === 0 && (
+              <p className="text-gray-500 text-center py-4 text-sm">
+                No notifications sent yet
+              </p>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
 const AdminPanel = () => {
   // States
   const [activeTab, setActiveTab] = useState("dashboard");
   const [users, setUsers] = useState([]);
   const [unverifiedUsers, setUnverifiedUsers] = useState([]);
   const [bannedUsers, setBannedUsers] = useState([]);
+
   const [sentNotifications, setSentNotifications] = useState([]);
   const [notificationStats, setNotificationStats] = useState(null);
-  const [userDetails, setUserDetails] = useState(null);
+  const [notificationType, setNotificationType] = useState("custom");
   const [loading, setLoading] = useState(false);
+
+  const [userDetails, setUserDetails] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [showUserModal, setShowUserModal] = useState(false);
-  const [showNotificationModal, setShowNotificationModal] = useState(false);
-  const [notificationType, setNotificationType] = useState("custom");
   const [showBanModal, setShowBanModal] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [banReason, setBanReason] = useState("");
@@ -84,7 +333,6 @@ const AdminPanel = () => {
     trustedUsers: 0,
   });
 
-  // Notification Form State
   const [notificationForm, setNotificationForm] = useState({
     title: "",
     message: "",
@@ -120,7 +368,6 @@ const AdminPanel = () => {
       }));
     } catch (error) {
       console.error("Error fetching users:", error);
-      // toast.error("Failed to fetch users");
     }
   };
 
@@ -133,7 +380,6 @@ const AdminPanel = () => {
       setStats((prev) => ({ ...prev, unverifiedUsers: data.length }));
     } catch (error) {
       console.error("Error fetching unverified users:", error);
-      // toast.error("Failed to fetch unverified users");
     }
   };
 
@@ -146,7 +392,6 @@ const AdminPanel = () => {
       setStats((prev) => ({ ...prev, bannedUsers: data.length }));
     } catch (error) {
       console.error("Error fetching banned users:", error);
-      // toast.error("Failed to fetch banned users");
     }
   };
 
@@ -165,6 +410,7 @@ const AdminPanel = () => {
     }
   };
 
+  //Notifications and notification Stats
   const fetchSentNotifications = async () => {
     try {
       const response = await axios.get("/notifications/admin/sent");
@@ -175,7 +421,7 @@ const AdminPanel = () => {
       toast.error("Failed to fetch notifications");
     }
   };
-
+  //stats
   const fetchNotificationStats = async () => {
     try {
       const response = await axios.get("/notifications/admin/stats");
@@ -190,6 +436,8 @@ const AdminPanel = () => {
   };
 
   // Action Handlers
+
+  //verify user(by admin)
   const handleVerifyUser = async (userId) => {
     try {
       const response = await axios.post(`/admin/verify-user/${userId}`);
@@ -200,56 +448,11 @@ const AdminPanel = () => {
         fetchDashboardStats();
       }
     } catch (error) {
-      // 🔍 COMPREHENSIVE ERROR LOGGING
-      console.group("🔴 Verification Error Debug");
-
-      // Check if it's an Axios error
-      if (error.response) {
-        // Server responded with error status (4xx, 5xx)
-        console.log("📡 Server Error Response:", error.response);
-        console.log("📄 Status:", error.response.status);
-        console.log("📨 Data:", error.response.data);
-        console.log("📝 Headers:", error.response.headers);
-      } else if (error.request) {
-        // Request made but no response received
-        console.log("📡 No Response Received");
-        console.log("📨 Request:", error.request);
-      } else {
-        // Something else happened
-        console.log("⚠️ Non-Request Error");
-        console.log("💬 Message:", error.message);
-      }
-
-      // Always log these
-      console.log("🔧 Error Config:", error.config);
-      console.log("❌ Full Error:", error);
-      console.log("🆔 Error Code:", error.code); // ECONNABORTED, ENETUNREACH, etc.
-      console.groupEnd();
-
-      // Better user feedback
-      const errorMsg =
-        error.response?.data?.message ||
-        error.message ||
-        "Failed to verify user";
-      toast.error(errorMsg);
+      toast.error("Failed to verify user");
     }
   };
 
-  const handlePromoteToTrusted = async (userId) => {
-    try {
-      const response = await axios.post(`/admin/promote-to-trusted/${userId}`);
-      console.log("Promote to trusted : ", response);
-      if (response.status === 200) {
-        toast.success("User promoted to trusted");
-        fetchDashboardStats();
-        if (userDetails) fetchUserDetails(userId);
-      }
-    } catch (error) {
-      console.error("Error promoting user:", error);
-      toast.error("Failed to promote user");
-    }
-  };
-
+  //Revoke Verification
   const handleRevokeVerification = async (userId) => {
     try {
       const response = await axios.post(`/admin/revoke-verification/${userId}`);
@@ -265,12 +468,28 @@ const AdminPanel = () => {
     }
   };
 
+  //promote to trusted
+  const handlePromoteToTrusted = async (userId) => {
+    try {
+      const response = await axios.post(`/admin/promote-to-trusted/${userId}`);
+      console.log("Promote to trusted : ", response);
+      if (response.status === 200) {
+        toast.success("User promoted to trusted");
+        fetchDashboardStats();
+        if (userDetails) fetchUserDetails(userId);
+      }
+    } catch (error) {
+      console.error("Error promoting user:", error);
+      toast.error("Failed to promote user");
+    }
+  };
+
+  //add reputation points
   const handleAddReputation = async (userId, points) => {
     const reason = window.prompt(
       `Enter reason for ${points >= 0 ? "adding" : "removing"} ${Math.abs(points)} points:`,
     );
     if (!reason) return;
-
     try {
       const response = await axios.post(`/admin/add-reputation/${userId}`, {
         points,
@@ -303,7 +522,6 @@ const AdminPanel = () => {
       toast.error("Reason must be at least 10 characters long.");
       return;
     }
-
     try {
       const response = await axios.post(`/admin/ban-user/${selectedUserId}`, {
         reason: banReason,
@@ -323,7 +541,7 @@ const AdminPanel = () => {
     }
   };
 
-  // Added missing handleUnbanUser function
+  //Unban User
   const handleUnbanUser = async (userId) => {
     try {
       const response = await axios.post(`/admin/unban-user/${userId}`, {
@@ -340,7 +558,7 @@ const AdminPanel = () => {
     }
   };
 
-  // Added missing handleBanUser function for direct calls
+  //BanUser function for direct calls
   const handleBanUser = async (userId, reason) => {
     try {
       const response = await axios.post(`/admin/ban-user/${userId}`, {
@@ -363,22 +581,56 @@ const AdminPanel = () => {
     e.preventDefault();
     setLoading(true);
 
-    let endpoint = "/notifications/custom";
-    let payload = {
-      title: notificationForm.title,
-      message: notificationForm.message,
-      priority: notificationForm.priority,
-      channels: ["in_app", "websocket"],
-    };
+    let endpoint;
+    let payload;
 
-    if (notificationType === "broadcast") {
-      endpoint = "/notifications/broadcast";
-    } else if (notificationType === "role") {
-      endpoint = "/notifications/send-to-role";
-      payload.role = notificationForm.role;
-    } else if (notificationType === "user") {
-      endpoint = "/notifications/send-to-user";
-      payload.user_id = notificationForm.userId;
+    // Build payload according to API specs
+    switch (notificationType) {
+      case "custom":
+        endpoint = "/notifications/custom";
+        payload = {
+          title: notificationForm.title,
+          message: notificationForm.message,
+          recipient_type: "all",
+          recipient_filter: {},
+          channels: ["in_app"],
+          priority: notificationForm.priority,
+          scheduled_for: new Date().toISOString(),
+        };
+        break;
+
+      case "broadcast":
+        endpoint = "/notifications/broadcast";
+        payload = {
+          title: notificationForm.title,
+          message: notificationForm.message,
+          channels: ["in_app", "email"],
+        };
+        break;
+
+      case "role":
+        endpoint = "/notifications/send-to-role";
+        payload = {
+          title: notificationForm.title,
+          message: notificationForm.message,
+          role: notificationForm.role,
+          channels: ["in_app"],
+        };
+        break;
+
+      case "user":
+        endpoint = "/notifications/send-to-user";
+        payload = {
+          title: notificationForm.title,
+          message: notificationForm.message,
+          user_id: notificationForm.userId,
+          channels: ["in_app"],
+        };
+        break;
+
+      default:
+        endpoint = "/notifications/custom";
+        payload = {};
     }
 
     try {
@@ -386,7 +638,6 @@ const AdminPanel = () => {
 
       if (response.status === 200 || response.status === 201) {
         toast.success("Notification sent successfully");
-        setShowNotificationModal(false);
         setNotificationForm({
           title: "",
           message: "",
@@ -412,26 +663,7 @@ const AdminPanel = () => {
       user.email?.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
-  // Stats Cards Component
-  const StatsCard = ({ title, value, icon: Icon, color, trend }) => (
-    <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-sm font-medium text-gray-500 mb-1">{title}</p>
-          <h3 className="text-3xl font-bold text-gray-800">{value}</h3>
-          {trend && (
-            <p className="text-sm text-green-500 flex items-center mt-2">
-              <TrendingUp className="w-4 h-4 mr-1" />
-              {trend}
-            </p>
-          )}
-        </div>
-        <div className={`p-4 rounded-2xl ${color} bg-opacity-10`}>
-          <Icon className={`w-8 h-8 ${color.replace("bg-", "text-")}`} />
-        </div>
-      </div>
-    </div>
-  );
+  
 
   // Tab Components
   const DashboardTab = () => {
@@ -470,11 +702,9 @@ const AdminPanel = () => {
               </p>
             )}
           </div>
-          <div
-            className={`p-2 rounded-lg ${color} bg-opacity-10 group-hover:scale-110 transition-transform`}
-          >
-            <Icon className={`w-5 h-5 ${color.replace("bg-", "text-")}`} />
-          </div>
+          
+            <Icon className={`w-5 h-5 ${color.replace("bg-","text-")}`} />
+          
         </div>
       </div>
     );
@@ -566,11 +796,11 @@ const AdminPanel = () => {
                   className="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
                 >
                   <div className="flex items-center gap-3">
-                      <img
-                        src={user.avatar_url || noProfile}
-                        alt={user.name}
-                        className="w-12 h-12 rounded-full object-cover border-2 border-gray-100"
-                      />{" "}
+                    <img
+                      src={user.avatar_url || noProfile}
+                      alt={user.name}
+                      className="w-12 h-12 rounded-full object-cover border-2 border-gray-100"
+                    />{" "}
                     <div>
                       <p className="font-medium text-gray-900 text-sm">
                         {user.name}
@@ -1771,245 +2001,6 @@ const AdminPanel = () => {
       </div>
     </div>
   );
-
-  const NotificationsTab = () => (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Send Notification Panel */}
-        <div className="lg:col-span-2 space-y-6">
-          <div className="bg-white rounded-2xl p-6 shadow-lg">
-            <h3 className="text-lg font-semibold text-gray-800 mb-6 flex items-center">
-              <Send className="w-5 h-5 mr-2 text-violet-500" />
-              Send Notification
-            </h3>
-
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-              {[
-                { id: "custom", label: "Custom", icon: Edit3 },
-                { id: "broadcast", label: "Broadcast", icon: Mail },
-                { id: "role", label: "To Role", icon: Users },
-                { id: "user", label: "To User", icon: UserCheck },
-              ].map((type) => (
-                <button
-                  key={type.id}
-                  onClick={() => setNotificationType(type.id)}
-                  className={`p-4 rounded-xl border-2 transition-all flex flex-col items-center space-y-2 ${
-                    notificationType === type.id
-                      ? "border-violet-500 bg-violet-50 text-violet-700"
-                      : "border-gray-200 hover:border-violet-200"
-                  }`}
-                >
-                  <type.icon className="w-6 h-6" />
-                  <span className="text-sm font-medium">{type.label}</span>
-                </button>
-              ))}
-            </div>
-
-            <form onSubmit={handleSendNotification} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Title
-                </label>
-                <input
-                  type="text"
-                  value={notificationForm.title}
-                  onChange={(e) =>
-                    setNotificationForm({
-                      ...notificationForm,
-                      title: e.target.value,
-                    })
-                  }
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-violet-500 focus:ring-2 focus:ring-violet-200 outline-none transition-all"
-                  placeholder="Enter notification title..."
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Message
-                </label>
-                <textarea
-                  value={notificationForm.message}
-                  onChange={(e) =>
-                    setNotificationForm({
-                      ...notificationForm,
-                      message: e.target.value,
-                    })
-                  }
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-violet-500 focus:ring-2 focus:ring-violet-200 outline-none transition-all h-32 resize-none"
-                  placeholder="Enter your message..."
-                  required
-                />
-              </div>
-
-              {notificationType === "role" && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Target Role
-                  </label>
-                  <select
-                    value={notificationForm.role}
-                    onChange={(e) =>
-                      setNotificationForm({
-                        ...notificationForm,
-                        role: e.target.value,
-                      })
-                    }
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-violet-500 focus:ring-2 focus:ring-violet-200 outline-none"
-                  >
-                    <option value="student">Students</option>
-                    <option value="staff">Staff</option>
-                    <option value="admin">Admins</option>
-                    <option value="developer">Developers</option>
-                  </select>
-                </div>
-              )}
-
-              {notificationType === "user" && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    User ID
-                  </label>
-                  <input
-                    type="text"
-                    value={notificationForm.userId}
-                    onChange={(e) =>
-                      setNotificationForm({
-                        ...notificationForm,
-                        userId: e.target.value,
-                      })
-                    }
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-violet-500 focus:ring-2 focus:ring-violet-200 outline-none"
-                    placeholder="Enter user ID..."
-                    required
-                  />
-                </div>
-              )}
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Priority
-                </label>
-                <div className="flex gap-4">
-                  {["low", "normal", "high", "urgent"].map((priority) => (
-                    <label
-                      key={priority}
-                      className="flex items-center space-x-2 cursor-pointer"
-                    >
-                      <input
-                        type="radio"
-                        name="priority"
-                        value={priority}
-                        checked={notificationForm.priority === priority}
-                        onChange={(e) =>
-                          setNotificationForm({
-                            ...notificationForm,
-                            priority: e.target.value,
-                          })
-                        }
-                        className="w-4 h-4 text-violet-600 focus:ring-violet-500"
-                      />
-                      <span
-                        className={`text-sm capitalize ${
-                          priority === "urgent"
-                            ? "text-red-600 font-medium"
-                            : priority === "high"
-                              ? "text-orange-600"
-                              : "text-gray-600"
-                        }`}
-                      >
-                        {priority}
-                      </span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full py-3 bg-violet-500 text-white rounded-xl font-semibold hover:bg-violet-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
-              >
-                {loading ? (
-                  <RefreshCw className="w-5 h-5 animate-spin" />
-                ) : (
-                  <>
-                    <Send className="w-5 h-5" />
-                    <span>Send Notification</span>
-                  </>
-                )}
-              </button>
-            </form>
-          </div>
-        </div>
-
-        {/* Stats Panel */}
-        <div className="space-y-6">
-          <div className="bg-white rounded-2xl p-6 shadow-lg">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">
-              Notification Stats
-            </h3>
-            {notificationStats ? (
-              <div className="space-y-4">
-                <div className="p-4 bg-violet-50 rounded-xl">
-                  <p className="text-sm text-gray-600 mb-1">Total Sent</p>
-                  <p className="text-2xl font-bold text-violet-700">
-                    {notificationStats.total_sent || 0}
-                  </p>
-                </div>
-                <div className="p-4 bg-amber-50 rounded-xl">
-                  <p className="text-sm text-gray-600 mb-1">Pending</p>
-                  <p className="text-2xl font-bold text-amber-700">
-                    {notificationStats.total_pending || 0}
-                  </p>
-                </div>
-                <div className="p-4 bg-green-50 rounded-xl">
-                  <p className="text-sm text-gray-600 mb-1">Delivery Rate</p>
-                  <p className="text-2xl font-bold text-green-700">
-                    {notificationStats.delivery_rate || 0}%
-                  </p>
-                </div>
-                <div className="p-4 bg-blue-50 rounded-xl">
-                  <p className="text-sm text-gray-600 mb-1">Read Rate</p>
-                  <p className="text-2xl font-bold text-blue-700">
-                    {notificationStats.read_rate || 0}%
-                  </p>
-                </div>
-              </div>
-            ) : (
-              <Skeleton count={3} height={80} className="rounded-xl" />
-            )}
-          </div>
-
-          <div className="bg-white rounded-2xl p-6 shadow-lg">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">
-              Recent Sent
-            </h3>
-            <div className="space-y-3 max-h-64 overflow-y-auto">
-              {sentNotifications.map((notif, idx) => (
-                <div key={idx} className="p-3 bg-gray-50 rounded-xl text-sm">
-                  <p className="font-medium text-gray-800 truncate">
-                    {notif.title}
-                  </p>
-                  <p className="text-gray-500 text-xs mt-1">
-                    Sent to : {notif.recipient_type} • on{" "}
-                    {notif.created_at.split("T")[0]}
-                  </p>
-                </div>
-              ))}
-              {sentNotifications.length === 0 && (
-                <p className="text-gray-500 text-center py-4 text-sm">
-                  No notifications sent yet
-                </p>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
   return (
     <>
       <ToastContainer
@@ -2027,7 +2018,7 @@ const AdminPanel = () => {
       <SideNav />
       <BottomNav />
 
-      <div className="w-full pb-20 md:pb-2 p-2 lg:p-4 lg:w-[calc(100vw-15vw)] overflow-x-auto min-h-screen bg-gray-50">
+      <div className="w-full pb-20 md:pb-2 p-2 lg:p-4 lg:w-[calc(100vw-15vw)] overflow-x-auto min-h-screen">
         {/* Header */}
         <div className="w-full  bg-violet-500 p-4 rounded-2xl mb-6 shadow-lg">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -2039,7 +2030,6 @@ const AdminPanel = () => {
                 Manage users, verifications, and system notifications
               </p>
             </div>
-            
           </div>
         </div>
 
@@ -2065,17 +2055,17 @@ const AdminPanel = () => {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center space-x-2 px-6 py-3 rounded-xl font-medium transition-all whitespace-nowrap ${
+              className={`flex items-center space-x-1 sm:space-x-2 px-3 sm:px-4 md:px-6 py-2 sm:py-3 rounded-xl font-medium transition-all whitespace-nowrap ${
                 activeTab === tab.id
                   ? "bg-violet-500 text-white shadow-lg shadow-violet-200"
                   : "bg-white text-gray-600 hover:bg-gray-100"
               }`}
             >
-              <tab.icon className="w-5 h-5" />
-              <span>{tab.label}</span>
+              <tab.icon className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
+              <p className="text-sm md:text-m">{tab.label}</p>
               {tab.badge > 0 && (
                 <span
-                  className={`px-2 py-0.5 rounded-full text-xs ${
+                  className={`px-1.5 sm:px-2 py-0.5 rounded-full text-xs ${
                     activeTab === tab.id
                       ? "bg-white text-violet-600"
                       : "bg-violet-100 text-violet-600"
@@ -2094,8 +2084,20 @@ const AdminPanel = () => {
           {activeTab === "users" && <UsersTab />}
           {activeTab === "unverified" && <UnverifiedTab />}
           {activeTab === "banned" && <BannedTab />}
-          {activeTab === "notifications" && <NotificationsTab />}
+          {activeTab === "notifications" && (
+            <NotificationsTab
+              notificationType={notificationType}
+              setNotificationType={setNotificationType}
+              notificationForm={notificationForm}
+              setNotificationForm={setNotificationForm}
+              handleSendNotification={handleSendNotification}
+              loading={loading}
+              notificationStats={notificationStats}
+              sentNotifications={sentNotifications}
+            />
+          )}
         </div>
+
         {showBanModal && (
           <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
             <div className="bg-white rounded-xl shadow-lg w-full max-w-md p-6">
