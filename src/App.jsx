@@ -164,6 +164,15 @@ const App = () => {
             }
           />
 
+          <Route
+            path="/admin-panel"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <AdminPanel />
+              </ProtectedRoute>
+            }
+          />
+
           {/* staff */}
           <Route
             path="/assigned-issues"
@@ -173,8 +182,6 @@ const App = () => {
               </ProtectedRoute>
             }
           />
-
-          <Route path="/admin-panel" element={<AdminPanel />} />
 
           {/* students */}
           <Route
