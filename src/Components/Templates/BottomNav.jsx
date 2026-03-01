@@ -34,9 +34,10 @@ const BottomNav = () => {
             <i className="ri-alarm-warning-fill text-xl"></i>
             <span className="text-xs">Issues</span>
           </NavLink>
-          <NavLink to="/resolved-issues" className={navClass}>
-            <i className="ri-shield-check-fill text-xl"></i>
-            <span className="text-xs">Resolved</span>
+          <NavLink to="/admin-panel" className={navClass}>
+            <i className="ri-terminal-window-fill text-xl"></i>
+
+            <span className="text-xs">Panel</span>
           </NavLink>
         </>
       )}
@@ -60,10 +61,12 @@ const BottomNav = () => {
       {role === "student" && (
         <>
           <NavLink to="/feed" className={navClass}>
-            <i className="ri-rss-fill text-xl"></i> <span className="text-xs">Feed</span>
+            <i className="ri-rss-fill text-xl"></i>{" "}
+            <span className="text-xs">Feed</span>
           </NavLink>
           <NavLink to="/help-support" className={navClass}>
-            <i className="ri-customer-service-2-fill text-xl"></i> <span className="text-xs">Help</span>
+            <i className="ri-customer-service-2-fill text-xl"></i>{" "}
+            <span className="text-xs">Help</span>
           </NavLink>
         </>
       )}

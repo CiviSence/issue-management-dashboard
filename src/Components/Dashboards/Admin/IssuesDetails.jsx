@@ -4,7 +4,7 @@ import Searchbar from "../../Templates/Searchbar";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
-import profileSvg from "../../../assets/default-avatar.jpg"
+import profileSvg from "../../../assets/default-avatar.jpg";
 import {
   assignIssue,
   deleteIssue,
@@ -14,6 +14,7 @@ import {
 import Loader from "../../Templates/Loader";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useUsers } from "../../../Context/UserContext";
+import axios from "../../../Utils/axios";
 const IssueDetails = () => {
   const { id } = useParams();
   const location = useLocation();
@@ -27,6 +28,11 @@ const IssueDetails = () => {
   const [internalNote, setInternalNote] = useState("");
   const [isAssigning, setIsAssigning] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(null);
+  const [showBanModal, setShowBanModal] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState(null);
+  const [banReason, setBanReason] = useState("");
+  const [deleteContent, setDeleteContent] = useState(false);
+  const [notifyUser, setNotifyUser] = useState(true);
   const { staff, fetchStaff } = useUsers();
 
   const fetchIssue = async () => {
@@ -79,17 +85,65 @@ const IssueDetails = () => {
     }
   };
 
-  const banUser = async (userId) => {
-    if (!window.confirm("Are you sure? This will ban the user.")) return;
+  const openBanModal = () => {
+    setBanReason("");
+    setDeleteContent(false);
+    setNotifyUser(true);
+    setShowBanModal(true);
+  };
+
+  const confirmBanUser = async () => {
+    if (!banReason || banReason.length < 10) {
+      toast.error("Reason must be at least 10 characters long.");
+      return;
+    }
 
     try {
-      // Call your API to ban the user
-      await fetch(`/api/admin/unban-user/${userId}`, {
-        method: "POST",
+      const response = await axios.post(`/admin/ban-user/${issue.user_id}`, {
+        // ✅ Use issue.user_id directly
+        reason: banReason,
+        delete_content: deleteContent,
+        notify_user: notifyUser,
       });
-      toast.success("User banned successfully!");
+
+      if (response.status === 200) {
+        toast.success("User banned successfully!");
+        setShowBanModal(false);
+      }
     } catch (error) {
-      toast.error("Failed to ban user.");
+      console.error("Error banning user:", error);
+      toast.error(error.response?.data?.detail || "Failed to ban user.");
+    }
+  };
+
+  const handleUnbanUser = async (userId) => {
+    try {
+      const response = await axios.post(`/admin/unban-user/${userId}`, {
+        notify_user: true,
+      });
+      if (response.status === 200) {
+        toast.success("User unbanned successfully");
+      }
+    } catch (error) {
+      console.error("Error unbanning user:", error);
+      toast.error(error.response?.data?.detail || "Failed to unban user");
+    }
+  };
+
+  // Added missing handleBanUser function for direct calls
+  const handleBanUser = async (userId, reason) => {
+    try {
+      const response = await axios.post(`/admin/ban-user/${userId}`, {
+        reason: reason || "Violation of terms",
+        delete_content: false,
+        notify_user: true,
+      });
+      if (response.status === 200) {
+        toast.success("User banned successfully");
+      }
+    } catch (error) {
+      console.error("Error banning user:", error);
+      toast.error(error.response?.data?.detail || "Failed to ban user");
     }
   };
 
@@ -978,10 +1032,8 @@ const IssueDetails = () => {
                             <div className="h-px bg-gray-200 my-1" />
 
                             <button
-                              onClick={() => {
-                                banUser(issue.user_id);
-                                setUserMenuOpen(null);
-                              }}
+                              title="Ban User"
+                              onClick={() => openBanModal()}
                               className="w-full text-left px-4 py-2.5 text-red-600 hover:bg-red-50 flex items-center gap-2"
                             >
                               <svg
@@ -1289,6 +1341,64 @@ const IssueDetails = () => {
           <Loader />
         )}
       </div>
+      {showBanModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+          <div className="bg-white rounded-xl shadow-lg w-full max-w-md p-6">
+            <h2 className="text-xl font-semibold mb-4">Ban User</h2>
+
+            {/* Reason */}
+            <label className="block text-sm font-medium mb-1">
+              Ban Reason (min 10 characters)
+            </label>
+            <textarea
+              value={banReason}
+              onChange={(e) => setBanReason(e.target.value)}
+              className="w-full border rounded-lg p-2 mb-3 focus:outline-none focus:ring-2 focus:ring-red-400"
+              rows="3"
+              placeholder="Enter reason for banning..."
+            />
+
+            {/* Delete Content Checkbox */}
+            <div className="flex items-center mb-2">
+              <input
+                type="checkbox"
+                checked={deleteContent}
+                onChange={(e) => setDeleteContent(e.target.checked)}
+                className="mr-2"
+              />
+              <label>Delete all user's content</label>
+            </div>
+
+            {/* Notify User Checkbox */}
+            <div className="flex items-center mb-4">
+              <input
+                type="checkbox"
+                checked={notifyUser}
+                onChange={(e) => setNotifyUser(e.target.checked)}
+                className="mr-2"
+              />
+              <label>Notify user via email</label>
+            </div>
+
+            {/* Buttons */}
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setShowBanModal(false)}
+                className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300"
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={confirmBanUser}
+                className="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700"
+              >
+                Confirm Ban
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

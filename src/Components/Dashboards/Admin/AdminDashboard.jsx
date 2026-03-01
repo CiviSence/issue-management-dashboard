@@ -9,13 +9,10 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { Link } from "react-router-dom";
 
-// Lazy load heavy chart components
 const PieChartCard = lazy(() => import("../../Templates/PieChartCard"));
 const BarChartCard = lazy(() => import("../../Templates/BarChartCard"));
 const LineChartCard = lazy(() => import("../../Templates/LineChartCard"));
 const StatusChart = lazy(() => import("../../Templates/StatusChart"));
-
-// ========== SKELETON COMPONENTS ==========
 
 const CardSkeleton = () => (
   <div className="w-full sm:w-[48%] lg:w-[35%] xl:w-[24%]">
@@ -33,12 +30,9 @@ const UserSectionSkeleton = () => (
   </div>
 );
 
-// ========== MAIN DASHBOARD COMPONENT ==========
-
 const AdminDashboard = () => {
   const { allstats, issues = [] } = useIssues();
 
-  // Compute stats from issues (instant)
   const initialStats = {
     category: {
       maintenance: 0,
@@ -142,7 +136,6 @@ const AdminDashboard = () => {
       <BottomNav />
 
       <div className="w-full pb-20 md:pb-2 p-2 lg:p-4 lg:w-[calc(100vw-15vw)] bg-white overflow-x-auto">
-        {/* ========== STATIC HEADER ========== */}
         <div className="w-full bg-violet-500 p-4 rounded-2xl">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             <h1 className="text-2xl sm:text-3xl font-semibold text-white">
@@ -152,7 +145,6 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        {/* ========== ISSUE CARDS (All 4 load at the same time) ========== */}
         <div className="w-full mt-4 gap-3 sm:gap-4 flex flex-wrap justify-center bg-[#F0EEFF] p-3 sm:p-4 lg:p-6 rounded-2xl">
           {!hasAllStats ? (
             <>
@@ -170,14 +162,12 @@ const AdminDashboard = () => {
           )}
         </div>
 
-        {/* ========== ISSUE STATS (All charts load together) ========== */}
         <h1 className="pt-2 pb-1 pl-2 text-xl sm:text-2xl font-semibold text-[#363434]">
           Issue Stats
         </h1>
 
         <div className="bg-[#F0EEFF] p-4 rounded-2xl">
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
-            {/* All charts wait for hasIssues - they appear together */}
             {!hasIssues ? (
               <>
                 <ChartSkeleton />
@@ -195,19 +185,17 @@ const AdminDashboard = () => {
                 </Suspense>
 
                 <Suspense fallback={<ChartSkeleton />}>
-                  <LineChartCard />
+                  <StatusChart data={locationData} />
                 </Suspense>
               </>
             )}
           </div>
-
-          {/* Status Chart - Also waits for hasIssues */}
           <div className="pt-3">
             {!hasIssues ? (
               <ChartSkeleton height={120} />
             ) : (
               <Suspense fallback={<ChartSkeleton height={120} />}>
-                <StatusChart data={locationData} />
+                <LineChartCard />
               </Suspense>
             )}
           </div>

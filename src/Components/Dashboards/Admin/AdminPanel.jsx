@@ -5,6 +5,7 @@ import Searchbar from "../../Templates/Searchbar";
 import "react-loading-skeleton/dist/skeleton.css";
 import { toast, ToastContainer } from "react-toastify";
 import axios from "../../../Utils/axios";
+import noProfile from "../../../assets/default-avatar.jpg";
 import {
   Users,
   Shield,
@@ -39,6 +40,20 @@ import {
   Clock,
   TrendingDown,
   Star,
+  X,
+  BookOpen,
+  GraduationCap,
+  ShieldCheck,
+  FileText,
+  CheckCircle2,
+  BarChart3,
+  ThumbsUp,
+  Vote,
+  MessageCircle,
+  User,
+  Home,
+  History,
+  Settings,
 } from "lucide-react";
 import Skeleton from "react-loading-skeleton";
 
@@ -50,13 +65,17 @@ const AdminPanel = () => {
   const [bannedUsers, setBannedUsers] = useState([]);
   const [sentNotifications, setSentNotifications] = useState([]);
   const [notificationStats, setNotificationStats] = useState(null);
-  const [selectedUser, setSelectedUser] = useState(null);
   const [userDetails, setUserDetails] = useState(null);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [showUserModal, setShowUserModal] = useState(false);
   const [showNotificationModal, setShowNotificationModal] = useState(false);
   const [notificationType, setNotificationType] = useState("custom");
+  const [showBanModal, setShowBanModal] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState(null);
+  const [banReason, setBanReason] = useState("");
+  const [deleteContent, setDeleteContent] = useState(false);
+  const [notifyUser, setNotifyUser] = useState(true);
   const [stats, setStats] = useState({
     totalUsers: 0,
     verifiedUsers: 0,
@@ -87,14 +106,16 @@ const AdminPanel = () => {
   const fetchDashboardStats = async () => {
     try {
       const response = await axios.get("/admin/all-users");
-      console.log("response", response);
+      console.log("all users : ", response);
       const data = response.data;
-      console.log(data.users);
+      console.log("all users data", data.users);
       setUsers(data.users);
       setStats((prev) => ({
         ...prev,
         totalUsers: data.users.length,
-        verifiedUsers: data.users.filter((u) => u.isVerified).length,
+        verifiedUsers: data.users.filter(
+          (u) => u.verification_status === "verified",
+        ).length,
         trustedUsers: data.users.filter((u) => u.isTrusted).length,
       }));
     } catch (error) {
@@ -107,7 +128,7 @@ const AdminPanel = () => {
     try {
       const response = await axios.get("/admin/unverified-users");
       const data = response.data;
-      console.log(data);
+      console.log("unverified users : ", data);
       setUnverifiedUsers(data);
       setStats((prev) => ({ ...prev, unverifiedUsers: data.length }));
     } catch (error) {
@@ -120,7 +141,7 @@ const AdminPanel = () => {
     try {
       const response = await axios.get("/admin/banned-users");
       const data = response.data.banned_users;
-      console.log(data);
+      console.log("Banned Users : ", data);
       setBannedUsers(data);
       setStats((prev) => ({ ...prev, bannedUsers: data.length }));
     } catch (error) {
@@ -133,7 +154,7 @@ const AdminPanel = () => {
     setLoading(true);
     try {
       const response = await axios.get(`/admin/users/${userId}/detailed`);
-      console.log("userdetails", response);
+      console.log("user details : ", response);
       setUserDetails(response.data);
       setShowUserModal(true);
     } catch (error) {
@@ -158,11 +179,13 @@ const AdminPanel = () => {
   const fetchNotificationStats = async () => {
     try {
       const response = await axios.get("/notifications/admin/stats");
-      console.log("notification", response);
+      console.log("notification stats : ", response);
       setNotificationStats(response.data);
     } catch (error) {
       console.error("Error fetching notification stats:", error);
-      toast.error(error.response?.data?.detail || "Failed to fetch notification stats");
+      toast.error(
+        error.response?.data?.detail || "Failed to fetch notification stats",
+      );
     }
   };
 
@@ -170,7 +193,7 @@ const AdminPanel = () => {
   const handleVerifyUser = async (userId) => {
     try {
       const response = await axios.post(`/admin/verify-user/${userId}`);
-      console.log(response);
+      console.log("Verify user : ", response);
       if (response.status === 200) {
         toast.success("User verified successfully");
         fetchUnverifiedUsers();
@@ -215,11 +238,11 @@ const AdminPanel = () => {
   const handlePromoteToTrusted = async (userId) => {
     try {
       const response = await axios.post(`/admin/promote-to-trusted/${userId}`);
-      console.log(response);
+      console.log("Promote to trusted : ", response);
       if (response.status === 200) {
         toast.success("User promoted to trusted");
         fetchDashboardStats();
-        if (selectedUser) fetchUserDetails(userId);
+        if (userDetails) fetchUserDetails(userId);
       }
     } catch (error) {
       console.error("Error promoting user:", error);
@@ -230,11 +253,11 @@ const AdminPanel = () => {
   const handleRevokeVerification = async (userId) => {
     try {
       const response = await axios.post(`/admin/revoke-verification/${userId}`);
-      console.log(response);
+      console.log("Revoke Verification : ", response);
       if (response.status === 200) {
         toast.success("Verification revoked");
         fetchDashboardStats();
-        if (selectedUser) fetchUserDetails(userId);
+        if (userDetails) fetchUserDetails(userId);
       }
     } catch (error) {
       console.error("Error revoking verification:", error);
@@ -243,7 +266,9 @@ const AdminPanel = () => {
   };
 
   const handleAddReputation = async (userId, points) => {
-    const reason = window.prompt(`Enter reason for ${points >= 0 ? 'adding' : 'removing'} ${Math.abs(points)} points:`);
+    const reason = window.prompt(
+      `Enter reason for ${points >= 0 ? "adding" : "removing"} ${Math.abs(points)} points:`,
+    );
     if (!reason) return;
 
     try {
@@ -252,34 +277,45 @@ const AdminPanel = () => {
         reason,
       });
       if (response.status === 200) {
-        toast.success(response.data.message || `Reputation updated successfully`);
-        if (selectedUser) fetchUserDetails(userId);
+        toast.success(
+          response.data.message || `Reputation updated successfully`,
+        );
+        if (userDetails) fetchUserDetails(userId);
       }
     } catch (error) {
       console.error("Error updating reputation:", error);
-      toast.error(error.response?.data?.detail || "Failed to update reputation");
+      toast.error(
+        error.response?.data?.detail || "Failed to update reputation",
+      );
     }
   };
 
-  const handleBanUser = async (userId) => {
-    const reason = window.prompt("Enter reason for ban (minimum 10 characters):");
-    if (!reason) return;
+  const openBanModal = (userId) => {
+    setSelectedUserId(userId);
+    setBanReason("");
+    setDeleteContent(false);
+    setNotifyUser(true);
+    setShowBanModal(true);
+  };
 
-    if (reason.length < 10) {
+  const confirmBanUser = async () => {
+    if (!banReason || banReason.length < 10) {
       toast.error("Reason must be at least 10 characters long.");
       return;
     }
 
     try {
-      const response = await axios.post(`/admin/ban-user/${userId}`, {
-        reason,
-        delete_content: false,
-        notify_user: true
+      const response = await axios.post(`/admin/ban-user/${selectedUserId}`, {
+        reason: banReason,
+        delete_content: deleteContent,
+        notify_user: notifyUser,
       });
+
       if (response.status === 200) {
         toast.success("User banned successfully!");
-        fetchBannedUsers();
+        setShowBanModal(false);
         fetchDashboardStats();
+        fetchBannedUsers();
       }
     } catch (error) {
       console.error("Error banning user:", error);
@@ -287,11 +323,11 @@ const AdminPanel = () => {
     }
   };
 
+  // Added missing handleUnbanUser function
   const handleUnbanUser = async (userId) => {
-    if (!window.confirm("Are you sure you want to unban this user?")) return;
     try {
       const response = await axios.post(`/admin/unban-user/${userId}`, {
-        notify_user: true
+        notify_user: true,
       });
       if (response.status === 200) {
         toast.success("User unbanned successfully");
@@ -301,6 +337,25 @@ const AdminPanel = () => {
     } catch (error) {
       console.error("Error unbanning user:", error);
       toast.error(error.response?.data?.detail || "Failed to unban user");
+    }
+  };
+
+  // Added missing handleBanUser function for direct calls
+  const handleBanUser = async (userId, reason) => {
+    try {
+      const response = await axios.post(`/admin/ban-user/${userId}`, {
+        reason: reason || "Violation of terms",
+        delete_content: false,
+        notify_user: true,
+      });
+      if (response.status === 200) {
+        toast.success("User banned successfully");
+        fetchDashboardStats();
+        fetchBannedUsers();
+      }
+    } catch (error) {
+      console.error("Error banning user:", error);
+      toast.error(error.response?.data?.detail || "Failed to ban user");
     }
   };
 
@@ -511,9 +566,11 @@ const AdminPanel = () => {
                   className="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-full bg-linear-to-br from-violet-400 to-purple-600 flex items-center justify-center text-white text-sm font-semibold">
-                      {user.name?.[0]?.toUpperCase()}
-                    </div>
+                      <img
+                        src={user.avatar_url || noProfile}
+                        alt={user.name}
+                        className="w-12 h-12 rounded-full object-cover border-2 border-gray-100"
+                      />{" "}
                     <div>
                       <p className="font-medium text-gray-900 text-sm">
                         {user.name}
@@ -653,7 +710,7 @@ const AdminPanel = () => {
             {
               label: "System Logs",
               icon: Activity,
-              action: () => { },
+              action: () => {},
               color: "text-gray-600 bg-gray-50",
             },
           ].map((action, idx) => (
@@ -678,7 +735,7 @@ const AdminPanel = () => {
   };
 
   const UsersTab = () => {
-    const [searchQuery, setSearchQuery] = useState("");
+    // Removed local searchQuery state, use parent state instead
     const [viewMode, setViewMode] = useState("table"); // 'table', 'grid', 'list'
     const [selectedUsers, setSelectedUsers] = useState([]);
     const [filters, setFilters] = useState({
@@ -787,28 +844,18 @@ const AdminPanel = () => {
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-3">
               <div className="relative">
-                {user.avatar_url ? (
-                  <img
-                    src={user.avatar_url}
-                    alt={user.name}
-                    className="w-12 h-12 rounded-full object-cover border-2 border-gray-100"
-                    onError={(e) => {
-                      e.target.style.display = "none";
-                      e.target.nextSibling.style.display = "flex";
-                    }}
-                  />
-                ) : null}
+                <img
+                  src={user.avatar_url || noProfile}
+                  alt={user.name}
+                  className="w-12 h-12 rounded-full object-cover border-2 border-gray-100"
+                />
+
                 <div
-                  className="w-12 h-12 rounded-full bg-linear-to-br from-violet-400 to-purple-600 flex items-center justify-center text-white font-bold text-lg"
-                  style={{ display: user.avatar_url ? "none" : "flex" }}
-                >
-                  {user.name?.[0]?.toUpperCase()}
-                </div>
-                <div
-                  className={`absolute -bottom-1 -right-1 w-4 h-4 border-2 border-white rounded-full ${user.verification_status === "verified"
-                    ? "bg-green-500"
-                    : "bg-yellow-500"
-                    }`}
+                  className={`absolute -bottom-1 -right-1 w-4 h-4 border-2 border-white rounded-full ${
+                    user.verification_status === "verified"
+                      ? "bg-green-500"
+                      : "bg-yellow-500"
+                  }`}
                 />
               </div>
               <div className="min-w-0">
@@ -887,7 +934,7 @@ const AdminPanel = () => {
             </button>
           )}
           <button
-            onClick={() => handleBanUser(user.id)}
+            onClick={() => openBanModal(user.id)}
             className="px-3 py-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg transition-colors"
             title="Ban"
           >
@@ -908,17 +955,11 @@ const AdminPanel = () => {
         />
 
         <div className="relative shrink-0">
-          {user.avatar_url ? (
-            <img
-              src={user.avatar_url}
-              alt={user.name}
-              className="w-10 h-10 rounded-full object-cover"
-            />
-          ) : (
-            <div className="w-10 h-10 rounded-full bg-linear-to-br from-violet-400 to-purple-600 flex items-center justify-center text-white font-bold">
-              {user.name?.[0]?.toUpperCase()}
-            </div>
-          )}
+          <img
+            src={user.avatar_url || noProfile}
+            alt={user.name}
+            className="w-10 h-10 rounded-full object-cover"
+          />
         </div>
 
         <div className="flex-1 min-w-0 grid grid-cols-5 gap-4 items-center">
@@ -956,7 +997,7 @@ const AdminPanel = () => {
             </button>
           )}
           <button
-            onClick={() => handleBanUser(user.id)}
+            onClick={() => openBanModal(user.id)}
             className="p-2 text-red-600 hover:bg-red-50 rounded"
           >
             <Ban className="w-4 h-4" />
@@ -1014,10 +1055,11 @@ const AdminPanel = () => {
             {/* Filter Toggle */}
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${showFilters
-                ? "bg-violet-100 text-violet-700"
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                showFilters
+                  ? "bg-violet-100 text-violet-700"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              }`}
             >
               <Filter className="w-4 h-4" />
               Filters
@@ -1076,8 +1118,8 @@ const AdminPanel = () => {
                 >
                   <option value="all">All Roles</option>
                   <option value="admin">Admin</option>
-                  <option value="moderator">Moderator</option>
-                  <option value="user">User</option>
+                  <option value="staff">Staff</option>
+                  <option value="student">Student</option>
                 </select>
               </div>
               <div>
@@ -1215,17 +1257,12 @@ const AdminPanel = () => {
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-3">
-                          {user.avatar_url ? (
-                            <img
-                              src={user.avatar_url}
-                              alt={user.name}
-                              className="w-9 h-9 rounded-full object-cover"
-                            />
-                          ) : (
-                            <div className="w-9 h-9 rounded-full bg-linear-to-br from-violet-400 to-purple-600 flex items-center justify-center text-white font-bold text-sm">
-                              {user.name?.[0]?.toUpperCase()}
-                            </div>
-                          )}
+                          <img
+                            src={user.avatar_url || noProfile}
+                            alt={user.name}
+                            className="w-9 h-9 rounded-full object-cover"
+                          />
+
                           <div>
                             <p className="font-medium text-gray-900 text-sm">
                               {user.name}
@@ -1265,21 +1302,32 @@ const AdminPanel = () => {
                       <td className="px-4 py-3">
                         <div className="flex items-center justify-end gap-1">
                           <button
+                            title="Details"
                             onClick={() => fetchUserDetails(user.id)}
                             className="p-1.5 text-gray-400 hover:text-violet-600 hover:bg-violet-50 rounded transition-colors"
                           >
                             <Eye className="w-4 h-4" />
                           </button>
-                          {user.verification_status !== "verified" && (
+                          {user.verification_status !== "verified" ? (
                             <button
+                              title="Verify User"
                               onClick={() => handleVerifyUser(user.id)}
                               className="p-1.5 text-green-600 hover:bg-green-50 rounded transition-colors"
                             >
                               <CheckCircle className="w-4 h-4" />
                             </button>
+                          ) : (
+                            <button
+                              title="Revoke Verification"
+                              onClick={() => handleRevokeVerification(user.id)}
+                              className="p-1.5 text-red-600 hover:bg-red-50 rounded transition-colors"
+                            >
+                              <X className="w-4 h-4" />
+                            </button>
                           )}
                           <button
-                            onClick={() => handleBanUser(user.id)}
+                            title="Ban User"
+                            onClick={() => openBanModal(user.id)}
                             className="p-1.5 text-red-600 hover:bg-red-50 rounded transition-colors"
                           >
                             <Ban className="w-4 h-4" />
@@ -1298,8 +1346,8 @@ const AdminPanel = () => {
         {filteredUsers.length === 0 && (
           <div className="text-center py-16 bg-white rounded-xl border border-gray-200">
             {searchQuery ||
-              filters.status !== "all" ||
-              filters.role !== "all" ? (
+            filters.status !== "all" ||
+            filters.role !== "all" ? (
               <>
                 <Search className="w-12 h-12 text-gray-300 mx-auto mb-4" />
                 <p className="text-gray-500 font-medium">No users found</p>
@@ -1333,7 +1381,7 @@ const AdminPanel = () => {
   };
 
   const UnverifiedTab = () => {
-    const [searchQuery, setSearchQuery] = useState("");
+    const [localSearchQuery, setLocalSearchQuery] = useState("");
     const [selectedUsers, setSelectedUsers] = useState([]);
     const [viewMode, setViewMode] = useState("grid");
     const [sortBy, setSortBy] = useState("newest");
@@ -1342,9 +1390,11 @@ const AdminPanel = () => {
     const filteredUsers = unverifiedUsers
       .filter(
         (user) =>
-          user.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          user.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          user.department?.toLowerCase().includes(searchQuery.toLowerCase()),
+          user.name?.toLowerCase().includes(localSearchQuery.toLowerCase()) ||
+          user.email?.toLowerCase().includes(localSearchQuery.toLowerCase()) ||
+          user.department
+            ?.toLowerCase()
+            .includes(localSearchQuery.toLowerCase()),
       )
       .sort((a, b) => {
         if (sortBy === "name") return a.name?.localeCompare(b.name);
@@ -1383,24 +1433,12 @@ const AdminPanel = () => {
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-3">
               <div className="relative">
-                {user.avatar_url ? (
-                  <img
-                    src={user.avatar_url}
-                    alt={user.name}
-                    className="w-12 h-12 rounded-full object-cover border-2 border-gray-100"
-                    onError={(e) => {
-                      e.target.src = "";
-                      e.target.className = "hidden";
-                      e.target.nextSibling.className =
-                        "w-12 h-12 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center text-white font-bold text-lg";
-                    }}
-                  />
-                ) : null}
-                <div
-                  className={`w-12 h-12 rounded-full bg-linear-to-br from-yellow-400 to-orange-500 flex items-center justify-center text-white font-bold text-lg ${user.avatar_url ? "hidden" : ""}`}
-                >
-                  {user.name?.[0]?.toUpperCase()}
-                </div>
+                <img
+                  src={user.avatar_url || noProfile}
+                  alt={user.name}
+                  className="w-12 h-12 rounded-full object-cover border-2 border-gray-100"
+                />
+
                 <div
                   className="absolute -bottom-1 -right-1 w-4 h-4 bg-yellow-400 border-2 border-white rounded-full"
                   title="Pending Verification"
@@ -1487,17 +1525,12 @@ const AdminPanel = () => {
         />
 
         <div className="relative shrink-0">
-          {user.avatar_url ? (
-            <img
-              src={user.avatar_url}
-              alt={user.name}
-              className="w-10 h-10 rounded-full object-cover"
-            />
-          ) : (
-            <div className="w-10 h-10 rounded-full bg-linear-to-br from-yellow-400 to-orange-500 flex items-center justify-center text-white font-bold">
-              {user.name?.[0]?.toUpperCase()}
-            </div>
-          )}
+          <img
+            src={user.avatar_url || noProfile}
+            alt={user.name}
+            className="w-10 h-10 rounded-full object-cover"
+          />
+
           <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-yellow-400 border-2 border-white rounded-full" />
         </div>
 
@@ -1556,8 +1589,8 @@ const AdminPanel = () => {
               <input
                 type="text"
                 placeholder="Search users..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                value={localSearchQuery}
+                onChange={(e) => setLocalSearchQuery(e.target.value)}
                 className="pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 w-64"
               />
             </div>
@@ -1656,7 +1689,7 @@ const AdminPanel = () => {
         {/* Empty State */}
         {filteredUsers.length === 0 && (
           <div className="text-center py-16">
-            {searchQuery ? (
+            {localSearchQuery ? (
               <>
                 <Search className="w-12 h-12 text-gray-300 mx-auto mb-4" />
                 <p className="text-gray-500 font-medium">No users found</p>
@@ -1708,10 +1741,10 @@ const AdminPanel = () => {
                   <p className="text-sm text-gray-500">{user.email}</p>
                   <div className="flex items-center space-x-2 mt-1">
                     <span className="text-xs text-red-600 bg-red-50 px-2 py-1 rounded-full">
-                      Banned on {new Date(user.bannedAt).toLocaleDateString()}
+                      Banned on {new Date(user.banned_at).toLocaleDateString()}
                     </span>
                     <span className="text-xs text-gray-500">
-                      Reason: {user.banReason || "Violation of terms"}
+                      Reason: {user.ban_reason || "Violation of terms"}
                     </span>
                   </div>
                 </div>
@@ -1760,10 +1793,11 @@ const AdminPanel = () => {
                 <button
                   key={type.id}
                   onClick={() => setNotificationType(type.id)}
-                  className={`p-4 rounded-xl border-2 transition-all flex flex-col items-center space-y-2 ${notificationType === type.id
-                    ? "border-violet-500 bg-violet-50 text-violet-700"
-                    : "border-gray-200 hover:border-violet-200"
-                    }`}
+                  className={`p-4 rounded-xl border-2 transition-all flex flex-col items-center space-y-2 ${
+                    notificationType === type.id
+                      ? "border-violet-500 bg-violet-50 text-violet-700"
+                      : "border-gray-200 hover:border-violet-200"
+                  }`}
                 >
                   <type.icon className="w-6 h-6" />
                   <span className="text-sm font-medium">{type.label}</span>
@@ -1877,12 +1911,13 @@ const AdminPanel = () => {
                         className="w-4 h-4 text-violet-600 focus:ring-violet-500"
                       />
                       <span
-                        className={`text-sm capitalize ${priority === "urgent"
-                          ? "text-red-600 font-medium"
-                          : priority === "high"
-                            ? "text-orange-600"
-                            : "text-gray-600"
-                          }`}
+                        className={`text-sm capitalize ${
+                          priority === "urgent"
+                            ? "text-red-600 font-medium"
+                            : priority === "high"
+                              ? "text-orange-600"
+                              : "text-gray-600"
+                        }`}
                       >
                         {priority}
                       </span>
@@ -1930,9 +1965,7 @@ const AdminPanel = () => {
                   </p>
                 </div>
                 <div className="p-4 bg-green-50 rounded-xl">
-                  <p className="text-sm text-gray-600 mb-1">
-                    Delivery Rate
-                  </p>
+                  <p className="text-sm text-gray-600 mb-1">Delivery Rate</p>
                   <p className="text-2xl font-bold text-green-700">
                     {notificationStats.delivery_rate || 0}%
                   </p>
@@ -1996,7 +2029,7 @@ const AdminPanel = () => {
 
       <div className="w-full pb-20 md:pb-2 p-2 lg:p-4 lg:w-[calc(100vw-15vw)] overflow-x-auto min-h-screen bg-gray-50">
         {/* Header */}
-        <div className="w-full bg-linear-to-r from-violet-500 to-purple-600 p-4 rounded-2xl mb-6 shadow-lg">
+        <div className="w-full  bg-violet-500 p-4 rounded-2xl mb-6 shadow-lg">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <h1 className="text-2xl sm:text-3xl font-bold text-white">
@@ -2006,18 +2039,7 @@ const AdminPanel = () => {
                 Manage users, verifications, and system notifications
               </p>
             </div>
-            <div className="flex items-center gap-3">
-              <div className="relative">
-                <Search className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
-                <input
-                  type="text"
-                  placeholder="Search users..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 pr-4 py-2 rounded-xl bg-white/20 backdrop-blur-sm text-white placeholder-violet-200 border border-white/30 focus:bg-white/30 focus:outline-none transition-all w-full sm:w-64"
-                />
-              </div>
-            </div>
+            
           </div>
         </div>
 
@@ -2043,19 +2065,21 @@ const AdminPanel = () => {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center space-x-2 px-6 py-3 rounded-xl font-medium transition-all whitespace-nowrap ${activeTab === tab.id
-                ? "bg-violet-500 text-white shadow-lg shadow-violet-200"
-                : "bg-white text-gray-600 hover:bg-gray-100"
-                }`}
+              className={`flex items-center space-x-2 px-6 py-3 rounded-xl font-medium transition-all whitespace-nowrap ${
+                activeTab === tab.id
+                  ? "bg-violet-500 text-white shadow-lg shadow-violet-200"
+                  : "bg-white text-gray-600 hover:bg-gray-100"
+              }`}
             >
               <tab.icon className="w-5 h-5" />
               <span>{tab.label}</span>
               {tab.badge > 0 && (
                 <span
-                  className={`px-2 py-0.5 rounded-full text-xs ${activeTab === tab.id
-                    ? "bg-white text-violet-600"
-                    : "bg-violet-100 text-violet-600"
-                    }`}
+                  className={`px-2 py-0.5 rounded-full text-xs ${
+                    activeTab === tab.id
+                      ? "bg-white text-violet-600"
+                      : "bg-violet-100 text-violet-600"
+                  }`}
                 >
                   {tab.badge}
                 </span>
@@ -2072,113 +2096,457 @@ const AdminPanel = () => {
           {activeTab === "banned" && <BannedTab />}
           {activeTab === "notifications" && <NotificationsTab />}
         </div>
+        {showBanModal && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+            <div className="bg-white rounded-xl shadow-lg w-full max-w-md p-6">
+              <h2 className="text-xl font-semibold mb-4">Ban User</h2>
+
+              {/* Reason */}
+              <label className="block text-sm font-medium mb-1">
+                Ban Reason (min 10 characters)
+              </label>
+              <textarea
+                value={banReason}
+                onChange={(e) => setBanReason(e.target.value)}
+                className="w-full border rounded-lg p-2 mb-3 focus:outline-none focus:ring-2 focus:ring-red-400"
+                rows="3"
+                placeholder="Enter reason for banning..."
+              />
+
+              {/* Delete Content Checkbox */}
+              <div className="flex items-center mb-2">
+                <input
+                  type="checkbox"
+                  checked={deleteContent}
+                  onChange={(e) => setDeleteContent(e.target.checked)}
+                  className="mr-2"
+                />
+                <label>Delete all user's content</label>
+              </div>
+
+              {/* Notify User Checkbox */}
+              <div className="flex items-center mb-4">
+                <input
+                  type="checkbox"
+                  checked={notifyUser}
+                  onChange={(e) => setNotifyUser(e.target.checked)}
+                  className="mr-2"
+                />
+                <label>Notify user via email</label>
+              </div>
+
+              {/* Buttons */}
+              <div className="flex justify-end gap-3">
+                <button
+                  onClick={() => setShowBanModal(false)}
+                  className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  onClick={confirmBanUser}
+                  className="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700"
+                >
+                  Confirm Ban
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* User Details Modal */}
-        {showUserModal && userDetails && (
-          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
-              <div className="p-6 border-b border-gray-100 flex justify-between items-center sticky top-0 bg-white rounded-t-3xl">
-                <h3 className="text-xl font-bold text-gray-800">
-                  User Details
-                </h3>
+        {showUserModal && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-in fade-in duration-200">
+            <div className="bg-white rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl ring-1 ring-black/5">
+              {/* Header */}
+              <div className="relative bg-gradient-to-r from-violet-600 to-purple-700 p-6 sm:p-8 text-white">
                 <button
                   onClick={() => setShowUserModal(false)}
-                  className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                  className="absolute top-4 right-4 p-2 bg-white/20 hover:bg-white/30 rounded-full transition-all duration-200 backdrop-blur-sm"
                 >
-                  <XCircle className="w-6 h-6 text-gray-500" />
+                  <XCircle className="w-6 h-6" />
                 </button>
+
+                <div className="flex items-center gap-5">
+                  <div className="relative">
+                    <div className="w-24 h-24 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-4xl font-bold ring-4 ring-white/30">
+                      <img
+                        src={userDetails.user.avatar_url || noProfile}
+                        alt={userDetails.user?.name}
+                        className="w-full h-full rounded-2xl object-cover"
+                      />
+                    </div>
+                    {userDetails.user?.is_active && (
+                      <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-4 border-white flex items-center justify-center">
+                        <div className="w-2 h-2 bg-white rounded-full" />
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-2xl sm:text-3xl font-bold truncate">
+                      {userDetails.user?.name}
+                    </h3>
+                    <p className="text-violet-100 text-sm sm:text-base flex items-center gap-2 mt-1">
+                      <Mail className="w-4 h-4" />
+                      {userDetails.user?.email}
+                    </p>
+
+                    <div className="flex flex-wrap gap-2 mt-3">
+                      {userDetails.user?.verification_status === "verified" ? (
+                        <span className="px-3 py-1 bg-green-400/20 text-green-100 rounded-full text-xs font-semibold flex items-center gap-1.5 border border-green-400/30">
+                          <ShieldCheck className="w-3.5 h-3.5" /> Verified
+                        </span>
+                      ) : (
+                        <span className="px-3 py-1 bg-gray-400/20 text-gray-200 rounded-full text-xs font-semibold flex items-center gap-1.5 border border-gray-400/30">
+                          <Shield className="w-3.5 h-3.5" /> Unverified
+                        </span>
+                      )}
+
+                      {userDetails.user?.is_banned ? (
+                        <span className="px-3 py-1 bg-red-400/20 text-red-100 rounded-full text-xs font-semibold flex items-center gap-1.5 border border-red-400/30">
+                          <Ban className="w-3.5 h-3.5" /> Banned
+                        </span>
+                      ) : (
+                        <span className="px-3 py-1 bg-blue-400/20 text-blue-100 rounded-full text-xs font-semibold flex items-center gap-1.5 border border-blue-400/30">
+                          <CheckCircle className="w-3.5 h-3.5" /> Active
+                        </span>
+                      )}
+
+                      <span className="px-3 py-1 bg-white/20 text-white rounded-full text-xs font-semibold capitalize border border-white/30">
+                        {userDetails.user?.role}
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <div className="p-6 space-y-6">
-                <div className="flex items-center space-x-4">
-                  <div className="w-20 h-20 rounded-2xl bg-linear-to-br from-violet-400 to-purple-600 flex items-center justify-center text-white text-3xl font-bold">
-                    {userDetails.user.name?.[0]}
-                  </div>
-                  <div>
-                    <h4 className="text-2xl font-bold text-gray-800">
-                      {userDetails.user.name}
-                    </h4>
-                    <p className="text-gray-500">{userDetails.user.email}</p>
-                    <div className="flex gap-2 mt-2">
-                      {userDetails.user.verification_status === "verified" && (
-                        <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium flex items-center">
-                          <CheckCircle className="w-3 h-3 mr-1" /> Verified
-                        </span>
-                      )}
-                      {userDetails.user.is_active && (
-                        <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-medium flex items-center">
-                          <Award className="w-3 h-3 mr-1" /> Trusted
-                        </span>
-                      )}
-                      {userDetails.user.is_banned && (
-                        <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-medium flex items-center">
-                          <Ban className="w-3 h-3 mr-1" /> Banned
-                        </span>
-                      )}
+                {/* Academic Info */}
+                <div className="bg-gray-50 rounded-2xl p-5 border border-gray-100">
+                  <h4 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                    <GraduationCap className="w-4 h-4" /> Academic Information
+                  </h4>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    <div>
+                      <p className="text-xs text-gray-500 mb-1">Course</p>
+                      <p className="font-semibold text-gray-800">
+                        {userDetails.user?.course || "N/A"}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-500 mb-1">Department</p>
+                      <p className="font-semibold text-gray-800">
+                        {userDetails.user?.department || "N/A"}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-500 mb-1">Year</p>
+                      <p className="font-semibold text-gray-800">
+                        {userDetails.user?.year || "N/A"}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-500 mb-1">Semester</p>
+                      <p className="font-semibold text-gray-800">
+                        {userDetails.user?.semester || "N/A"}
+                      </p>
+                    </div>
+                    <div className="col-span-2 sm:col-span-2">
+                      <p className="text-xs text-gray-500 mb-1">
+                        Registration No
+                      </p>
+                      <p className="font-semibold text-gray-800 font-mono text-sm">
+                        {userDetails.user?.registration_number || "N/A"}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-500 mb-1">Designation</p>
+                      <p className="font-semibold text-gray-800">
+                        {userDetails.user?.designation || "N/A"}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-500 mb-1">Hosteler</p>
+                      <p className="font-semibold text-gray-800">
+                        {userDetails.user?.is_hosteler ? (
+                          <span className="text-green-600 flex items-center gap-1">
+                            <Home className="w-3 h-3" /> Yes
+                          </span>
+                        ) : (
+                          <span className="text-gray-500">No</span>
+                        )}
+                      </p>
                     </div>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="p-4 bg-gray-50 rounded-xl">
-                    <p className="text-sm text-gray-500 mb-1">Reputation</p>
-                    <p className="text-2xl font-bold text-gray-800 flex items-center">
-                      <Award className="w-6 h-6 text-yellow-500 mr-2" />
-                      {userDetails.reputation || 0}
+                {/* Stats Grid */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  <div className="bg-gradient-to-br from-violet-50 to-purple-50 p-4 rounded-xl border border-violet-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Award className="w-5 h-5 text-violet-600" />
+                      <span className="text-xs font-medium text-violet-600">
+                        Reputation
+                      </span>
+                    </div>
+                    <p className="text-2xl font-bold text-gray-800">
+                      {userDetails.user?.reputation_points || 0}
                     </p>
                   </div>
-                  <div className="p-4 bg-gray-50 rounded-xl">
-                    <p className="text-sm text-gray-500 mb-1">Joined</p>
-                    <p className="text-lg font-semibold text-gray-800">
-                      {new Date(userDetails.createdAt).toLocaleDateString()}
+
+                  <div className="bg-gradient-to-br from-blue-50 to-cyan-50 p-4 rounded-xl border border-blue-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <FileText className="w-5 h-5 text-blue-600" />
+                      <span className="text-xs font-medium text-blue-600">
+                        Total Issues
+                      </span>
+                    </div>
+                    <p className="text-2xl font-bold text-gray-800">
+                      {userDetails.activity?.total_issues || 0}
+                    </p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      {userDetails.activity?.active_issues || 0} active
+                    </p>
+                  </div>
+
+                  <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-4 rounded-xl border border-green-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <CheckCircle2 className="w-5 h-5 text-green-600" />
+                      <span className="text-xs font-medium text-green-600">
+                        Resolved
+                      </span>
+                    </div>
+                    <p className="text-2xl font-bold text-gray-800">
+                      {userDetails.activity?.resolved_issues || 0}
+                    </p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      {userDetails.activity?.success_rate || 0}% success
+                    </p>
+                  </div>
+
+                  <div className="bg-gradient-to-br from-amber-50 to-orange-50 p-4 rounded-xl border border-amber-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Activity className="w-5 h-5 text-amber-600" />
+                      <span className="text-xs font-medium text-amber-600">
+                        Activity
+                      </span>
+                    </div>
+                    <p className="text-2xl font-bold text-gray-800">
+                      {userDetails.activity?.total_activity || 0}
+                    </p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      {userDetails.activity?.total_comments || 0} comments
                     </p>
                   </div>
                 </div>
 
-                <div className="space-y-3">
-                  <h5 className="font-semibold text-gray-800">Quick Actions</h5>
-                  <div className="grid grid-cols-2 gap-3">
-                    {!userDetails.isVerified ? (
-                      <button
-                        onClick={() => {
-                          handleVerifyUser(userDetails.id);
-                          setShowUserModal(false);
-                        }}
-                        className="py-3 bg-green-500 text-white rounded-xl font-medium hover:bg-green-600 transition-colors flex items-center justify-center space-x-2"
-                      >
-                        <CheckCircle className="w-5 h-5" />
-                        <span>Verify User</span>
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => handleRevokeVerification(userDetails.id)}
-                        className="py-3 bg-yellow-500 text-white rounded-xl font-medium hover:bg-yellow-600 transition-colors flex items-center justify-center space-x-2"
-                      >
-                        <AlertTriangle className="w-5 h-5" />
-                        <span>Revoke Verification</span>
-                      </button>
-                    )}
+                {/* Detailed Activity */}
+                <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+                  <div className="px-5 py-4 bg-gray-50 border-b border-gray-200 flex items-center justify-between">
+                    <h4 className="font-semibold text-gray-800 flex items-center gap-2">
+                      <BarChart3 className="w-4 h-4 text-gray-500" /> Activity
+                      Breakdown
+                    </h4>
+                  </div>
+                  <div className="p-5 grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
+                    <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                      <span className="text-gray-600 flex items-center gap-2">
+                        <ThumbsUp className="w-4 h-4" /> Total Votes
+                      </span>
+                      <span className="font-semibold text-gray-800">
+                        {userDetails.activity?.total_votes || 0}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                      <span className="text-gray-600 flex items-center gap-2">
+                        <Vote className="w-4 h-4" /> Poll Votes
+                      </span>
+                      <span className="font-semibold text-gray-800">
+                        {userDetails.activity?.total_poll_votes || 0}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                      <span className="text-gray-600 flex items-center gap-2">
+                        <MessageCircle className="w-4 h-4" /> Comments
+                      </span>
+                      <span className="font-semibold text-gray-800">
+                        {userDetails.activity?.total_comments || 0}
+                      </span>
+                    </div>
+                  </div>
+                </div>
 
-                    {!userDetails.isTrusted ? (
-                      <button
-                        onClick={() => handlePromoteToTrusted(userDetails.id)}
-                        className="py-3 bg-purple-500 text-white rounded-xl font-medium hover:bg-purple-600 transition-colors flex items-center justify-center space-x-2"
-                      >
-                        <Award className="w-5 h-5" />
-                        <span>Promote to Trusted</span>
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => handleRevokeVerification(userDetails.id)}
-                        className="py-3 bg-gray-500 text-white rounded-xl font-medium hover:bg-gray-600 transition-colors flex items-center justify-center space-x-2"
-                      >
-                        <UserX className="w-5 h-5" />
-                        <span>Remove Trusted</span>
-                      </button>
-                    )}
+                {/* Personal Info */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
+                    <h5 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                      <User className="w-4 h-4" /> Personal Details
+                    </h5>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">Gender</span>
+                        <span className="font-medium text-gray-800 capitalize">
+                          {userDetails.user?.gender?.replace(/_/g, " ") ||
+                            "N/A"}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">Date of Birth</span>
+                        <span className="font-medium text-gray-800">
+                          {userDetails.user?.date_of_birth
+                            ? new Date(
+                                userDetails.user.date_of_birth,
+                              ).toLocaleDateString()
+                            : "N/A"}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">Phone</span>
+                        <span className="font-medium text-gray-800">
+                          {userDetails.user?.phone_number || "Not provided"}
+                        </span>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
+                    <h5 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                      <Clock className="w-4 h-4" /> Account Info
+                    </h5>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">Member Since</span>
+                        <span className="font-medium text-gray-800">
+                          {new Date(
+                            userDetails.user?.created_at,
+                          ).toLocaleDateString()}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">
+                          Verifications Given
+                        </span>
+                        <span className="font-medium text-gray-800">
+                          {userDetails.user?.verifications_given_count || 0}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">Can Verify Others</span>
+                        <span
+                          className={`font-medium ${userDetails.user?.can_verify_others ? "text-green-600" : "text-gray-500"}`}
+                        >
+                          {userDetails.user?.can_verify_others ? "Yes" : "No"}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Ban Info (if banned) */}
+                {userDetails.user?.is_banned && (
+                  <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+                    <h5 className="text-sm font-bold text-red-700 flex items-center gap-2 mb-2">
+                      <AlertTriangle className="w-4 h-4" /> Ban Information
+                    </h5>
+                    <div className="space-y-1 text-sm text-red-700">
+                      <p>
+                        <span className="font-medium">Reason:</span>{" "}
+                        {userDetails.user?.ban_reason || "No reason provided"}
+                      </p>
+                      <p>
+                        <span className="font-medium">Banned At:</span>{" "}
+                        {userDetails.user?.banned_at
+                          ? new Date(
+                              userDetails.user.banned_at,
+                            ).toLocaleString()
+                          : "N/A"}
+                      </p>
+                      <p>
+                        <span className="font-medium">Banned By:</span>{" "}
+                        {userDetails.user?.banned_by || "System"}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Recent Issues */}
+                {userDetails.recent_issues &&
+                  userDetails.recent_issues.length > 0 && (
+                    <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+                      <div className="px-5 py-4 bg-gray-50 border-b border-gray-200">
+                        <h4 className="font-semibold text-gray-800 flex items-center gap-2">
+                          <History className="w-4 h-4 text-gray-500" /> Recent
+                          Issues
+                        </h4>
+                      </div>
+                      <div className="divide-y divide-gray-100">
+                        {userDetails.recent_issues.map((issue, idx) => (
+                          <div
+                            key={idx}
+                            className="p-4 hover:bg-gray-50 transition-colors"
+                          >
+                            <div className="flex items-start justify-between gap-3">
+                              <div className="flex-1">
+                                <p className="font-medium text-gray-800 text-sm line-clamp-1">
+                                  {issue.title}
+                                </p>
+                                <p className="text-xs text-gray-500 mt-1">
+                                  {issue.status} •{" "}
+                                  {new Date(
+                                    issue.created_at,
+                                  ).toLocaleDateString()}
+                                </p>
+                              </div>
+                              <span
+                                className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                  issue.priority === "critical"
+                                    ? "bg-red-100 text-red-700"
+                                    : issue.priority === "high"
+                                      ? "bg-orange-100 text-orange-700"
+                                      : "bg-gray-100 text-gray-700"
+                                }`}
+                              >
+                                {issue.priority}
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                {/* Quick Actions */}
+                <div className="space-y-3 pt-4 border-t border-gray-200">
+                  <h5 className="font-semibold text-gray-800 flex items-center gap-2">
+                    <Settings className="w-4 h-4" /> Admin Actions
+                  </h5>
+
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    {userDetails.user?.verification_status !== "verified" ? (
+                      <button
+                        onClick={() => {
+                          handleVerifyUser(userDetails.user?.id);
+                          setShowUserModal(false);
+                        }}
+                        className="py-3 px-4 bg-green-500 hover:bg-green-600 text-white rounded-xl font-medium transition-all duration-200 flex items-center justify-center gap-2 shadow-sm hover:shadow-md"
+                      >
+                        <ShieldCheck className="w-5 h-5" />
+                        <span className="text-sm">Verify</span>
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() =>
+                          handleRevokeVerification(userDetails.user?.id)
+                        }
+                        className="py-3 px-4 bg-yellow-500 hover:bg-yellow-600 text-white rounded-xl font-medium transition-all duration-200 flex items-center justify-center gap-2 shadow-sm hover:shadow-md"
+                      >
+                        <Shield className="w-5 h-5" />
+                        <span className="text-sm">Revoke</span>
+                      </button>
+                    )}
+
                     <button
                       onClick={() => {
                         const points = prompt(
@@ -2186,41 +2554,48 @@ const AdminPanel = () => {
                           "10",
                         );
                         if (points)
-                          handleAddReputation(userDetails.id, parseInt(points));
+                          handleAddReputation(
+                            userDetails.user?.id,
+                            parseInt(points),
+                          );
                       }}
-                      className="py-3 bg-blue-500 text-white rounded-xl font-medium hover:bg-blue-600 transition-colors flex items-center justify-center space-x-2"
+                      className="py-3 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-medium transition-all duration-200 flex items-center justify-center gap-2 shadow-sm hover:shadow-md"
                     >
                       <TrendingUp className="w-5 h-5" />
-                      <span>Add Reputation</span>
+                      <span className="text-sm">+ Reputation</span>
                     </button>
 
-                    {userDetails.isBanned ? (
+                    {userDetails.user?.is_banned ? (
                       <button
                         onClick={() => {
-                          handleUnbanUser(userDetails.id);
+                          handleUnbanUser(userDetails.user?.id);
                           setShowUserModal(false);
                         }}
-                        className="py-3 bg-green-500 text-white rounded-xl font-medium hover:bg-green-600 transition-colors flex items-center justify-center space-x-2"
+                        className="py-3 px-4 bg-green-500 hover:bg-green-600 text-white rounded-xl font-medium transition-all duration-200 flex items-center justify-center gap-2 shadow-sm hover:shadow-md"
                       >
                         <RefreshCw className="w-5 h-5" />
-                        <span>Unban User</span>
+                        <span className="text-sm">Unban</span>
                       </button>
                     ) : (
                       <button
                         onClick={() => {
                           const reason = prompt(
-                            "Enter ban reason:",
+                            "Enter ban reason (min 10 chars):",
                             "Violation of terms",
                           );
-                          if (reason) {
-                            handleBanUser(userDetails.id, reason);
+                          if (reason && reason.length >= 10) {
+                            handleBanUser(userDetails.user?.id, reason);
                             setShowUserModal(false);
+                          } else if (reason) {
+                            toast.error(
+                              "Reason must be at least 10 characters",
+                            );
                           }
                         }}
-                        className="py-3 bg-red-500 text-white rounded-xl font-medium hover:bg-red-600 transition-colors flex items-center justify-center space-x-2"
+                        className="py-3 px-4 bg-red-500 hover:bg-red-600 text-white rounded-xl font-medium transition-all duration-200 flex items-center justify-center gap-2 shadow-sm hover:shadow-md"
                       >
                         <Ban className="w-5 h-5" />
-                        <span>Ban User</span>
+                        <span className="text-sm">Ban User</span>
                       </button>
                     )}
                   </div>
@@ -2229,13 +2604,13 @@ const AdminPanel = () => {
                     onClick={() => {
                       setNotificationForm({
                         ...notificationForm,
-                        userId: userDetails.id,
+                        userId: userDetails.user?.id,
                       });
                       setShowUserModal(false);
                       setActiveTab("notifications");
                       setNotificationType("user");
                     }}
-                    className="w-full py-3 bg-violet-500 text-white rounded-xl font-medium hover:bg-violet-600 transition-colors flex items-center justify-center space-x-2"
+                    className="w-full py-3 bg-violet-500 hover:bg-violet-600 text-white rounded-xl font-medium transition-all duration-200 flex items-center justify-center gap-2 shadow-sm hover:shadow-md"
                   >
                     <Mail className="w-5 h-5" />
                     <span>Send Notification</span>
@@ -2246,22 +2621,6 @@ const AdminPanel = () => {
           </div>
         )}
       </div>
-
-      <style>{`
-        @keyframes fade-in {
-          from {
-            opacity: 0;
-            transform: translateY(10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        .animate-fade-in {
-          animation: fade-in 0.3s ease-out;
-        }
-      `}</style>
     </>
   );
 };

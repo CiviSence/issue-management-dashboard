@@ -82,7 +82,7 @@ const LineChartCard = () => {
           Loading trend...
         </div>
       ) : (
-        <ResponsiveContainer width="90%" height={200}>
+        <ResponsiveContainer width="98%" height={200}>
           <AreaChart data={trendData}>
             {/* Gradients */}
             <defs>
