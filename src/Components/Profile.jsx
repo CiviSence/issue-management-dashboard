@@ -8,6 +8,7 @@ import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import ProfileEditForm from "../Components/Inputs/ProfileEditForm";
 import { updateMyProfile } from "../Utils/profile-api";
+import { clearSession } from "../Utils/auth-utils";
 import {
   getActiveSessions,
   logoutAllSessions,
