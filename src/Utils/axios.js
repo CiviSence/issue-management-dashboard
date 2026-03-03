@@ -1,8 +1,13 @@
 import axios from "axios";
-import { getAccessToken, getRefreshToken, setSession, clearSession } from "./auth-utils";
+import {
+  getAccessToken,
+  getRefreshToken,
+  setSession,
+  clearSession,
+} from "./auth-utils";
 
 const instance = axios.create({
-  baseURL: "http://localhost:8000/api",
+  baseURL: "https://csmbsckend.onrender.com/api",
   withCredentials: true, // IMPORTANT for session/cookies
   headers: {
     Accept: "application/json",
@@ -23,7 +28,7 @@ instance.interceptors.request.use(
 
 // Refresh token logic
 // If we get a 401, try to refresh the token and retry the failed requests
-// finaly fixed instant logut automatically 
+// finaly fixed instant logut automatically
 // Queues concurrent requests to prevent multiple refresh calls
 
 let isRefreshing = false;
@@ -48,10 +53,16 @@ instance.interceptors.response.use(
       "/auth/logout",
       "/auth/logout-all",
     ];
-    const isSkipRoute = skipRefresh.some(route => originalRequest.url.includes(route));
+    const isSkipRoute = skipRefresh.some((route) =>
+      originalRequest.url.includes(route),
+    );
 
     // Only attempt refresh on 401, and only once per request (_retry flag)
-    if (error.response?.status === 401 && !originalRequest._retry && !isSkipRoute) {
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      !isSkipRoute
+    ) {
       // If a refresh is already in flight, queue this request
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
@@ -74,10 +85,16 @@ instance.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const { data } = await instance.post("/auth/refresh", { refresh_token: refreshToken });
+        const { data } = await instance.post("/auth/refresh", {
+          refresh_token: refreshToken,
+        });
         // Persist the new tokens (user object is typically not returned here, use null or cached data)
         // Backend returns access_token and usually refresh_token if rotated
-        setSession(data.access_token, data.user || null, data.refresh_token || refreshToken);
+        setSession(
+          data.access_token,
+          data.user || null,
+          data.refresh_token || refreshToken,
+        );
 
         // Let all queued requests proceed with the new token
         processQueue(null, data.access_token);
