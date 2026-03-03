@@ -1,11 +1,8 @@
-import { createContext, useContext, useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useUser } from "./ProfileContext";
 import { getMyIssues } from "../Utils/issuesStudent";
 import { getStats } from "../Utils/issues";
-
-const IssuesContext = createContext();
-
-export const useIssues = () => useContext(IssuesContext);
+import { IssuesContext } from "./IssuesContext.js";
 
 export const IssuesProvider = ({ children }) => {
     const { profileData } = useUser();

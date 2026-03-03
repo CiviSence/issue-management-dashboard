@@ -1,8 +1,8 @@
 import axios from "axios";
-import { getAccessToken, setSession, clearSession } from "./auth-utils";
+import { getAccessToken, getRefreshToken, setSession, clearSession } from "./auth-utils";
 
 const instance = axios.create({
-  baseURL: "https://csmbsckend.onrender.com/api",
+  baseURL: "http://localhost:8000/api",
   withCredentials: true, // IMPORTANT for session/cookies
   headers: {
     Accept: "application/json",
@@ -40,7 +40,14 @@ instance.interceptors.response.use(
     const originalRequest = error.config;
 
     // List of endpoints that should NOT trigger a refresh
-    const skipRefresh = ["/auth/login", "/auth/signup", "/auth/refresh"];
+    const skipRefresh = [
+      "/auth/login",
+      "/auth/signup",
+      "/auth/refresh",
+      "/auth/verify-email",
+      "/auth/logout",
+      "/auth/logout-all",
+    ];
     const isSkipRoute = skipRefresh.some(route => originalRequest.url.includes(route));
 
     // Only attempt refresh on 401, and only once per request (_retry flag)
@@ -57,13 +64,21 @@ instance.interceptors.response.use(
           .catch((err) => Promise.reject(err));
       }
 
+      const refreshToken = getRefreshToken();
+      if (!refreshToken) {
+        clearSession();
+        return Promise.reject(error);
+      }
+
       originalRequest._retry = true;
       isRefreshing = true;
 
       try {
-        const { data } = await instance.post("/auth/refresh");
-        // Persist the new token (user object is unchanged, pass null)
-        setSession(data.access_token, null);
+        const { data } = await instance.post("/auth/refresh", { refresh_token: refreshToken });
+        // Persist the new tokens (user object is typically not returned here, use null or cached data)
+        // Backend returns access_token and usually refresh_token if rotated
+        setSession(data.access_token, data.user || null, data.refresh_token || refreshToken);
+
         // Let all queued requests proceed with the new token
         processQueue(null, data.access_token);
         // Retry the original failed request

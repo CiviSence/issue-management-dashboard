@@ -4,7 +4,7 @@ import Searchbar from "../../Templates/Searchbar";
 import IssueCard from "../../Templates/IssueCard";
 import BottomNav from "../../Templates/BottomNav";
 import UserCard from "../../Templates/UserCard";
-import { useIssues } from "../../../Context/IssueContext";
+import { useIssues } from "../../../Context/IssueContext.js";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { Link } from "react-router-dom";
@@ -31,7 +31,7 @@ const UserSectionSkeleton = () => (
 );
 
 const AdminDashboard = () => {
-  const { allstats, issues = [] } = useIssues();
+  const { allstats, issues = [], loadingIssues, loadingStats } = useIssues();
 
   const initialStats = {
     category: {
@@ -128,7 +128,6 @@ const AdminDashboard = () => {
   ];
 
   const hasIssues = issues.length > 0;
-  const hasAllStats = !!allstats;
 
   return (
     <>
@@ -146,7 +145,7 @@ const AdminDashboard = () => {
         </div>
 
         <div className="w-full mt-4 gap-3 sm:gap-4 flex flex-wrap justify-center bg-[#F0EEFF] p-3 sm:p-4 lg:p-6 rounded-2xl">
-          {!hasAllStats ? (
+          {loadingStats ? (
             <>
               <CardSkeleton />
               <CardSkeleton />
@@ -168,7 +167,7 @@ const AdminDashboard = () => {
 
         <div className="bg-[#F0EEFF] p-4 rounded-2xl">
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
-            {!hasIssues ? (
+            {loadingIssues ? (
               <>
                 <ChartSkeleton />
                 <ChartSkeleton />
@@ -191,7 +190,7 @@ const AdminDashboard = () => {
             )}
           </div>
           <div className="pt-3">
-            {!hasIssues ? (
+            {loadingIssues ? (
               <ChartSkeleton height={120} />
             ) : (
               <Suspense fallback={<ChartSkeleton height={120} />}>
@@ -207,7 +206,7 @@ const AdminDashboard = () => {
         </h1>
 
         <div className="bg-[#F0EEFF] p-2 lg:p-4 mt-1 rounded-2xl">
-          {!hasAllStats ? <UserSectionSkeleton /> : <UserCard limit={3} />}
+          {loadingStats ? <UserSectionSkeleton /> : <UserCard limit={3} />}
 
           <div className="flex justify-end mt-3">
             <Link

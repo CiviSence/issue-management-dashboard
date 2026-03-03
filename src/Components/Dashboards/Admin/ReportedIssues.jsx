@@ -1,7 +1,7 @@
 import SideNav from "./AdminSideNav";
 import BottomNav from "../../Templates/BottomNav";
 import Searchbar from "../../Templates/Searchbar";
-import { useIssues } from "../../../Context/IssueContext";
+import { useIssues } from "../../../Context/IssueContext.js";
 import { useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
@@ -79,7 +79,7 @@ const IssuesSkeleton = () => {
 
 const ReportedIssues = () => {
   const navigate = useNavigate();
-  const { issues, setIssues } = useIssues();
+  const { issues, setIssues, loadingIssues } = useIssues();
   const [selectedLocation, setSelectedLocation] = useState("all");
   const [priority, setPriority] = useState("all");
   const [openDropdown, setOpenDropdown] = useState(null);
@@ -177,9 +177,9 @@ const ReportedIssues = () => {
     } catch (error) {
       toast.error(
         error.response?.data?.message ||
-          error.response?.data?.error ||
-          error.message ||
-          "Failed to assign staff",
+        error.response?.data?.error ||
+        error.message ||
+        "Failed to assign staff",
       );
     }
   };
@@ -251,7 +251,9 @@ const ReportedIssues = () => {
       />
       <SideNav />
       <BottomNav />
-      {issues.length > 0 ? (
+      {loadingIssues ? (
+        <IssuesSkeleton />
+      ) : issues.length > 0 ? (
         <>
           <div className="w-full pb-20 md:pb-2 p-2 lg:p-4 lg:w-[calc(100vw-15vw)]  overflow-x-auto ">
             <div className="w-full bg-violet-500 p-4 rounded-2xl">
@@ -647,7 +649,15 @@ const ReportedIssues = () => {
           </div>
         </>
       ) : (
-        <IssuesSkeleton />
+        <div className="w-full min-h-[60vh] flex flex-col items-center justify-center text-center p-6 bg-white rounded-2xl shadow-sm mt-4 mx-auto lg:w-[calc(100vw-15vw)]">
+          <div className="w-24 h-24 bg-violet-50 rounded-full flex items-center justify-center mb-6">
+            <i className="ri-file-search-line text-4xl text-violet-500"></i>
+          </div>
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">No Issues Found</h2>
+          <p className="text-gray-500 max-w-sm">
+            We couldn't find any reported issues at the moment. When students report problems, they'll appear here.
+          </p>
+        </div>
       )}
       {showAssignModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">

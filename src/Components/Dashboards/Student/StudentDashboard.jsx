@@ -3,7 +3,7 @@ import StudentSideNav from "./StudentSideNav";
 import StudentBottomNav from "./StudentBottomNav";
 import UserCard from "../../Templates/UserCard";
 import { useUser } from "../../../Context/ProfileContext";
-import { useIssues } from "../../../Context/IssuesContext";
+import { useIssues } from "../../../Context/IssuesContext.js";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { deleteIssue } from "../../../Utils/issues";
@@ -459,8 +459,8 @@ const StudentDashboard = () => {
                       key={notif.id}
                       onClick={() => notif.is_unread && handleMarkAsRead(notif.id)}
                       className={`relative p-3 rounded-xl border transition-all cursor-pointer ${notif.is_unread
-                          ? "bg-violet-50/60 border-violet-200 hover:bg-violet-50"
-                          : "bg-gray-50/50 border-gray-100 hover:bg-gray-50"
+                        ? "bg-violet-50/60 border-violet-200 hover:bg-violet-50"
+                        : "bg-gray-50/50 border-gray-100 hover:bg-gray-50"
                         }`}
                     >
                       {notif.is_unread && (

@@ -3,7 +3,7 @@ import BottomNav from "../../Templates/BottomNav";
 import Searchbar from "../../Templates/Searchbar";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import { useIssues } from "../../../Context/IssueContext";
+import { useIssues } from "../../../Context/IssueContext.js";
 import { useState } from "react";
 import { deleteIssue } from "../../../Utils/issues";
 import { toast, ToastContainer } from "react-toastify";
@@ -77,7 +77,7 @@ const SkeletonLoader = () => {
 const ResolvedIssues = () => {
   const [selectedLocation, setSelectedLocation] = useState("all");
   const [priority, setPriority] = useState("all");
-  const { resolvedIssues, setResolvedIssues } = useIssues();
+  const { resolvedIssues, setResolvedIssues, loadingResolved } = useIssues();
 
   const handleDeleteIssue = async (id) => {
     if (!window.confirm("Are you sure you want to delete this issue?")) return;
@@ -150,7 +150,9 @@ const ResolvedIssues = () => {
       />
       <SideNav />
       <BottomNav />
-      {resolvedIssues.length > 0 ? (
+      {loadingResolved ? (
+        <SkeletonLoader />
+      ) : resolvedIssues.length > 0 ? (
         <>
           <div className="w-full pb-20 md:pb-2 p-2 lg:p-4 lg:w-[calc(100vw-15vw)]  overflow-x-auto ">
             <div className="w-full bg-violet-500 p-4 rounded-2xl">
@@ -380,7 +382,15 @@ const ResolvedIssues = () => {
           </div>
         </>
       ) : (
-        <SkeletonLoader />
+        <div className="w-full min-h-[60vh] flex flex-col items-center justify-center text-center p-6 bg-white rounded-2xl shadow-sm mt-4 mx-auto lg:w-[calc(100vw-15vw)]">
+          <div className="w-24 h-24 bg-emerald-50 rounded-full flex items-center justify-center mb-6">
+            <i className="ri-checkbox-circle-line text-4xl text-emerald-500"></i>
+          </div>
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">No Resolved Issues</h2>
+          <p className="text-gray-500 max-w-sm">
+            Great news! There are no resolved issues to display right now. Check back later as more problems are fixed.
+          </p>
+        </div>
       )}
     </>
   );

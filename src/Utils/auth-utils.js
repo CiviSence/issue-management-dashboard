@@ -1,6 +1,7 @@
 import Cookies from 'js-cookie';
 
 const AUTH_TOKEN_KEY = 'auth_token';
+const REFRESH_TOKEN_KEY = 'refresh_token';
 const USER_DATA_KEY = 'user_data';
 const USER_PREVIEW_KEY = 'user_preview'; // For fast load from cookies
 
@@ -8,8 +9,9 @@ const USER_PREVIEW_KEY = 'user_preview'; // For fast load from cookies
  * Saves the session data (token and user info)
  * @param {string} accessToken - The JWT access token
  * @param {object} user - The user object
+ * @param {string} refreshToken - The JWT refresh token
  */
-export const setSession = (accessToken, user) => {
+export const setSession = (accessToken, user, refreshToken) => {
   if (accessToken) {
     Cookies.set(AUTH_TOKEN_KEY, accessToken, {
       expires: 30, // 30 days
@@ -18,6 +20,16 @@ export const setSession = (accessToken, user) => {
       sameSite: 'Strict'
     });
   }
+
+  if (refreshToken) {
+    Cookies.set(REFRESH_TOKEN_KEY, refreshToken, {
+      expires: 30, // 30 days
+      secure: window.location.protocol === 'https:',
+      priority: 'High',
+      sameSite: 'Strict'
+    });
+  }
+
   if (user) {
     // Save full data to localStorage (persist) non sensitive like
     localStorage.setItem(USER_DATA_KEY, JSON.stringify(user));
@@ -44,6 +56,14 @@ export const setSession = (accessToken, user) => {
  */
 export const getAccessToken = () => {
   return Cookies.get(AUTH_TOKEN_KEY);
+};
+
+/**
+ * Retrieves the refresh token from cookies
+ * @returns {string|undefined} The refresh token or undefined
+ */
+export const getRefreshToken = () => {
+  return Cookies.get(REFRESH_TOKEN_KEY);
 };
 
 /**
@@ -77,6 +97,7 @@ export const getUserData = () => {
  */
 export const clearSession = () => {
   Cookies.remove(AUTH_TOKEN_KEY);
+  Cookies.remove(REFRESH_TOKEN_KEY);
   Cookies.remove(USER_PREVIEW_KEY);
   localStorage.removeItem(USER_DATA_KEY);
 };

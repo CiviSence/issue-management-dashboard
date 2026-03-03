@@ -42,17 +42,26 @@ const Verify = () => {
       // Clear pending email
       localStorage.removeItem("pendingVerificationEmail");
 
-      // Store auth token if provided
-      if (res.token) {
-        setSession(res.token, res.user); // Assuming res.user checks out, otherwise just token
-        setProfileData(res.user);
-      } else if (res.access_token) {
-        setSession(res.access_token, res.user);
-        setProfileData(res.user);
-      }
+      // Handle full token response (access_token, refresh_token, user)
+      const accessToken = res.access_token || res.token;
+      const refreshToken = res.refresh_token;
+      const user = res.user;
 
-      // Redirect to login or dashboard
-      navigate("/dashboard");
+      if (accessToken) {
+        setSession(accessToken, user, refreshToken);
+        setProfileData(user);
+
+        // Success redirect
+        const role = user?.role?.toLowerCase();
+        if (role === "student") {
+          navigate("/feed");
+        } else {
+          navigate("/dashboard");
+        }
+      } else {
+        // Fallback if no token returned (unlikely based on docs)
+        navigate("/login");
+      }
     } catch (err) {
       setError(err.message || "Invalid OTP. Please try again.");
     } finally {

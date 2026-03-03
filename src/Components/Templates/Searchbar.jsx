@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect, useRef } from "react";
-import { useIssues } from "../../Context/IssueContext";
+import { useIssues } from "../../Context/IssueContext.js";
 import { useUser } from "../../Context/ProfileContext";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "../../Utils/axios";
@@ -285,11 +285,10 @@ const Searchbar = () => {
                       setUnreadOnly(newUnreadOnly);
                       fetchNotifications(newUnreadOnly);
                     }}
-                    className={`text-xs px-2 py-1 rounded-full transition-colors ${
-                      unreadOnly
+                    className={`text-xs px-2 py-1 rounded-full transition-colors ${unreadOnly
                         ? "bg-violet-100 text-violet-700"
                         : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                    }`}
+                      }`}
                   >
                     {unreadOnly ? "All" : "Unread"}
                   </button>
@@ -320,9 +319,8 @@ const Searchbar = () => {
                     <div
                       key={notification.id}
                       onClick={() => handleNotificationClick(notification)}
-                      className={`group flex items-start gap-3 px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-50 last:border-b-0 transition-colors ${
-                        notification.is_unread ? "bg-violet-50/30" : ""
-                      }`}
+                      className={`group flex items-start gap-3 px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-50 last:border-b-0 transition-colors ${notification.is_unread ? "bg-violet-50/30" : ""
+                        }`}
                     >
                       <div className="shrink-0 mt-0.5">
                         <i

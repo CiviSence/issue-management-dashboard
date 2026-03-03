@@ -11,6 +11,7 @@ import { updateMyProfile } from "../Utils/profile-api";
 import {
   getActiveSessions,
   logoutAllSessions,
+  logoutUser,
   revokeSession,
 } from "../Utils/auth-api";
 import defaultProfile from "../assets/default-avatar.jpg";
@@ -174,13 +175,11 @@ const Profile = () => {
     if (logoutInput.toLowerCase() !== "logout") return;
     setIsLoggingOut(true);
     try {
-      const { logoutUser } = await import("../Utils/auth-api");
       if (logoutType === "all") {
         await logoutAllSessions();
       } else {
         await logoutUser();
       }
-      const { clearSession } = await import("../Utils/auth-utils");
       clearSession();
       window.location.href = "/";
     } catch (e) {

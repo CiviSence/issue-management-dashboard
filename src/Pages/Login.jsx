@@ -27,8 +27,10 @@ const Login = () => {
 
     try {
       const data = await loginUser({ email, password });
-      setSession(data?.access_token, data.user);
-      setProfileData(data?.user);
+
+      // Store tokens and user data
+      setSession(data.access_token, data.user, data.refresh_token);
+      setProfileData(data.user);
 
       const role = data.user?.role?.toLowerCase();
       if (role === "student") {
@@ -38,7 +40,14 @@ const Login = () => {
       }
     } catch (err) {
       console.error("Login Error:", err);
-      // Backend returns 401 Incorrect email or password, 422 User account is inactive, etc. in detail and all
+
+      // Specifically handle unverified email case (403)
+      if (err.message.includes("verify your email") || err.message.includes("verification")) {
+        localStorage.setItem("pendingVerificationEmail", email);
+        navigate("/verify-otp");
+        return;
+      }
+
       setError(err.message || "Login failed. Please check your credentials.");
     } finally {
       setLoading(false);
