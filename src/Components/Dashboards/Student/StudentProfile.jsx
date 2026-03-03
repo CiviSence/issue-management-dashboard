@@ -14,7 +14,7 @@ import {
 import defaultProfile from "../../../assets/default-avatar.jpg";
 import { useEffect, useState } from "react";
 import { getMyIssues } from "../../../Utils/issuesStudent";
-import { clearSession } from "../Utils/auth-utils";
+import { clearSession } from "../../../Utils/auth-utils";
 
 const InfoCard = ({ title, children, icon }) => (
     <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
