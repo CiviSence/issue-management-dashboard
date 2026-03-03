@@ -29,7 +29,6 @@ const IssueDetails = () => {
   const [isAssigning, setIsAssigning] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(null);
   const [showBanModal, setShowBanModal] = useState(false);
-  const [selectedUserId, setSelectedUserId] = useState(null);
   const [banReason, setBanReason] = useState("");
   const [deleteContent, setDeleteContent] = useState(false);
   const [notifyUser, setNotifyUser] = useState(true);

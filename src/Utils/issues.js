@@ -122,17 +122,6 @@ export const deleteIssue = async (issueId) => {
   }
 };
 
-// Fetch issues assigned to me (staff)
-export const getAssignedIssues = async () => {
-  try {
-    const { data } = await axios.get("/assignments/my-tasks");
-    return data;
-  } catch (error) {
-    throw new Error(
-      error.response?.data?.message || "Failed to fetch assigned issues",
-    );
-  }
-};
 
 // Assign issue to staff
 export const assignIssue = async (issueId, staffId, notes = "") => {

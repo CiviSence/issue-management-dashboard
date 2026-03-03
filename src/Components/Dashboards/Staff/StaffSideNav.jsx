@@ -15,7 +15,13 @@ const StaffSideNav = () => {
       <NavItem
         to="/assigned-issues"
         icon="ri-file-list-line"
-        label="Assigned Issues"
+        label="Assigned Tasks"
+      />
+      <NavItem to="/accepted" icon="ri-file-list-line" label="Accepted Tasks" />
+      <NavItem
+        to="/completed"
+        icon="ri-file-list-line"
+        label="Completed Tasks"
       />
       <NavItem
         to="/help-support"

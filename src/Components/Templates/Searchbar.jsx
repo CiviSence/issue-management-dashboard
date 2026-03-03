@@ -17,18 +17,23 @@ const Searchbar = () => {
   const [unreadCount, setUnreadCount] = useState(0);
   const [showNotifications, setShowNotifications] = useState(false);
   const [loadingNotifications, setLoadingNotifications] = useState(false);
-  const [unreadOnly, setUnreadOnly] = useState(false);
 
   const notificationRef = useRef(null);
+  const searchRef = useRef(null); // Add ref for search dropdown
 
-  // Close dropdown when clicking outside
+  // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
+      // Close notifications
       if (
         notificationRef.current &&
         !notificationRef.current.contains(event.target)
       ) {
         setShowNotifications(false);
+      }
+      // Close search results
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setShowResults(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -51,13 +56,11 @@ const Searchbar = () => {
     }
   };
 
-  // Fetch notifications
-  const fetchNotifications = async (unread = false) => {
+  // Fetch notifications - always fetch all
+  const fetchNotifications = async () => {
     setLoadingNotifications(true);
     try {
-      const response = await axios.get("/notifications/my-notifications", {
-        params: { unread_only: unread },
-      });
+      const response = await axios.get("/notifications/my-notifications");
       console.log(response);
       const notifs = response.data;
       setNotifications(notifs);
@@ -74,7 +77,7 @@ const Searchbar = () => {
     const newState = !showNotifications;
     setShowNotifications(newState);
     if (newState) {
-      fetchNotifications(unreadOnly);
+      fetchNotifications();
     }
   };
 
@@ -85,7 +88,7 @@ const Searchbar = () => {
       });
       setNotifications((prev) =>
         prev.map((n) =>
-          n.id === notificationId ? { ...n, is_read: true } : n,
+          n.id === notificationId ? { ...n, is_unread: false } : n,
         ),
       );
       setUnreadCount((prev) => Math.max(0, prev - 1));
@@ -98,32 +101,17 @@ const Searchbar = () => {
   const markAllAsRead = async () => {
     try {
       const unreadIds = notifications
-        .filter((n) => !n.is_read)
+        .filter((n) => n.is_unread)
         .map((n) => n.id);
       if (unreadIds.length === 0) return;
 
       await axios.patch("/notifications/mark-as-read", {
         notification_ids: unreadIds,
       });
-      setNotifications((prev) => prev.map((n) => ({ ...n, is_read: true })));
+      setNotifications((prev) => prev.map((n) => ({ ...n, is_unread: false })));
       setUnreadCount(0);
     } catch (error) {
       console.error("Error marking all notifications as read:", error);
-    }
-  };
-
-  // Delete notification
-  const deleteNotification = async (e, notificationId) => {
-    e.stopPropagation();
-    try {
-      await axios.delete(`/notifications/${notificationId}`);
-      setNotifications((prev) => prev.filter((n) => n.id !== notificationId));
-      const deleted = notifications.find((n) => n.id === notificationId);
-      if (deleted && !deleted.is_read) {
-        setUnreadCount((prev) => Math.max(0, prev - 1));
-      }
-    } catch (error) {
-      console.error("Error deleting notification:", error);
     }
   };
 
@@ -159,42 +147,10 @@ const Searchbar = () => {
     return date.toLocaleDateString();
   };
 
-  // Get notification icon based on type/priority
-  const getNotificationIcon = (notification) => {
-    const type = notification.type || notification.notification_type;
-    const priority = notification.priority;
-
-    // Priority-based colors
-    const getColor = () => {
-      if (priority === "urgent") return "text-red-500";
-      if (priority === "high") return "text-orange-500";
-      if (type === "broadcast") return "text-violet-500";
-      return "text-blue-500";
-    };
-
-    switch (type) {
-      case "issue_update":
-        return `ri-file-list-line ${getColor()}`;
-      case "comment":
-        return `ri-chat-3-line ${getColor()}`;
-      case "mention":
-        return `ri-at-line ${getColor()}`;
-      case "system":
-        return `ri-settings-3-line ${getColor()}`;
-      case "verification":
-        return `ri-shield-check-line ${getColor()}`;
-      case "broadcast":
-        return `ri-megaphone-line ${getColor()}`;
-      case "custom":
-        return `ri-notification-3-line ${getColor()}`;
-      default:
-        return `ri-notification-3-line ${getColor()}`;
-    }
-  };
-
-  // Handle notification click - navigate if URL provided
+  // Handle notification click - navigate if URL provided and mark as read
   const handleNotificationClick = (notification) => {
-    if (!notification.is_read) {
+    // Mark as read immediately on click if unread
+    if (notification.is_unread) {
       markAsRead(notification.id);
     }
 
@@ -208,6 +164,7 @@ const Searchbar = () => {
 
   return (
     <div
+      ref={searchRef} // Add ref here to track clicks outside search
       className="
         bg-white
         relative
@@ -275,32 +232,17 @@ const Searchbar = () => {
           {/* Notification Dropdown */}
           {showNotifications && (
             <div className="absolute right-0 top-10 w-80 sm:w-96 bg-white rounded-xl shadow-xl border border-gray-100 z-50 overflow-hidden">
-              {/* Header */}
+              {/* Header - Removed toggle, kept mark all read */}
               <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 bg-gray-50/50">
                 <h3 className="font-semibold text-gray-800">Notifications</h3>
-                <div className="flex items-center gap-2">
+                {unreadCount > 0 && (
                   <button
-                    onClick={() => {
-                      const newUnreadOnly = !unreadOnly;
-                      setUnreadOnly(newUnreadOnly);
-                      fetchNotifications(newUnreadOnly);
-                    }}
-                    className={`text-xs px-2 py-1 rounded-full transition-colors ${unreadOnly
-                        ? "bg-violet-100 text-violet-700"
-                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                      }`}
+                    onClick={markAllAsRead}
+                    className="text-xs text-violet-600 hover:text-violet-700 font-medium"
                   >
-                    {unreadOnly ? "All" : "Unread"}
+                    Mark all read
                   </button>
-                  {unreadCount > 0 && (
-                    <button
-                      onClick={markAllAsRead}
-                      className="text-xs text-violet-600 hover:text-violet-700 font-medium"
-                    >
-                      Mark all read
-                    </button>
-                  )}
-                </div>
+                )}
               </div>
 
               {/* Notification List */}
@@ -319,41 +261,49 @@ const Searchbar = () => {
                     <div
                       key={notification.id}
                       onClick={() => handleNotificationClick(notification)}
-                      className={`group flex items-start gap-3 px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-50 last:border-b-0 transition-colors ${notification.is_unread ? "bg-violet-50/30" : ""
-                        }`}
+                      className={`group flex items-start gap-3 px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-50 last:border-b-0 transition-colors ${
+                        notification.is_unread
+                          ? "bg-violet-50/50 border-l-4 border-l-violet-500"
+                          : ""
+                      }`}
                     >
-                      <div className="shrink-0 mt-0.5">
-                        <i
-                          className={`${getNotificationIcon(notification)} text-lg`}
-                        ></i>
+                      {/* Unread indicator dot */}
+                      <div className="shrink-0 mt-1.5">
+                        {notification.is_unread && (
+                          <div className="w-2 h-2 bg-violet-500 rounded-full"></div>
+                        )}
                       </div>
+
                       <div className="flex-1 min-w-0">
                         <p
-                          className={`text-sm ${notification.is_unread ? "font-medium text-gray-900" : "text-gray-700"}`}
+                          className={`text-sm ${
+                            notification.is_unread
+                              ? "font-semibold text-gray-900"
+                              : "text-gray-700"
+                          }`}
                         >
                           {notification.title}
                         </p>
-                        <p className="text-xs text-gray-500 mt-0.5 line-clamp-2">
+                        <p
+                          className={`text-xs mt-0.5 line-clamp-2 ${
+                            notification.is_unread
+                              ? "text-gray-600"
+                              : "text-gray-500"
+                          }`}
+                        >
                           {notification.message}
                         </p>
                         <div className="flex items-center gap-2 mt-1">
-                          <p className="text-[10px] text-gray-400">
+                          <p
+                            className={`text-[10px] ${
+                              notification.is_unread
+                                ? "text-violet-500 font-medium"
+                                : "text-gray-400"
+                            }`}
+                          >
                             {getRelativeTime(notification.sent_at)}
                           </p>
                         </div>
-                      </div>
-
-                      {/* Actions */}
-                      <div className="flex flex-col items-end gap-1">
-                        <button
-                          onClick={(e) =>
-                            deleteNotification(e, notification.id)
-                          }
-                          className="opacity-0 group-hover:opacity-100 p-1 hover:bg-red-50 rounded transition-all"
-                          title="Delete"
-                        >
-                          <i className="ri-delete-bin-line text-xs text-red-400 hover:text-red-600"></i>
-                        </button>
                       </div>
                     </div>
                   ))

@@ -2,63 +2,73 @@ import { useEffect, useState } from "react";
 import StaffSideNav from "./StaffSideNav";
 import BottomNav from "../../Templates/BottomNav";
 import { useUser } from "../../../Context/ProfileContext";
-import { getAssignedIssues } from "../../../Utils/issues";
+import { getAssignedIssues, mySummary } from "../../../Utils/staffissues";
 import Loader from "../../Templates/Loader";
 import IssueCard from "../../Templates/IssueCard";
 
 const StaffDashboard = () => {
   const { profileData } = useUser();
+
+  const [summary, setSummary] = useState({});
   const [assignedIssues, setAssignedIssues] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchAssigned = async () => {
-      if (profileData?.id) {
-        try {
-          const data = await getAssignedIssues(profileData.id);
-          setAssignedIssues(data);
-        } catch (error) {
-          console.error("Error fetching assigned issues:", error);
-        } finally {
-          setLoading(false);
-        }
+  const fetchAssigned = async () => {
+    if (profileData?.id) {
+      try {
+        const data = await getAssignedIssues(profileData.id);
+        setAssignedIssues(data);
+        console.log("Issue Assigned to me : ", data);
+      } catch (error) {
+        console.error("Error fetching assigned issues:", error);
+      } finally {
+        setLoading(false);
       }
-    };
+    }
+  };
 
+  const fetchSummary = async () => {
+    if (profileData?.id) {
+      try {
+        const data = await mySummary(profileData.id);
+        setSummary(data);
+        console.log(data);
+      } catch (error) {
+        console.error("Error fetching summary:", error);
+      }
+    }
+  };
+
+  useEffect(() => {
     fetchAssigned();
+    fetchSummary();
   }, [profileData?.id]);
 
   const stats = [
     {
       name: "Assigned Issues",
-      count: assignedIssues.length,
+      count: summary.total_assigned,
       description: "All assigned issues",
       color: "from-[#980101] to-[#FF2C2C]",
       color2: "bg-[#980101]",
     },
     {
       name: "Pending Issues",
-      count: assignedIssues.filter((i) => i.status === "pending").length,
+      count: summary.pending_count,
       description: "Pending",
       color: "from-[#F5A623] to-[#F8E71C]",
       color2: "bg-[#F5A623]",
     },
     {
       name: "In Progress",
-      count: assignedIssues.filter((i) => i.status === "in_progress").length,
-      description: "Assigned & In Progress",
+      count: summary.accepted_count,
+      description: "Accepted & In Progress",
       color: "from-[#00284B] to-[#0088FF]",
       color2: "bg-[#00284B]",
     },
     {
-      name: "Completed Today",
-      count: assignedIssues.filter((i) => {
-        if (i.status !== "resolved") return false;
-        const updatedAt = new Date(i.updated_at);
-        const today = new Date();
-        return updatedAt.toDateString() === today.toDateString();
-      }).length,
-      assigned: assignedIssues.length,
+      name: "Completed",
+      count: summary.completed_count,
       description: "Issues Fixed",
       color: "from-[#0D4900] to-[#2DF300]",
       color2: "bg-[#0D4900]",
@@ -81,23 +91,22 @@ const StaffDashboard = () => {
                 </h1>
 
                 <p className="text-violet-100 text-sm sm:text-base md:text-lg mt-1">
-                  Welcome back, {profileData?.name || "Staff Member"}!
+                  Welcome back,{" "}
+                  {profileData?.name || summary.staff_name || "staff"}!
                 </p>
               </div>
             </div>
           </div>
 
           <div className="w-full mt-2 gap-2 flex flex-wrap justify-center bg-[#F0EEFF] p-4 rounded-2xl">
-            {stats.map((item, index) => (
+            {stats?.map((item, index) => (
               <IssueCard key={index} issue={item} />
             ))}
           </div>
 
           {/* Table */}
           <div className="bg-card rounded-2xl shadow-sm p-6 ">
-            <div className="flex justify-between items-center mb-6">
-              
-            </div>
+            <div className="flex justify-between items-center mb-6"></div>
 
             {loading ? (
               <Loader />
@@ -105,9 +114,7 @@ const StaffDashboard = () => {
               <div className="bg-card border border-border rounded-2xl shadow-sm overflow-hidden">
                 {/* Header */}
                 <div className="flex items-center justify-between px-6 py-4 border-b border-border">
-                  <h2 className="text-  lg font-semibold">
-                    Recent Assigned Issues
-                  </h2>
+                  <h2 className="text-  lg font-semibold">Recently Assigned</h2>
 
                   <a
                     href="/assigned-issues"
@@ -170,28 +177,16 @@ const StaffDashboard = () => {
                           {/* Status */}
                           <td className="px-6 py-4">
                             <span
-                              className={`px-3 py-1 text-xs font-semibold rounded-full
-
-                  ${
-                    issue?.status === "pending"
-                      ? "bg-gray-200 text-gray-700"
-                      : issue?.status === "in_progress"
-                        ? "bg-blue-100 text-blue-700"
-                        : issue?.status === "resolved"
-                          ? "bg-green-100 text-green-700"
-                          : "bg-muted text-muted-foreground"
-                  }
-
-                  `}
+                              className={`px-3 py-1 text-xs font-semibold rounded-full}`}
                             >
-                              {issue?.status?.replace("_", " ") || "pending"}
+                              {issue?.assignment_status}
                             </span>
                           </td>
 
                           {/* Action */}
                           <td className="px-6 py-4 text-right">
                             <a
-                              href="/assigned-issues"
+                              href={`/tasks/${issue.issue_id}`}
                               className="inline-block px-4 py-1.5 text-xs font-semibold text-white bg-primary rounded-lg hover:opacity-90 transition"
                             >
                               View
