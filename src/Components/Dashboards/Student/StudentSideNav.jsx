@@ -15,6 +15,7 @@ const NAV_ITEMS = [
     { to: "/feed", icon: "ri-rss-fill", label: "Issue Feed" },
     { to: "/dashboard", icon: "ri-dashboard-fill", label: "My Dashboard" },
     { to: "/my-issues", icon: "ri-file-list-3-fill", label: "My Issues" },
+    { to: "/trust-center", icon: "ri-shield-check-fill", label: "Trust Center" },
     { to: "/help-support", icon: "ri-customer-service-2-fill", label: "Help & Support" },
 ];
 

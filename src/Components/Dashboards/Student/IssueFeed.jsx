@@ -14,6 +14,7 @@ import {
   addComment,
 } from "../../../Utils/issues";
 import Loader from "../../Templates/Loader";
+import AdCard from "../../Templates/AdCard";
 import defaultAvatar from "../../../assets/default-avatar.jpg";
 import ReportIssueModal from "../../Templates/ReportIssueModal";
 import { motion, AnimatePresence } from "framer-motion";
@@ -789,12 +790,16 @@ const IssueFeed = () => {
                   </p>
                 }
               >
-                {issues.map((issue) => (
-                  <IssueCard
-                    key={issue.id}
-                    issue={issue}
-                    onOpenComments={handleOpenComments}
-                  />
+                {issues.map((item) => (
+                  item.is_ad ? (
+                    <AdCard key={item.id || `ad-${Math.random()}`} ad={item} />
+                  ) : (
+                    <IssueCard
+                      key={item.id}
+                      issue={item}
+                      onOpenComments={handleOpenComments}
+                    />
+                  )
                 ))}
               </InfiniteScroll>
             </div>

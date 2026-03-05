@@ -117,6 +117,20 @@ instance.interceptors.response.use(
       }
     }
 
+    // Trigger verification toast on 403 Forbidden for specific endpoints
+    if (error.response?.status === 403) {
+      const restrictedEndpoints = ["/issues/", "/comments/", "/votes/"];
+      const isRestricted = restrictedEndpoints.some((endpoint) =>
+        originalRequest.url?.includes(endpoint),
+      );
+
+      if (isRestricted) {
+        console.warn("Identity Verification Required to participate.");
+        // We'll use a custom event to trigger a toast in the main UI
+        window.dispatchEvent(new CustomEvent("verification-required"));
+      }
+    }
+
     return Promise.reject(error);
   },
 );

@@ -23,8 +23,22 @@ import { ForgotPassword, ResetPassword } from "./Pages/forgetPassword.jsx";
 import AdminPanel from "./Components/Dashboards/Admin/AdminPanel.jsx";
 import AcceptedTasks from "./Components/Dashboards/Staff/AcceptedTasks.jsx";
 import TaskDetails from "./Components/Dashboards/Staff/TaskDetails.jsx";
+import TrustCenter from "./Pages/TrustCenter.jsx";
+import { useEffect } from "react";
+import { toast } from "react-toastify";
 
 const App = () => {
+  useEffect(() => {
+    const handleVerificationRequired = () => {
+      toast.error("Identity Verification Required to participate.", {
+        position: "top-center",
+        autoClose: 5000,
+      });
+    };
+    window.addEventListener("verification-required", handleVerificationRequired);
+    return () => window.removeEventListener("verification-required", handleVerificationRequired);
+  }, []);
+
   return (
     <ThemeProvider>
       <div className="w-full h-screen bg-[#F0EEFF] flex ">
@@ -198,7 +212,7 @@ const App = () => {
             path="/accepted"
             element={
               <ProtectedRoute allowedRoles={["staff"]}>
-                <AcceptedTasks/>
+                <AcceptedTasks />
               </ProtectedRoute>
             }
           />
@@ -225,6 +239,14 @@ const App = () => {
             element={
               <ProtectedRoute allowedRoles={["student"]}>
                 <MyIssues />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/trust-center"
+            element={
+              <ProtectedRoute allowedRoles={["student"]}>
+                <TrustCenter />
               </ProtectedRoute>
             }
           />
