@@ -142,38 +142,51 @@ const TrustCenter = () => {
                                 <h1 className="text-3xl font-bold text-gray-900 mb-2">Trust Center</h1>
                                 <p className="text-gray-600">Secure your community status and manage identity proofs.</p>
                             </div>
-                            {stats && (
-                                <div className="bg-white px-4 py-2 rounded-2xl shadow-sm border border-violet-100 hidden sm:block">
-                                    <p className="text-[10px] font-black uppercase tracking-widest text-violet-500">Reputation</p>
-                                    <p className="text-xl font-black text-violet-900">{stats.vouch_count || 0} Vouches</p>
-                                </div>
-                            )}
+                            <div className="bg-white px-4 py-2 rounded-2xl shadow-sm border border-violet-100 hidden sm:block">
+                                <p className="text-[10px] font-black uppercase tracking-widest text-violet-500">Reputation</p>
+                                <p className="text-xl font-black text-violet-900">{stats?.vouch_count || 0} Vouches</p>
+                            </div>
                         </div>
                     </header>
 
                     {/* Stats Grid */}
-                    {stats && (
-                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                            <div className="bg-white p-4 rounded-3xl border border-gray-100 shadow-sm">
-                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Status</p>
-                                <p className={`text-sm font-bold uppercase ${stats.status === 'verified' ? 'text-emerald-600' : 'text-amber-500'}`}>
-                                    {stats.status || "Unverified"}
-                                </p>
+                    {(() => {
+                        const s = stats || { status: "unverified", vouch_count: 0, daily_vouch_limit: 0 };
+                        const trustPercent = Math.min((s.vouch_count || 0) * 33, 100);
+                        return (
+                            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                                <div className="bg-white p-4 rounded-3xl border border-gray-100 shadow-sm">
+                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Status</p>
+                                    <p className={`text-sm font-bold uppercase ${s.status === 'verified' ? 'text-emerald-600' : 'text-amber-500'}`}>
+                                        {s.status || "Unverified"}
+                                    </p>
+                                </div>
+                                <div className="bg-white p-4 rounded-3xl border border-gray-100 shadow-sm">
+                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Vouch Count</p>
+                                    <p className="text-sm font-bold text-gray-900">{s.vouch_count || 0} / 3</p>
+                                </div>
+                                <div className="bg-white p-4 rounded-3xl border border-gray-100 shadow-sm">
+                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Daily Limit</p>
+                                    <p className="text-sm font-bold text-gray-900">{s.daily_vouch_limit || 0} left</p>
+                                </div>
+                                <div className="bg-white p-4 rounded-3xl border border-gray-100 shadow-sm">
+                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Trust Score</p>
+                                    <p className="text-sm font-bold text-violet-600 mb-2">{trustPercent}%</p>
+                                    <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
+                                        <div
+                                            className="h-full rounded-full transition-all duration-500 ease-out"
+                                            style={{
+                                                width: `${trustPercent}%`,
+                                                background: trustPercent >= 100
+                                                    ? 'linear-gradient(90deg, #10b981, #34d399)'
+                                                    : 'linear-gradient(90deg, #8b5cf6, #a78bfa)'
+                                            }}
+                                        />
+                                    </div>
+                                </div>
                             </div>
-                            <div className="bg-white p-4 rounded-3xl border border-gray-100 shadow-sm">
-                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Vouch Count</p>
-                                <p className="text-sm font-bold text-gray-900">{stats.vouch_count || 0} / 3</p>
-                            </div>
-                            <div className="bg-white p-4 rounded-3xl border border-gray-100 shadow-sm">
-                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Daily Limit</p>
-                                <p className="text-sm font-bold text-gray-900">{stats.daily_vouch_limit || 0} left</p>
-                            </div>
-                            <div className="bg-white p-4 rounded-3xl border border-gray-100 shadow-sm">
-                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Trust Score</p>
-                                <p className="text-sm font-bold text-violet-600">{(stats.vouch_count || 0) * 33}%</p>
-                            </div>
-                        </div>
-                    )}
+                        );
+                    })()}
 
                     {/* Tab Navigation */}
                     <div className="flex gap-2 mb-8 bg-white/50 p-1.5 rounded-2xl w-fit border border-white/20 backdrop-blur-sm">

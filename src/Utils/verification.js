@@ -41,7 +41,7 @@ export const requestVouch = async (targetUserId) => {
 export const uploadVerificationDocument = async (file) => {
     try {
         const formData = new FormData();
-        formData.append("file", file);
+        formData.append("verification_proof", file);
         const { data } = await instance.post("/upload/verification-document", formData, {
             headers: { "Content-Type": "multipart/form-data" }
         });
