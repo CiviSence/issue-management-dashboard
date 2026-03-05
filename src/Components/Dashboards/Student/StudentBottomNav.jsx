@@ -20,7 +20,13 @@ const tabs = [
         to: "/my-issues",
         icon: "ri-file-list-3-line",
         activeIcon: "ri-file-list-3-fill",
-        label: "My Issues",
+        label: "Issues",
+    },
+    {
+        to: "/trust-center",
+        icon: "ri-shield-check-line",
+        activeIcon: "ri-shield-check-fill",
+        label: "Trust",
     },
     {
         to: "/profile",

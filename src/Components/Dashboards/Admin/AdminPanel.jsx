@@ -7,6 +7,14 @@ import { toast, ToastContainer } from "react-toastify";
 import axios from "../../../Utils/axios";
 import noProfile from "../../../assets/default-avatar.jpg";
 import {
+  adminGetAllRequests,
+  adminGetUnverifiedUsers,
+  adminGetUserDetailed,
+  adminReviewDocument,
+  adminManualVerify,
+  adminRevokeVerification
+} from "../../../Utils/verification";
+import {
   Users,
   Shield,
   Ban,
@@ -88,11 +96,10 @@ const NotificationsTab = ({
                 key={type.id}
                 type="button"
                 onClick={() => setNotificationType(type.id)}
-                className={`p-4 rounded-xl border-2 transition-all flex flex-col items-center space-y-2 ${
-                  notificationType === type.id
-                    ? "border-violet-500 bg-violet-50 text-violet-700"
-                    : "border-gray-200 hover:border-violet-200"
-                }`}
+                className={`p-4 rounded-xl border-2 transition-all flex flex-col items-center space-y-2 ${notificationType === type.id
+                  ? "border-violet-500 bg-violet-50 text-violet-700"
+                  : "border-gray-200 hover:border-violet-200"
+                  }`}
               >
                 <type.icon className="w-6 h-6" />
                 <span className="text-sm font-medium">{type.label}</span>
@@ -206,13 +213,12 @@ const NotificationsTab = ({
                       className="w-4 h-4 text-violet-600 focus:ring-violet-500"
                     />
                     <span
-                      className={`text-sm capitalize ${
-                        priority === "urgent"
-                          ? "text-red-600 font-medium"
-                          : priority === "high"
-                            ? "text-orange-600"
-                            : "text-gray-600"
-                      }`}
+                      className={`text-sm capitalize ${priority === "urgent"
+                        ? "text-red-600 font-medium"
+                        : priority === "high"
+                          ? "text-orange-600"
+                          : "text-gray-600"
+                        }`}
                     >
                       {priority}
                     </span>
@@ -322,6 +328,7 @@ const AdminPanel = () => {
   const [showUserModal, setShowUserModal] = useState(false);
   const [showBanModal, setShowBanModal] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
+  const [verificationRequests, setVerificationRequests] = useState([]);
   const [banReason, setBanReason] = useState("");
   const [deleteContent, setDeleteContent] = useState(false);
   const [notifyUser, setNotifyUser] = useState(true);
@@ -345,6 +352,7 @@ const AdminPanel = () => {
   useEffect(() => {
     fetchDashboardStats();
     fetchUnverifiedUsers();
+    fetchVerificationRequests();
     fetchBannedUsers();
     fetchSentNotifications();
     fetchNotificationStats();
@@ -373,13 +381,22 @@ const AdminPanel = () => {
 
   const fetchUnverifiedUsers = async () => {
     try {
-      const response = await axios.get("/admin/unverified-users");
-      const data = response.data;
+      const data = await adminGetUnverifiedUsers();
       console.log("unverified users : ", data);
       setUnverifiedUsers(data);
       setStats((prev) => ({ ...prev, unverifiedUsers: data.length }));
     } catch (error) {
       console.error("Error fetching unverified users:", error);
+    }
+  };
+
+  const fetchVerificationRequests = async () => {
+    try {
+      const data = await adminGetAllRequests();
+      console.log("verification requests : ", data);
+      setVerificationRequests(data);
+    } catch (error) {
+      console.error("Error fetching verification requests:", error);
     }
   };
 
@@ -398,9 +415,8 @@ const AdminPanel = () => {
   const fetchUserDetails = async (userId) => {
     setLoading(true);
     try {
-      const response = await axios.get(`/admin/users/${userId}/detailed`);
-      console.log("user details : ", response);
-      setUserDetails(response.data);
+      const data = await adminGetUserDetailed(userId);
+      setUserDetails(data);
       setShowUserModal(true);
     } catch (error) {
       console.error("Error fetching user details:", error);
@@ -440,31 +456,25 @@ const AdminPanel = () => {
   //verify user(by admin)
   const handleVerifyUser = async (userId) => {
     try {
-      const response = await axios.post(`/admin/verify-user/${userId}`);
-      console.log("Verify user : ", response);
-      if (response.status === 200) {
-        toast.success("User verified successfully");
-        fetchUnverifiedUsers();
-        fetchDashboardStats();
-      }
+      await adminManualVerify(userId);
+      toast.success("User verified successfully");
+      fetchUnverifiedUsers();
+      fetchDashboardStats();
     } catch (error) {
-      toast.error("Failed to verify user");
+      toast.error(error.message || "Failed to verify user");
     }
   };
 
   //Revoke Verification
   const handleRevokeVerification = async (userId) => {
     try {
-      const response = await axios.post(`/admin/revoke-verification/${userId}`);
-      console.log("Revoke Verification : ", response);
-      if (response.status === 200) {
-        toast.success("Verification revoked");
-        fetchDashboardStats();
-        if (userDetails) fetchUserDetails(userId);
-      }
+      await adminRevokeVerification(userId);
+      toast.success("Verification revoked");
+      fetchDashboardStats();
+      if (userDetails) fetchUserDetails(userId);
     } catch (error) {
       console.error("Error revoking verification:", error);
-      toast.error("Failed to revoke verification");
+      toast.error(error.message || "Failed to revoke verification");
     }
   };
 
@@ -663,7 +673,7 @@ const AdminPanel = () => {
       user.email?.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
-  
+
 
   // Tab Components
   const DashboardTab = () => {
@@ -702,9 +712,9 @@ const AdminPanel = () => {
               </p>
             )}
           </div>
-          
-            <Icon className={`w-5 h-5 ${color.replace("bg-","text-")}`} />
-          
+
+          <Icon className={`w-5 h-5 ${color.replace("bg-", "text-")}`} />
+
         </div>
       </div>
     );
@@ -940,7 +950,7 @@ const AdminPanel = () => {
             {
               label: "System Logs",
               icon: Activity,
-              action: () => {},
+              action: () => { },
               color: "text-gray-600 bg-gray-50",
             },
           ].map((action, idx) => (
@@ -1081,11 +1091,10 @@ const AdminPanel = () => {
                 />
 
                 <div
-                  className={`absolute -bottom-1 -right-1 w-4 h-4 border-2 border-white rounded-full ${
-                    user.verification_status === "verified"
-                      ? "bg-green-500"
-                      : "bg-yellow-500"
-                  }`}
+                  className={`absolute -bottom-1 -right-1 w-4 h-4 border-2 border-white rounded-full ${user.verification_status === "verified"
+                    ? "bg-green-500"
+                    : "bg-yellow-500"
+                    }`}
                 />
               </div>
               <div className="min-w-0">
@@ -1285,11 +1294,10 @@ const AdminPanel = () => {
             {/* Filter Toggle */}
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                showFilters
-                  ? "bg-violet-100 text-violet-700"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-              }`}
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${showFilters
+                ? "bg-violet-100 text-violet-700"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
             >
               <Filter className="w-4 h-4" />
               Filters
@@ -1576,8 +1584,8 @@ const AdminPanel = () => {
         {filteredUsers.length === 0 && (
           <div className="text-center py-16 bg-white rounded-xl border border-gray-200">
             {searchQuery ||
-            filters.status !== "all" ||
-            filters.role !== "all" ? (
+              filters.status !== "all" ||
+              filters.role !== "all" ? (
               <>
                 <Search className="w-12 h-12 text-gray-300 mx-auto mb-4" />
                 <p className="text-gray-500 font-medium">No users found</p>
@@ -1611,10 +1619,12 @@ const AdminPanel = () => {
   };
 
   const UnverifiedTab = () => {
+    const [subTab, setSubTab] = useState("users"); // 'users' or 'requests'
     const [localSearchQuery, setLocalSearchQuery] = useState("");
     const [selectedUsers, setSelectedUsers] = useState([]);
     const [viewMode, setViewMode] = useState("grid");
     const [sortBy, setSortBy] = useState("newest");
+    const [reviewingId, setReviewingId] = useState(null);
 
     // Filter and sort users
     const filteredUsers = unverifiedUsers
@@ -1632,6 +1642,21 @@ const AdminPanel = () => {
           return (b.reputation_points || 0) - (a.reputation_points || 0);
         return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
       });
+
+    const handleReview = async (requestId, action) => {
+      setReviewingId(requestId);
+      try {
+        await adminReviewDocument(requestId, action);
+        toast.success(`Request ${action}ed successfully`);
+        fetchVerificationRequests();
+        fetchUnverifiedUsers();
+        fetchDashboardStats();
+      } catch (error) {
+        toast.error(error.message || "Failed to review request");
+      } finally {
+        setReviewingId(null);
+      }
+    };
 
     const toggleSelectAll = () => {
       if (selectedUsers.length === filteredUsers.length) {
@@ -1651,14 +1676,12 @@ const AdminPanel = () => {
 
     const handleBulkVerify = async () => {
       if (!selectedUsers.length) return;
-      // Add your bulk verify logic here
       toast.success(`Verified ${selectedUsers.length} users`);
       setSelectedUsers([]);
     };
 
     const UserCard = ({ user }) => (
       <div className="group bg-white rounded-xl border border-gray-200 hover:border-violet-300 hover:shadow-md transition-all overflow-hidden">
-        {/* Card Header with Avatar */}
         <div className="p-4">
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-3">
@@ -1668,22 +1691,13 @@ const AdminPanel = () => {
                   alt={user.name}
                   className="w-12 h-12 rounded-full object-cover border-2 border-gray-100"
                 />
-
-                <div
-                  className="absolute -bottom-1 -right-1 w-4 h-4 bg-yellow-400 border-2 border-white rounded-full"
-                  title="Pending Verification"
-                />
+                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-yellow-400 border-2 border-white rounded-full" />
               </div>
               <div className="min-w-0">
-                <h4 className="font-semibold text-gray-900 truncate">
-                  {user.name}
-                </h4>
-                <p className="text-sm text-gray-500 truncate">
-                  {user.email || "No email"}
-                </p>
+                <h4 className="font-semibold text-gray-900 truncate">{user.name}</h4>
+                <p className="text-sm text-gray-500 truncate">{user.email || "No email"}</p>
               </div>
             </div>
-
             <input
               type="checkbox"
               checked={selectedUsers.includes(user.id)}
@@ -1691,8 +1705,6 @@ const AdminPanel = () => {
               className="w-4 h-4 text-violet-600 rounded border-gray-300 focus:ring-violet-500"
             />
           </div>
-
-          {/* User Details Grid */}
           <div className="mt-4 grid grid-cols-2 gap-2 text-xs">
             {user.department && (
               <div className="flex items-center gap-1.5 text-gray-600">
@@ -1706,20 +1718,12 @@ const AdminPanel = () => {
                 <span className="truncate">{user.designation}</span>
               </div>
             )}
-            {user.course && (
-              <div className="flex items-center gap-1.5 text-gray-600">
-                <BookOpen className="w-3.5 h-3.5 text-gray-400" />
-                <span className="truncate">{user.course}</span>
-              </div>
-            )}
             <div className="flex items-center gap-1.5 text-gray-600">
               <Star className="w-3.5 h-3.5 text-gray-400" />
               <span>{user.reputation_points || 0} pts</span>
             </div>
           </div>
         </div>
-
-        {/* Action Buttons */}
         <div className="px-4 pb-4 flex gap-2">
           <button
             onClick={() => handleVerifyUser(user.id)}
@@ -1731,67 +1735,70 @@ const AdminPanel = () => {
           <button
             onClick={() => fetchUserDetails(user.id)}
             className="px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors"
-            title="View Details"
           >
             <Eye className="w-4 h-4" />
-          </button>
-          <button
-            className="px-3 py-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg transition-colors"
-            title="Reject"
-          >
-            <XCircle className="w-4 h-4" />
           </button>
         </div>
       </div>
     );
 
-    const UserRow = ({ user }) => (
-      <div className="group flex items-center gap-4 p-4 bg-white border-b border-gray-100 hover:bg-gray-50 transition-colors">
-        <input
-          type="checkbox"
-          checked={selectedUsers.includes(user.id)}
-          onChange={() => toggleSelectUser(user.id)}
-          className="w-4 h-4 text-violet-600 rounded border-gray-300 focus:ring-violet-500"
-        />
-
-        <div className="relative shrink-0">
-          <img
-            src={user.avatar_url || noProfile}
-            alt={user.name}
-            className="w-10 h-10 rounded-full object-cover"
-          />
-
-          <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-yellow-400 border-2 border-white rounded-full" />
+    const RequestCard = ({ req }) => (
+      <div className="bg-white rounded-xl border border-gray-200 p-4 hover:shadow-md transition-all">
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-violet-100 text-violet-600 flex items-center justify-center font-bold">
+              {req.requester_name?.charAt(0)}
+            </div>
+            <div>
+              <h4 className="font-semibold text-gray-900">{req.requester_name}</h4>
+              <p className="text-xs text-gray-500 capitalize">{req.verification_type} Request</p>
+            </div>
+          </div>
+          <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded ${req.status === 'pending' ? 'bg-amber-50 text-amber-600' : 'bg-gray-100 text-gray-600'
+            }`}>
+            {req.status}
+          </span>
         </div>
 
-        <div className="flex-1 min-w-0 grid grid-cols-4 gap-4 items-center">
-          <div>
-            <p className="font-medium text-gray-900 truncate">{user.name}</p>
-            <p className="text-sm text-gray-500 truncate">{user.email}</p>
-          </div>
-          <div className="text-sm text-gray-600">{user.department || "—"}</div>
-          <div className="text-sm text-gray-600">
-            {user.designation || user.course || "—"}
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600">
-              {user.reputation_points || 0} pts
-            </span>
-          </div>
-        </div>
+        {req.message && (
+          <p className="text-sm text-gray-600 mb-4 italic">"{req.message}"</p>
+        )}
 
-        <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+        {req.document_urls && req.document_urls.length > 0 && (
+          <div className="mb-4">
+            <p className="text-xs font-bold text-gray-400 uppercase mb-2">Attached Proofs</p>
+            <div className="flex flex-wrap gap-2">
+              {req.document_urls.map((url, i) => (
+                <a
+                  key={i}
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-lg text-xs font-medium text-gray-700 transition-colors"
+                >
+                  <FileText className="w-3.5 h-3.5" />
+                  Proof {i + 1}
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div className="flex gap-2">
           <button
-            onClick={() => handleVerifyUser(user.id)}
-            className="px-3 py-1.5 bg-green-500 hover:bg-green-600 text-white text-sm font-medium rounded-lg transition-colors"
+            onClick={() => handleReview(req.id, "reject")}
+            disabled={reviewingId === req.id}
+            className="flex-1 py-2 text-sm font-bold text-red-600 hover:bg-red-50 rounded-lg border border-red-100 transition-colors"
           >
-            Verify
+            Reject
           </button>
           <button
-            onClick={() => fetchUserDetails(user.id)}
-            className="p-1.5 text-gray-400 hover:text-gray-600"
+            onClick={() => handleReview(req.id, "approve")}
+            disabled={reviewingId === req.id}
+            className="flex-1 py-2 bg-emerald-600 text-white text-sm font-bold rounded-lg hover:bg-emerald-700 shadow-sm transition-all flex items-center justify-center gap-1"
           >
-            <Eye className="w-4 h-4" />
+            {reviewingId === req.id ? <RefreshCw className="w-4 h-4 animate-spin" /> : <CheckCircle className="w-4 h-4" />}
+            Approve
           </button>
         </div>
       </div>
@@ -1799,146 +1806,77 @@ const AdminPanel = () => {
 
     return (
       <div className="space-y-4 animate-fade-in">
-        {/* Header & Controls */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-              <Shield className="w-5 h-5 text-yellow-500" />
-              Pending Verifications
-            </h2>
-            <p className="text-sm text-gray-500 mt-1">
-              {filteredUsers.length} user{filteredUsers.length !== 1 ? "s" : ""}{" "}
-              awaiting approval
-            </p>
-          </div>
-
-          <div className="flex items-center gap-3">
-            {/* Search */}
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search users..."
-                value={localSearchQuery}
-                onChange={(e) => setLocalSearchQuery(e.target.value)}
-                className="pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 w-64"
-              />
-            </div>
-
-            {/* Sort Dropdown */}
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
+        <div className="flex items-center justify-between">
+          <div className="flex gap-2 bg-white/50 p-1 rounded-xl border border-gray-100 w-fit">
+            <button
+              onClick={() => setSubTab("users")}
+              className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-all ${subTab === 'users' ? 'bg-violet-600 text-white shadow-md' : 'text-gray-500 hover:bg-white'}`}
             >
-              <option value="newest">Newest First</option>
-              <option value="name">Name (A-Z)</option>
-              <option value="reputation">Reputation</option>
-            </select>
-
-            {/* View Toggle */}
-            <div className="flex bg-gray-100 rounded-lg p-1">
-              <button
-                onClick={() => setViewMode("grid")}
-                className={`p-1.5 rounded ${viewMode === "grid" ? "bg-white shadow-sm text-gray-900" : "text-gray-500"}`}
-              >
-                <LayoutGrid className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => setViewMode("list")}
-                className={`p-1.5 rounded ${viewMode === "list" ? "bg-white shadow-sm text-gray-900" : "text-gray-500"}`}
-              >
-                <List className="w-4 h-4" />
-              </button>
-            </div>
+              Unverified Users
+            </button>
+            <button
+              onClick={() => setSubTab("requests")}
+              className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-all ${subTab === 'requests' ? 'bg-violet-600 text-white shadow-md' : 'text-gray-500 hover:bg-white'}`}
+            >
+              Review Requests {verificationRequests.length > 0 && <span className="ml-1 px-1.5 bg-white text-violet-600 rounded-md text-[10px]">{verificationRequests.length}</span>}
+            </button>
           </div>
         </div>
 
-        {/* Bulk Actions Bar */}
-        {selectedUsers.length > 0 && (
-          <div className="flex items-center justify-between p-3 bg-violet-50 border border-violet-200 rounded-lg animate-fade-in">
-            <div className="flex items-center gap-2 text-sm text-violet-900">
-              <CheckSquare className="w-4 h-4" />
-              <span className="font-medium">
-                {selectedUsers.length} selected
-              </span>
-            </div>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setSelectedUsers([])}
-                className="px-3 py-1.5 text-sm text-violet-700 hover:text-violet-900"
-              >
-                Clear
-              </button>
-              <button
-                onClick={handleBulkVerify}
-                className="px-4 py-1.5 bg-violet-600 hover:bg-violet-700 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-1.5"
-              >
-                <CheckCircle className="w-4 h-4" />
-                Verify Selected
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Users Display */}
-        {viewMode === "grid" ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {filteredUsers.map((user) => (
-              <UserCard key={user.id} user={user} />
-            ))}
-          </div>
-        ) : (
-          <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-            {/* List Header */}
-            <div className="flex items-center gap-4 p-4 bg-gray-50 border-b border-gray-200 text-xs font-medium text-gray-500 uppercase tracking-wider">
-              <input
-                type="checkbox"
-                checked={
-                  selectedUsers.length === filteredUsers.length &&
-                  filteredUsers.length > 0
-                }
-                onChange={toggleSelectAll}
-                className="w-4 h-4 text-violet-600 rounded border-gray-300 focus:ring-violet-500"
-              />
-              <div className="flex-1 grid grid-cols-4 gap-4">
-                <span>User</span>
-                <span>Department</span>
-                <span>Role/Course</span>
-                <span>Reputation</span>
+        {subTab === "users" ? (
+          <>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div>
+                <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                  <Shield className="w-5 h-5 text-yellow-500" />
+                  Manual Overrides
+                </h2>
+                <p className="text-sm text-gray-500 mt-1">Directly verify users without requests</p>
               </div>
-              <span className="w-24 text-right">Actions</span>
+              <div className="flex items-center gap-3">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <input
+                    type="text"
+                    placeholder="Search users..."
+                    value={localSearchQuery}
+                    onChange={(e) => setLocalSearchQuery(e.target.value)}
+                    className="pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 w-64"
+                  />
+                </div>
+                <div className="flex bg-gray-100 rounded-lg p-1">
+                  <button onClick={() => setViewMode("grid")} className={`p-1.5 rounded ${viewMode === "grid" ? "bg-white shadow-sm text-gray-900" : "text-gray-500"}`}><LayoutGrid className="w-4 h-4" /></button>
+                  <button onClick={() => setViewMode("list")} className={`p-1.5 rounded ${viewMode === "list" ? "bg-white shadow-sm text-gray-900" : "text-gray-500"}`}><List className="w-4 h-4" /></button>
+                </div>
+              </div>
             </div>
 
-            {filteredUsers.map((user) => (
-              <UserRow key={user.id} user={user} />
-            ))}
-          </div>
-        )}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {filteredUsers.map((user) => (
+                <UserCard key={user.id} user={user} />
+              ))}
+            </div>
 
-        {/* Empty State */}
-        {filteredUsers.length === 0 && (
-          <div className="text-center py-16">
-            {localSearchQuery ? (
-              <>
-                <Search className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                <p className="text-gray-500 font-medium">No users found</p>
-                <p className="text-sm text-gray-400 mt-1">
-                  Try adjusting your search
-                </p>
-              </>
-            ) : (
-              <>
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <CheckCircle className="w-8 h-8 text-green-500" />
+            {filteredUsers.length === 0 && (
+              <div className="text-center py-16 bg-white rounded-2xl border border-gray-100">
+                <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-4 opacity-20" />
+                <p className="text-gray-500 font-medium">No unverified users found</p>
+              </div>
+            )}
+          </>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {verificationRequests.filter(r => r.status === 'pending').map(req => (
+              <RequestCard key={req.id} req={req} />
+            ))}
+            {verificationRequests.filter(r => r.status === 'pending').length === 0 && (
+              <div className="col-span-full text-center py-20 bg-white rounded-3xl border border-gray-100">
+                <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <CheckSquare className="w-8 h-8 text-gray-200" />
                 </div>
-                <p className="text-lg font-medium text-gray-900">
-                  All caught up!
-                </p>
-                <p className="text-sm text-gray-500 mt-1">
-                  No pending verifications at the moment
-                </p>
-              </>
+                <h3 className="text-lg font-bold text-gray-900">No Pending Requests</h3>
+                <p className="text-sm text-gray-500 mt-1">All verification applications have been reviewed.</p>
+              </div>
             )}
           </div>
         )}
@@ -2055,21 +1993,19 @@ const AdminPanel = () => {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center space-x-1 sm:space-x-2 px-3 sm:px-4 md:px-6 py-2 sm:py-3 rounded-xl font-medium transition-all whitespace-nowrap ${
-                activeTab === tab.id
-                  ? "bg-violet-500 text-white shadow-lg shadow-violet-200"
-                  : "bg-white text-gray-600 hover:bg-gray-100"
-              }`}
+              className={`flex items-center space-x-1 sm:space-x-2 px-3 sm:px-4 md:px-6 py-2 sm:py-3 rounded-xl font-medium transition-all whitespace-nowrap ${activeTab === tab.id
+                ? "bg-violet-500 text-white shadow-lg shadow-violet-200"
+                : "bg-white text-gray-600 hover:bg-gray-100"
+                }`}
             >
               <tab.icon className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
               <p className="text-sm md:text-m">{tab.label}</p>
               {tab.badge > 0 && (
                 <span
-                  className={`px-1.5 sm:px-2 py-0.5 rounded-full text-xs ${
-                    activeTab === tab.id
-                      ? "bg-white text-violet-600"
-                      : "bg-violet-100 text-violet-600"
-                  }`}
+                  className={`px-1.5 sm:px-2 py-0.5 rounded-full text-xs ${activeTab === tab.id
+                    ? "bg-white text-violet-600"
+                    : "bg-violet-100 text-violet-600"
+                    }`}
                 >
                   {tab.badge}
                 </span>
@@ -2399,8 +2335,8 @@ const AdminPanel = () => {
                         <span className="font-medium text-gray-800">
                           {userDetails.user?.date_of_birth
                             ? new Date(
-                                userDetails.user.date_of_birth,
-                              ).toLocaleDateString()
+                              userDetails.user.date_of_birth,
+                            ).toLocaleDateString()
                             : "N/A"}
                         </span>
                       </div>
@@ -2461,8 +2397,8 @@ const AdminPanel = () => {
                         <span className="font-medium">Banned At:</span>{" "}
                         {userDetails.user?.banned_at
                           ? new Date(
-                              userDetails.user.banned_at,
-                            ).toLocaleString()
+                            userDetails.user.banned_at,
+                          ).toLocaleString()
                           : "N/A"}
                       </p>
                       <p>
@@ -2502,13 +2438,12 @@ const AdminPanel = () => {
                                 </p>
                               </div>
                               <span
-                                className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                  issue.priority === "critical"
-                                    ? "bg-red-100 text-red-700"
-                                    : issue.priority === "high"
-                                      ? "bg-orange-100 text-orange-700"
-                                      : "bg-gray-100 text-gray-700"
-                                }`}
+                                className={`px-2 py-1 rounded-full text-xs font-medium ${issue.priority === "critical"
+                                  ? "bg-red-100 text-red-700"
+                                  : issue.priority === "high"
+                                    ? "bg-orange-100 text-orange-700"
+                                    : "bg-gray-100 text-gray-700"
+                                  }`}
                               >
                                 {issue.priority}
                               </span>
