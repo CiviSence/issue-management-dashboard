@@ -179,7 +179,6 @@ const IssueDetails = () => {
         assigned_to: selectedStaff,
         assigned_staff_name: staff.find((s) => s.id === selectedStaff)?.name,
         assignment_notes: internalNote,
-        status: prev.status === "new" ? "acknowledged" : prev.status,
       }));
       toast.success("Staff assigned successfully!");
       // Clear form

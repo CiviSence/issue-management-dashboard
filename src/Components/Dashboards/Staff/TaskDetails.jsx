@@ -3,7 +3,6 @@ import StaffSideNav from "./StaffSideNav";
 import BottomNav from "../../Templates/BottomNav";
 import { useUser } from "../../../Context/ProfileContext";
 import {
- 
   acceptAssignment,
   rejectAssignment,
   completeAssignment,
@@ -181,8 +180,12 @@ const TaskDetails = () => {
         <div className="w-full p-4 lg:w-[calc(100vw-15vw)] bg-background text-foreground min-h-screen flex items-center justify-center">
           <div className="text-center">
             <AlertCircle className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h2 className="text-xl font-semibold text-gray-600">Task Not Found</h2>
-            <p className="text-gray-500 mt-2">The requested task could not be loaded.</p>
+            <h2 className="text-xl font-semibold text-gray-600">
+              Task Not Found
+            </h2>
+            <p className="text-gray-500 mt-2">
+              The requested task could not be loaded.
+            </p>
           </div>
         </div>
       </>
@@ -217,14 +220,14 @@ const TaskDetails = () => {
             <div className="flex gap-2">
               <span
                 className={`px-3 py-1.5 rounded-full text-xs font-medium border ${getStatusColor(
-                  task.status
+                  task.status,
                 )}`}
               >
                 {task.status?.toUpperCase()}
               </span>
               <span
                 className={`px-3 py-1.5 rounded-full text-xs font-medium border ${getPriorityColor(
-                  task.priority
+                  task.priority,
                 )}`}
               >
                 {task.priority?.toUpperCase()}
@@ -422,23 +425,6 @@ const TaskDetails = () => {
               </div>
             </div>
 
-            {/* Assignment Info */}
-            {task.assigned_to_name && (
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-4 md:p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                  Assigned To
-                </h3>
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-violet-100 rounded-lg">
-                    <User className="w-5 h-5 text-violet-600" />
-                  </div>
-                  <p className="font-medium text-gray-900">
-                    {task.assigned_to_name}
-                  </p>
-                </div>
-              </div>
-            )}
-
             {/* Action Buttons */}
             <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-4 md:p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
@@ -466,7 +452,8 @@ const TaskDetails = () => {
                 )}
 
                 {/* Show Complete for in-progress tasks */}
-                {(task.status === "in-progress" || task.status === "accepted") && (
+                {(task.status === "in_progress" ||
+                  task.status === "accepted") && (
                   <button
                     onClick={() => setActiveModal("complete")}
                     className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-violet-500 hover:bg-violet-600 text-white rounded-xl font-medium transition-colors"
@@ -490,16 +477,6 @@ const TaskDetails = () => {
                     )}
                   </div>
                 )}
-
-                {/* Show rejection status */}
-                {task.status === "rejected" && (
-                  <div className="text-center p-4 bg-red-50 rounded-xl">
-                    <XCircle className="w-12 h-12 text-red-500 mx-auto mb-2" />
-                    <p className="font-semibold text-red-700">
-                      Task Rejected
-                    </p>
-                  </div>
-                )}
               </div>
             </div>
 
@@ -509,30 +486,29 @@ const TaskDetails = () => {
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">
                   Resolution Notes
                 </h3>
-                <p className="text-gray-600">
-                  {task.resolution_notes}
-                </p>
+                <p className="text-gray-600">{task.resolution_notes}</p>
               </div>
             )}
 
             {/* Resolution Photos (if available) */}
-            {task.resolution_media_urls && task.resolution_media_urls.length > 0 && (
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-4 md:p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                  Resolution Photos
-                </h3>
-                <div className="grid grid-cols-2 gap-2">
-                  {task.resolution_media_urls.map((url, index) => (
-                    <img
-                      key={index}
-                      src={url}
-                      alt={`Resolution ${index + 1}`}
-                      className="w-full h-24 object-cover rounded-lg"
-                    />
-                  ))}
+            {task.resolution_media_urls &&
+              task.resolution_media_urls.length > 0 && (
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-4 md:p-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                    Resolution Photos
+                  </h3>
+                  <div className="grid grid-cols-2 gap-2">
+                    {task.resolution_media_urls.map((url, index) => (
+                      <img
+                        key={index}
+                        src={url}
+                        alt={`Resolution ${index + 1}`}
+                        className="w-full h-24 object-cover rounded-lg"
+                      />
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
           </div>
         </div>
       </div>
@@ -542,9 +518,7 @@ const TaskDetails = () => {
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-bold text-gray-900">
-                Accept Task
-              </h3>
+              <h3 className="text-xl font-bold text-gray-900">Accept Task</h3>
               <button
                 onClick={() => setActiveModal(null)}
                 className="p-2 hover:bg-gray-100 rounded-full transition-colors"
@@ -596,9 +570,7 @@ const TaskDetails = () => {
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-bold text-gray-900">
-                Reject Task
-              </h3>
+              <h3 className="text-xl font-bold text-gray-900">Reject Task</h3>
               <button
                 onClick={() => setActiveModal(null)}
                 className="p-2 hover:bg-gray-100 rounded-full transition-colors"
@@ -650,9 +622,7 @@ const TaskDetails = () => {
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl shadow-xl max-w-lg w-full p-6 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-bold text-gray-900">
-                Complete Task
-              </h3>
+              <h3 className="text-xl font-bold text-gray-900">Complete Task</h3>
               <button
                 onClick={() => setActiveModal(null)}
                 className="p-2 hover:bg-gray-100 rounded-full transition-colors"
