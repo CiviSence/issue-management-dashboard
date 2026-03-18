@@ -7,7 +7,7 @@ import {
 } from "./auth-utils";
 
 const instance = axios.create({
-  baseURL: "https://csmbsckend.onrender.com/api",
+  baseURL: "https://csmbackend.onrender.com/api",
   withCredentials: true, // IMPORTANT for session/cookies
   headers: {
     Accept: "application/json",
