@@ -4,7 +4,7 @@ import Searchbar from "../../Templates/Searchbar";
 import IssueCard from "../../Templates/IssueCard";
 import BottomNav from "../../Templates/BottomNav";
 import UserCard from "../../Templates/UserCard";
-import { useIssues } from "../../../Context/IssueContext.js";
+import { useIssues } from "../../../Context/IssueContext";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { Link } from "react-router-dom";
@@ -35,34 +35,43 @@ const AdminDashboard = () => {
 
   const initialStats = {
     category: {
-      maintenance: 0,
-      cleanliness: 0,
+      maintainance: 0,
+      cleanness: 0,
       facilities: 0,
       security: 0,
       infrastructure: 0,
+      other: 0,
     },
-    priority: { low: 0, medium: 0, high: 0, critical: 0 },
-    location: { boysHostel: 0, girlsHostel: 0, campus: 0, adminBuilding: 0 },
+    priority: { new: 0, low: 0, medium: 0, high: 0, critical: 0 },
+    location: {
+      boysHostel: 0,
+      girlsHostel: 0,
+      campus: 0,
+      adminBuilding: 0,
+      others: 0,
+    },
   };
 
   const stats = issues.reduce((acc, issue) => {
     const category = issue.main_category?.toLowerCase().trim();
     const priority = issue.priority?.toLowerCase().trim();
-    const location = issue.location_address?.toLowerCase().trim();
+    const location = issue.location_building?.toLowerCase().trim();
 
     if (category && acc.category[category] !== undefined)
       acc.category[category] += 1;
     if (priority && acc.priority[priority] !== undefined)
       acc.priority[priority] += 1;
-    if (location === "boys hostel") acc.location.boysHostel += 1;
-    if (location === "girls hostel") acc.location.girlsHostel += 1;
+    if (location === "boys-hostel") acc.location.boysHostel += 1;
+    if (location === "girls-hostel") acc.location.girlsHostel += 1;
     if (location === "campus") acc.location.campus += 1;
-    if (location === "admin building") acc.location.adminBuilding += 1;
+    if (location === "admin-building") acc.location.adminBuilding += 1;
+    if (location === "others") acc.location.others += 1;
 
     return acc;
   }, initialStats);
 
-  console.log(stats);
+  console.log("All Issues", issues);
+  console.log("All Stats", stats);
 
   const { category, priority, location } = stats;
 
@@ -104,8 +113,8 @@ const AdminDashboard = () => {
 
   // Chart data
   const pieChartData = [
-    { name: "Maintenance", value: category.maintenance, color: "#3b5bdb" },
-    { name: "Cleanliness", value: category.cleanliness, color: "#40c057" },
+    { name: "Maintainance", value: category.maintainance, color: "#3b5bdb" },
+    { name: "Cleanliness", value: category.cleanness, color: "#40c057" },
     { name: "Security", value: category.security, color: "#fa5252" },
     { name: "Facilities", value: category.facilities, color: "#fab005" },
     {
@@ -113,10 +122,15 @@ const AdminDashboard = () => {
       value: category.infrastructure,
       color: "#6c757d",
     },
+    {
+      name: "Other",
+      value: category.other,
+      color: "#6594f2",
+    },
   ];
 
   const barChartData = [
-    { status: "Low", count: priority.low },
+    { status: "Low", count: priority.low + priority.new },
     { status: "Medium", count: priority.medium },
     { status: "High", count: priority.high },
     { status: "Critical", count: priority.critical },
@@ -127,6 +141,7 @@ const AdminDashboard = () => {
     { name: "Campus", value: location.campus, color: "#40c057" },
     { name: "Boys Hostel", value: location.boysHostel, color: "#3086D5" },
     { name: "Girls Hostel", value: location.girlsHostel, color: "#E34A4D" },
+    { name: "Others", value: location.others, color: "#E34A4D" },
   ];
 
   const hasIssues = issues.length > 0;

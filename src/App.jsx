@@ -26,6 +26,8 @@ import TaskDetails from "./Components/Dashboards/Staff/TaskDetails.jsx";
 import TrustCenter from "./Pages/TrustCenter.jsx";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
+import PrivacyPolicy from "../public/legal/privacyPolicy.jsx";
+import TermsOfUse from "../public/legal/TermsOfUse.jsx";
 
 const App = () => {
   useEffect(() => {
@@ -35,14 +37,25 @@ const App = () => {
         autoClose: 5000,
       });
     };
-    window.addEventListener("verification-required", handleVerificationRequired);
-    return () => window.removeEventListener("verification-required", handleVerificationRequired);
+    window.addEventListener(
+      "verification-required",
+      handleVerificationRequired,
+    );
+    return () =>
+      window.removeEventListener(
+        "verification-required",
+        handleVerificationRequired,
+      );
   }, []);
 
   return (
     <ThemeProvider>
       <div className="w-full h-screen bg-[#F0EEFF] flex ">
         <Routes>
+          {/* public routes */}
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms" element={<TermsOfUse />} />
+
           {/* Auth Routs - login / signup / verify / forget password */}
           <Route
             path="/login"

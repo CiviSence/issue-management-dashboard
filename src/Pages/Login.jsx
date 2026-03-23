@@ -1,13 +1,13 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-//i used a trick to disable the unused variable warning for motion but without it it womt wotk properly
-// eslint-disable-next-line no-unused-vars
+import {  Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import LoginSVG from "../assets/login.svg";
 import { loginUser } from "../Utils/auth-api";
 import { setSession } from "../Utils/auth-utils";
 
 import { useUser } from "../Context/ProfileContext";
+
+
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -165,19 +165,19 @@ const Login = () => {
               {/* Terms */}
               <p className="text-xs text-gray-400 text-center">
                 by continuing, you agree to the{" "}
-                <a
-                  href="#"
+                <Link
+                  to="/terms"
                   className="underline hover:text-[#7c6bff] transition-colors"
                 >
                   Terms of use
-                </a>{" "}
+                </Link>{" "}
                 and{" "}
-                <a
-                  href="#"
+                <Link
+                  to="/privacy-policy"
                   className="underline hover:text-[#7c6bff] transition-colors"
                 >
                   Privacy Policy
-                </a>
+                </Link>
               </p>
 
               {/* Sign In Button */}

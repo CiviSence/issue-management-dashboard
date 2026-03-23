@@ -12,7 +12,7 @@ import {
   adminGetUserDetailed,
   adminReviewDocument,
   adminManualVerify,
-  adminRevokeVerification
+  adminRevokeVerification,
 } from "../../../Utils/verification";
 import {
   Users,
@@ -96,10 +96,11 @@ const NotificationsTab = ({
                 key={type.id}
                 type="button"
                 onClick={() => setNotificationType(type.id)}
-                className={`p-4 rounded-xl border-2 transition-all flex flex-col items-center space-y-2 ${notificationType === type.id
-                  ? "border-violet-500 bg-violet-50 text-violet-700"
-                  : "border-gray-200 hover:border-violet-200"
-                  }`}
+                className={`p-4 rounded-xl border-2 transition-all flex flex-col items-center space-y-2 ${
+                  notificationType === type.id
+                    ? "border-violet-500 bg-violet-50 text-violet-700"
+                    : "border-gray-200 hover:border-violet-200"
+                }`}
               >
                 <type.icon className="w-6 h-6" />
                 <span className="text-sm font-medium">{type.label}</span>
@@ -213,12 +214,13 @@ const NotificationsTab = ({
                       className="w-4 h-4 text-violet-600 focus:ring-violet-500"
                     />
                     <span
-                      className={`text-sm capitalize ${priority === "urgent"
-                        ? "text-red-600 font-medium"
-                        : priority === "high"
-                          ? "text-orange-600"
-                          : "text-gray-600"
-                        }`}
+                      className={`text-sm capitalize ${
+                        priority === "urgent"
+                          ? "text-red-600 font-medium"
+                          : priority === "high"
+                            ? "text-orange-600"
+                            : "text-gray-600"
+                      }`}
                     >
                       {priority}
                     </span>
@@ -416,7 +418,7 @@ const AdminPanel = () => {
     setLoading(true);
     try {
       const data = await adminGetUserDetailed(userId);
-      console.log("user details",data);
+      console.log("user details", data);
       setUserDetails(data);
       setShowUserModal(true);
     } catch (error) {
@@ -674,8 +676,6 @@ const AdminPanel = () => {
       user.email?.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
-
-
   // Tab Components
   const DashboardTab = () => {
     const [isRefreshing, setIsRefreshing] = useState(false);
@@ -715,7 +715,6 @@ const AdminPanel = () => {
           </div>
 
           <Icon className={`w-5 h-5 ${color.replace("bg-", "text-")}`} />
-
         </div>
       </div>
     );
@@ -951,7 +950,7 @@ const AdminPanel = () => {
             {
               label: "System Logs",
               icon: Activity,
-              action: () => { },
+              action: () => {},
               color: "text-gray-600 bg-gray-50",
             },
           ].map((action, idx) => (
@@ -1092,10 +1091,11 @@ const AdminPanel = () => {
                 />
 
                 <div
-                  className={`absolute -bottom-1 -right-1 w-4 h-4 border-2 border-white rounded-full ${user.verification_status === "verified"
-                    ? "bg-green-500"
-                    : "bg-yellow-500"
-                    }`}
+                  className={`absolute -bottom-1 -right-1 w-4 h-4 border-2 border-white rounded-full ${
+                    user.verification_status === "verified"
+                      ? "bg-green-500"
+                      : "bg-yellow-500"
+                  }`}
                 />
               </div>
               <div className="min-w-0">
@@ -1295,10 +1295,11 @@ const AdminPanel = () => {
             {/* Filter Toggle */}
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${showFilters
-                ? "bg-violet-100 text-violet-700"
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                showFilters
+                  ? "bg-violet-100 text-violet-700"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              }`}
             >
               <Filter className="w-4 h-4" />
               Filters
@@ -1536,7 +1537,8 @@ const AdminPanel = () => {
                         </div>
                       </td>
                       <td className="px-4 py-3 text-sm text-gray-500">
-                        {new Date(user.created_at).toLocaleDateString()}
+                        {new Date(user.created_at).toLocaleDateString()}{" "}
+                        {new Date(user.created_at).toLocaleTimeString()}
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center justify-end gap-1">
@@ -1585,8 +1587,8 @@ const AdminPanel = () => {
         {filteredUsers.length === 0 && (
           <div className="text-center py-16 bg-white rounded-xl border border-gray-200">
             {searchQuery ||
-              filters.status !== "all" ||
-              filters.role !== "all" ? (
+            filters.status !== "all" ||
+            filters.role !== "all" ? (
               <>
                 <Search className="w-12 h-12 text-gray-300 mx-auto mb-4" />
                 <p className="text-gray-500 font-medium">No users found</p>
@@ -1695,8 +1697,12 @@ const AdminPanel = () => {
                 <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-yellow-400 border-2 border-white rounded-full" />
               </div>
               <div className="min-w-0">
-                <h4 className="font-semibold text-gray-900 truncate">{user.name}</h4>
-                <p className="text-sm text-gray-500 truncate">{user.email || "No email"}</p>
+                <h4 className="font-semibold text-gray-900 truncate">
+                  {user.name}
+                </h4>
+                <p className="text-sm text-gray-500 truncate">
+                  {user.email || "No email"}
+                </p>
               </div>
             </div>
             <input
@@ -1751,12 +1757,21 @@ const AdminPanel = () => {
               {req.requester_name?.charAt(0)}
             </div>
             <div>
-              <h4 className="font-semibold text-gray-900">{req.requester_name}</h4>
-              <p className="text-xs text-gray-500 capitalize">{req.verification_type} Request</p>
+              <h4 className="font-semibold text-gray-900">
+                {req.requester_name}
+              </h4>
+              <p className="text-xs text-gray-500 capitalize">
+                {req.verification_type} Request
+              </p>
             </div>
           </div>
-          <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded ${req.status === 'pending' ? 'bg-amber-50 text-amber-600' : 'bg-gray-100 text-gray-600'
-            }`}>
+          <span
+            className={`text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded ${
+              req.status === "pending"
+                ? "bg-amber-50 text-amber-600"
+                : "bg-gray-100 text-gray-600"
+            }`}
+          >
             {req.status}
           </span>
         </div>
@@ -1767,7 +1782,9 @@ const AdminPanel = () => {
 
         {req.document_urls && req.document_urls.length > 0 && (
           <div className="mb-4">
-            <p className="text-xs font-bold text-gray-400 uppercase mb-2">Attached Proofs</p>
+            <p className="text-xs font-bold text-gray-400 uppercase mb-2">
+              Attached Proofs
+            </p>
             <div className="flex flex-wrap gap-2">
               {req.document_urls.map((url, i) => (
                 <a
@@ -1798,7 +1815,11 @@ const AdminPanel = () => {
             disabled={reviewingId === req.id}
             className="flex-1 py-2 bg-emerald-600 text-white text-sm font-bold rounded-lg hover:bg-emerald-700 shadow-sm transition-all flex items-center justify-center gap-1"
           >
-            {reviewingId === req.id ? <RefreshCw className="w-4 h-4 animate-spin" /> : <CheckCircle className="w-4 h-4" />}
+            {reviewingId === req.id ? (
+              <RefreshCw className="w-4 h-4 animate-spin" />
+            ) : (
+              <CheckCircle className="w-4 h-4" />
+            )}
             Approve
           </button>
         </div>
@@ -1811,15 +1832,20 @@ const AdminPanel = () => {
           <div className="flex gap-2 bg-white/50 p-1 rounded-xl border border-gray-100 w-fit">
             <button
               onClick={() => setSubTab("users")}
-              className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-all ${subTab === 'users' ? 'bg-violet-600 text-white shadow-md' : 'text-gray-500 hover:bg-white'}`}
+              className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-all ${subTab === "users" ? "bg-violet-600 text-white shadow-md" : "text-gray-500 hover:bg-white"}`}
             >
               Unverified Users
             </button>
             <button
               onClick={() => setSubTab("requests")}
-              className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-all ${subTab === 'requests' ? 'bg-violet-600 text-white shadow-md' : 'text-gray-500 hover:bg-white'}`}
+              className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-all ${subTab === "requests" ? "bg-violet-600 text-white shadow-md" : "text-gray-500 hover:bg-white"}`}
             >
-              Review Requests {verificationRequests.length > 0 && <span className="ml-1 px-1.5 bg-white text-violet-600 rounded-md text-[10px]">{verificationRequests.length}</span>}
+              Review Requests{" "}
+              {verificationRequests.length > 0 && (
+                <span className="ml-1 px-1.5 bg-white text-violet-600 rounded-md text-[10px]">
+                  {verificationRequests.length}
+                </span>
+              )}
             </button>
           </div>
         </div>
@@ -1832,7 +1858,9 @@ const AdminPanel = () => {
                   <Shield className="w-5 h-5 text-yellow-500" />
                   Manual Overrides
                 </h2>
-                <p className="text-sm text-gray-500 mt-1">Directly verify users without requests</p>
+                <p className="text-sm text-gray-500 mt-1">
+                  Directly verify users without requests
+                </p>
               </div>
               <div className="flex items-center gap-3">
                 <div className="relative">
@@ -1846,8 +1874,18 @@ const AdminPanel = () => {
                   />
                 </div>
                 <div className="flex bg-gray-100 rounded-lg p-1">
-                  <button onClick={() => setViewMode("grid")} className={`p-1.5 rounded ${viewMode === "grid" ? "bg-white shadow-sm text-gray-900" : "text-gray-500"}`}><LayoutGrid className="w-4 h-4" /></button>
-                  <button onClick={() => setViewMode("list")} className={`p-1.5 rounded ${viewMode === "list" ? "bg-white shadow-sm text-gray-900" : "text-gray-500"}`}><List className="w-4 h-4" /></button>
+                  <button
+                    onClick={() => setViewMode("grid")}
+                    className={`p-1.5 rounded ${viewMode === "grid" ? "bg-white shadow-sm text-gray-900" : "text-gray-500"}`}
+                  >
+                    <LayoutGrid className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => setViewMode("list")}
+                    className={`p-1.5 rounded ${viewMode === "list" ? "bg-white shadow-sm text-gray-900" : "text-gray-500"}`}
+                  >
+                    <List className="w-4 h-4" />
+                  </button>
                 </div>
               </div>
             </div>
@@ -1861,22 +1899,31 @@ const AdminPanel = () => {
             {filteredUsers.length === 0 && (
               <div className="text-center py-16 bg-white rounded-2xl border border-gray-100">
                 <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-4 opacity-20" />
-                <p className="text-gray-500 font-medium">No unverified users found</p>
+                <p className="text-gray-500 font-medium">
+                  No unverified users found
+                </p>
               </div>
             )}
           </>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {verificationRequests.filter(r => r.status === 'pending').map(req => (
-              <RequestCard key={req.id} req={req} />
-            ))}
-            {verificationRequests.filter(r => r.status === 'pending').length === 0 && (
+            {verificationRequests
+              .filter((r) => r.status === "pending")
+              .map((req) => (
+                <RequestCard key={req.id} req={req} />
+              ))}
+            {verificationRequests.filter((r) => r.status === "pending")
+              .length === 0 && (
               <div className="col-span-full text-center py-20 bg-white rounded-3xl border border-gray-100">
                 <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
                   <CheckSquare className="w-8 h-8 text-gray-200" />
                 </div>
-                <h3 className="text-lg font-bold text-gray-900">No Pending Requests</h3>
-                <p className="text-sm text-gray-500 mt-1">All verification applications have been reviewed.</p>
+                <h3 className="text-lg font-bold text-gray-900">
+                  No Pending Requests
+                </h3>
+                <p className="text-sm text-gray-500 mt-1">
+                  All verification applications have been reviewed.
+                </p>
               </div>
             )}
           </div>
@@ -1994,19 +2041,21 @@ const AdminPanel = () => {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center space-x-1 sm:space-x-2 px-3 sm:px-4 md:px-6 py-2 sm:py-3 rounded-xl font-medium transition-all whitespace-nowrap ${activeTab === tab.id
-                ? "bg-violet-500 text-white shadow-lg shadow-violet-200"
-                : "bg-white text-gray-600 hover:bg-gray-100"
-                }`}
+              className={`flex items-center space-x-1 sm:space-x-2 px-3 sm:px-4 md:px-6 py-2 sm:py-3 rounded-xl font-medium transition-all whitespace-nowrap ${
+                activeTab === tab.id
+                  ? "bg-violet-500 text-white shadow-lg shadow-violet-200"
+                  : "bg-white text-gray-600 hover:bg-gray-100"
+              }`}
             >
               <tab.icon className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
               <p className="text-sm md:text-m">{tab.label}</p>
               {tab.badge > 0 && (
                 <span
-                  className={`px-1.5 sm:px-2 py-0.5 rounded-full text-xs ${activeTab === tab.id
-                    ? "bg-white text-violet-600"
-                    : "bg-violet-100 text-violet-600"
-                    }`}
+                  className={`px-1.5 sm:px-2 py-0.5 rounded-full text-xs ${
+                    activeTab === tab.id
+                      ? "bg-white text-violet-600"
+                      : "bg-violet-100 text-violet-600"
+                  }`}
                 >
                   {tab.badge}
                 </span>
@@ -2336,8 +2385,8 @@ const AdminPanel = () => {
                         <span className="font-medium text-gray-800">
                           {userDetails.user?.date_of_birth
                             ? new Date(
-                              userDetails.user.date_of_birth,
-                            ).toLocaleDateString()
+                                userDetails.user.date_of_birth,
+                              ).toLocaleDateString()
                             : "N/A"}
                         </span>
                       </div>
@@ -2398,8 +2447,8 @@ const AdminPanel = () => {
                         <span className="font-medium">Banned At:</span>{" "}
                         {userDetails.user?.banned_at
                           ? new Date(
-                            userDetails.user.banned_at,
-                          ).toLocaleString()
+                              userDetails.user.banned_at,
+                            ).toLocaleString()
                           : "N/A"}
                       </p>
                       <p>
@@ -2439,12 +2488,13 @@ const AdminPanel = () => {
                                 </p>
                               </div>
                               <span
-                                className={`px-2 py-1 rounded-full text-xs font-medium ${issue.priority === "critical"
-                                  ? "bg-red-100 text-red-700"
-                                  : issue.priority === "high"
-                                    ? "bg-orange-100 text-orange-700"
-                                    : "bg-gray-100 text-gray-700"
-                                  }`}
+                                className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                  issue.priority === "critical"
+                                    ? "bg-red-100 text-red-700"
+                                    : issue.priority === "high"
+                                      ? "bg-orange-100 text-orange-700"
+                                      : "bg-gray-100 text-gray-700"
+                                }`}
                               >
                                 {issue.priority}
                               </span>
