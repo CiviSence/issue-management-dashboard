@@ -416,6 +416,7 @@ const AdminPanel = () => {
     setLoading(true);
     try {
       const data = await adminGetUserDetailed(userId);
+      console.log("user details",data);
       setUserDetails(data);
       setShowUserModal(true);
     } catch (error) {

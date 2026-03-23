@@ -150,10 +150,7 @@ const ResolvedIssues = () => {
       />
       <SideNav />
       <BottomNav />
-      {loadingResolved ? (
-        <SkeletonLoader />
-      ) : resolvedIssues.length > 0 ? (
-        <>
+      
           <div className="w-full pb-20 md:pb-2 p-2 lg:p-4 lg:w-[calc(100vw-15vw)]  overflow-x-auto ">
             <div className="w-full bg-violet-500 p-4 rounded-2xl">
               <div
@@ -174,7 +171,10 @@ const ResolvedIssues = () => {
                 <Searchbar />
               </div>
             </div>
-
+{loadingResolved ? (
+        <SkeletonLoader />
+      ) : resolvedIssues.length > 0 ? (
+        <>
             <div className="bg-white rounded-xl shadow-sm p-4 md:p-6 w-full mt-2">
               {/* Header */}
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-5">
@@ -379,7 +379,7 @@ const ResolvedIssues = () => {
                 ))}
               </div>
             </div>
-          </div>
+         
         </>
       ) : (
         <div className="w-full min-h-[60vh] flex flex-col items-center justify-center text-center p-6 bg-white rounded-2xl shadow-sm mt-4 mx-auto lg:w-[calc(100vw-15vw)]">
@@ -392,6 +392,7 @@ const ResolvedIssues = () => {
           </p>
         </div>
       )}
+       </div>
     </>
   );
 };

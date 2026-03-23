@@ -135,7 +135,7 @@ export const adminGetAllRequests = async () => {
 
 export const adminGetUnverifiedUsers = async () => {
     try {
-        const { data } = await instance.get("/admin/users-unverified");
+        const { data } = await instance.get("/admin/unverified-users");
         return data;
     } catch (error) {
         throw new Error(error.response?.data?.detail || "Admin: Failed to fetch unverified users");
@@ -144,7 +144,7 @@ export const adminGetUnverifiedUsers = async () => {
 
 export const adminGetUserDetailed = async (userId) => {
     try {
-        const { data } = await instance.get(`/admin/user-details/${userId}`);
+        const { data } = await instance.get(`/admin/users/${userId}/detailed`);
         return data;
     } catch (error) {
         throw new Error(error.response?.data?.detail || "Admin: Failed to fetch user audit details");
@@ -153,7 +153,7 @@ export const adminGetUserDetailed = async (userId) => {
 
 export const adminReviewDocument = async (requestId, action) => {
     try {
-        const { data } = await instance.post(`/admin/verification/review/${requestId}`, {
+        const { data } = await instance.post(`/admin/verification/review-document/${requestId}`, {
             action: action
         });
         return data;
@@ -164,7 +164,7 @@ export const adminReviewDocument = async (requestId, action) => {
 
 export const adminManualVerify = async (userId) => {
     try {
-        const { data } = await instance.post(`/admin/verification/manual-verify/${userId}`);
+        const { data } = await instance.post(`/verification/admin/manual-verify/${userId}`);
         return data;
     } catch (error) {
         throw new Error(error.response?.data?.detail || "Admin: Failed to manually verify user");
@@ -173,7 +173,7 @@ export const adminManualVerify = async (userId) => {
 
 export const adminRevokeVerification = async (userId) => {
     try {
-        const { data } = await instance.post(`/admin/verification/revoke/${userId}`);
+        const { data } = await instance.post(`/admin/revoke-verification/${userId}`);
         return data;
     } catch (error) {
         throw new Error(error.response?.data?.detail || "Admin: Failed to revoke verification");

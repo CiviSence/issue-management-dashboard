@@ -99,7 +99,6 @@ const IssueDetails = () => {
 
     try {
       const response = await axios.post(`/admin/ban-user/${issue.user_id}`, {
-        // ✅ Use issue.user_id directly
         reason: banReason,
         delete_content: deleteContent,
         notify_user: notifyUser,
