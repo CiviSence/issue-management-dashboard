@@ -7,7 +7,7 @@ import {
 } from "./auth-utils";
 
 const instance = axios.create({
-  baseURL: "https://csm-backend-aws.duckdns.org/api",
+  baseURL: import.meta.env.VITE_API_BASE_URL || "https://csm-backend-aws.duckdns.org/api",
   withCredentials: true, // IMPORTANT for session/cookies
   headers: {
     Accept: "application/json",
