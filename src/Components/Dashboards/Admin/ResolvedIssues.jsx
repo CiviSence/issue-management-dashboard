@@ -10,23 +10,15 @@ import { toast, ToastContainer } from "react-toastify";
 
 const SkeletonLoader = () => {
   return (
-    <div className="w-full p-2 lg:p-4 lg:w-[calc(100vw-15vw)] overflow-x-auto">
-      {/* Header */}
-      <div className="w-full bg-violet-300 p-4 rounded-2xl">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-          <Skeleton height={36} width={180} />
-          <Skeleton height={44} width={260} />
-        </div>
-      </div>
-
+    <div className="w-full lg:w-[calc(100vw-19vw)] overflow-x-auto">
       {/* Table Container */}
-      <div className="bg-white rounded-xl shadow-sm p-4 md:p-6 w-full mt-4">
+      <div className="bg-white rounded-xl shadow-sm p-4 md:p-6 w-full mt-2">
         {/* Table header */}
         <div className="flex justify-between items-center mb-5">
-          <Skeleton height={24} width={200} />
+          <Skeleton height={25} width={200} />
           <div className="flex gap-2 flex-col md:flex-row">
-            <Skeleton height={38} width={140} />
-            <Skeleton height={38} width={140} />
+            <Skeleton height={25} width={140} />
+            <Skeleton height={25} width={140} />
           </div>
         </div>
 
@@ -35,7 +27,7 @@ const SkeletonLoader = () => {
           {[...Array(15)].map((_, i) => (
             <div
               key={i}
-              className="grid grid-cols-5 gap-4 py-3 border-none"
+              className="grid grid-cols-5 gap-4 py-2 border-none"
             >
               <Skeleton height={25} />
               <Skeleton height={25} />
@@ -378,8 +370,7 @@ const ResolvedIssues = () => {
                   </div>
                 ))}
               </div>
-            </div>
-         
+            </div>   
         </>
       ) : (
         <div className="w-full min-h-[60vh] flex flex-col items-center justify-center text-center p-6 bg-white rounded-2xl shadow-sm mt-4 mx-auto lg:w-[calc(100vw-15vw)]">

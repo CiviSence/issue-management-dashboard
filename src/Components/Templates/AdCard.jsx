@@ -5,7 +5,7 @@ const AdCard = ({ ad }) => {
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-gradient-to-br from-violet-50 to-white rounded-2xl border border-violet-100 shadow-sm mb-4 overflow-hidden relative group"
+            className="bg-linear-to-br from-violet-50 to-white rounded-2xl border border-violet-100 shadow-sm mb-4 overflow-hidden relative group"
         >
             <div className="absolute top-4 right-4 bg-violet-600/10 text-violet-600 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider z-10">
                 Sponsored

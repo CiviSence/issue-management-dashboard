@@ -126,7 +126,7 @@ export const getSentRequests = async () => {
 
 export const adminGetAllRequests = async () => {
     try {
-        const { data } = await instance.get("/admin/verification/requests");
+        const { data } = await instance.get("/verification/admin/all-requests");
         return data;
     } catch (error) {
         throw new Error(error.response?.data?.detail || "Admin: Failed to fetch all requests");
