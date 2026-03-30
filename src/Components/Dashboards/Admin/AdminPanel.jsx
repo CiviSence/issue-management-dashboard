@@ -13,6 +13,8 @@ import {
   adminReviewDocument,
   adminManualVerify,
   adminRevokeVerification,
+  adminBanUser,
+  adminUnbanUser,
 } from "../../../Utils/verification";
 import {
   Users,
@@ -536,57 +538,49 @@ const AdminPanel = () => {
       return;
     }
     try {
-      const response = await axios.post(`/admin/ban-user/${selectedUserId}`, {
+      await adminBanUser(selectedUserId, {
         reason: banReason,
         delete_content: deleteContent,
         notify_user: notifyUser,
       });
 
-      if (response.status === 200) {
-        toast.success("User banned successfully!");
-        setShowBanModal(false);
-        fetchDashboardStats();
-        fetchBannedUsers();
-      }
+      toast.success("User banned successfully!");
+      setShowBanModal(false);
+      fetchDashboardStats();
+      fetchBannedUsers();
     } catch (error) {
       console.error("Error banning user:", error);
-      toast.error(error.response?.data?.detail || "Failed to ban user.");
+      toast.error(error.message || "Failed to ban user.");
     }
   };
 
   //Unban User
   const handleUnbanUser = async (userId) => {
     try {
-      const response = await axios.post(`/admin/unban-user/${userId}`, {
-        notify_user: true,
-      });
-      if (response.status === 200) {
-        toast.success("User unbanned successfully");
-        fetchBannedUsers();
-        fetchDashboardStats();
-      }
+      await adminUnbanUser(userId);
+      toast.success("User unbanned successfully");
+      fetchBannedUsers();
+      fetchDashboardStats();
     } catch (error) {
       console.error("Error unbanning user:", error);
-      toast.error(error.response?.data?.detail || "Failed to unban user");
+      toast.error(error.message || "Failed to unban user");
     }
   };
 
   //BanUser function for direct calls
   const handleBanUser = async (userId, reason) => {
     try {
-      const response = await axios.post(`/admin/ban-user/${userId}`, {
+      await adminBanUser(userId, {
         reason: reason || "Violation of terms",
         delete_content: false,
         notify_user: true,
       });
-      if (response.status === 200) {
-        toast.success("User banned successfully");
-        fetchDashboardStats();
-        fetchBannedUsers();
-      }
+      toast.success("User banned successfully");
+      fetchDashboardStats();
+      fetchBannedUsers();
     } catch (error) {
       console.error("Error banning user:", error);
-      toast.error(error.response?.data?.detail || "Failed to ban user");
+      toast.error(error.message || "Failed to ban user");
     }
   };
 

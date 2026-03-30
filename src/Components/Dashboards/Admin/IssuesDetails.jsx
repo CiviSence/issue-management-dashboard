@@ -11,6 +11,13 @@ import {
   getIssueById,
   updateIssue,
 } from "../../../Utils/issues";
+import {
+  adminReviewDocument,
+  adminManualVerify,
+  adminRevokeVerification,
+  adminBanUser,
+  adminUnbanUser,
+} from "../../../Utils/verification";
 import Loader from "../../Templates/Loader";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useUsers } from "../../../Context/UserContext";
@@ -98,50 +105,42 @@ const IssueDetails = () => {
     }
 
     try {
-      const response = await axios.post(`/admin/ban-user/${issue.user_id}`, {
+      await adminBanUser(issue.user_id, {
         reason: banReason,
         delete_content: deleteContent,
         notify_user: notifyUser,
       });
 
-      if (response.status === 200) {
-        toast.success("User banned successfully!");
-        setShowBanModal(false);
-      }
+      toast.success("User banned successfully!");
+      setShowBanModal(false);
     } catch (error) {
       console.error("Error banning user:", error);
-      toast.error(error.response?.data?.detail || "Failed to ban user.");
+      toast.error(error.message || "Failed to ban user.");
     }
   };
 
   const handleUnbanUser = async (userId) => {
     try {
-      const response = await axios.post(`/admin/unban-user/${userId}`, {
-        notify_user: true,
-      });
-      if (response.status === 200) {
-        toast.success("User unbanned successfully");
-      }
+      await adminUnbanUser(userId);
+      toast.success("User unbanned successfully");
     } catch (error) {
       console.error("Error unbanning user:", error);
-      toast.error(error.response?.data?.detail || "Failed to unban user");
+      toast.error(error.message || "Failed to unban user");
     }
   };
 
   // Added missing handleBanUser function for direct calls
   const handleBanUser = async (userId, reason) => {
     try {
-      const response = await axios.post(`/admin/ban-user/${userId}`, {
+      await adminBanUser(userId, {
         reason: reason || "Violation of terms",
         delete_content: false,
         notify_user: true,
       });
-      if (response.status === 200) {
-        toast.success("User banned successfully");
-      }
+      toast.success("User banned successfully");
     } catch (error) {
       console.error("Error banning user:", error);
-      toast.error(error.response?.data?.detail || "Failed to ban user");
+      toast.error(error.message || "Failed to ban user");
     }
   };
 
