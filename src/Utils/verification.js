@@ -153,7 +153,7 @@ export const adminGetUserDetailed = async (userId) => {
 
 export const adminReviewDocument = async (requestId, action) => {
     try {
-        const { data } = await instance.post(`/admin/verification/review-document/${requestId}`, {
+        const { data } = await instance.post(`/verification/admin/review-document/${requestId}`, {
             action: action
         });
         return data;
@@ -171,11 +171,51 @@ export const adminManualVerify = async (userId) => {
     }
 };
 
+/**
+ * Revokes a user's verification status.
+ * @param {string} userId - The ID of the user to revoke verification for
+ */
 export const adminRevokeVerification = async (userId) => {
     try {
         const { data } = await instance.post(`/admin/revoke-verification/${userId}`);
         return data;
     } catch (error) {
         throw new Error(error.response?.data?.detail || "Admin: Failed to revoke verification");
+    }
+};
+
+
+
+/**
+ * Bans a user with a reason and optional content deletion.
+ * @param {string} userId - The ID of the user to ban
+ * @param {object} options - { reason, delete_content, notify_user }
+ */
+export const adminBanUser = async (userId, options = {}) => {
+    try {
+        const { data } = await instance.post(`/admin/ban-user/${userId}`, {
+            reason: options.reason || "Violation of terms",
+            delete_content: options.delete_content ?? false,
+            notify_user: options.notify_user ?? true
+        });
+        return data;
+    } catch (error) {
+        throw new Error(error.response?.data?.detail || "Admin: Failed to ban user");
+    }
+};
+
+/**
+ * Unbans a user.
+ * @param {string} userId - The ID of the user to unban
+ * @param {boolean} notifyUser - Whether to notify the user via email/notification
+ */
+export const adminUnbanUser = async (userId, notifyUser = true) => {
+    try {
+        const { data } = await instance.post(`/admin/unban-user/${userId}`, {
+            notify_user: notifyUser
+        });
+        return data;
+    } catch (error) {
+        throw new Error(error.response?.data?.detail || "Admin: Failed to unban user");
     }
 };
