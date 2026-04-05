@@ -11,17 +11,11 @@ import {
   getIssueById,
   updateIssue,
 } from "../../../Utils/issues";
-import {
-  adminReviewDocument,
-  adminManualVerify,
-  adminRevokeVerification,
-  adminBanUser,
-  adminUnbanUser,
-} from "../../../Utils/verification";
+import { adminBanUser, adminUnbanUser } from "../../../Utils/verification";
 import Loader from "../../Templates/Loader";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useUsers } from "../../../Context/UserContext";
-import axios from "../../../Utils/axios";
+
 const IssueDetails = () => {
   const { id } = useParams();
   const location = useLocation();
@@ -41,13 +35,13 @@ const IssueDetails = () => {
   const [notifyUser, setNotifyUser] = useState(true);
   const { staff, fetchStaff } = useUsers();
 
-  const fetchIssue = async () => {
+  const fetchIssue = async (issueId) => {
     try {
-      const data = await getIssueById(id);
+      const data = await getIssueById(issueId); 
       console.log("Issue data:", data);
       setIssue(data);
     } catch (error) {
-      toast.error("Failed to fetch issue details");
+      console.error("Get Issue by Id",error)
     }
   };
 
@@ -228,8 +222,11 @@ const IssueDetails = () => {
   };
 
   useEffect(() => {
+    if (location.state) {
+      setIssue(location.state);
+    }
     fetchStaff();
-    fetchIssue();
+    fetchIssue(id);
     const handleClickOutside = (e) => {
       if (!e.target.closest(".user-actions-menu")) {
         setUserMenuOpen(null);

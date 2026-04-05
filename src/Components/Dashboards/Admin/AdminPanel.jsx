@@ -315,6 +315,203 @@ const NotificationsTab = ({
   </div>
 );
 
+// Skeleton components for loading states
+const DashboardSkeleton = () => (
+  <div className="space-y-6 animate-pulse">
+    <div className="flex items-center justify-between">
+      <div>
+        <Skeleton height={28} width={220} />
+        <Skeleton height={16} width={180} className="mt-2" />
+      </div>
+      <Skeleton height={36} width={100} borderRadius={8} />
+    </div>
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      {[...Array(4)].map((_, i) => (
+        <div key={i} className="bg-white rounded-xl p-4 border border-gray-100">
+          <Skeleton height={12} width={80} />
+          <Skeleton height={32} width={60} className="mt-2" />
+          <Skeleton height={12} width={50} className="mt-1" />
+        </div>
+      ))}
+    </div>
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <div className="px-4 py-3 border-b border-gray-100 bg-gray-50/50">
+          <Skeleton height={20} width={180} />
+        </div>
+        <div className="divide-y divide-gray-100">
+          {[...Array(5)].map((_, i) => (
+            <div key={i} className="p-4 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Skeleton circle height={48} width={48} />
+                <div>
+                  <Skeleton height={14} width={120} />
+                  <Skeleton height={12} width={100} className="mt-1" />
+                </div>
+              </div>
+              <Skeleton height={32} width={70} borderRadius={8} />
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <div className="px-4 py-3 border-b border-gray-100 bg-gray-50/50">
+          <Skeleton height={20} width={160} />
+        </div>
+        <div className="p-4 space-y-3">
+          <div className="grid grid-cols-2 gap-3">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="p-3 bg-gray-50 rounded-lg">
+                <Skeleton height={12} width={60} />
+                <Skeleton height={24} width={40} className="mt-1" />
+              </div>
+            ))}
+          </div>
+          <Skeleton height={8} borderRadius={4} />
+        </div>
+      </div>
+    </div>
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      {[...Array(4)].map((_, i) => (
+        <div key={i} className="flex items-center gap-3 p-3 bg-white border border-gray-200 rounded-xl">
+          <Skeleton circle height={36} width={36} />
+          <Skeleton height={14} width={100} />
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
+const UsersTableSkeleton = () => (
+  <div className="space-y-4 animate-pulse">
+    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+      <div>
+        <Skeleton height={28} width={150} />
+        <Skeleton height={16} width={100} className="mt-1" />
+      </div>
+      <div className="flex items-center gap-3">
+        <Skeleton height={32} width={120} borderRadius={20} />
+        <Skeleton height={32} width={110} borderRadius={20} />
+        <Skeleton height={36} width={180} borderRadius={8} />
+        <Skeleton height={36} width={80} borderRadius={8} />
+      </div>
+    </div>
+    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+      <div className="overflow-x-auto">
+        <table className="w-full">
+          <thead className="bg-gray-50 border-b border-gray-200">
+            <tr>
+              {["#", "User", "Status", "Role", "Department", "Reputation", "Joined", "Actions"].map((h, i) => (
+                <th key={i} className="px-4 py-3 text-left">
+                  <Skeleton height={12} width={i === 1 ? 50 : 70} />
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-100">
+            {[...Array(8)].map((_, i) => (
+              <tr key={i}>
+                <td className="px-4 py-3"><Skeleton height={16} width={16} /></td>
+                <td className="px-4 py-3">
+                  <div className="flex items-center gap-3">
+                    <Skeleton circle height={36} width={36} />
+                    <div>
+                      <Skeleton height={14} width={120} />
+                      <Skeleton height={12} width={160} className="mt-1" />
+                    </div>
+                  </div>
+                </td>
+                <td className="px-4 py-3"><Skeleton height={24} width={80} borderRadius={12} /></td>
+                <td className="px-4 py-3"><Skeleton height={24} width={60} borderRadius={12} /></td>
+                <td className="px-4 py-3"><Skeleton height={14} width={90} /></td>
+                <td className="px-4 py-3"><Skeleton height={14} width={40} /></td>
+                <td className="px-4 py-3"><Skeleton height={14} width={80} /></td>
+                <td className="px-4 py-3">
+                  <div className="flex gap-1 justify-end">
+                    <Skeleton circle height={28} width={28} />
+                    <Skeleton circle height={28} width={28} />
+                    <Skeleton circle height={28} width={28} />
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+);
+
+const UnverifiedSkeleton = () => (
+  <div className="space-y-4 animate-pulse">
+    <div className="flex items-center justify-between">
+      <Skeleton height={36} width={280} borderRadius={12} />
+    </div>
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div>
+        <Skeleton height={24} width={180} />
+        <Skeleton height={14} width={220} className="mt-1" />
+      </div>
+      <div className="flex items-center gap-3">
+        <Skeleton height={36} width={200} borderRadius={8} />
+        <Skeleton height={36} width={70} borderRadius={8} />
+      </div>
+    </div>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      {[...Array(8)].map((_, i) => (
+        <div key={i} className="bg-white rounded-xl border border-gray-200 p-4">
+          <div className="flex items-start justify-between">
+            <div className="flex items-center gap-3">
+              <Skeleton circle height={48} width={48} />
+              <div>
+                <Skeleton height={16} width={100} />
+                <Skeleton height={12} width={140} className="mt-1" />
+              </div>
+            </div>
+            <Skeleton height={16} width={16} />
+          </div>
+          <div className="mt-4 grid grid-cols-2 gap-2">
+            <Skeleton height={14} width={80} />
+            <Skeleton height={14} width={60} />
+          </div>
+          <div className="mt-4 flex gap-2">
+            <Skeleton height={36} borderRadius={8} className="flex-1" />
+            <Skeleton height={36} width={40} borderRadius={8} />
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
+const BannedSkeleton = () => (
+  <div className="space-y-6 animate-pulse">
+    <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+      <div className="p-6 border-b border-gray-100">
+        <Skeleton height={24} width={200} />
+      </div>
+      <div className="divide-y divide-gray-100">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="p-6 flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <Skeleton circle height={48} width={48} />
+              <div>
+                <Skeleton height={16} width={140} />
+                <Skeleton height={14} width={180} className="mt-1" />
+                <div className="flex items-center space-x-2 mt-1">
+                  <Skeleton height={20} width={120} borderRadius={10} />
+                  <Skeleton height={14} width={150} />
+                </div>
+              </div>
+            </div>
+            <Skeleton height={40} width={100} borderRadius={12} />
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+);
+
 const AdminPanel = () => {
   // States
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -326,6 +523,12 @@ const AdminPanel = () => {
   const [notificationStats, setNotificationStats] = useState(null);
   const [notificationType, setNotificationType] = useState("custom");
   const [loading, setLoading] = useState(false);
+
+  // Loading states for skeleton loaders
+  const [loadingUsers, setLoadingUsers] = useState(true);
+  const [loadingUnverified, setLoadingUnverified] = useState(true);
+  const [loadingBanned, setLoadingBanned] = useState(true);
+  const [loadingRequests, setLoadingRequests] = useState(true);
 
   const [userDetails, setUserDetails] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -380,6 +583,8 @@ const AdminPanel = () => {
       }));
     } catch (error) {
       console.error("Error fetching users:", error);
+    } finally {
+      setLoadingUsers(false);
     }
   };
 
@@ -391,6 +596,8 @@ const AdminPanel = () => {
       setStats((prev) => ({ ...prev, unverifiedUsers: data.length }));
     } catch (error) {
       console.error("Error fetching unverified users:", error);
+    } finally {
+      setLoadingUnverified(false);
     }
   };
 
@@ -398,9 +605,13 @@ const AdminPanel = () => {
     try {
       const data = await adminGetAllRequests();
       console.log("verification requests : ", data);
-      setVerificationRequests(data);
+      const requests = Array.isArray(data) ? data : data?.requests || data?.data || [];
+      console.log("Request statuses:", [...new Set(requests.map(r => r.status))]);
+      setVerificationRequests(requests);
     } catch (error) {
       console.error("Error fetching verification requests:", error);
+    } finally {
+      setLoadingRequests(false);
     }
   };
 
@@ -413,6 +624,8 @@ const AdminPanel = () => {
       setStats((prev) => ({ ...prev, bannedUsers: data.length }));
     } catch (error) {
       console.error("Error fetching banned users:", error);
+    } finally {
+      setLoadingBanned(false);
     }
   };
 
@@ -715,6 +928,10 @@ const AdminPanel = () => {
 
     return (
       <div className="space-y-6 animate-fade-in">
+        {loadingUsers ? (
+          <DashboardSkeleton />
+        ) : (
+        <>
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
@@ -964,6 +1181,8 @@ const AdminPanel = () => {
             </button>
           ))}
         </div>
+        </>
+        )}
       </div>
     );
   };
@@ -1239,6 +1458,8 @@ const AdminPanel = () => {
         </div>
       </div>
     );
+
+    if (loadingUsers) return <UsersTableSkeleton />;
 
     return (
       <div className="space-y-4 animate-fade-in">
@@ -1820,6 +2041,8 @@ const AdminPanel = () => {
       </div>
     );
 
+    if (loadingUnverified && loadingRequests) return <UnverifiedSkeleton />;
+
     return (
       <div className="space-y-4 animate-fade-in">
         <div className="flex items-center justify-between">
@@ -1835,9 +2058,9 @@ const AdminPanel = () => {
               className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-all ${subTab === "requests" ? "bg-violet-600 text-white shadow-md" : "text-gray-500 hover:bg-white"}`}
             >
               Review Requests{" "}
-              {verificationRequests.length > 0 && (
+              {verificationRequests.filter((r) => r.status?.toLowerCase() === "pending").length > 0 && (
                 <span className="ml-1 px-1.5 bg-white text-violet-600 rounded-md text-[10px]">
-                  {verificationRequests.length}
+                  {verificationRequests.filter((r) => r.status?.toLowerCase() === "pending").length}
                 </span>
               )}
             </button>
@@ -1902,11 +2125,11 @@ const AdminPanel = () => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {verificationRequests
-              .filter((r) => r.status === "pending")
+              .filter((r) => r.status?.toLowerCase() === "pending")
               .map((req) => (
                 <RequestCard key={req.id} req={req} />
               ))}
-            {verificationRequests.filter((r) => r.status === "pending")
+            {verificationRequests.filter((r) => r.status?.toLowerCase() === "pending")
               .length === 0 && (
               <div className="col-span-full text-center py-20 bg-white rounded-3xl border border-gray-100">
                 <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -1926,7 +2149,10 @@ const AdminPanel = () => {
     );
   };
 
-  const BannedTab = () => (
+  const BannedTab = () => {
+    if (loadingBanned) return <BannedSkeleton />;
+
+    return (
     <div className="space-y-6">
       <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
         <div className="p-6 border-b border-gray-100">
@@ -1981,6 +2207,7 @@ const AdminPanel = () => {
       </div>
     </div>
   );
+  };
   return (
     <>
       <ToastContainer

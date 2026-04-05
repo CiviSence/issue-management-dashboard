@@ -35,12 +35,12 @@ const AdminDashboard = () => {
 
   const initialStats = {
     category: {
-      maintainance: 0,
-      cleanness: 0,
+      maintenance: 0,
+      cleanliness: 0,
       facilities: 0,
       security: 0,
       infrastructure: 0,
-      other: 0,
+      others: 0,
     },
     priority: { new: 0, low: 0, medium: 0, high: 0, critical: 0 },
     location: {
@@ -113,8 +113,8 @@ const AdminDashboard = () => {
 
   // Chart data
   const pieChartData = [
-    { name: "Maintainance", value: category.maintainance, color: "#3b5bdb" },
-    { name: "Cleanliness", value: category.cleanness, color: "#40c057" },
+    { name: "Maintenance", value: category.maintenance, color: "#3b5bdb" },
+    { name: "Cleanliness", value: category.cleanliness, color: "#40c057" },
     { name: "Security", value: category.security, color: "#fa5252" },
     { name: "Facilities", value: category.facilities, color: "#fab005" },
     {
@@ -124,7 +124,7 @@ const AdminDashboard = () => {
     },
     {
       name: "Other",
-      value: category.other,
+      value: category.others,
       color: "#6594f2",
     },
   ];

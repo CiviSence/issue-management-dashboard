@@ -126,10 +126,10 @@ const Searchbar = () => {
     );
   }, [query, issues]);
 
-  const handleSelect = (id) => {
+  const handleSelect = (issue) => {
     setQuery("");
     setShowResults(false);
-    navigate(`/issues/${id}`);
+    navigate(`/issues/${issue.id}`, { state: issue });
   };
 
   // Format relative time
@@ -366,7 +366,7 @@ const Searchbar = () => {
             filteredIssues.map((issue) => (
               <div
                 key={issue.id}
-                onClick={() => handleSelect(issue.id)}
+                onClick={() => handleSelect(issue)}
                 className="px-3 sm:px-4 py-2.5 sm:py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-50 last:border-b-0 transition-colors"
               >
                 <p className="font-medium text-sm text-gray-900">
