@@ -26,8 +26,8 @@ import TaskDetails from "./Components/Dashboards/Staff/TaskDetails.jsx";
 import TrustCenter from "./Pages/TrustCenter.jsx";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
-import PrivacyPolicy from "../public/legal/privacyPolicy.jsx";
-import TermsOfUse from "../public/legal/TermsOfUse.jsx";
+import PrivacyPolicy from "./Components/legal/privacyPolicy.jsx";
+import TermsOfUse from "./Components/legal/TermsOfUse.jsx";
 
 const App = () => {
   useEffect(() => {
