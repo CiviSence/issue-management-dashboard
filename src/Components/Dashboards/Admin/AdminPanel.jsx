@@ -1007,7 +1007,7 @@ const AdminPanel = () => {
           case "name":
             return a.name?.localeCompare(b.name);
           case "reputation":
-            return (b.reputation || 0) - (a.reputation || 0);
+            return (b.reputation_points || 0) - (a.reputation_points || 0);
           case "oldest":
             return new Date(a.created_at) - new Date(b.created_at);
           default:
@@ -1146,7 +1146,7 @@ const AdminPanel = () => {
             )}
             <div className="flex items-center gap-1.5 text-gray-600">
               <Award className="w-3.5 h-3.5 text-yellow-500" />
-              <span>{user.reputation || 0} pts</span>
+              <span>{user.reputation_points || 0} pts</span>
             </div>
             <div className="flex items-center gap-1.5 text-gray-600">
               <Calendar className="w-3.5 h-3.5 text-gray-400" />
@@ -1217,7 +1217,7 @@ const AdminPanel = () => {
           <div className="text-sm text-gray-600">{user.role || "User"}</div>
           <div className="flex items-center gap-1 text-sm text-gray-600">
             <Award className="w-4 h-4 text-yellow-500" />
-            {user.reputation || 0}
+            {user.reputation_points || 0}
           </div>
         </div>
 
@@ -1533,7 +1533,7 @@ const AdminPanel = () => {
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-1 text-sm text-gray-700">
                           <Award className="w-4 h-4 text-yellow-500" />
-                          {user.reputation || 0}
+                          {user.reputation_points || 0}
                         </div>
                       </td>
                       <td className="px-4 py-3 text-sm text-gray-500">
