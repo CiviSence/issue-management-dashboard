@@ -29,6 +29,7 @@ import { toast } from "react-toastify";
 import PrivacyPolicy from "./Components/legal/privacyPolicy.jsx";
 import TermsOfUse from "./Components/legal/TermsOfUse.jsx";
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 
 const App = () => {
   useEffect(() => {
@@ -53,6 +54,7 @@ const App = () => {
     <ThemeProvider>
       <div className="w-full h-screen bg-[#F0EEFF] flex ">
         <Analytics />
+        <SpeedInsights />
         <Routes>
           {/* public routes */}
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
