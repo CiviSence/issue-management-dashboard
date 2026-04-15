@@ -11,7 +11,14 @@ import {
   getIssueById,
   updateIssue,
 } from "../../../Utils/issues";
-import { adminBanUser, adminUnbanUser } from "../../../Utils/verification";
+import {
+  adminBanUser,
+  adminUnbanUser,
+  adminGetUserDetailed,
+  adminManualVerify,
+  adminRevokeVerification,
+} from "../../../Utils/verification";
+import axios from "../../../Utils/axios";
 import Loader from "../../Templates/Loader";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useUsers } from "../../../Context/UserContext";
@@ -219,6 +226,61 @@ const IssueDetails = () => {
     } catch (error) {
       toast.error("Failed to update priority.");
     }
+  };
+
+  const promoteToTrusted = async (userId) => {
+    try {
+      const response = await axios.post(`/admin/promote-to-trusted/${userId}`);
+      if (response.status === 200) {
+        toast.success("User promoted to trusted");
+      }
+    } catch (error) {
+      console.error("Error promoting user:", error);
+      toast.error(error.response?.data?.detail || error.message || "Failed to promote user");
+    }
+  };
+
+  const revokeVerification = async (userId) => {
+    try {
+      await adminRevokeVerification(userId);
+      toast.success("Verification revoked");
+    } catch (error) {
+      console.error("Error revoking verification:", error);
+      toast.error(error.message || "Failed to revoke verification");
+    }
+  };
+
+  const addReputationPoints = async (userId) => {
+    const points = window.prompt("Enter points to add/remove (e.g. 50 or -50):");
+    if (!points) return;
+    const reason = window.prompt(`Enter reason for reputation update:`);
+    if (!reason) return;
+
+    try {
+      const response = await axios.post(`/admin/add-reputation/${userId}`, {
+        points: parseInt(points),
+        reason,
+      });
+      toast.success(response.data.message || `Reputation updated successfully`);
+    } catch (error) {
+      console.error("Error updating reputation:", error);
+      toast.error(error.response?.data?.detail || "Failed to update reputation");
+    }
+  };
+
+  const getUserDetails = async (userId) => {
+    try {
+      const data = await adminGetUserDetailed(userId);
+      console.log("User audit details:", data);
+      toast.info(`User audit details logged to console for user ID: ${userId}`);
+    } catch (error) {
+      console.error("Error fetching user details:", error);
+      toast.error("Failed to fetch user details");
+    }
+  };
+
+  const reportUser = () => {
+    toast.info("User reporting feature coming soon!");
   };
 
   useEffect(() => {
@@ -954,142 +1016,142 @@ const IssueDetails = () => {
                         {userMenuOpen === issue.user_id && (
                           <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-200 z-50 text-sm overflow-hidden">
                             <button
-                              onClick={() => {
-                                // promoteToTrusted(issue.user_id);
-                                setUserMenuOpen(null);
-                              }}
-                              className="w-full text-left px-4 py-2.5 text-gray-700 hover:bg-gray-50 flex items-center gap-2"
-                            >
-                              <svg
-                                className="w-4 h-4 text-green-500"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
+                                onClick={() => {
+                                  promoteToTrusted(issue.user_id);
+                                  setUserMenuOpen(null);
+                                }}
+                                className="w-full text-left px-4 py-2.5 text-gray-700 hover:bg-gray-50 flex items-center gap-2"
                               >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                                />
-                              </svg>
-                              Promote to Trusted
-                            </button>
+                                <svg
+                                  className="w-4 h-4 text-green-500"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                                  />
+                                </svg>
+                                Promote to Trusted
+                              </button>
 
-                            <button
-                              onClick={() => {
-                                // revokeVerification(issue.user_id);
-                                setUserMenuOpen(null);
-                              }}
-                              className="w-full text-left px-4 py-2.5 text-gray-700 hover:bg-gray-50 flex items-center gap-2"
-                            >
-                              <svg
-                                className="w-4 h-4 text-orange-500"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
+                              <button
+                                onClick={() => {
+                                  revokeVerification(issue.user_id);
+                                  setUserMenuOpen(null);
+                                }}
+                                className="w-full text-left px-4 py-2.5 text-gray-700 hover:bg-gray-50 flex items-center gap-2"
                               >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                                />
-                              </svg>
-                              Revoke Verification
-                            </button>
+                                <svg
+                                  className="w-4 h-4 text-orange-500"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                                  />
+                                </svg>
+                                Revoke Verification
+                              </button>
 
-                            <button
-                              onClick={() => {
-                                // addReputationPoints(issue.user_id);
-                                setUserMenuOpen(null);
-                              }}
-                              className="w-full text-left px-4 py-2.5 text-gray-700 hover:bg-gray-50 flex items-center gap-2"
-                            >
-                              <svg
-                                className="w-4 h-4 text-blue-500"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
+                              <button
+                                onClick={() => {
+                                  addReputationPoints(issue.user_id);
+                                  setUserMenuOpen(null);
+                                }}
+                                className="w-full text-left px-4 py-2.5 text-gray-700 hover:bg-gray-50 flex items-center gap-2"
                               >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                                />
-                              </svg>
-                              Add Reputation Points
-                            </button>
+                                <svg
+                                  className="w-4 h-4 text-blue-500"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                                  />
+                                </svg>
+                                Add Reputation Points
+                              </button>
 
-                            <div className="h-px bg-gray-200 my-1" />
+                              <div className="h-px bg-gray-200 my-1" />
 
-                            <button
-                              title="Ban User"
-                              onClick={() => openBanModal()}
-                              className="w-full text-left px-4 py-2.5 text-red-600 hover:bg-red-50 flex items-center gap-2"
-                            >
-                              <svg
-                                className="w-4 h-4"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
+                              <button
+                                title="Ban User"
+                                onClick={() => openBanModal()}
+                                className="w-full text-left px-4 py-2.5 text-red-600 hover:bg-red-50 flex items-center gap-2"
                               >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
-                                />
-                              </svg>
-                              Ban
-                            </button>
+                                <svg
+                                  className="w-4 h-4"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
+                                  />
+                                </svg>
+                                Ban
+                              </button>
 
-                            <button
-                              onClick={() => {
-                                // getUserDetails(issue.user_id);
-                                setUserMenuOpen(null);
-                              }}
-                              className="w-full text-left px-4 py-2.5 text-gray-700 hover:bg-gray-50 flex items-center gap-2"
-                            >
-                              <svg
-                                className="w-4 h-4 text-gray-500"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
+                              <button
+                                onClick={() => {
+                                  getUserDetails(issue.user_id);
+                                  setUserMenuOpen(null);
+                                }}
+                                className="w-full text-left px-4 py-2.5 text-gray-700 hover:bg-gray-50 flex items-center gap-2"
                               >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                                />
-                              </svg>
-                              Get User Details
-                            </button>
+                                <svg
+                                  className="w-4 h-4 text-gray-500"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                                  />
+                                </svg>
+                                Get User Details
+                              </button>
 
-                            <button
-                              onClick={() => {
-                                // reportUser(issue.user_id);
-                                setUserMenuOpen(null);
-                              }}
-                              className="w-full text-left px-4 py-2.5 text-amber-600 hover:bg-amber-50 flex items-center gap-2"
-                            >
-                              <svg
-                                className="w-4 h-4"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
+                              <button
+                                onClick={() => {
+                                  reportUser(issue.user_id);
+                                  setUserMenuOpen(null);
+                                }}
+                                className="w-full text-left px-4 py-2.5 text-amber-600 hover:bg-amber-50 flex items-center gap-2"
                               >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                                />
-                              </svg>
-                              Report User
-                            </button>
+                                <svg
+                                  className="w-4 h-4"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                                  />
+                                </svg>
+                                Report User
+                              </button>
                           </div>
                         )}
                       </div>

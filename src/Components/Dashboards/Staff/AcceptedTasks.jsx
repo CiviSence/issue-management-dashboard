@@ -178,12 +178,16 @@ const AcceptedTasks = () => {
                         </td>
 
                         <td className="px-6 py-4 text-right">
-                          <a
-                            href="/assigned-issues"
-                            className="inline-block px-4 py-1.5 text-xs font-semibold text-white bg-primary rounded-lg hover:opacity-90 transition"
+                          <button
+                            onClick={() =>
+                              navigate(`/tasks/${issue.issue_id}`, {
+                                state: issue,
+                              })
+                            }
+                            className="inline-block px-4 py-1.5 text-xs font-semibold text-white bg-violet-500 rounded-lg hover:bg-violet-600 transition shadow-sm"
                           >
-                            View
-                          </a>
+                            View Details
+                          </button>
                         </td>
                       </tr>
                     );

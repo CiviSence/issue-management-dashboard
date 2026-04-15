@@ -9,7 +9,7 @@ import {
 } from "../../../Utils/staffissues";
 import { getIssueById } from "../../../Utils/issues";
 import Loader from "../../Templates/Loader";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import {
   CheckCircle,
   XCircle,
@@ -34,6 +34,7 @@ import {
 const TaskDetails = () => {
   const { profileData } = useUser();
   const { id } = useParams();
+  const location = useLocation();
 
   const [task, setTask] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -47,21 +48,39 @@ const TaskDetails = () => {
   // Fetch task details
   const fetchTaskDetails = useCallback(async () => {
     if (!id) return;
+    
     setLoading(true);
+    
     try {
+      console.log("Fetching issue with ID:", id, "Type:", typeof id);
       const data = await getIssueById(id);
-      setTask(data);
-      console.log("Task Details:", data);
+      console.log("Successfully fetched issue data:", data);
+      
+      setTask((prev) => {
+        const merged = { ...prev, ...data };
+        console.log("Merged Task Data:", merged);
+        return merged;
+      });
     } catch (error) {
-      console.error("Error fetching task details:", error);
+      console.error("Failed to fetch issue details. ID:", id, "Error:", error);
+      // If we already have partial data from state, we can still show the page
+      // but maybe show a small warning that full details couldn't be loaded
+      if (!task && !location.state) {
+        setTask(null);
+      }
     } finally {
       setLoading(false);
     }
   }, [id]);
 
   useEffect(() => {
+    // If we have state from navigation, use it as initial data
+    // but don't stop loading yet because we need the full details
+    if (location.state && !task) {
+      setTask(location.state);
+    }
     fetchTaskDetails();
-  }, [fetchTaskDetails]);
+  }, [fetchTaskDetails]); // Removed location.state from deps to avoid re-runs on state changes
 
   // Handle Accept Task
   const handleAccept = async () => {

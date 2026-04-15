@@ -5,9 +5,11 @@ import { useUser } from "../../../Context/ProfileContext";
 import { getAssignedIssues, mySummary } from "../../../Utils/staffissues";
 import Loader from "../../Templates/Loader";
 import IssueCard from "../../Templates/IssueCard";
+import { useNavigate } from "react-router-dom";
 
 const StaffDashboard = () => {
   const { profileData } = useUser();
+  const navigate = useNavigate();
 
   const [summary, setSummary] = useState({});
   const [assignedIssues, setAssignedIssues] = useState([]);
@@ -185,12 +187,16 @@ const StaffDashboard = () => {
 
                           {/* Action */}
                           <td className="px-6 py-4 text-right">
-                            <a
-                              href={`/tasks/${issue.issue_id}`}
-                              className="inline-block px-4 py-1.5 text-xs font-semibold text-white bg-primary rounded-lg hover:opacity-90 transition"
+                            <button
+                              onClick={() =>
+                                navigate(`/tasks/${issue.issue_id}`, {
+                                  state: issue,
+                                })
+                              }
+                              className="inline-block px-4 py-1.5 text-xs font-semibold text-white bg-violet-500 rounded-lg hover:bg-violet-600 transition shadow-sm"
                             >
-                              View
-                            </a>
+                              View Details
+                            </button>
                           </td>
                         </tr>
                       ))}

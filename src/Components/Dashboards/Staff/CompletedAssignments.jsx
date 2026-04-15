@@ -9,10 +9,12 @@ import {
 } from "../../../Utils/staffissues";
 import StatusUpdateModal from "./StatusUpdateModal";
 import Loader from "../../Templates/Loader";
+import { useNavigate } from "react-router-dom";
 import { MoreVertical, CheckCircle, XCircle, Eye, Loader2 } from "lucide-react";
 
 const CompletedAssignment = () => {
   const { profileData } = useUser();
+  const navigate = useNavigate();
   const [assignedIssues, setAssignedIssues] = useState([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(null);
@@ -71,7 +73,9 @@ const CompletedAssignment = () => {
                     <th className="px-6 py-4 font-semibold text-muted-foreground">
                       Status
                     </th>
-                    
+                    <th className="px-6 py-4 font-semibold text-muted-foreground text-right">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
 
@@ -142,6 +146,18 @@ const CompletedAssignment = () => {
                           />
                           {issue?.assignment_status}
                         </span>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <button
+                          onClick={() =>
+                            navigate(`/tasks/${issue.issue_id}`, {
+                              state: issue,
+                            })
+                          }
+                          className="inline-block px-4 py-1.5 text-xs font-semibold text-white bg-violet-500 rounded-lg hover:bg-violet-600 transition shadow-sm"
+                        >
+                          View Details
+                        </button>
                       </td>
                     </tr>
                   ))}
