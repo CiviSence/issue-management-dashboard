@@ -66,7 +66,7 @@ const PrivacyPolicy = () => {
   ];
 
   return (
-    <div className="min-h-screen w-full overflow-auto bg-gradient-to-br from-slate-50 via-white to-violet-50/30 font-sans text-slate-800">
+    <div className="min-h-screen w-full overflow-auto bg-linear-to-br from-slate-50 via-white to-violet-50/30 font-sans text-slate-800">
       {/* Header */}
       <div className="max-w-7xl mx-auto px-6 pt-16 pb-12">
         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-violet-100 text-violet-700 text-xs font-semibold tracking-wider uppercase mb-6">
@@ -120,7 +120,7 @@ const PrivacyPolicy = () => {
                         <ul className="space-y-2">
                           {section.items.map((item, i) => (
                             <li key={i} className="flex items-start gap-3 text-slate-600">
-                              <ChevronRight className="w-4 h-4 text-violet-400 mt-1 flex-shrink-0" />
+                              <ChevronRight className="w-4 h-4 text-violet-400 mt-1 shrink-0" />
                               <span className="leading-relaxed">{item}</span>
                             </li>
                           ))}

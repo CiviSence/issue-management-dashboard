@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
+import csmlogo from "../assets/logo/CSM-logo.png";
 import { registerUser } from "../Utils/auth-api";
 
 const SignUp = () => {
@@ -12,11 +13,10 @@ const SignUp = () => {
 
   // Add userType to form state
   const [formData, setFormData] = useState({
-    userType: "", // 'student' | 'staff' | 'admin'
+    userType: "staff", // 'staff' | 'admin' (default to staff)
     firstName: "",
     lastName: "",
     email: "",
-    registration_number: "",
     designation: "",
     password: "",
     confirmPassword: "",
@@ -47,14 +47,7 @@ const SignUp = () => {
       setError("Please select a user type");
       return false;
     }
-    // Only validate registration number for students
-    if (
-      formData.userType === "student" &&
-      !formData.registration_number.trim()
-    ) {
-      setError("Registration number is required for students");
-      return false;
-    }
+
     return true;
   };
 
@@ -73,27 +66,21 @@ const SignUp = () => {
         email: formData.email,
         name: `${formData.firstName} ${formData.lastName}`.trim(),
         password: formData.password,
-        // Only include registration_number for students, null for others to avoid UNIQUE constraint collisions
-        registration_number:
-          formData.userType === "student" ? formData.registration_number : null,
+        registration_number: null,
         gender: "prefer_not_to_say",
         date_of_birth: "2000-01-01",
         phone_number: null, // Set to null to avoid unique constraint collisions with default '0000000000'
         pincode: null,
         department: "General",
-        course: formData.userType === "student" ? "Btech" : "N/A",
-        year: formData.userType === "student" ? 1 : 0,
-        semester: formData.userType === "student" ? 1 : 0,
+        course: "N/A",
+        year: 0,
+        semester: 0,
         role: formData.userType, // This differentiates user types
-        designation:
-          formData.userType === "student"
-            ? "Student"
-            : formData.designation,
+        designation: formData.designation,
         is_hosteler: false,
         hostel_name: "N/A",
         room_number: "000",
       };
-
 
       const res = await registerUser(payload);
 
@@ -149,27 +136,13 @@ const SignUp = () => {
             </div>
 
             <h3 className="text-3xl font-semibold mb-8 relative z-10">
-              Create an Account
+              Welcome Back
             </h3>
 
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 w-64 h-64 flex items-center justify-center relative z-10 border border-white/20">
+            <div className="bg-white rounded-2xl p-6 w-64 h-64 flex items-center justify-center relative z-10 shadow-xl">
               <div className="text-center">
-                <svg
-                  className="w-20 h-20 mx-auto text-white/80 mb-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1.5}
-                    d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
-                  />
-                </svg>
-                <p className="text-white/80 text-sm">
-                  Join our community today
-                </p>
+                <img src={csmlogo} alt="" />
+                <p className="text-xs text-gray-400 mt-2"></p>
               </div>
             </div>
           </div>
@@ -190,8 +163,8 @@ const SignUp = () => {
               <form onSubmit={handleSubmit} className="space-y-4">
                 {/* User Type Selection */}
                 <div className="space-y-1">
-                  <div className="grid grid-cols-3 gap-2">
-                    {["student", "staff", "admin"].map((type) => (
+                  <div className="grid grid-cols-2 gap-2">
+                    {["staff", "admin"].map((type) => (
                       <button
                         key={type}
                         type="button"
@@ -200,10 +173,11 @@ const SignUp = () => {
                         onClick={() =>
                           setFormData((prev) => ({ ...prev, userType: type }))
                         }
-                        className={`py-2 px-3 rounded-lg border text-sm font-medium capitalize transition-all ${formData.userType === type
-                          ? "bg-[#6366f1] text-white border-[#6366f1]"
-                          : "bg-white text-gray-600 border-gray-200 hover:border-[#6366f1] hover:text-[#6366f1]"
-                          }`}
+                        className={`py-2 px-3 rounded-lg border text-sm font-medium capitalize transition-all ${
+                          formData.userType === type
+                            ? "bg-[#6366f1] text-white border-[#6366f1]"
+                            : "bg-white text-gray-600 border-gray-200 hover:border-[#6366f1] hover:text-[#6366f1]"
+                        }`}
                       >
                         {type}
                       </button>
@@ -256,38 +230,21 @@ const SignUp = () => {
                   />
                 </div>
 
-                {/* Conditional Registration Number - Only for Students */}
-                {formData.userType === "student" && (
-                  <div className="space-y-1">
-                    <label className="text-xs font-medium text-gray-500 ml-1">
-                      University Registration number
-                    </label>
-                    <input
-                      type="text"
-                      name="registration_number"
-                      value={formData.registration_number}
-                      onChange={handleChange}
-                      required
-                      className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-[#6366f1] focus:ring-2 focus:ring-[#6366f1]/20 outline-none transition-all text-sm"
-                    />
-                  </div>
-                )}
-
-                {/* Conditional Designation - for Staff/Admin */}
-                {(formData.userType === "staff" || formData.userType === "admin") && (
-                  <div className="space-y-1">
-                    <label className="text-xs font-medium text-gray-500 ml-1">
-                      Designation
-                    </label>
-                    <input
-                      type="text"
-                      name="designation"
-                      value={formData.designation}
-                      onChange={handleChange}
-                      className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-[#6366f1] focus:ring-2 focus:ring-[#6366f1]/20 outline-none transition-all text-sm"
-                    />
-                  </div>
-                )}
+                {/* Designation - for Staff/Admin */}
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-gray-500 ml-1">
+                    Designation
+                  </label>
+                  <input
+                    type="text"
+                    name="designation"
+                    placeholder={formData.userType === "admin" ? "e.g. System Administrator" : "e.g. Faculty, Support Staff"}
+                    value={formData.designation}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-[#6366f1] focus:ring-2 focus:ring-[#6366f1]/20 outline-none transition-all text-sm"
+                  />
+                </div>
 
                 {/* Password Row */}
                 <div className="grid grid-cols-2 gap-4">
@@ -340,11 +297,11 @@ const SignUp = () => {
                 {/* Terms Text */}
                 <p className="text-[10px] text-gray-500 text-center px-4">
                   by continuing, you agree to the{" "}
-                  <a href="#" className="underline hover:text-[#6366f1]">
+                  <a href="#" className="underline hover:text-[#6e5fdb]">
                     Terms of use
                   </a>{" "}
                   and{" "}
-                  <a href="#" className="underline hover:text-[#6366f1]">
+                  <a href="#" className="underline hover:text-[#6e5fdb]">
                     Privacy Policy
                   </a>
                 </p>
@@ -353,7 +310,7 @@ const SignUp = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-[#6366f1] hover:bg-[#4f46e5] disabled:bg-gray-400 text-white font-medium py-3 rounded-full shadow-lg shadow-indigo-500/30 transition-all transform hover:scale-[1.02] active:scale-[0.98] disabled:transform-none flex items-center justify-center"
+                  className="w-full bg-[#6e5fdb] hover:bg-[#5445c9] disabled:bg-gray-400 text-white font-medium py-3 rounded-full shadow-lg shadow-indigo-500/30 transition-all transform hover:scale-[1.02] active:scale-[0.98] disabled:transform-none flex items-center justify-center"
                 >
                   {loading ? (
                     <svg

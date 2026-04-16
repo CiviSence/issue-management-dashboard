@@ -7,9 +7,6 @@ const AuthRoute = ({ children }) => {
   const role = userData?.role?.toLowerCase();
 
   if (token) {
-    if (role === "student") {
-      return <Navigate to="/feed" replace />;
-    }
     return <Navigate to="/dashboard" replace />;
   }
 

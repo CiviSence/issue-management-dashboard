@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import {  Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import LoginSVG from "../assets/login.svg";
+import csmlogo from "../assets/logo/CSM-logo.png";
 import { loginUser } from "../Utils/auth-api";
 import { setSession } from "../Utils/auth-utils";
 
@@ -33,12 +33,7 @@ const Login = () => {
       setSession(data.access_token, data.user, data.refresh_token);
       setProfileData(data.user);
 
-      const role = data.user?.role?.toLowerCase();
-      if (role === "student") {
-        navigate("/feed");
-      } else {
-        navigate("/dashboard");
-      }
+      navigate("/dashboard");
     } catch (err) {
       console.error("Login Error:", err);
 
@@ -233,7 +228,7 @@ const Login = () => {
 
             <div className="bg-white rounded-2xl p-6 w-64 h-64 flex items-center justify-center relative z-10 shadow-xl">
               <div className="text-center">
-                <img src={LoginSVG} alt="" />
+                <img src={csmlogo} alt="" />
                 <p className="text-xs text-gray-400 mt-2"></p>
               </div>
             </div>

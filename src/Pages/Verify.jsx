@@ -52,12 +52,7 @@ const Verify = () => {
         setProfileData(user);
 
         // Success redirect
-        const role = user?.role?.toLowerCase();
-        if (role === "student") {
-          navigate("/feed");
-        } else {
-          navigate("/dashboard");
-        }
+        navigate("/dashboard");
       } else {
         // Fallback if no token returned (unlikely based on docs)
         navigate("/login");
