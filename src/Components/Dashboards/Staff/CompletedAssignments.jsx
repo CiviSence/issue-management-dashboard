@@ -11,6 +11,7 @@ import StatusUpdateModal from "./StatusUpdateModal";
 import Loader from "../../Templates/Loader";
 import { useNavigate } from "react-router-dom";
 import { MoreVertical, CheckCircle, XCircle, Eye, Loader2 } from "lucide-react";
+import StatusBadge from "../../Templates/StatusBadge";
 
 const CompletedAssignment = () => {
   const { profileData } = useUser();
@@ -95,57 +96,11 @@ const CompletedAssignment = () => {
                       </td>
 
                       <td className="px-6 py-4">
-                        <span
-                          className={`inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full border ${
-                            issue?.priority === "critical"
-                              ? "bg-red-50 text-red-700 border-red-200"
-                              : issue?.priority === "high"
-                                ? "bg-orange-50 text-orange-700 border-orange-200"
-                                : issue?.priority === "medium"
-                                  ? "bg-amber-50 text-amber-700 border-amber-200"
-                                  : "bg-blue-50 text-blue-700 border-blue-200"
-                          }`}
-                        >
-                          <span
-                            className={`w-1.5 h-1.5 rounded-full mr-2 ${
-                              issue?.priority === "critical"
-                                ? "bg-red-500 animate-pulse"
-                                : issue?.priority === "high"
-                                  ? "bg-orange-500"
-                                  : issue?.priority === "medium"
-                                    ? "bg-amber-500"
-                                    : "bg-blue-500"
-                            }`}
-                          />
-                          {issue?.priority || "low"}
-                        </span>
+                        <StatusBadge type="priority" value={issue?.priority || "low"} />
                       </td>
 
                       <td className="px-6 py-4">
-                        <span
-                          className={`inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full border ${
-                            issue?.assignment_status === "pending"
-                              ? "bg-yellow-50 text-yellow-700 border-yellow-200"
-                              : issue?.assignment_status === "accepted"
-                                ? "bg-blue-50 text-blue-700 border-blue-200"
-                                : issue?.assignment_status === "rejected"
-                                  ? "bg-red-50 text-red-700 border-red-200"
-                                  : "bg-gray-50 text-gray-700 border-gray-200"
-                          }`}
-                        >
-                          <span
-                            className={`w-1.5 h-1.5 rounded-full mr-2 ${
-                              issue?.assignment_status === "pending"
-                                ? "bg-yellow-500"
-                                : issue?.assignment_status === "accepted"
-                                  ? "bg-blue-500"
-                                  : issue?.assignment_status === "rejected"
-                                    ? "bg-red-500"
-                                    : "bg-gray-500"
-                            }`}
-                          />
-                          {issue?.assignment_status}
-                        </span>
+                        <StatusBadge type="status" value={issue?.assignment_status} />
                       </td>
                       <td className="px-6 py-4 text-right">
                         <button

@@ -15,6 +15,7 @@ import defaultProfile from "../../../assets/default-avatar.jpg";
 import { useEffect, useState } from "react";
 import { getMyIssues } from "../../../Utils/issuesStudent";
 import { clearSession } from "../../../Utils/auth-utils";
+import StatusBadge from "../../Templates/StatusBadge";
 
 const InfoCard = ({ title, children, icon }) => (
     <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
@@ -257,9 +258,7 @@ const StudentProfile = () => {
                                     <h1 className="text-3xl lg:text-4xl font-black text-gray-900 tracking-tight">
                                         {profileData.name}
                                     </h1>
-                                    <span className="inline-flex items-center px-3 py-1 text-[10px] font-black uppercase tracking-widest rounded-lg bg-violet-50 text-violet-600 border border-violet-100 w-fit mx-auto md:mx-0">
-                                        {profileData.role}
-                                    </span>
+                                    <StatusBadge type="profile" value={profileData.role} className="mx-auto md:mx-0" showDot={false} />
                                 </div>
                                 <p className="text-gray-500 font-medium text-lg flex items-center justify-center md:justify-start gap-2">
                                     <i className="ri-mail-line text-violet-400"></i>
@@ -381,12 +380,7 @@ const StudentProfile = () => {
                                 />
                                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-sm gap-1 sm:gap-4 py-3 border-b border-gray-50">
                                     <span className="text-gray-500 font-medium">Verification Status</span>
-                                    <span className={`font-black uppercase tracking-widest text-[10px] px-2 py-1 rounded-md ${profileData.verification_status === "verified"
-                                        ? "bg-emerald-50 text-emerald-600 border border-emerald-100"
-                                        : "bg-amber-50 text-amber-600 border border-amber-100"
-                                        }`}>
-                                        {profileData.verification_status}
-                                    </span>
+                                    <StatusBadge type="profile" value={profileData.verification_status || "unverified"} showDot={true} />
                                 </div>
                                 <Info
                                     label="Reputation Points"

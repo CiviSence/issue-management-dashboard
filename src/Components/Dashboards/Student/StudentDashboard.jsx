@@ -11,6 +11,7 @@ import ReportIssueModal from "../../Templates/ReportIssueModal";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import axios from "../../../Utils/axios";
+import StatusBadge from "../../Templates/StatusBadge";
 
 const getGreeting = () => {
   const hour = new Date().getHours();
@@ -147,15 +148,15 @@ const StudentDashboard = () => {
       <StudentSideNav />
       <StudentBottomNav />
 
-      <div className="w-full p-2 lg:p-4 lg:w-[calc(100vw-15vw)] bg-[#F0EEFF] overflow-y-auto h-screen">
+      <div className="w-full p-2 lg:p-4 lg:w-[calc(100vw-15vw)] bg-[#FDFDFF] overflow-y-auto h-screen">
         {/* Desktop Header */}
-        <div className="hidden sm:block w-full bg-violet-500 p-4 sm:p-5 lg:p-6 rounded-2xl md:rounded-3xl text-white shadow-md mb-4 md:mb-6">
+        <div className="hidden sm:block w-full bg-linear-to-r from-[#7E70EB] to-[#5A50A6] p-4 sm:p-5 lg:p-6 rounded-2xl md:rounded-3xl text-white shadow-lg mb-4 md:mb-6 border border-white/10">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             <div>
               <h1 className="text-xl sm:text-xl md:text-2xl lg:text-3xl font-bold leading-tight">
                 {getGreeting()}, {firstName}
               </h1>
-              <p className="text-violet-100 text-sm sm:text-base md:text-lg mt-1">
+              <p className="text-indigo-100/90 text-sm sm:text-base md:text-lg mt-1 tracking-wide">
                 {myIssues.length === 0
                   ? "Start by reporting your first campus issue."
                   : pendingCount > 0
@@ -182,7 +183,7 @@ const StudentDashboard = () => {
             </div>
             <button
               onClick={() => setFormModal({ mode: "create" })}
-              className="bg-violet-500 text-white px-3.5 py-2 rounded-xl font-semibold text-xs hover:bg-violet-600 transition shadow-md shadow-violet-200"
+              className="bg-[#6366f1] text-white px-3.5 py-2 rounded-xl font-bold text-xs hover:bg-[#5445c9] transition shadow-md shadow-indigo-100 active:scale-95"
             >
               + Report
             </button>
@@ -192,7 +193,7 @@ const StudentDashboard = () => {
         {/* Stats Overview */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 mb-4 md:mb-6">
           <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-3">
-            <div className="p-2.5 bg-violet-50 text-violet-600 rounded-lg">
+            <div className="p-2.5 bg-indigo-50 text-[#6366f1] rounded-lg">
               <i className="ri-file-list-3-line text-lg"></i>
             </div>
             <div>
@@ -232,20 +233,20 @@ const StudentDashboard = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 lg:gap-6">
           <div className="lg:col-span-2 space-y-2 lg:space-y-4">
             {/* Quick Action — upgraded */}
-            <div className="hidden sm:flex bg-gradient-to-r from-violet-500 to-purple-600 p-5 md:p-6 rounded-xl md:rounded-2xl shadow-md items-center justify-between gap-4 relative overflow-hidden">
+            <div className="hidden sm:flex bg-linear-to-r from-[#7E70EB] to-[#5A50A6] p-5 md:p-6 rounded-xl md:rounded-2xl shadow-lg items-center justify-between gap-4 relative overflow-hidden border border-white/10">
               <div className="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-full -mr-16 -mt-16" />
               <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full -ml-10 -mb-10" />
               <div className="relative z-10">
                 <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white">
                   Spotted something on campus?
                 </h2>
-                <p className="text-violet-200 text-sm mt-1">
+                <p className="text-indigo-100/90 text-sm mt-1">
                   Help your community by reporting the issue. We'll take it from here.
                 </p>
               </div>
               <button
                 onClick={() => setFormModal({ mode: "create" })}
-                className="relative z-10 shrink-0 bg-white text-violet-600 px-5 py-2.5 sm:px-6 sm:py-3 rounded-xl font-semibold hover:bg-violet-50 transition shadow-lg text-sm sm:text-base"
+                className="relative z-10 shrink-0 bg-white text-[#6366f1] px-5 py-2.5 sm:px-6 sm:py-3 rounded-xl font-bold hover:bg-indigo-50 transition shadow-xl text-sm sm:text-base active:scale-95"
               >
                 Report Issue
               </button>
@@ -295,28 +296,7 @@ const StudentDashboard = () => {
                             </p>
                           </div>
 
-                          <span
-                            className={`shrink-0 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-medium border ${{
-                              new: "bg-violet-50 text-violet-600 border-violet-200",
-                              open: "bg-amber-50 text-amber-700 border-amber-200",
-                              in_progress: "bg-blue-50 text-blue-700 border-blue-200",
-                              resolved: "bg-emerald-50 text-emerald-700 border-emerald-200",
-                              closed: "bg-gray-100 text-gray-600 border-gray-200",
-                            }[issue.status] || "bg-gray-100 text-gray-600 border-gray-200"
-                              }`}
-                          >
-                            <span
-                              className={`w-1.5 h-1.5 rounded-full ${issue.status === "resolved"
-                                ? "bg-emerald-600"
-                                : issue.status === "in_progress"
-                                  ? "bg-blue-600"
-                                  : issue.status === "open"
-                                    ? "bg-amber-600"
-                                    : "bg-gray-600"
-                                }`}
-                            />
-                            {issue.status.replace("_", " ")}
-                          </span>
+                          <StatusBadge type="status" value={issue.status} className="shrink-0" />
                         </div>
 
                         {/* Meta Row */}
@@ -341,17 +321,9 @@ const StudentDashboard = () => {
                               {formatSmartTime(issue.created_at)}
                             </time>
                           </div>
-                          <span
-                            className={`ml-auto px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wide border ${{
-                              low: "bg-gray-50 text-gray-600 border-gray-200",
-                              medium: "bg-orange-50 text-orange-700 border-orange-200",
-                              high: "bg-rose-50 text-rose-700 border-rose-200",
-                              critical: "bg-red-50 text-red-700 border-red-200",
-                            }[issue.priority] || "bg-gray-50 text-gray-600 border-gray-200"
-                              }`}
-                          >
-                            {issue.priority}
-                          </span>
+                          <div className="ml-auto">
+                            <StatusBadge type="priority" value={issue.priority} />
+                          </div>
                         </div>
 
                         {/* Engagement stats */}
@@ -551,14 +523,14 @@ const StudentDashboard = () => {
             )}
 
             {/* Help & Support Shortcut */}
-            <div className="bg-violet-600 text-white p-5 rounded-2xl shadow-lg mt-4 relative overflow-hidden group cursor-pointer" onClick={() => window.location.href = "/help-support"}>
+            <div className="bg-linear-to-br from-[#7E70EB] to-[#5A50A6] text-white p-5 rounded-2xl shadow-lg mt-4 relative overflow-hidden group cursor-pointer border border-white/10" onClick={() => window.location.href = "/help-support"}>
               <div className="relative z-10">
                 <h3 className="text-lg font-bold mb-1 flex items-center gap-2">
                   <i className="ri-customer-service-2-fill" />
                   Help & Support
                 </h3>
-                <p className="text-violet-100 text-xs mb-3">Facing issues? Our support team is here to help you 24/7.</p>
-                <button className="bg-white text-violet-600 px-4 py-1.5 rounded-lg text-xs font-bold hover:bg-violet-50 transition-colors">
+                <p className="text-indigo-100/90 text-xs mb-3">Facing issues? Our support team is here to help you 24/7.</p>
+                <button className="bg-white text-[#6366f1] px-4 py-1.5 rounded-lg text-xs font-bold hover:bg-indigo-50 transition-colors">
                   Contact Support
                 </button>
               </div>

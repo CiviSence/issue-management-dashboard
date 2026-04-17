@@ -1,5 +1,5 @@
-import { Routes, Route } from "react-router-dom";
-import Home from "./Components/Home";
+import { Routes, Route, Navigate } from "react-router-dom";
+
 import Dashboard from "./Components/Dashboard";
 import ReportedIssues from "./Components/Dashboards/Admin/ReportedIssues";
 import ResolvedIssues from "./Components/Dashboards/Admin/ResolvedIssues";
@@ -110,7 +110,7 @@ const App = () => {
             path="/"
             element={
               <AuthRoute>
-                <Home />
+                <Navigate to="/signup" replace />
               </AuthRoute>
             }
           />

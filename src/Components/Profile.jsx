@@ -257,7 +257,7 @@ const Profile = () => {
       {profileData ? (
         <div className="mx-auto w-full shadow-lg overflow-y-auto bg-gray-50 min-h-screen">
           {/* HEADER */}
-          <div className="flex flex-col md:flex-row items-center gap-6 bg-linear-to-r from-violet-600 to-purple-600 p-5 lg:p-15 text-white shadow-md relative">
+          <div className="flex flex-col md:flex-row items-center gap-6 bg-linear-to-r from-[#7E70EB] to-[#5A50A6] p-5 lg:p-15 text-white shadow-lg relative border-b border-white/10">
             <img
               src={profileData.avatar_url || defaultProfile}
               alt="Profile"
@@ -267,14 +267,14 @@ const Profile = () => {
               <h1 className="text-4xl font-bold tracking-tight">
                 {profileData.name}
               </h1>
-              <p className="opacity-90 text-lg mt-1">{profileData.email}</p>
+              <p className="opacity-90 text-lg mt-1 tracking-wide">{profileData.email}</p>
               <span className="inline-block mt-3 px-4 py-1.5 text-sm font-semibold tracking-wide rounded-full bg-white/20 backdrop-blur-md border border-white/30 capitalize">
                 {profileData.role}
               </span>
             </div>
             <button
               onClick={() => setIsEditing(true)}
-              className="absolute top-5 right-5 md:static md:ml-auto bg-white/20 hover:bg-white/30 p-2 rounded-full md:px-4 md:py-2 md:rounded-lg border border-white/30 transition shadow-lg backdrop-blur-sm"
+              className="absolute top-5 right-5 md:static md:ml-auto bg-white/20 hover:bg-white/30 p-2 rounded-full md:px-4 md:py-2 md:rounded-lg border border-white/30 transition shadow-lg backdrop-blur-sm active:scale-95"
             >
               <i className="ri-edit-line md:mr-2"></i>
               <span className="hidden md:inline">Edit Profile</span>

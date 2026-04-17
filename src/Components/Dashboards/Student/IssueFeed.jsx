@@ -18,6 +18,7 @@ import AdCard from "../../Templates/AdCard";
 import defaultAvatar from "../../../assets/default-avatar.jpg";
 import ReportIssueModal from "../../Templates/ReportIssueModal";
 import { motion, AnimatePresence } from "framer-motion";
+import StatusBadge from "../../Templates/StatusBadge";
 import { useUser } from "../../../Context/ProfileContext";
 
 // Helpers
@@ -39,14 +40,6 @@ const formatTimeAgo = (dateString) => {
 const isVideo = (url) =>
   /\.(mp4|mov|webm)(\?.*)?$/i.test(url);
 
-const STATUS_MAP = {
-  new: { label: "New", bg: "bg-blue-50", text: "text-blue-600" },
-  acknowledged: { label: "Acknowledged", bg: "bg-indigo-50", text: "text-indigo-600" },
-  in_progress: { label: "In Progress", bg: "bg-yellow-50", text: "text-yellow-600" },
-  resolved: { label: "Resolved", bg: "bg-green-50", text: "text-green-600" },
-  closed: { label: "Closed", bg: "bg-gray-100", text: "text-gray-500" },
-};
-
 // IssueCard - individual card state
 
 const IssueCard = ({ issue, onOpenComments }) => {
@@ -64,7 +57,6 @@ const IssueCard = ({ issue, onOpenComments }) => {
     setMediaStep([nextIndex, newDirection]);
   };
 
-  const status = STATUS_MAP[issue.status] || STATUS_MAP.new;
   const descLimit = 160;
   const longDesc = issue.description && issue.description.length > descLimit;
   const displayDesc =
@@ -204,19 +196,15 @@ const IssueCard = ({ issue, onOpenComments }) => {
             </div>
           </div>
         </div>
-        <span
-          className={`px-2.5 py-1 rounded-full text-xs font-medium shrink-0 ${status.bg} ${status.text}`}
-        >
-          {status.label}
-        </span>
+        <StatusBadge type="status" value={issue.status} className="shrink-0" />
       </div>
 
       {/* titl n descrip */}
       <div className="px-5 pb-3">
         {(issue.priority === "high" || issue.priority === "critical") && (
-          <span className="inline-block mb-1.5 px-2 py-0.5 bg-red-50 text-red-600 text-[11px] font-medium rounded-md uppercase tracking-wide">
-            {issue.priority} priority
-          </span>
+          <div className="mb-1.5 inline-block">
+             <StatusBadge type="priority" value={issue.priority} />
+          </div>
         )}
         <h3 className="font-bold text-gray-900 text-base leading-snug mb-1">
           {issue.title}
@@ -414,9 +402,9 @@ const IssueCard = ({ issue, onOpenComments }) => {
 
         {/* Category chip */}
         {issue.main_category && (
-          <span className="text-xs text-gray-400 bg-gray-50 px-2 py-1 rounded-lg capitalize">
-            {issue.main_category}
-          </span>
+          <div className="shrink-0">
+             <StatusBadge type="category" value={issue.main_category} />
+          </div>
         )}
       </div>
 

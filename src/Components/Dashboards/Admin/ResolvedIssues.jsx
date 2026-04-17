@@ -7,6 +7,7 @@ import { useIssues } from "../../../Context/IssueContext.js";
 import { useState } from "react";
 import { deleteIssue } from "../../../Utils/issues";
 import { toast, ToastContainer } from "react-toastify";
+import StatusBadge from "../../Templates/StatusBadge";
 
 const SkeletonLoader = () => {
   return (
@@ -101,30 +102,6 @@ const ResolvedIssues = () => {
     ...new Set(resolvedIssues.map((i) => i.location_address).filter(Boolean)),
   ];
 
-  const categoryColor = {
-    security: "bg-blue-100 text-blue-800",
-    maintenance: "bg-red-100 text-red-800",
-    infrastructure: "bg-amber-100 text-amber-800",
-    cleanliness: "bg-emerald-100 text-emerald-800",
-    facilities: "bg-purple-100 text-purple-800",
-    other: "bg-gray-100 text-gray-800",
-  };
-
-  const priorityColor = {
-    critical: "bg-red-300 text-red-800",
-    high: "bg-red-100 text-red-800",
-    medium: "bg-amber-100 text-amber-800",
-    low: "bg-emerald-100 text-emerald-800",
-  };
-
-  const statusColor = {
-    new: "bg-sky-100 text-sky-800",
-    acknowledged: "bg-indigo-100 text-indigo-800",
-    in_progress: "bg-amber-100 text-amber-800",
-    resolved: "bg-emerald-100 text-emerald-800",
-    closed: "bg-zinc-200 text-zinc-800",
-    spam: "bg-yellow-100 text-yellow-800",
-  };
 
   return (
     <>
@@ -144,7 +121,7 @@ const ResolvedIssues = () => {
       <BottomNav />
       
           <div className="w-full pb-20 md:pb-2 p-2 lg:p-4 lg:w-[calc(100vw-15vw)]  overflow-x-auto ">
-            <div className="w-full bg-violet-500 p-4 rounded-2xl">
+            <div className="w-full bg-linear-to-r from-[#7E70EB] to-[#5A50A6] p-4 rounded-2xl shadow-lg border border-white/10">
               <div
                 className="
       flex
@@ -156,8 +133,8 @@ const ResolvedIssues = () => {
     "
               >
                 {/* Dashboard Title */}
-                <h1 className="text-2xl sm:text-3xl font-semibold text-white">
-                  Resloved Issues
+                <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
+                  Resolved Issues
                 </h1>
                 {/* Searchbar */}
                 <Searchbar />
@@ -268,29 +245,17 @@ const ResolvedIssues = () => {
                       >
                         <td className="p-3 font-medium">{issue.title}</td>
                         <td className="p-3">
-                          <span
-                            className={`px-3 py-1 rounded-full text-xs font-semibold ${categoryColor[issue.main_category]}`}
-                          >
-                            {issue.main_category}
-                          </span>
+                          <StatusBadge type="category" value={issue.main_category} />
                         </td>
 
                         <td className="p-3">{issue.location_address}</td>
 
                         <td className="p-3">
-                          <span
-                            className={`px-3 py-1 rounded-full text-xs font-semibold ${priorityColor[issue.priority]}`}
-                          >
-                            {issue.priority}
-                          </span>
+                          <StatusBadge type="priority" value={issue.priority} />
                         </td>
 
                         <td className="p-3">
-                          <span
-                            className={`px-3 py-1 rounded-full text-xs font-semibold ${statusColor[issue.status]}`}
-                          >
-                            {issue.status.replace("_", " ")}
-                          </span>
+                          <StatusBadge type="status" value={issue.status} />
                         </td>
 
                         <td className="p-3 text-gray-500">
@@ -331,26 +296,13 @@ const ResolvedIssues = () => {
                         {issue.title}
                       </h3>
 
-                      <span
-                        className={`shrink-0 px-2.5 py-0.5 rounded-full text-[11px] font-semibold ${priorityColor[issue.priority]}`}
-                      >
-                        {issue.priority}
-                      </span>
+                      <StatusBadge type="priority" value={issue.priority} />
                     </div>
 
                     {/* Badges */}
                     <div className="flex flex-wrap gap-2">
-                      <span
-                        className={`px-2.5 py-0.5 rounded-full text-[11px] font-medium ${categoryColor[issue.main_category]}`}
-                      >
-                        {issue.main_category}
-                      </span>
-
-                      <span
-                        className={`px-2.5 py-0.5 rounded-full text-[11px] font-medium ${statusColor[issue.status]}`}
-                      >
-                        {issue.status.replace("_", " ")}
-                      </span>
+                      <StatusBadge type="category" value={issue.main_category} showDot={false} />
+                      <StatusBadge type="status" value={issue.status} />
                     </div>
 
                     {/* Location */}

@@ -9,6 +9,7 @@ import {
 } from "../../../Utils/staffissues";
 import { getIssueById } from "../../../Utils/issues";
 import Loader from "../../Templates/Loader";
+import StatusBadge from "../../Templates/StatusBadge";
 import { useParams, useLocation } from "react-router-dom";
 import {
   CheckCircle,
@@ -155,29 +156,7 @@ const TaskDetails = () => {
     });
   };
 
-  // Get status color
-  const getStatusColor = (status) => {
-    const colors = {
-      new: "bg-blue-100 text-blue-700 border-blue-200",
-      pending: "bg-yellow-100 text-yellow-700 border-yellow-200",
-      "in-progress": "bg-orange-100 text-orange-700 border-orange-200",
-      resolved: "bg-green-100 text-green-700 border-green-200",
-      closed: "bg-gray-100 text-gray-700 border-gray-200",
-      rejected: "bg-red-100 text-red-700 border-red-200",
-    };
-    return colors[status] || colors.new;
-  };
-
-  // Get priority color
-  const getPriorityColor = (priority) => {
-    const colors = {
-      low: "bg-green-100 text-green-700 border-green-200",
-      medium: "bg-yellow-100 text-yellow-700 border-yellow-200",
-      high: "bg-orange-100 text-orange-700 border-orange-200",
-      urgent: "bg-red-100 text-red-700 border-red-200",
-    };
-    return colors[priority] || colors.low;
-  };
+  // Format date
 
   if (loading) {
     return (
@@ -237,20 +216,8 @@ const TaskDetails = () => {
               </div>
             </div>
             <div className="flex gap-2">
-              <span
-                className={`px-3 py-1.5 rounded-full text-xs font-medium border ${getStatusColor(
-                  task.status,
-                )}`}
-              >
-                {task.status?.toUpperCase()}
-              </span>
-              <span
-                className={`px-3 py-1.5 rounded-full text-xs font-medium border ${getPriorityColor(
-                  task.priority,
-                )}`}
-              >
-                {task.priority?.toUpperCase()}
-              </span>
+              <StatusBadge type="status" value={task.status} />
+              <StatusBadge type="priority" value={task.priority} />
             </div>
           </div>
         </div>

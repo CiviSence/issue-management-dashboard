@@ -22,6 +22,7 @@ import axios from "../../../Utils/axios";
 import Loader from "../../Templates/Loader";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useUsers } from "../../../Context/UserContext";
+import StatusBadge from "../../Templates/StatusBadge";
 
 const IssueDetails = () => {
   const { id } = useParams();
@@ -298,31 +299,6 @@ const IssueDetails = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [id]);
 
-  const categoryColor = {
-    security: "bg-blue-100 text-blue-800",
-    maintenance: "bg-red-100 text-red-800",
-    infrastructure: "bg-amber-100 text-amber-800",
-    cleanliness: "bg-emerald-100 text-emerald-800",
-    facilities: "bg-purple-100 text-purple-800",
-    other: "bg-gray-100 text-gray-800",
-  };
-
-  const priorityColor = {
-    critical: "bg-red-300 text-red-800",
-    high: "bg-red-100 text-red-800",
-    medium: "bg-amber-100 text-amber-800",
-    low: "bg-emerald-100 text-emerald-800",
-    new: "bg-sky-100 text-sky-800",
-  };
-
-  const statusColor = {
-    new: "bg-sky-100 text-sky-800",
-    acknowledged: "bg-indigo-100 text-indigo-800",
-    in_progress: "bg-amber-100 text-amber-800",
-    resolved: "bg-emerald-100 text-emerald-800",
-    closed: "bg-zinc-200 text-zinc-800",
-    spam: "bg-yellow-100 text-yellow-800",
-  };
 
   return (
     <>
@@ -342,7 +318,7 @@ const IssueDetails = () => {
       <BottomNav />
 
       <div className="w-full pb-20 md:pb-2 p-2 lg:p-4 lg:w-[calc(100vw-15vw)]  overflow-x-auto  ">
-        <div className="w-full bg-violet-500 p-4 rounded-2xl">
+        <div className="w-full bg-linear-to-r from-[#7E70EB] to-[#5A50A6] p-4 rounded-2xl shadow-lg border border-white/10">
           <div
             className="
       flex
@@ -355,7 +331,7 @@ const IssueDetails = () => {
     "
           >
             {/* Title */}
-            <h1 className="py-3 text-2xl sm:text-3xl font-semibold text-white">
+            <h1 className="py-3 text-2xl sm:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-white/80 tracking-tight">
               Issue Details
             </h1>
           </div>
@@ -640,11 +616,7 @@ const IssueDetails = () => {
                   </div>
 
                   {/* Status Indicator */}
-                  <div
-                    className={`hidden sm:inline px-2 py-1 sm:px-3 sm:py-1.5 text-xs rounded-full ${statusColor[issue.status]}`}
-                  >
-                    {issue.status}
-                  </div>
+                  <StatusBadge type="status" value={issue.status} className="hidden sm:inline-flex" />
                 </div>
               ) : (
                 /* Unassigned State */
@@ -895,35 +867,9 @@ const IssueDetails = () => {
 
                     {/* category - priority - status badge*/}
                     <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-2">
-                      <span
-                        title="main category"
-                        className={`inline-flex items-center gap-1 px-2 sm:px-3 py-1 sm:py-1.5 text-xs font-semibold rounded-full ${categoryColor[issue.main_category]}`}
-                      >
-                        <span className="hidden sm:inline text-[10px] uppercase tracking-wider opacity-70 mr-0.5">
-                          Cat:
-                        </span>
-                        {issue.main_category}
-                      </span>
-
-                      <span
-                        title="status"
-                        className={`inline-flex items-center gap-1 px-2 py-1 sm:px-3 sm:py-1.5 text-xs rounded-full ${statusColor[issue.status]}`}
-                      >
-                        <span className="hidden sm:inline text-[10px] uppercase tracking-wider opacity-70 mr-0.5">
-                          Status:
-                        </span>
-                        {issue.status}
-                      </span>
-
-                      <span
-                        title="priority"
-                        className={`inline-flex items-center gap-1 px-2 sm:px-3 py-1 sm:py-1.5 text-xs font-semibold rounded-full ${priorityColor[issue.priority]}`}
-                      >
-                        <span className="hidden sm:inline text-[10px] uppercase tracking-wider opacity-70 mr-0.5">
-                          Priority:
-                        </span>
-                        {issue.priority}
-                      </span>
+                      <StatusBadge type="category" value={issue.main_category} />
+                      <StatusBadge type="status" value={issue.status} />
+                      <StatusBadge type="priority" value={issue.priority} />
 
                       {issue.is_verified && (
                         <span className="inline-flex items-center gap-1 px-2 sm:px-3 py-1 sm:py-1.5 text-xs font-medium rounded-full bg-sky-100 text-sky-700 border border-sky-200">

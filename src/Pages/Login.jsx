@@ -52,185 +52,176 @@ const Login = () => {
 
   return (
     <div className="min-h-screen w-full bg-[#f3f0ff] flex flex-col">
-      {/* Back Button */}
-      <div className="p-6">
-        <Link
-          to="/"
-          className="flex items-center text-gray-500 hover:text-gray-700 transition-colors"
-        >
-          <i className="ri-arrow-left-s-line"></i>
-          <span className="text-sm">Back</span>
-        </Link>
-      </div>
+
 
       {/* Main Content */}
-      <div className="flex-1 flex items-center justify-center px-6 py-10">
+      <div className="flex-1 flex">
+
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           transition={{ duration: 0.4 }}
-          className="w-full max-w-5xl bg-white rounded-2xl shadow-lg overflow-hidden flex min-h-500px"
+          className="w-full flex min-h-screen"
         >
-          {/* Left Side - Sign In Form */}
-          <div className="w-full md:w-1/2 p-15 flex flex-col justify-center">
-            <h2 className="text-3xl font-semibold text-[#7c6bff] text-center mb-8">
-              Sign in
-            </h2>
-            {error && (
-              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm text-center">
-                {error}
+          {/* Left Side - Branding */}
+          <div className="hidden md:flex w-1/2 bg-linear-to-br from-[#7E70EB] to-[#5A50A6] p-16 flex-col justify-center text-white relative overflow-hidden">
+            {/* Abstract Background Elements */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-32 -mt-32" />
+            <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full blur-3xl -ml-24 -mb-24" />
+            
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="relative z-10"
+            >
+              <div className="bg-white p-4 rounded-2xl w-20 h-20 mb-10 shadow-2xl flex items-center justify-center">
+                <img src={csmlogo} alt="CSM Logo" className="w-12 h-12 object-contain" />
               </div>
-            )}
-
-            <form className="space-y-5" onSubmit={handleLogin}>
-              {/* Email/Username Input */}
-              <div>
-                <label className="block text-xs text-gray-500 mb-1.5">
-                  Email / Registration no. / username
-                </label>
-                <input
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7c6bff] focus:border-transparent transition-all text-sm"
-                  // type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Email"
-                  required
-                />
-              </div>
-
-              {/* Password Input */}
-              <div>
-                <div className="flex justify-between items-center mb-1.5">
-                  <label className="text-xs text-gray-500">Your Password</label>
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="text-xs text-gray-400 flex items-center hover:text-gray-600 transition-colors"
-                  >
-                    <svg
-                      className="w-3.5 h-3.5 mr-1"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                      />
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                      />
-                    </svg>
-                    {showPassword ? "Hide" : "Show"}
-                  </button>
-                </div>
-                <input
-                  type={showPassword ? "text" : "password"}
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7c6bff] focus:border-transparent transition-all text-sm"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Password"
-                />
-              </div>
-
-              {/* Remember Me & Forgot Password */}
-              <div className="flex justify-between items-center text-xs">
-                <label className="flex items-center text-gray-500 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={rememberMe}
-                    onChange={(e) => setRememberMe(e.target.checked)}
-                    className="mr-2 w-3.5 h-3.5 border-gray-300 rounded text-[#7c6bff] focus:ring-[#7c6bff]"
-                  />
-                  Remember me
-                </label>
-                <Link
-                  to={"/forgot-password"}
-                  className="text-gray-500 hover:text-[#7c6bff] hover:underline transition-colors"
-                >
-                  Forget password
-                </Link>
-              </div>
-
-              {/* Terms */}
-              <p className="text-xs text-gray-400 text-center">
-                by continuing, you agree to the{" "}
-                <Link
-                  to="/terms"
-                  className="underline hover:text-[#7c6bff] transition-colors"
-                >
-                  Terms of use
-                </Link>{" "}
-                and{" "}
-                <Link
-                  to="/privacy-policy"
-                  className="underline hover:text-[#7c6bff] transition-colors"
-                >
-                  Privacy Policy
-                </Link>
+              
+              <h1 className="text-4xl lg:text-5xl font-bold mb-6 leading-tight">
+                Report. Track. <br />
+                <span className="text-indigo-200">Resolve.</span>
+              </h1>
+              
+              <p className="text-lg text-indigo-50/80 mb-12 max-w-md leading-relaxed">
+                Join our unified platform to streamline campus issue management. We empower staff and administrators to build a more responsive community together.
               </p>
-
-              {/* Sign In Button */}
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-[#7c6bff] text-white py-3 rounded-full font-medium hover:bg-[#6b5ce7] shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all flex justify-center items-center disabled:opacity-70 disabled:cursor-not-allowed"
-              >
-                {loading ? (
-                  <svg
-                    className="animate-spin h-5 w-5 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
+              
+              <div className="space-y-6">
+                {[
+                  { icon: "ri-checkbox-circle-line", text: "Seamless Issue Reporting" },
+                  { icon: "ri-bar-chart-box-line", text: "Real-time Status Tracking" },
+                  { icon: "ri-team-line", text: "Collaborative Resolution" }
+                ].map((item, i) => (
+                  <motion.div 
+                    key={i} 
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.4 + (i * 0.1) }}
+                    className="flex items-center gap-4 text-indigo-50/90"
                   >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                ) : (
-                  "Sign in"
-                )}
-              </button>
-
-              {/* Sign Up Link */}
-              <p className="text-sm text-gray-500 text-center">
-                don't have an account?{" "}
-                <Link
-                  to="/signup"
-                  className="text-gray-700 font-medium underline hover:text-[#7c6bff] transition-colors"
-                >
-                  Sign up
-                </Link>
-              </p>
-            </form>
+                    <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center backdrop-blur-sm border border-white/10">
+                      <i className={`${item.icon} text-xl`}></i>
+                    </div>
+                    <span className="font-medium text-lg">{item.text}</span>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
           </div>
 
-          {/* Right Side - Welcome Back */}
-          <div className="hidden md:flex w-1/2 bg-linear-to-b from-[#7E70EB] to-[#5A50A6] p-12  flex-col items-center justify-center text-white relative overflow-hidden">
-            <h3 className="text-3xl font-semibold mb-8 relative z-10">
-              Welcome Back
-            </h3>
-
-            <div className="bg-white rounded-2xl p-6 w-64 h-64 flex items-center justify-center relative z-10 shadow-xl">
-              <div className="text-center">
-                <img src={csmlogo} alt="" />
-                <p className="text-xs text-gray-400 mt-2"></p>
+          {/* Right Side - Login Form */}
+          <div className="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center bg-white relative">
+            <div className="max-w-md mx-auto w-full">
+              {/* Mobile Logo */}
+              <div className="md:hidden flex flex-col items-center mb-8">
+                <div className="w-16 h-16 p-3 bg-violet-50 rounded-2xl mb-3">
+                  <img src={csmlogo} alt="CSM" className="w-full h-full object-contain" />
+                </div>
+                <h2 className="text-2xl font-bold text-gray-900">CSM Portal</h2>
               </div>
+
+              <h1 className="text-3xl font-bold text-[#6366f1] mb-2 text-center md:text-left">
+                Sign in
+              </h1>
+              <p className="text-gray-500 mb-8 text-center md:text-left text-sm">Welcome back! Please enter your details.</p>
+
+              {error && (
+                <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-r-lg text-red-700 text-sm flex items-center gap-3 text-center md:text-left">
+                  <i className="ri-error-warning-line text-lg"></i>
+                  {error}
+                </div>
+              )}
+
+              <form className="space-y-5" onSubmit={handleLogin}>
+                {/* Email/Username Input */}
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-medium text-gray-500 ml-1">
+                    Email / Registration no. / username
+                  </label>
+                  <input
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6366f1] focus:ring-opacity-20 focus:border-[#6366f1] transition-all text-sm shadow-sm"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter your email"
+                    required
+                  />
+                </div>
+
+                {/* Password Input */}
+                <div className="space-y-1.5">
+                  <div className="flex justify-between items-center px-1">
+                    <label className="text-xs font-medium text-gray-500">Your Password</label>
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="text-xs text-[#6366f1] font-semibold flex items-center hover:text-[#5445c9] transition-colors"
+                    >
+                      {showPassword ? "Hide" : "Show"}
+                    </button>
+                  </div>
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6366f1] focus:ring-opacity-20 focus:border-[#6366f1] transition-all text-sm shadow-sm"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                  />
+                </div>
+
+                {/* Remember Me & Forgot Password */}
+                <div className="flex justify-between items-center text-xs pt-1">
+                  <label className="flex items-center text-gray-500 cursor-pointer group">
+                    <input
+                      type="checkbox"
+                      checked={rememberMe}
+                      onChange={(e) => setRememberMe(e.target.checked)}
+                      className="mr-2 w-4 h-4 border-gray-300 rounded text-[#6366f1] focus:ring-[#6366f1]"
+                    />
+                    <span className="group-hover:text-gray-700 transition-colors font-medium">Remember me</span>
+                  </label>
+                  <Link
+                    to={"/forgot-password"}
+                    className="text-[#6366f1] font-semibold hover:text-[#5445c9] hover:underline transition-colors"
+                  >
+                    Forget password?
+                  </Link>
+                </div>
+
+                {/* Sign In Button */}
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full bg-[#6e5fdb] hover:bg-[#5445c9] text-white py-3 rounded-full font-bold text-lg shadow-lg shadow-indigo-500/30 transform hover:scale-[1.02] active:scale-[0.98] transition-all flex justify-center items-center disabled:bg-gray-400 disabled:transform-none"
+                >
+                  {loading ? (
+                    <i className="ri-loader-4-line animate-spin text-xl"></i>
+                  ) : (
+                    "Sign in"
+                  )}
+                </button>
+
+                {/* Terms and Links */}
+                <div className="space-y-4 pt-4">
+                  <p className="text-[11px] text-gray-400 text-center leading-relaxed">
+                    By signing in, you agree to our{" "}
+                    <Link to="/terms" className="text-gray-600 hover:text-[#6366f1] underline">Terms of service</Link>
+                    {" "}and{" "}
+                    <Link to="/privacy-policy" className="text-gray-600 hover:text-[#6366f1] underline">Privacy Policy</Link>.
+                  </p>
+
+                  <p className="text-sm text-gray-500 text-center">
+                    Don't have an account?{" "}
+                    <Link
+                      to="/signup"
+                      className="text-[#6366f1] font-bold hover:underline"
+                    >
+                      Sign up for free
+                    </Link>
+                  </p>
+                </div>
+              </form>
             </div>
           </div>
         </motion.div>

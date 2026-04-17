@@ -11,6 +11,8 @@ import { useIssues } from "../../../Context/IssuesContext.js";
 import ReportIssueModal from "../../Templates/ReportIssueModal";
 import defaultAvatar from "../../../assets/default-avatar.jpg";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { statusStyles } from "../../../Utils/badgeStyles";
+import StatusBadge from "../../Templates/StatusBadge";
 
 // Helpers
 
@@ -32,45 +34,6 @@ const formatTime = (dateString) => {
   });
 };
 
-const STATUS_STYLE = {
-  new: {
-    bar: "bg-violet-500",
-    badge: "bg-violet-50 text-violet-600 border-violet-200",
-    dot: "bg-violet-500",
-    label: "New",
-  },
-  acknowledged: {
-    bar: "bg-blue-500",
-    badge: "bg-blue-50 text-blue-600 border-blue-200",
-    dot: "bg-blue-500",
-    label: "Acknowledged",
-  },
-  in_progress: {
-    bar: "bg-amber-500",
-    badge: "bg-amber-50 text-amber-700 border-amber-200",
-    dot: "bg-amber-500",
-    label: "In Progress",
-  },
-  resolved: {
-    bar: "bg-emerald-500",
-    badge: "bg-emerald-50 text-emerald-700 border-emerald-200",
-    dot: "bg-emerald-500",
-    label: "Resolved",
-  },
-  closed: {
-    bar: "bg-gray-400",
-    badge: "bg-gray-100 text-gray-600 border-gray-200",
-    dot: "bg-gray-400",
-    label: "Closed",
-  },
-};
-
-const PRIORITY_STYLE = {
-  low: "bg-gray-50 text-gray-500 border-gray-200",
-  medium: "bg-orange-50 text-orange-600 border-orange-200",
-  high: "bg-rose-50 text-rose-600 border-rose-200",
-  critical: "bg-red-50 text-red-700 border-red-200 animate-pulse",
-};
 
 // No longer needed here as they are in ReportIssueModal
 
@@ -135,8 +98,7 @@ const DeleteModal = ({ issue, onClose, onDeleted }) => {
 // Row card for the list
 
 const IssueRow = ({ issue, onEdit, onDelete }) => {
-  const s = STATUS_STYLE[issue.status] || STATUS_STYLE.new;
-  const p = PRIORITY_STYLE[issue.priority] || PRIORITY_STYLE.low;
+  const s = statusStyles[issue.status] || statusStyles.new;
   const [expanded, setExpanded] = useState(false);
 
   const loc = [issue.location_building?.replace(/-/g, " "), issue.location_address, issue.location_ward]
@@ -148,7 +110,7 @@ const IssueRow = ({ issue, onEdit, onDelete }) => {
       className={`relative group rounded-xl border bg-white transition-all duration-300 hover:shadow-md overflow-hidden`}
     >
       {/* Left status stripe */}
-      <div className={`absolute left-0 top-0 bottom-0 w-1 ${s.bar} rounded-l-xl`} />
+      <div className={`absolute left-0 top-0 bottom-0 w-1 ${s.dot} rounded-l-xl`} />
 
       <div className="pl-5 pr-4 py-4">
         {/* Top row: title + status + priority */}
@@ -171,13 +133,8 @@ const IssueRow = ({ issue, onEdit, onDelete }) => {
           </div>
 
           <div className="flex flex-col items-end gap-1.5 shrink-0">
-            <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium border ${s.badge}`}>
-              <span className={`w-1.5 h-1.5 rounded-full ${s.dot}`} />
-              {s.label}
-            </span>
-            <span className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wide border ${p}`}>
-              {issue.priority}
-            </span>
+            <StatusBadge type="status" value={issue.status} />
+            <StatusBadge type="priority" value={issue.priority} />
           </div>
         </div>
 
@@ -373,7 +330,7 @@ const MyIssues = () => {
               >
                 {FILTER_STATUS.map((s) => (
                   <option key={s} value={s}>
-                    {s === "all" ? "All Status" : STATUS_STYLE[s]?.label || s}
+                    {s === "all" ? "All Status" : statusStyles[s]?.label || s}
                   </option>
                 ))}
               </select>
@@ -480,9 +437,11 @@ const MyIssues = () => {
             <div className="mt-4 bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
               <h4 className="font-semibold text-gray-800 mb-3 text-sm">Status Guide</h4>
               <div className="space-y-2">
-                {Object.entries(STATUS_STYLE).map(([key, val]) => (
+                {Object.entries(statusStyles)
+                  .filter(([k]) => k !== "spam" && k !== "pending" && k !== "accepted" && k !== "rejected")
+                  .map(([key, val]) => (
                   <div key={key} className="flex items-center gap-2">
-                    <span className={`w-2 h-2 rounded-full ${val.bar}`} />
+                    <span className={`w-2 h-2 rounded-full ${val.dot}`} />
                     <span className="text-xs text-gray-600">{val.label}</span>
                   </div>
                 ))}

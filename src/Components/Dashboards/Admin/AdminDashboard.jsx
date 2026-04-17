@@ -81,32 +81,32 @@ const AdminDashboard = () => {
       name: "Total Issues",
       count: allstats?.issues?.total || 0,
       description: "All reported issues",
-      color: "from-[#980101] to-[#FF2C2C]",
-      color2: "bg-[#980101]",
+      color: "from-[#6366f1] to-[#8b5cf6]",
+      color2: "bg-[#6366f1]",
       link: "/reported-issues",
     },
     {
       name: "Pending Issues",
       count: allstats?.issues?.by_status?.new || 0,
       description: "New & Pending",
-      color: "from-[#F5A623] to-[#F8E71C]",
-      color2: "bg-[#F5A623]",
+      color: "from-[#f59e0b] to-[#fbbf24]",
+      color2: "bg-[#f59e0b]",
       link: "/pending-issues",
     },
     {
       name: "In Progress",
       count: allstats?.issues?.by_status?.in_progress || 0,
       description: "Assigned & In Progress",
-      color: "from-[#00284B] to-[#0088FF]",
-      color2: "bg-[#00284B]",
+      color: "from-[#3b82f6] to-[#60a5fa]",
+      color2: "bg-[#3b82f6]",
       link: "/in-progress",
     },
     {
       name: "Resolved Issues",
       count: allstats?.issues?.by_status?.resolved || 0,
       description: "Issues Fixed",
-      color: "from-[#0D4900] to-[#2DF300]",
-      color2: "bg-[#0D4900]",
+      color: "from-[#10b981] to-[#34d399]",
+      color2: "bg-[#10b981]",
       link: "/resolved-issues",
     },
   ];
@@ -151,17 +151,17 @@ const AdminDashboard = () => {
       <SideNav />
       <BottomNav />
 
-      <div className="w-full pb-20 md:pb-2 p-2 lg:p-4 lg:w-[calc(100vw-15vw)] bg-white overflow-x-auto">
-        <div className="w-full bg-violet-500 p-4 rounded-2xl">
+      <div className="w-full pb-20 md:pb-2 p-2 lg:p-4 lg:w-[calc(100vw-15vw)] bg-[#FDFDFF] overflow-x-auto">
+        <div className="w-full bg-linear-to-r from-[#7E70EB] to-[#5A50A6] p-4 rounded-2xl shadow-lg border border-white/10">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-            <h1 className="text-2xl sm:text-3xl font-semibold text-white">
+            <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
               Main Dashboard
             </h1>
             <Searchbar />
           </div>
         </div>
 
-        <div className="w-full mt-4 gap-3 sm:gap-4 flex flex-wrap justify-center bg-[#F0EEFF] p-3 sm:p-4 lg:p-6 rounded-2xl">
+        <div className="w-full mt-4 gap-3 sm:gap-4 flex flex-wrap justify-center bg-[#F3F1FF] p-3 sm:p-4 lg:p-6 rounded-2xl border border-indigo-50">
           {loadingStats ? (
             <>
               <CardSkeleton />
@@ -182,7 +182,7 @@ const AdminDashboard = () => {
           Issue Stats
         </h1>
 
-        <div className="bg-[#F0EEFF] p-4 rounded-2xl">
+        <div className="bg-[#F3F1FF] p-4 rounded-2xl border border-indigo-50">
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
             {loadingIssues ? (
               <>
@@ -222,13 +222,13 @@ const AdminDashboard = () => {
           Top Reporters
         </h1>
 
-        <div className="bg-[#F0EEFF] p-2 lg:p-4 mt-1 rounded-2xl">
+        <div className="bg-[#F3F1FF] p-2 lg:p-4 mt-1 rounded-2xl border border-indigo-50">
           {loadingStats ? <UserSectionSkeleton /> : <UserCard limit={3} />}
 
           <div className="flex justify-end mt-3">
             <Link
               to="/leaderboard"
-              className="text-xs lg:text-sm font-semibold text-[#243b8c] hover:text-[#1b2f6b] hover:underline transition"
+              className="text-xs lg:text-sm font-bold text-[#6366f1] hover:text-[#5445c9] hover:underline transition-all"
             >
               View Full Leaderboard →
             </Link>

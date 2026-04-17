@@ -6,6 +6,7 @@ import { getAssignedIssues, mySummary } from "../../../Utils/staffissues";
 import Loader from "../../Templates/Loader";
 import IssueCard from "../../Templates/IssueCard";
 import { useNavigate } from "react-router-dom";
+import StatusBadge from "../../Templates/StatusBadge";
 
 const StaffDashboard = () => {
   const { profileData } = useUser();
@@ -51,29 +52,29 @@ const StaffDashboard = () => {
       name: "Assigned Issues",
       count: summary.total_assigned,
       description: "All assigned issues",
-      color: "from-[#980101] to-[#FF2C2C]",
-      color2: "bg-[#980101]",
+      color: "from-[#6366f1] to-[#8b5cf6]",
+      color2: "bg-[#6366f1]",
     },
     {
       name: "Pending Issues",
       count: summary.pending_count,
       description: "Pending",
-      color: "from-[#F5A623] to-[#F8E71C]",
-      color2: "bg-[#F5A623]",
+      color: "from-[#f59e0b] to-[#fbbf24]",
+      color2: "bg-[#f59e0b]",
     },
     {
       name: "In Progress",
       count: summary.accepted_count,
       description: "Accepted & In Progress",
-      color: "from-[#00284B] to-[#0088FF]",
-      color2: "bg-[#00284B]",
+      color: "from-[#3b82f6] to-[#60a5fa]",
+      color2: "bg-[#3b82f6]",
     },
     {
       name: "Completed",
       count: summary.completed_count,
       description: "Issues Fixed",
-      color: "from-[#0D4900] to-[#2DF300]",
-      color2: "bg-[#0D4900]",
+      color: "from-[#10b981] to-[#34d399]",
+      color2: "bg-[#10b981]",
     },
   ];
 
@@ -81,10 +82,10 @@ const StaffDashboard = () => {
     <>
       <StaffSideNav />
       <BottomNav />
-      <div className="w-full p-4 lg:w-[calc(100vw-15vw)] bg-[#F0EEFF] min-h-screen overflow-y-auto">
+      <div className="w-full p-4 lg:w-[calc(100vw-15vw)] bg-[#FDFDFF] min-h-screen overflow-y-auto">
         <div className="w-full mx-auto">
           {/* header */}
-          <div className="w-full bg-violet-500 p-4 sm:p-5  lg:p-6 rounded-2xl md:rounded-3xl text-white shadow-md mb-4 md:mb-6">
+          <div className="w-full bg-linear-to-r from-[#7E70EB] to-[#5A50A6] p-4 sm:p-5 lg:p-6 rounded-2xl md:rounded-3xl text-white shadow-lg mb-4 md:mb-6 border border-white/10">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
               {/* LEFT */}
               <div>
@@ -100,7 +101,7 @@ const StaffDashboard = () => {
             </div>
           </div>
 
-          <div className="w-full mt-2 gap-2 flex flex-wrap justify-center bg-[#F0EEFF] p-4 rounded-2xl">
+          <div className="w-full mt-2 gap-2 flex flex-wrap justify-center bg-[#F3F1FF] p-4 rounded-2xl border border-indigo-50">
             {stats?.map((item, index) => (
               <IssueCard key={index} issue={item} />
             ))}
@@ -157,32 +158,12 @@ const StaffDashboard = () => {
                             </div>
                           </td>
 
-                          {/* Priority */}
                           <td className="px-6 py-4">
-                            <span
-                              className={`px-3 py-1 text-xs font-semibold rounded-full
-
-                  ${
-                    issue?.priority === "high"
-                      ? "bg-red-100 text-red-700"
-                      : issue?.priority === "medium"
-                        ? "bg-amber-100 text-amber-700"
-                        : "bg-blue-100 text-blue-700"
-                  }
-
-                  `}
-                            >
-                              {issue?.priority || "low"}
-                            </span>
+                            <StatusBadge type="priority" value={issue?.priority || "low"} />
                           </td>
 
-                          {/* Status */}
                           <td className="px-6 py-4">
-                            <span
-                              className={`px-3 py-1 text-xs font-semibold rounded-full}`}
-                            >
-                              {issue?.assignment_status}
-                            </span>
+                            <StatusBadge type="status" value={issue?.assignment_status || "pending"} />
                           </td>
 
                           {/* Action */}
@@ -193,7 +174,7 @@ const StaffDashboard = () => {
                                   state: issue,
                                 })
                               }
-                              className="inline-block px-4 py-1.5 text-xs font-semibold text-white bg-violet-500 rounded-lg hover:bg-violet-600 transition shadow-sm"
+                              className="inline-block px-4 py-1.5 text-xs font-bold text-white bg-[#6366f1] rounded-lg hover:bg-[#5445c9] transition shadow-md shadow-indigo-500/20 active:scale-95"
                             >
                               View Details
                             </button>

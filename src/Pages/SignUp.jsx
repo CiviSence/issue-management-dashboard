@@ -97,65 +97,84 @@ const SignUp = () => {
 
   return (
     <div className="min-h-screen w-full bg-[#f3f0ff] flex flex-col">
-      {/* Back Button */}
-      <div className="p-6">
-        <Link
-          to="/"
-          className="flex items-center text-gray-500 hover:text-gray-700 transition-colors"
-        >
-          <svg
-            className="w-5 h-5 mr-1"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 19l-7-7 7-7"
-            />
-          </svg>
-          <span className="text-sm">Back</span>
-        </Link>
-      </div>
+
 
       {/* Main Content */}
-      <div className="flex-1 flex items-center justify-center px-6 py-8">
+      <div className="flex-1 flex">
+
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           transition={{ duration: 0.4 }}
-          className="w-full max-w-6xl bg-white rounded-2xl shadow-lg overflow-hidden flex min-h-500px"
+          className="w-full flex min-h-screen"
         >
-          {/* Left Side - Illustration */}
-          <div className="hidden md:flex w-1/2 bg-linear-to-b from-[#7E70EB] to-[#5A50A6] p-12 flex-col items-center justify-center text-white relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-full opacity-10">
-              <div className="absolute top-10 left-10 w-32 h-32 rounded-full bg-white"></div>
-              <div className="absolute bottom-20 right-10 w-48 h-48 rounded-full bg-white"></div>
-            </div>
-
-            <h3 className="text-3xl font-semibold mb-8 relative z-10">
-              Welcome Back
-            </h3>
-
-            <div className="bg-white rounded-2xl p-6 w-64 h-64 flex items-center justify-center relative z-10 shadow-xl">
-              <div className="text-center">
-                <img src={csmlogo} alt="" />
-                <p className="text-xs text-gray-400 mt-2"></p>
+          {/* Left Side - Branding */}
+          <div className="hidden md:flex w-1/2 bg-linear-to-br from-[#7E70EB] to-[#5A50A6] p-16 flex-col justify-center text-white relative overflow-hidden">
+            {/* Abstract Background Elements */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-32 -mt-32" />
+            <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full blur-3xl -ml-24 -mb-24" />
+            
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="relative z-10"
+            >
+              <div className="bg-white p-4 rounded-2xl w-20 h-20 mb-10 shadow-2xl flex items-center justify-center">
+                <img src={csmlogo} alt="CSM Logo" className="w-12 h-12 object-contain" />
               </div>
-            </div>
+              
+              <h1 className="text-4xl lg:text-5xl font-bold mb-6 leading-tight">
+                Report. Track. <br />
+                <span className="text-indigo-200">Resolve.</span>
+              </h1>
+              
+              <p className="text-lg text-indigo-50/80 mb-12 max-w-md leading-relaxed">
+                Join our unified platform to streamline campus issue management. We empower staff and administrators to build a more responsive community together.
+              </p>
+              
+              <div className="space-y-6">
+                {[
+                  { icon: "ri-checkbox-circle-line", text: "Seamless Issue Reporting" },
+                  { icon: "ri-bar-chart-box-line", text: "Real-time Status Tracking" },
+                  { icon: "ri-team-line", text: "Collaborative Resolution" }
+                ].map((item, i) => (
+                  <motion.div 
+                    key={i} 
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.4 + (i * 0.1) }}
+                    className="flex items-center gap-4 text-indigo-50/90"
+                  >
+                    <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center backdrop-blur-sm border border-white/10">
+                      <i className={`${item.icon} text-xl`}></i>
+                    </div>
+                    <span className="font-medium text-lg">{item.text}</span>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
           </div>
 
           {/* Right Side - Form */}
-          <div className="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center bg-white">
+          <div className="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center bg-white relative">
             <div className="max-w-md mx-auto w-full">
-              <h1 className="text-3xl font-bold text-[#6366f1] mb-8 text-center">
+              {/* Mobile Logo */}
+              <div className="md:hidden flex flex-col items-center mb-8">
+                <div className="w-16 h-16 p-3 bg-violet-50 rounded-2xl mb-3">
+                  <img src={csmlogo} alt="CSM" className="w-full h-full object-contain" />
+                </div>
+                <h2 className="text-2xl font-bold text-gray-900">CSM Portal</h2>
+              </div>
+
+              <h1 className="text-3xl font-bold text-[#6366f1] mb-2 text-center md:text-left">
                 Sign up
               </h1>
+              <p className="text-gray-500 mb-8 text-center md:text-left text-sm">Create your account to start managing issues.</p>
 
               {error && (
-                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm text-center">
+                <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-r-lg text-red-700 text-sm flex items-center gap-3">
+                  <i className="ri-error-warning-line text-lg"></i>
                   {error}
                 </div>
               )}

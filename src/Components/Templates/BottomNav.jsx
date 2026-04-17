@@ -7,7 +7,7 @@ const BottomNav = () => {
 
   const navClass = ({ isActive }) =>
     `flex flex-col items-center justify-center gap-1
-     ${isActive ? "text-white scale-110 transition-all" : "text-gray-200"}`;
+     ${isActive ? "text-white scale-110 shadow-sm" : "text-indigo-100/60 transition-all hover:text-white"}`;
 
   return (
     <div
@@ -15,7 +15,7 @@ const BottomNav = () => {
         fixed bottom-0 left-0
         w-full
         h-16
-       bg-violet-500
+       bg-linear-to-r from-[#7E70EB] to-[#5A50A6]
         rounded-t-3xl
         flex justify-around items-center
         md:hidden

@@ -10,6 +10,7 @@ import {
 import Loader from "../../Templates/Loader";
 import { useNavigate } from "react-router-dom";
 import { MoreVertical, CheckCircle, XCircle, Eye, Loader2 } from "lucide-react";
+import StatusBadge from "../../Templates/StatusBadge";
 
 const AssignedIssues = () => {
   const { profileData } = useUser();
@@ -88,14 +89,14 @@ const AssignedIssues = () => {
       <BottomNav />
 
       <div className="w-full p-4 lg:w-[calc(100vw-15vw)] bg-background text-foreground min-h-screen overflow-y-auto transition-colors duration-200">
-        <div className="w-full bg-violet-500 p-4 sm:p-5 lg:p-6 rounded-2xl md:rounded-3xl text-white shadow-md mb-4 md:mb-6">
+        <div className="w-full bg-linear-to-r from-[#7E70EB] to-[#5A50A6] p-4 sm:p-5 lg:p-6 rounded-2xl md:rounded-3xl text-white shadow-lg mb-4 md:mb-6 border border-white/10">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             <div>
-              <h1 className="text-xl sm:text-xl md:text-2xl lg:text-3xl font-bold leading-tight">
+              <h1 className="text-xl sm:text-xl md:text-2xl lg:text-3xl font-bold leading-tight tracking-tight">
                 Assigned Issues
               </h1>
-              <p className="text-violet-100 text-sm sm:text-base md:text-lg mt-1">
-                Issues assigned to you!!
+              <p className="text-indigo-100/90 text-sm sm:text-base md:text-lg mt-1 tracking-wide">
+                Issues assigned to you
               </p>
             </div>
           </div>
@@ -151,64 +152,14 @@ const AssignedIssues = () => {
                           </td>
 
                           <td className="px-6 py-4">
-                            <span
-                              className={`inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full border ${
-                                issue?.priority === "critical"
-                                  ? "bg-red-50 text-red-700 border-red-200"
-                                  : issue?.priority === "high"
-                                    ? "bg-orange-50 text-orange-700 border-orange-200"
-                                    : issue?.priority === "medium"
-                                      ? "bg-amber-50 text-amber-700 border-amber-200"
-                                      : "bg-blue-50 text-blue-700 border-blue-200"
-                              }`}
-                            >
-                              <span
-                                className={`w-1.5 h-1.5 rounded-full mr-2 ${
-                                  issue?.priority === "critical"
-                                    ? "bg-red-500 animate-pulse"
-                                    : issue?.priority === "high"
-                                      ? "bg-orange-500"
-                                      : issue?.priority === "medium"
-                                        ? "bg-amber-500"
-                                        : "bg-blue-500"
-                                }`}
-                              />
-                              {issue?.priority || "low"}
-                            </span>
+                            <StatusBadge type="priority" value={issue?.priority || "low"} />
                           </td>
                           <td className="px-6 py-4">
-                            <span
-                              className={`inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full border`}
-                            >
-                              {issue?.status}
-                            </span>
+                            <StatusBadge type="status" value={issue?.status} />
                           </td>
 
                           <td className="px-6 py-4">
-                            <span
-                              className={`inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full border ${
-                                issue?.assignment_status === "pending"
-                                  ? "bg-yellow-50 text-yellow-700 border-yellow-200"
-                                  : issue?.assignment_status === "accepted"
-                                    ? "bg-blue-50 text-blue-700 border-blue-200"
-                                    : issue?.assignment_status === "rejected"
-                                      ? "bg-red-50 text-red-700 border-red-200"
-                                      : "bg-gray-50 text-gray-700 border-gray-200"
-                              }`}
-                            >
-                              <span
-                                className={`w-1.5 h-1.5 rounded-full mr-2 ${
-                                  issue?.assignment_status === "pending"
-                                    ? "bg-yellow-500"
-                                    : issue?.assignment_status === "accepted"
-                                      ? "bg-blue-500"
-                                      : issue?.assignment_status === "rejected"
-                                        ? "bg-red-500"
-                                        : "bg-gray-500"
-                                }`}
-                              />
-                              {issue?.assignment_status}
-                            </span>
+                            <StatusBadge type="status" value={issue?.assignment_status} />
                           </td>
 
                           {/* Dropdown Actions */}

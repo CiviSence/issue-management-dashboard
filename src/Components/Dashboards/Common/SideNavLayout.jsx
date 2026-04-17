@@ -9,8 +9,8 @@ export const NavItem = ({ to, icon, label }) => {
      rounded-lg px-4 py-3 transition
      ${
        isActive
-         ? "bg-white text-violet-600 font-semibold"
-         : "hover:text-white hover:bg-violet-400"
+         ? "bg-white/95 text-[#6366f1] shadow-lg font-bold"
+         : "text-white/80 hover:text-white hover:bg-white/10 backdrop-blur-sm"
      }`;
 
   return (
@@ -60,7 +60,7 @@ const SideNavLayout = ({ children }) => {
 
   return (
     <div
-      className="bg-violet-500
+      className="bg-linear-to-br from-[#7E70EB] to-[#5A50A6]
         hidden md:flex flex-col justify-between
         w-20 lg:w-[17vw]
         shrink-0
@@ -83,7 +83,7 @@ const SideNavLayout = ({ children }) => {
         {/* Profile button */}
         <div
           onMouseEnter={() => setShowProfileMenu((prev) => !prev)}
-          className="flex items-center justify-center lg:justify-start gap-3 px-2 py-2 rounded-lg cursor-pointer hover:bg-violet-400 transition"
+          className="flex items-center justify-center lg:justify-start gap-3 px-2 py-2 rounded-lg cursor-pointer hover:bg-white/10 backdrop-blur-sm transition-all border border-transparent hover:border-white/20"
         >
           <div className="h-10 w-10 rounded-full  shrink-0 flex items-center justify-center">
             <img
@@ -97,7 +97,7 @@ const SideNavLayout = ({ children }) => {
             <p className="text-s font-medium truncate max-w-35">
               {profileData?.name}
             </p>
-            <p className="text-sm text-violet-200">
+            <p className="text-sm text-indigo-100/80 font-medium">
               {profileData?.role || "user"}
             </p>
           </div>

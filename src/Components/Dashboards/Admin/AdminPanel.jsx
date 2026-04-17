@@ -234,7 +234,7 @@ const NotificationsTab = ({
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-violet-500 text-white rounded-xl font-semibold hover:bg-violet-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+              className="w-full py-3 bg-[#6366f1] text-white rounded-xl font-semibold hover:bg-[#5445c9] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
             >
               {loading ? (
                 <RefreshCw className="w-5 h-5 animate-spin" />
@@ -2321,13 +2321,13 @@ const DashboardTab = ({
 
       <div className="w-full pb-20 md:pb-2 p-2 lg:p-4 lg:w-[calc(100vw-15vw)] overflow-x-auto min-h-screen">
         {/* Header */}
-        <div className="w-full  bg-violet-500 p-4 rounded-2xl mb-6 shadow-lg">
+        <div className="w-full bg-linear-to-r from-[#7E70EB] to-[#5A50A6] p-4 rounded-2xl mb-6 shadow-lg border border-white/10">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-white">
+              <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
                 Admin Control Panel
               </h1>
-              <p className="text-violet-100 text-sm mt-1">
+              <p className="text-indigo-100/90 text-sm mt-1 tracking-wide">
                 Manage users, verifications, and system notifications
               </p>
             </div>
@@ -2358,7 +2358,7 @@ const DashboardTab = ({
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center space-x-1 sm:space-x-2 px-3 sm:px-4 md:px-6 py-2 sm:py-3 rounded-xl font-medium transition-all whitespace-nowrap ${
                 activeTab === tab.id
-                  ? "bg-violet-500 text-white shadow-lg shadow-violet-200"
+                  ? "bg-[#6366f1] text-white shadow-lg shadow-indigo-100"
                   : "bg-white text-gray-600 hover:bg-gray-100"
               }`}
             >
