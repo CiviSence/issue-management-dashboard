@@ -439,7 +439,8 @@ const TaskDetails = () => {
 
                 {/* Show Complete for in-progress tasks */}
                 {(task.status === "in_progress" ||
-                  task.status === "accepted") && (
+                  task.status === "accepted") &&
+                  task.assignment_status !== "completed" && (
                   <button
                     onClick={() => setActiveModal("complete")}
                     className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-violet-500 hover:bg-violet-600 text-white rounded-xl font-medium transition-colors"
@@ -450,7 +451,8 @@ const TaskDetails = () => {
                 )}
 
                 {/* Show resolved status */}
-                {task.status === "resolved" && (
+                {(task.status === "resolved" ||
+                  task.assignment_status === "completed") && (
                   <div className="text-center p-4 bg-green-50 rounded-xl">
                     <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-2" />
                     <p className="font-semibold text-green-700">
