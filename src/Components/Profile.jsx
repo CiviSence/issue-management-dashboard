@@ -41,6 +41,48 @@ const formatDate = (date) =>
     year: "numeric",
   });
 
+// Role-based data filtering
+const getProfileDataByRole = (profileData, role) => {
+  const data = {
+    common: {
+      name: profileData.name,
+      email: profileData.email,
+      phone_number: profileData.phone_number,
+      email_verified: profileData.email_verified,
+      verification_status: profileData.verification_status,
+    },
+    student: {
+      gender: profileData.gender,
+      date_of_birth: profileData.date_of_birth,
+      address: profileData.address,
+      pincode: profileData.pincode,
+      registration_number: profileData.registration_number,
+      department: profileData.department,
+      course: profileData.course,
+      year: profileData.year,
+      semester: profileData.semester,
+      is_hosteler: profileData.is_hosteler,
+      hostel_name: profileData.hostel_name,
+      room_number: profileData.room_number,
+      reputation_points: profileData.reputation_points,
+      verified_at: profileData.verified_at,
+    },
+    staff: {
+      designation: profileData.designation,
+      reputation_points: profileData.reputation_points,
+      role_verified: profileData.role_verified,
+      verified_at: profileData.verified_at,
+    },
+    admin: {
+      can_verify_others: profileData.can_verify_others,
+      role_verified: profileData.role_verified,
+      verified_at: profileData.verified_at,
+    },
+  };
+
+  return data;
+};
+
 const SessionsCard = () => {
   const [sessions, setSessions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -159,6 +201,8 @@ const Profile = () => {
   const [logoutType, setLogoutType] = useState("current");
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
+  console.log("Profile data:", profileData);
+
   const role = profileData?.role?.toLowerCase();
 
   // If student (on mobile or desktop), use the specialized StudentProfile component
@@ -267,7 +311,9 @@ const Profile = () => {
               <h1 className="text-4xl font-bold tracking-tight">
                 {profileData.name}
               </h1>
-              <p className="opacity-90 text-lg mt-1 tracking-wide">{profileData.email}</p>
+              <p className="opacity-90 text-lg mt-1 tracking-wide">
+                {profileData.email}
+              </p>
               <span className="inline-block mt-3 px-4 py-1.5 text-sm font-semibold tracking-wide rounded-full bg-white/20 backdrop-blur-md border border-white/30 capitalize">
                 {profileData.role}
               </span>
@@ -283,68 +329,170 @@ const Profile = () => {
 
           {/* BODY */}
           <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6 pb-24 md:pb-12">
-            <InfoCard title="Personal Information">
-              <Info label="Gender" value={profileData.gender} />
-              <Info
-                label="Date of Birth"
-                value={
-                  profileData.date_of_birth
-                    ? formatDate(profileData.date_of_birth)
-                    : null
-                }
-              />
-              <Info label="Phone" value={profileData.phone_number} />
-              <Info label="Pincode" value={profileData.pincode} />
-            </InfoCard>
+            {role === "student" && (
+              <>
+                {/* Personal Information - Student */}
+                <InfoCard title="Personal Information">
+                  <Info label="Gender" value={profileData.gender} />
+                  <Info
+                    label="Date of Birth"
+                    value={
+                      profileData.date_of_birth
+                        ? formatDate(profileData.date_of_birth)
+                        : null
+                    }
+                  />
+                  <Info label="Phone" value={profileData.phone_number} />
+                  <Info label="Address" value={profileData.address} />
+                  <Info label="Pincode" value={profileData.pincode} />
+                </InfoCard>
 
-            <InfoCard title="Academic Details">
-              <Info
-                label="Registration No"
-                value={profileData.registration_number}
-              />
-              <Info label="Department" value={profileData.department} />
-              <Info label="Course" value={profileData.course} />
-              <Info
-                label="Year / Semester"
-                value={`${profileData.year} / ${profileData.semester}`}
-              />
-            </InfoCard>
+                {/* Academic Details - Student */}
+                <InfoCard title="Academic Details">
+                  <Info
+                    label="Registration No"
+                    value={profileData.registration_number}
+                  />
+                  <Info label="Department" value={profileData.department} />
+                  <Info label="Course" value={profileData.course} />
+                  <Info
+                    label="Year / Semester"
+                    value={`${profileData.year} / ${profileData.semester}`}
+                  />
+                </InfoCard>
 
-            <InfoCard title="Hostel Details">
-              <Info
-                label="Hosteler"
-                value={profileData.is_hosteler ? "Yes" : "No"}
-              />
-              {profileData.is_hosteler && (
-                <>
-                  <Info label="Hostel Name" value={profileData.hostel_name} />
-                  <Info label="Room Number" value={profileData.room_number} />
-                </>
-              )}
-            </InfoCard>
+                {/* Hostel Details - Student */}
+                <InfoCard title="Hostel Details">
+                  <Info
+                    label="Hosteler"
+                    value={profileData.is_hosteler ? "Yes" : "No"}
+                  />
+                  {profileData.is_hosteler && (
+                    <>
+                      <Info
+                        label="Hostel Name"
+                        value={profileData.hostel_name}
+                      />
+                      <Info
+                        label="Room Number"
+                        value={profileData.room_number}
+                      />
+                    </>
+                  )}
+                </InfoCard>
 
-            <InfoCard title="Account Status">
-              <Info
-                label="Email Verified"
-                value={profileData.email_verified ? "Yes" : "No"}
-              />
-              <Info
-                label="Verification Status"
-                value={profileData.verification_status}
-              />
-              <Info
-                label="Reputation Points"
-                value={profileData.reputation_points}
-              />
-              <Info
-                label="Verified At"
-                value={
-                  profileData.verified_at
-                    ? formatDate(profileData.verified_at)
-                    : "—"
-                }
-              />
-            </InfoCard>
+                {/* Account Status - Student */}
+                <InfoCard title="Account Status">
+                  <Info
+                    label="Email Verified"
+                    value={profileData.email_verified ? "Yes" : "No"}
+                  />
+                  <Info
+                    label="Verification Status"
+                    value={profileData.verification_status}
+                  />
+                  <Info
+                    label="Reputation Points"
+                    value={profileData.reputation_points}
+                  />
+                  <Info
+                    label="Verified At"
+                    value={
+                      profileData.verified_at
+                        ? formatDate(profileData.verified_at)
+                        : "—"
+                    }
+                  />
+                </InfoCard>
+              </>
+            )}
+
+            {role === "staff" && (
+              <>
+                {/* Personal Information - Staff */}
+                <InfoCard title="Personal Information">
+                  <Info label="Name" value={profileData.name} />
+                  <Info label="Email" value={profileData.email} />
+                  <Info label="Phone" value={profileData.phone_number} />
+                </InfoCard>
+
+                {/* Professional Details - Staff */}
+                <InfoCard title="Professional Details">
+                  <Info label="Designation" value={profileData.designation} />
+                  <Info
+                    label="Email Verified"
+                    value={profileData.email_verified ? "Yes" : "No"}
+                  />
+                  <Info
+                    label="Role Verified"
+                    value={profileData.role_verified ? "Yes" : "No"}
+                  />
+                </InfoCard>
+
+                {/* Account Status - Staff */}
+                <InfoCard title="Account Status">
+                  <Info
+                    label="Verification Status"
+                    value={profileData.verification_status}
+                  />
+                  <Info
+                    label="Reputation Points"
+                    value={profileData.reputation_points}
+                  />
+                  <Info
+                    label="Verified At"
+                    value={
+                      profileData.verified_at
+                        ? formatDate(profileData.verified_at)
+                        : "—"
+                    }
+                  />
+                </InfoCard>
+              </>
+            )}
+
+            {role === "admin" && (
+              <>
+                {/* Personal Information - Admin */}
+                <InfoCard title="Personal Information">
+                  <Info label="Name" value={profileData.name} />
+                  <Info label="Email" value={profileData.email} />
+                  <Info label="Phone" value={profileData.phone_number} />
+                </InfoCard>
+
+                {/* Admin Settings */}
+                <InfoCard title="Admin Settings">
+                  <Info
+                    label="Email Verified"
+                    value={profileData.email_verified ? "Yes" : "No"}
+                  />
+                  <Info
+                    label="Role Verified"
+                    value={profileData.role_verified ? "Yes" : "No"}
+                  />
+                  <Info
+                    label="Can Verify Others"
+                    value={profileData.can_verify_others ? "Yes" : "No"}
+                  />
+                </InfoCard>
+
+                {/* Account Status - Admin */}
+                <InfoCard title="Account Status">
+                  <Info
+                    label="Verification Status"
+                    value={profileData.verification_status}
+                  />
+                  <Info
+                    label="Verified At"
+                    value={
+                      profileData.verified_at
+                        ? formatDate(profileData.verified_at)
+                        : "—"
+                    }
+                  />
+                </InfoCard>
+              </>
+            )}
 
             <SessionsCard />
           </div>

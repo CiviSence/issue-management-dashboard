@@ -3,9 +3,9 @@ import { getAccessToken, getUserData } from "../Utils/auth-utils";
 
 const ProtectedRoute = ({ children, allowedRoles = [] }) => {
   const token = getAccessToken();
-  console.log(token);
+  //console.log(token);
   const userRole = getUserData(); // roles : 'admin', 'student', 'staff'
-  console.log(userRole);
+  console.log("Current User Role:", userRole);
   // Not authenticated → login
   if (!token) {
     return <Navigate to="/login" replace />;
