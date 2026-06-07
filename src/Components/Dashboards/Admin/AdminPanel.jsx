@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import SideNav from "./AdminSideNav";
 import BottomNav from "../../Templates/BottomNav";
 import Searchbar from "../../Templates/Searchbar";
@@ -513,6 +514,7 @@ const BannedSkeleton = () => (
 );
 
 const AdminPanel = () => {
+  const navigate = useNavigate();
   // States
   const [activeTab, setActiveTab] = useState("dashboard");
   const [users, setUsers] = useState([]);
@@ -536,6 +538,18 @@ const AdminPanel = () => {
   const [showBanModal, setShowBanModal] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [verificationRequests, setVerificationRequests] = useState([]);
+  
+  // Reports states
+  const [reports, setReports] = useState([]);
+  const [loadingReports, setLoadingReports] = useState(true);
+  const [actioningReportId, setActioningReportId] = useState(null);
+  const [showReviewModal, setShowReviewModal] = useState(false);
+  const [selectedReport, setSelectedReport] = useState(null);
+  const [reviewAction, setReviewAction] = useState("delete_content");
+  const [reviewNotes, setReviewNotes] = useState("");
+  const [reportsSearchQuery, setReportsSearchQuery] = useState("");
+  const [reportsStatusFilter, setReportsStatusFilter] = useState("all");
+
   const [banReason, setBanReason] = useState("");
   const [deleteContent, setDeleteContent] = useState(false);
   const [notifyUser, setNotifyUser] = useState(true);
@@ -545,6 +559,7 @@ const AdminPanel = () => {
     unverifiedUsers: 0,
     bannedUsers: 0,
     trustedUsers: 0,
+    pendingReports: 0,
   });
 
   const [notificationForm, setNotificationForm] = useState({
@@ -564,6 +579,11 @@ const AdminPanel = () => {
     fetchSentNotifications();
     fetchNotificationStats();
   }, []);
+
+  // Fetch reports when tab or status filter changes
+  useEffect(() => {
+    fetchReports(reportsStatusFilter);
+  }, [reportsStatusFilter, activeTab]);
 
   // API Functions
   const fetchDashboardStats = async () => {
@@ -667,6 +687,80 @@ const AdminPanel = () => {
       toast.error(
         error.response?.data?.detail || "Failed to fetch notification stats",
       );
+    }
+  };
+
+  const fetchReports = async (status = "all") => {
+    setLoadingReports(true);
+    try {
+      const response = await axios.get(`/reports/admin/all?status=${status}`);
+      const reportsList = response.data.reports || [];
+      setReports(reportsList);
+      
+      // Update stats badge count
+      if (status === "pending") {
+        setStats((prev) => ({
+          ...prev,
+          pendingReports: response.data.total || reportsList.length,
+        }));
+      } else if (status === "all") {
+        setStats((prev) => ({
+          ...prev,
+          pendingReports: reportsList.filter((r) => r.status !== "reviewed" && r.status !== "dismissed").length,
+        }));
+      } else {
+        const pendingResponse = await axios.get("/reports/admin/all?status=pending");
+        const pendingCount = pendingResponse.data.total || (pendingResponse.data.reports || []).length;
+        setStats((prev) => ({
+          ...prev,
+          pendingReports: pendingCount,
+        }));
+      }
+    } catch (error) {
+      console.error("Error fetching reports:", error);
+      toast.error("Failed to fetch reports");
+    } finally {
+      setLoadingReports(false);
+    }
+  };
+
+  const handleReviewReport = (report) => {
+    setSelectedReport(report);
+    setReviewAction("delete_content");
+    setReviewNotes("");
+    setShowReviewModal(true);
+  };
+
+  const confirmReviewReport = async () => {
+    if (!selectedReport) return;
+    setActioningReportId(selectedReport.id);
+    try {
+      await axios.patch(`/reports/admin/${selectedReport.id}/review`, {
+        action: reviewAction,
+        admin_notes: reviewNotes,
+      });
+      toast.success("Report reviewed successfully");
+      setShowReviewModal(false);
+      fetchReports(reportsStatusFilter);
+    } catch (error) {
+      console.error("Error reviewing report:", error);
+      toast.error(error.response?.data?.message || error.response?.data?.detail || "Failed to submit review");
+    } finally {
+      setActioningReportId(null);
+    }
+  };
+
+  const handleDismissReport = async (reportId) => {
+    setActioningReportId(reportId);
+    try {
+      await axios.delete(`/reports/admin/${reportId}/dismiss`);
+      toast.success("Report dismissed successfully");
+      fetchReports(reportsStatusFilter);
+    } catch (error) {
+      console.error("Error dismissing report:", error);
+      toast.error(error.response?.data?.message || error.response?.data?.detail || "Failed to dismiss report");
+    } finally {
+      setActioningReportId(null);
     }
   };
 
@@ -2302,6 +2396,259 @@ const DashboardTab = ({
     </div>
   );
   };
+
+  const ReportsTab = () => {
+    // filter reports by search query
+    const filteredReports = reports.filter((report) => {
+      // search match
+      const query = reportsSearchQuery.toLowerCase();
+      const matchesSearch =
+        !query ||
+        report.reporter_name?.toLowerCase().includes(query) ||
+        report.reported_user_name?.toLowerCase().includes(query) ||
+        report.reason?.toLowerCase().includes(query) ||
+        report.description?.toLowerCase().includes(query) ||
+        report.issue_title?.toLowerCase().includes(query);
+
+      return matchesSearch;
+    });
+
+    if (loadingReports) {
+      return (
+        <div className="w-full space-y-4 animate-fade-in">
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="bg-white rounded-2xl p-6 shadow-md border border-gray-100 space-y-4">
+              <div className="flex justify-between items-center">
+                <Skeleton height={24} width={120} />
+                <Skeleton height={20} width={80} />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <Skeleton height={40} />
+                <Skeleton height={40} />
+                <Skeleton height={40} />
+              </div>
+              <Skeleton height={60} />
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    return (
+      <div className="space-y-6 animate-fade-in">
+        {/* Search & Filters */}
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-4 rounded-2xl border border-gray-100 shadow-xs">
+          <div className="flex bg-gray-100 p-1 rounded-xl w-fit">
+            {[
+              { id: "all", label: "All Reports" },
+              { id: "pending", label: "Pending" },
+              { id: "reviewed", label: "Reviewed" },
+              { id: "dismissed", label: "Dismissed" },
+            ].map((filter) => (
+              <button
+                key={filter.id}
+                onClick={() => setReportsStatusFilter(filter.id)}
+                className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                  reportsStatusFilter === filter.id
+                    ? "bg-[#6366f1] text-white shadow-sm"
+                    : "text-gray-500 hover:text-gray-900"
+                }`}
+              >
+                {filter.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="relative flex-1 md:max-w-md">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search reports by reporter, reported user, reason..."
+              value={reportsSearchQuery}
+              onChange={(e) => setReportsSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 bg-gray-50/50"
+            />
+          </div>
+        </div>
+
+        {/* Reports List */}
+        <div className="space-y-4">
+          {filteredReports.map((report) => {
+            const isPending = report.status !== "reviewed" && report.status !== "dismissed";
+            const isReviewed = report.status === "reviewed";
+            const isDismissed = report.status === "dismissed";
+
+            return (
+              <div
+                key={report.id}
+                className={`bg-white rounded-2xl border transition-all duration-300 hover:shadow-md ${
+                  isPending ? "border-amber-100 hover:border-amber-200" : "border-gray-200"
+                }`}
+              >
+                {/* Card Header */}
+                <div className="p-5 border-b border-gray-50 flex flex-wrap items-center justify-between gap-4">
+                  <div className="flex items-center gap-3">
+                    <div className={`p-2 rounded-xl ${
+                      isPending ? "bg-amber-50 text-amber-600" :
+                      isReviewed ? "bg-emerald-50 text-emerald-600" : "bg-gray-100 text-gray-600"
+                    }`}>
+                      <AlertTriangle className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-gray-900 text-base">Report #{report.id}</h4>
+                      <p className="text-xs text-gray-400 mt-0.5">
+                        Created on {new Date(report.created_at).toLocaleDateString()} at {new Date(report.created_at).toLocaleTimeString()}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`text-xs font-black uppercase tracking-widest px-2.5 py-1 rounded-md border ${
+                        isPending
+                          ? "bg-amber-50 text-amber-700 border-amber-200"
+                          : isReviewed
+                          ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                          : "bg-gray-100 text-gray-700 border-gray-200"
+                      }`}
+                    >
+                      {report.status}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Card Body */}
+                <div className="p-5 space-y-4">
+                  {/* Parties involved */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="bg-gray-50/50 p-3 rounded-xl border border-gray-100">
+                      <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Reporter</p>
+                      <p className="font-semibold text-gray-800 text-sm">{report.reporter_name}</p>
+                      <p className="text-[10px] text-gray-400 font-mono mt-0.5 truncate">{report.reporter_user_id}</p>
+                    </div>
+
+                    <div className="bg-gray-50/50 p-3 rounded-xl border border-gray-100">
+                      <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Reported User</p>
+                      <p className="font-semibold text-gray-800 text-sm">{report.reported_user_name}</p>
+                      <p className="text-[10px] text-gray-400 font-mono mt-0.5 truncate">{report.reported_user_id}</p>
+                    </div>
+
+                    <div className="bg-gray-50/50 p-3 rounded-xl border border-gray-100">
+                      <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Report Reason</p>
+                      <span className="inline-block px-2.5 py-1 bg-violet-50 text-violet-700 text-xs font-bold rounded-lg border border-violet-100 capitalize mt-1">
+                        {report.reason?.replace(/_/g, " ")}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Reported Item Link */}
+                  {(report.issue_id || report.comment_id) && (
+                    <div className="bg-linear-to-r from-violet-50/30 to-indigo-50/30 p-3 rounded-xl border border-indigo-50 flex flex-wrap items-center justify-between gap-3">
+                      <div className="flex items-center gap-2">
+                        <FileText className="w-4 h-4 text-indigo-500" />
+                        <span className="text-xs text-gray-600">
+                          Reported Item:{" "}
+                          <span className="font-bold text-gray-900">
+                            {report.comment_id ? "Comment" : "Issue"}
+                          </span>
+                        </span>
+                      </div>
+                      {report.issue_id && (
+                        <button
+                          onClick={() => navigate(`/issues/${report.issue_id}`)}
+                          className="px-3 py-1 bg-white hover:bg-indigo-50 text-indigo-600 text-xs font-bold rounded-lg border border-indigo-200 transition-colors shadow-xs cursor-pointer"
+                        >
+                          View Issue: "{report.issue_title || `ID: ${report.issue_id}`}"
+                        </button>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Report Description */}
+                  <div className="space-y-1">
+                    <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Description</p>
+                    <div className="bg-gray-50 p-3 rounded-xl border border-gray-100 italic text-gray-700 text-sm">
+                      "{report.description || "No description provided."}"
+                    </div>
+                  </div>
+
+                  {/* Resolution Details for Reviewed Reports */}
+                  {isReviewed && (
+                    <div className="mt-4 p-4 bg-emerald-50/30 rounded-xl border border-emerald-100 space-y-2 animate-fade-in">
+                      <div className="flex justify-between text-xs text-emerald-700 font-bold uppercase tracking-wider">
+                        <span>Resolution Details</span>
+                        {report.resolved_at && (
+                          <span>
+                            Resolved on: {new Date(report.resolved_at).toLocaleDateString()}
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-sm text-gray-700">
+                        <span className="font-bold text-emerald-800">Action:</span>{" "}
+                        <span className="capitalize font-medium">{report.action || "Reviewed"}</span>
+                      </div>
+                      {report.admin_notes && (
+                        <div className="text-sm text-gray-700">
+                          <span className="font-bold text-emerald-800">Admin Notes:</span>{" "}
+                          <span className="italic">"{report.admin_notes}"</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Resolution Details for Dismissed Reports */}
+                  {isDismissed && report.resolved_at && (
+                    <div className="mt-4 p-3 bg-gray-50 rounded-xl border border-gray-100 text-xs text-gray-500">
+                      Dismissed on {new Date(report.resolved_at).toLocaleDateString()}
+                    </div>
+                  )}
+                </div>
+
+                {/* Card Actions */}
+                {isPending && (
+                  <div className="px-5 py-4 bg-gray-50/50 rounded-b-2xl border-t border-gray-50 flex justify-end gap-3">
+                    <button
+                      onClick={() => handleDismissReport(report.id)}
+                      disabled={actioningReportId === report.id}
+                      className="px-4 py-2 border border-gray-200 hover:border-red-200 hover:bg-red-50 text-gray-600 hover:text-red-600 text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                    >
+                      {actioningReportId === report.id ? (
+                        <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                      ) : (
+                        <XCircle className="w-3.5 h-3.5" />
+                      )}
+                      Dismiss
+                    </button>
+                    <button
+                      onClick={() => handleReviewReport(report)}
+                      disabled={actioningReportId === report.id}
+                      className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition-all shadow-md shadow-indigo-100 flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                    >
+                      {actioningReportId === report.id ? (
+                        <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                      ) : (
+                        <CheckCircle className="w-3.5 h-3.5" />
+                      )}
+                      Review & Act
+                    </button>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+
+          {filteredReports.length === 0 && (
+            <div className="text-center py-16 bg-white rounded-2xl border border-gray-100">
+              <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-4 opacity-25" />
+              <p className="text-gray-500 font-bold">No reports found</p>
+              <p className="text-sm text-gray-400 mt-1">Excellent! No matching reports to display.</p>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <>
       <ToastContainer
@@ -2352,6 +2699,12 @@ const DashboardTab = ({
               badge: stats.bannedUsers,
             },
             { id: "notifications", label: "Notifications", icon: Bell },
+            {
+              id: "reports",
+              label: "Reports",
+              icon: AlertTriangle,
+              badge: stats.pendingReports,
+            },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -2410,7 +2763,85 @@ const DashboardTab = ({
               sentNotifications={sentNotifications}
             />
           )}
+          {activeTab === "reports" && <ReportsTab />}
         </div>
+
+        {showReviewModal && selectedReport && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-50 animate-in fade-in duration-200">
+            <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 border border-gray-100 mx-4">
+              <h2 className="text-xl font-bold text-gray-900 mb-2 flex items-center gap-2">
+                <AlertTriangle className="w-5 h-5 text-amber-500" />
+                Review Report #{selectedReport.id}
+              </h2>
+              
+              <div className="mb-4 bg-gray-50 p-3 rounded-xl border border-gray-100 text-xs text-gray-600 space-y-1">
+                <div>
+                  <span className="font-bold text-gray-700">Reporter:</span> {selectedReport.reporter_name}
+                </div>
+                <div>
+                  <span className="font-bold text-gray-700">Reported User:</span> {selectedReport.reported_user_name}
+                </div>
+                <div>
+                  <span className="font-bold text-gray-700">Reason:</span> <span className="capitalize">{selectedReport.reason?.replace(/_/g, " ")}</span>
+                </div>
+              </div>
+
+              {/* Action Dropdown */}
+              <div className="mb-4 relative">
+                <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">
+                  Select Action
+                </label>
+                <select
+                  value={reviewAction}
+                  onChange={(e) => setReviewAction(e.target.value)}
+                  className="w-full bg-white border border-gray-200 text-gray-800 text-sm rounded-xl px-4 py-2.5 shadow-xs focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition duration-200 cursor-pointer"
+                >
+                  <option value="delete_content">Delete Content (delete_content)</option>
+                  <option value="keep_content">Keep Content (keep_content)</option>
+                  <option value="warn_user">Warn User (warn_user)</option>
+                </select>
+              </div>
+
+              {/* Admin Notes */}
+              <div className="mb-6">
+                <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">
+                  Admin Notes
+                </label>
+                <textarea
+                  value={reviewNotes}
+                  onChange={(e) => setReviewNotes(e.target.value)}
+                  className="w-full border border-gray-200 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500"
+                  rows="4"
+                  placeholder="Enter details about why this action was taken..."
+                />
+              </div>
+
+              {/* Buttons */}
+              <div className="flex justify-end gap-3">
+                <button
+                  onClick={() => setShowReviewModal(false)}
+                  disabled={actioningReportId === selectedReport.id}
+                  className="px-4 py-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xs cursor-pointer transition-colors disabled:opacity-50"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  onClick={confirmReviewReport}
+                  disabled={actioningReportId === selectedReport.id}
+                  className="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs cursor-pointer shadow-md shadow-indigo-100 flex items-center gap-1.5 transition-colors disabled:opacity-50"
+                >
+                  {actioningReportId === selectedReport.id ? (
+                    <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                  ) : (
+                    <CheckCircle className="w-3.5 h-3.5" />
+                  )}
+                  Confirm Action
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {showBanModal && (
           <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
