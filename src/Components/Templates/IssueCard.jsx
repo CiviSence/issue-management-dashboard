@@ -13,8 +13,8 @@ const IssueCard = ({ issue }) => {
         2xl:w-[calc(25%-12px)]
         bg-linear-to-r ${issue.color} 
         opacity-90 hover:opacity-100
-        py-3 sm:py-4 lg:py-6 
-        px-3 sm:px-4 lg:px-6 
+        py-4 sm:py-4 lg:py-6 
+        px-4 sm:px-4 lg:px-6 
         rounded-xl
         flex items-center gap-3
         transition-all duration-300
@@ -29,7 +29,7 @@ const IssueCard = ({ issue }) => {
       )}
 
       <div className="flex-1 min-w-0 pr-1 sm:pr-2">
-        <h2 className="text-sm sm:text-base lg:text-lg font-bold text-white truncate">
+        <h2 className="text-base sm:text-base lg:text-lg font-bold text-white truncate">
           {issue.name}
         </h2>
         <p className="text-white/95 text-[10px] sm:text-xs md:text-sm mt-0.5 line-clamp-1 sm:line-clamp-2">

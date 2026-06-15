@@ -149,7 +149,7 @@ const StaffDashboard = () => {
       <div className="w-full pt-0 pb-20 md:pb-2 lg:p-4 lg:w-[calc(100vw-15vw)] overflow-x-auto">
         <div className="w-full mx-auto">
           {/* header */}
-          <div className="w-full bg-linear-to-r from-[#7E70EB] to-[#5A50A6] p-4 sm:p-5 lg:p-6 rounded-b-4xl lg:rounded-2xl md:rounded-3xl text-white shadow-lg  md:mb-6">
+          <div className="w-full bg-linear-to-r from-[#7E70EB] to-[#5A50A6] p-5 sm:p-5 lg:p-6 rounded-b-4xl lg:rounded-2xl md:rounded-3xl text-white shadow-lg  md:mb-6">
             <div className="flex items-center justify-between gap-4">
               {/* LEFT */}
               <div>
@@ -227,7 +227,7 @@ const StaffDashboard = () => {
                 {/* Profile Pic */}
                 <button
                   onClick={() => navigate("/profile")}
-                  className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl overflow-hidden border border-white/20 hover:border-white/50 transition-all hover:scale-105 cursor-pointer shrink-0"
+                  className="h-10 w-10 sm:h-12 sm:w-12 rounded-full overflow-hidden border border-white/20 hover:border-white/50 transition-all hover:scale-105 cursor-pointer shrink-0"
                 >
                   <img
                     src={profileData?.avatar_url || defaultProfile}
@@ -246,15 +246,15 @@ const StaffDashboard = () => {
           </div>
 
           {/* Table */}
-          <div className="bg-card rounded-2xl shadow-sm p-6 ">
-            <div className="flex justify-between items-center mb-6"></div>
+          <div className="bg-card rounded-xl shadow-sm p-2 ">
+            <div className="flex justify-between items-center"></div>
 
             {loading ? (
               <Loader />
             ) : assignedIssues?.length > 0 ? (
               <div className="bg-card border border-border rounded-2xl shadow-sm overflow-hidden">
                 {/* Header */}
-                <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-border">
+                <div className="flex items-center justify-between px-4 sm:px-6 py-3 border-b border-border">
                   <h2 className="text-lg font-semibold">Recently Assigned</h2>
 
                   <a

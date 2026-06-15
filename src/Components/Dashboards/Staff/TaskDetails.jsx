@@ -6,6 +6,7 @@ import {
   acceptAssignment,
   rejectAssignment,
   completeAssignment,
+  getAssignedIssues,
 } from "../../../Utils/staffissues";
 import { getIssueById } from "../../../Utils/issues";
 import Loader from "../../Templates/Loader";
@@ -57,8 +58,25 @@ const TaskDetails = () => {
       const data = await getIssueById(id);
       console.log("Successfully fetched issue data:", data);
       
+      let assignmentInfo = {};
+      try {
+        const assignments = await getAssignedIssues();
+        const matchingAssignment = assignments.find(
+          (a) => String(a.issue_id) === String(id)
+        );
+        if (matchingAssignment) {
+          assignmentInfo = {
+            assignment_id: matchingAssignment.assignment_id,
+            assignment_status: matchingAssignment.assignment_status,
+          };
+          console.log("Found matching assignment info:", assignmentInfo);
+        }
+      } catch (err) {
+        console.error("Failed to fetch matching assignment:", err);
+      }
+
       setTask((prev) => {
-        const merged = { ...prev, ...data };
+        const merged = { ...prev, ...data, ...assignmentInfo };
         console.log("Merged Task Data:", merged);
         return merged;
       });
@@ -163,7 +181,7 @@ const TaskDetails = () => {
       <>
         <StaffSideNav />
         <BottomNav />
-        <div className="w-full p-4 lg:w-[calc(100vw-15vw)] bg-background text-foreground min-h-screen flex items-center justify-center">
+        <div className="flex-1 h-screen overflow-y-auto pb-24 md:pb-6 p-3 md:p-6 bg-background text-foreground flex items-center justify-center">
           <Loader />
         </div>
       </>
@@ -175,7 +193,7 @@ const TaskDetails = () => {
       <>
         <StaffSideNav />
         <BottomNav />
-        <div className="w-full p-4 lg:w-[calc(100vw-15vw)] bg-background text-foreground min-h-screen flex items-center justify-center">
+        <div className="flex-1 h-screen overflow-y-auto pb-24 md:pb-6 p-3 md:p-6 bg-background text-foreground flex items-center justify-center">
           <div className="text-center">
             <AlertCircle className="w-16 h-16 text-gray-400 mx-auto mb-4" />
             <h2 className="text-xl font-semibold text-gray-600">
@@ -195,7 +213,7 @@ const TaskDetails = () => {
       <StaffSideNav />
       <BottomNav />
 
-      <div className="w-full p-4 lg:w-[calc(100vw-15vw)] bg-background text-foreground min-h-screen overflow-y-auto transition-colors duration-200">
+      <div className="flex-1 h-screen overflow-y-auto pb-24 md:pb-6 p-3 md:p-6 bg-background text-foreground transition-colors duration-200">
         {/* Header */}
         <div className="w-full bg-gradient-to-r from-violet-500 to-purple-600 p-4 sm:p-5 lg:p-6 rounded-2xl md:rounded-3xl text-white shadow-lg mb-4 md:mb-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
@@ -412,40 +430,38 @@ const TaskDetails = () => {
             </div>
 
             {/* Action Buttons */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-4 md:p-6">
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-3.5 sm:p-5 md:p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
                 Actions
               </h3>
               <div className="space-y-3">
-                {/* Show Accept/Reject for pending/new tasks */}
-                {(task.status === "new" || task.status === "pending") && (
+                {/* Show Accept/Reject for pending tasks */}
+                {task.assignment_status === "pending" && (
                   <>
                     <button
                       onClick={() => setActiveModal("accept")}
-                      className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-green-500 hover:bg-green-600 text-white rounded-xl font-medium transition-colors"
+                      className="w-full flex items-center justify-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 bg-green-500 hover:bg-green-600 text-white rounded-xl text-sm sm:text-base font-medium transition-colors"
                     >
-                      <CheckCircle className="w-5 h-5" />
+                      <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5" />
                       Accept Task
                     </button>
                     <button
                       onClick={() => setActiveModal("reject")}
-                      className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl font-medium transition-colors"
+                      className="w-full flex items-center justify-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl text-sm sm:text-base font-medium transition-colors"
                     >
-                      <XCircle className="w-5 h-5" />
+                      <XCircle className="w-4 h-4 sm:w-5 sm:h-5" />
                       Reject Task
                     </button>
                   </>
                 )}
 
-                {/* Show Complete for in-progress tasks */}
-                {(task.status === "in_progress" ||
-                  task.status === "accepted") &&
-                  task.assignment_status !== "completed" && (
+                {/* Show Complete for accepted tasks */}
+                {task.assignment_status === "accepted" && (
                   <button
                     onClick={() => setActiveModal("complete")}
-                    className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-violet-500 hover:bg-violet-600 text-white rounded-xl font-medium transition-colors"
+                    className="w-full flex items-center justify-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 bg-violet-500 hover:bg-violet-600 text-white rounded-xl text-sm sm:text-base font-medium transition-colors"
                   >
-                    <CheckCircle className="w-5 h-5" />
+                    <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5" />
                     Mark as Complete
                   </button>
                 )}

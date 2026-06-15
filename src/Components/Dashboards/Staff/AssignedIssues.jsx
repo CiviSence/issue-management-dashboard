@@ -88,7 +88,7 @@ const AssignedIssues = () => {
       <StaffSideNav />
       <BottomNav />
 
-      <div className="w-full pb-20 md:pb-2 p-2 lg:p-4 lg:w-[calc(100vw-15vw)] overflow-x-auto">
+      <div className="flex-1 h-screen overflow-y-auto pb-24 md:pb-6 p-3 md:p-6">
         <div className="w-full bg-linear-to-r from-[#7E70EB] to-[#5A50A6] p-4 sm:p-5 lg:p-6 rounded-2xl md:rounded-3xl text-white shadow-lg mb-4 md:mb-6 border border-white/10">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             <div>
@@ -119,7 +119,7 @@ const AssignedIssues = () => {
                     return (
                       <div
                         key={issue.assignment_id}
-                        className="p-4 hover:bg-muted/40 transition-all duration-200"
+                        className="p-3 sm:p-4 hover:bg-muted/40 transition-all duration-200"
                       >
                         <div className="flex items-start justify-between gap-3 mb-3">
                           <div className="min-w-0 flex-1">
