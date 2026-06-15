@@ -1,4 +1,4 @@
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import SideNav from "./AdminSideNav";
 import Searchbar from "../../Templates/Searchbar";
 import IssueCard from "../../Templates/IssueCard";
@@ -8,6 +8,7 @@ import { useIssues } from "../../../Context/IssueContext";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { Link } from "react-router-dom";
+import { getAssignmentStats } from "../../../Utils/staffissues";
 
 const PieChartCard = lazy(() => import("../../Templates/PieChartCard"));
 const BarChartCard = lazy(() => import("../../Templates/BarChartCard"));
@@ -32,6 +33,22 @@ const UserSectionSkeleton = () => (
 
 const AdminDashboard = () => {
   const { allstats, issues = [], loadingIssues, loadingStats } = useIssues();
+  const [statsData, setStatsData] = useState({});
+  const [loadingStatsData, setLoadingStatsData] = useState(true);
+
+  useEffect(() => {
+    const fetchAssignmentStats = async () => {
+      try {
+        const data = await getAssignmentStats();
+        setStatsData(data);
+      } catch (err) {
+        console.error("Failed to fetch assignment stats:", err);
+      } finally {
+        setLoadingStatsData(false);
+      }
+    };
+    fetchAssignmentStats();
+  }, []);
 
   const initialStats = {
     category: {
@@ -182,7 +199,102 @@ const AdminDashboard = () => {
           )}
         </div>
 
-        <h1 className="pt-2 pb-1 pl-2 text-xl sm:text-2xl font-semibold text-[#363434]">
+        {/* Assignment Statistics & Performance Section */}
+        {loadingStatsData ? (
+          <div className="w-full mt-4 p-4 grid grid-cols-1 lg:grid-cols-2 gap-6 bg-[#F3F1FF] rounded-2xl border border-indigo-50">
+            <Skeleton height={200} borderRadius={16} />
+            <Skeleton height={200} borderRadius={16} />
+          </div>
+        ) : (
+          <div className="w-full mt-4 p-4 grid grid-cols-1 lg:grid-cols-2 gap-6 bg-[#F3F1FF] rounded-2xl border border-indigo-50">
+            {/* Left: Overall Assignment Counts */}
+            <div className="bg-card border border-border p-5 rounded-2xl shadow-xs">
+              <h3 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
+                <i className="ri-bar-chart-box-line text-[#7E70EB] text-lg"></i> Overall Assignment Counts
+              </h3>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                <div className="p-3 bg-muted/30 rounded-xl border border-border/50 text-center">
+                  <span className="text-xs text-muted-foreground block font-medium">Total Assignments</span>
+                  <span className="text-xl font-bold text-card-foreground mt-1 block">{statsData.total_assignments ?? 0}</span>
+                </div>
+                <div className="p-3 bg-muted/30 rounded-xl border border-border/50 text-center">
+                  <span className="text-xs text-muted-foreground block font-medium text-amber-600">Pending</span>
+                  <span className="text-xl font-bold text-card-foreground mt-1 block">{statsData.pending_assignments ?? 0}</span>
+                </div>
+                <div className="p-3 bg-muted/30 rounded-xl border border-border/50 text-center">
+                  <span className="text-xs text-muted-foreground block font-medium text-blue-600">Accepted</span>
+                  <span className="text-xl font-bold text-card-foreground mt-1 block">{statsData.accepted_assignments ?? 0}</span>
+                </div>
+                <div className="p-3 bg-muted/30 rounded-xl border border-border/50 text-center">
+                  <span className="text-xs text-muted-foreground block font-medium text-red-600">Rejected</span>
+                  <span className="text-xl font-bold text-card-foreground mt-1 block">{statsData.rejected_assignments ?? 0}</span>
+                </div>
+                <div className="p-3 bg-muted/30 rounded-xl border border-border/50 text-center">
+                  <span className="text-xs text-muted-foreground block font-medium text-emerald-600">Completed</span>
+                  <span className="text-xl font-bold text-card-foreground mt-1 block">{statsData.completed_assignments ?? 0}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Right: Performance & Efficiency Metrics */}
+            <div className="bg-card border border-border p-5 rounded-2xl shadow-xs">
+              <h3 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
+                <i className="ri-pulse-line text-emerald-500 text-lg"></i> Performance & Efficiency Metrics
+              </h3>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="p-3 bg-emerald-500/5 rounded-xl border border-emerald-500/10 flex items-center gap-3">
+                  <div className="h-9 w-9 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-600 shrink-0">
+                    <i className="ri-percent-line text-lg"></i>
+                  </div>
+                  <div>
+                    <span className="text-xs text-muted-foreground block font-medium">Acceptance Rate</span>
+                    <span className="text-lg font-bold text-card-foreground mt-0.5 block">
+                      {statsData.acceptance_rate !== undefined ? `${Number(statsData.acceptance_rate).toFixed(1)}%` : "N/A"}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="p-3 bg-[#6366f1]/5 rounded-xl border border-[#6366f1]/10 flex items-center gap-3">
+                  <div className="h-9 w-9 rounded-lg bg-[#6366f1]/10 flex items-center justify-center text-[#6366f1] shrink-0">
+                    <i className="ri-check-double-line text-lg"></i>
+                  </div>
+                  <div>
+                    <span className="text-xs text-muted-foreground block font-medium">Completion Rate</span>
+                    <span className="text-lg font-bold text-card-foreground mt-0.5 block">
+                      {statsData.completion_rate !== undefined ? `${Number(statsData.completion_rate).toFixed(1)}%` : "N/A"}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="p-3 bg-amber-500/5 rounded-xl border border-amber-500/10 flex items-center gap-3">
+                  <div className="h-9 w-9 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-600 shrink-0">
+                    <i className="ri-speed-up-line text-lg"></i>
+                  </div>
+                  <div>
+                    <span className="text-xs text-muted-foreground block font-medium">Avg Response</span>
+                    <span className="text-lg font-bold text-card-foreground mt-0.5 block">
+                      {statsData.avg_response_time_hours !== undefined ? `${Number(statsData.avg_response_time_hours).toFixed(1)} hrs` : "N/A"}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="p-3 bg-rose-500/5 rounded-xl border border-rose-500/10 flex items-center gap-3">
+                  <div className="h-9 w-9 rounded-lg bg-rose-500/10 flex items-center justify-center text-rose-600 shrink-0">
+                    <i className="ri-time-line text-lg"></i>
+                  </div>
+                  <div>
+                    <span className="text-xs text-muted-foreground block font-medium">Avg Completion</span>
+                    <span className="text-lg font-bold text-card-foreground mt-0.5 block">
+                      {statsData.avg_completion_time_hours !== undefined ? `${Number(statsData.avg_completion_time_hours).toFixed(1)} hrs` : "N/A"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <h1 className="pt-4 pb-1 pl-2 text-xl sm:text-2xl font-semibold text-[#363434]">
           Issue Stats
         </h1>
 

@@ -74,3 +74,14 @@ export const completeAssignment = async (assignmentId, staffNotes = "", resoluti
     throw new Error(error);
   }
 };
+
+export const getAssignmentStats = async () => {
+  try {
+    const { data } = await axios.get("/assignments/stats");
+    return data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch assignment stats",
+    );
+  }
+};
