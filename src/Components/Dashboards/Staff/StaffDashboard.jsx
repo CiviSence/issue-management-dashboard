@@ -28,22 +28,22 @@ const StaffDashboard = () => {
           text: `New task assigned: "${assignedIssues[0].title || "Untitled"}"`,
           time: "Just now",
           read: false,
-          icon: "ri-task-line"
+          icon: "ri-task-line",
         },
         ...assignedIssues.slice(1, 3).map((issue, idx) => ({
           id: idx + 2,
           text: `Task update pending for: "${issue.title || "Untitled"}"`,
           time: "1 hour ago",
           read: false,
-          icon: "ri-time-line"
+          icon: "ri-time-line",
         })),
         {
           id: 10,
           text: "Welcome to your Staff Dashboard!",
           time: "1 day ago",
           read: true,
-          icon: "ri-dashboard-line"
-        }
+          icon: "ri-dashboard-line",
+        },
       ];
       setNotifications(generatedNotifs);
     } else {
@@ -53,16 +53,16 @@ const StaffDashboard = () => {
           text: "Welcome to your Staff Dashboard!",
           time: "1 day ago",
           read: true,
-          icon: "ri-dashboard-line"
-        }
+          icon: "ri-dashboard-line",
+        },
       ]);
     }
   }, [assignedIssues]);
 
-  const unreadCount = notifications.filter(n => !n.read).length;
+  const unreadCount = notifications.filter((n) => !n.read).length;
 
   const markAllRead = () => {
-    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
   };
 
   // Close notifications dropdown on click outside
@@ -106,6 +106,17 @@ const StaffDashboard = () => {
     fetchAssigned();
     fetchSummary();
   }, [profileData?.id]);
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    return new Date(dateString).toLocaleString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
 
   const stats = [
     {
@@ -159,7 +170,10 @@ const StaffDashboard = () => {
 
                 <p className="text-violet-100 text-xs sm:text-sm md:text-base mt-1">
                   Welcome back,{" "}
-                  <span className="font-semibold">{profileData?.name || summary.staff_name || "staff"}</span>!
+                  <span className="font-semibold">
+                    {profileData?.name || summary.staff_name || "staff"}
+                  </span>
+                  !
                 </p>
               </div>
 
@@ -277,15 +291,25 @@ const StaffDashboard = () => {
                           <div className="font-medium text-card-foreground truncate">
                             {issue?.title || "Untitled Issue"}
                           </div>
-                          <div className="text-xs text-muted-foreground mt-0.5">
-                            #{issue.issue_id}
+                          <div className="text-xs text-muted-foreground mt-0.5 flex flex-wrap items-center gap-1.5">
+                            {issue.assigned_at && (
+                              <span>
+                                Assigned: {formatDate(issue.assigned_at)}
+                              </span>
+                            )}
                           </div>
                         </div>
                       </div>
 
                       <div className="flex items-center gap-2 flex-wrap mb-3">
-                        <StatusBadge type="priority" value={issue?.priority || "low"} />
-                        <StatusBadge type="status" value={issue?.assignment_status || "pending"} />
+                        <StatusBadge
+                          type="priority"
+                          value={issue?.priority || "low"}
+                        />
+                        <StatusBadge
+                          type="status"
+                          value={issue?.assignment_status || "pending"}
+                        />
                       </div>
 
                       <button
@@ -326,17 +350,27 @@ const StaffDashboard = () => {
                             <div className="font-medium">
                               {issue?.title || "Untitled Issue"}
                             </div>
-                            <div className="text-xs text-muted-foreground">
-                              #{issue.issue_id}
+                            <div className="text-xs text-muted-foreground mt-0.5 flex flex-wrap items-center gap-1.5">
+                              {issue.assigned_at && (
+                                <span>
+                                  Assigned: {formatDate(issue.assigned_at)}
+                                </span>
+                              )}
                             </div>
                           </td>
 
                           <td className="px-6 py-4">
-                            <StatusBadge type="priority" value={issue?.priority || "low"} />
+                            <StatusBadge
+                              type="priority"
+                              value={issue?.priority || "low"}
+                            />
                           </td>
 
                           <td className="px-6 py-4">
-                            <StatusBadge type="status" value={issue?.assignment_status || "pending"} />
+                            <StatusBadge
+                              type="status"
+                              value={issue?.assignment_status || "pending"}
+                            />
                           </td>
 
                           <td className="px-6 py-4 text-right">

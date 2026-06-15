@@ -31,6 +31,7 @@ import {
   ThumbsUp,
   ThumbsDown,
   MessageSquare,
+  UserCheck,
 } from "lucide-react";
 
 const TaskDetails = () => {
@@ -50,24 +51,25 @@ const TaskDetails = () => {
   // Fetch task details
   const fetchTaskDetails = useCallback(async () => {
     if (!id) return;
-    
+
     setLoading(true);
-    
+
     try {
       console.log("Fetching issue with ID:", id, "Type:", typeof id);
       const data = await getIssueById(id);
       console.log("Successfully fetched issue data:", data);
-      
+
       let assignmentInfo = {};
       try {
         const assignments = await getAssignedIssues();
         const matchingAssignment = assignments.find(
-          (a) => String(a.issue_id) === String(id)
+          (a) => String(a.issue_id) === String(id),
         );
         if (matchingAssignment) {
           assignmentInfo = {
             assignment_id: matchingAssignment.assignment_id,
             assignment_status: matchingAssignment.assignment_status,
+            assigned_at: matchingAssignment.assigned_at,
           };
           console.log("Found matching assignment info:", assignmentInfo);
         }
@@ -346,6 +348,20 @@ const TaskDetails = () => {
                   </div>
                 </div>
 
+                {task.assigned_at && (
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 bg-indigo-100 rounded-lg">
+                      <UserCheck className="w-5 h-5 text-indigo-600" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Assigned At</p>
+                      <p className="font-medium text-gray-900">
+                        {formatDate(task.assigned_at)}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
                 <div className="flex items-start gap-3">
                   <div className="p-2 bg-orange-100 rounded-lg">
                     <Clock className="w-5 h-5 text-orange-600" />
@@ -436,7 +452,7 @@ const TaskDetails = () => {
               </h3>
               <div className="space-y-3">
                 {/* Show Accept/Reject for pending tasks */}
-                {task.assignment_status === "pending" && (
+                {task.assignment_status === "pending" && task.status !== "resolved" && (
                   <>
                     <button
                       onClick={() => setActiveModal("accept")}
@@ -467,8 +483,7 @@ const TaskDetails = () => {
                 )}
 
                 {/* Show resolved status */}
-                {(task.status === "resolved" ||
-                  task.assignment_status === "completed") && (
+                {(task.assignment_status === "completed") && (
                   <div className="text-center p-4 bg-green-50 rounded-xl">
                     <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-2" />
                     <p className="font-semibold text-green-700">

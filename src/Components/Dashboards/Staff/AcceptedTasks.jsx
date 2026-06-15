@@ -13,9 +13,19 @@ const AcceptedTasks = () => {
   const navigate = useNavigate();
   const [assignedIssues, setAssignedIssues] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [actionLoading, setActionLoading] = useState(null);
   const [openDropdown, setOpenDropdown] = useState(null);
   const dropdownRefs = useRef({});
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    return new Date(dateString).toLocaleString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
 
   const fetchAcceptedTasks = useCallback(async () => {
     if (!profileData?.id) return;
@@ -86,8 +96,14 @@ const AcceptedTasks = () => {
                       <div className="font-medium text-card-foreground truncate">
                         {issue?.title || "Untitled Issue"}
                       </div>
-                      <div className="text-xs text-muted-foreground mt-0.5">
-                        #{issue.issue_id}
+                      <div className="text-xs text-muted-foreground mt-0.5 flex flex-wrap items-center gap-1.5">
+                        <span>#{issue.issue_id}</span>
+                        {issue.assigned_at && (
+                          <>
+                            <span className="text-muted-foreground/50">•</span>
+                            <span>Assigned: {formatDate(issue.assigned_at)}</span>
+                          </>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -151,8 +167,14 @@ const AcceptedTasks = () => {
                         <div className="font-medium text-card-foreground">
                           {issue?.title || "Untitled Issue"}
                         </div>
-                        <div className="text-xs text-muted-foreground mt-0.5">
-                          #{issue.issue_id}
+                        <div className="text-xs text-muted-foreground mt-0.5 flex flex-wrap items-center gap-1.5">
+                          <span>#{issue.issue_id}</span>
+                          {issue.assigned_at && (
+                            <>
+                              <span className="text-muted-foreground/50">•</span>
+                              <span>Assigned: {formatDate(issue.assigned_at)}</span>
+                            </>
+                          )}
                         </div>
                       </td>
 
