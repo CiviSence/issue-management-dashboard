@@ -57,12 +57,13 @@ const AcceptedTasks = () => {
       <StaffSideNav />
       <BottomNav />
 
-      <div className="w-full p-4 lg:w-[calc(100vw-15vw)] bg-background text-foreground min-h-screen overflow-y-auto transition-colors duration-200">
-        <div className="w-full bg-violet-500 p-4 sm:p-5 lg:p-6 rounded-2xl md:rounded-3xl text-white shadow-md mb-4 md:mb-6">
+      <div className="w-full pb-20 md:pb-2 p-2 lg:p-4 lg:w-[calc(100vw-15vw)] overflow-x-auto">
+        {" "}
+        <div className="w-full bg-linear-to-r from-[#7E70EB] to-[#5A50A6] p-4 sm:p-5 lg:p-6 rounded-2xl md:rounded-3xl text-white shadow-lg mb-4 md:mb-6 border border-white/10">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             <div>
               <h1 className="text-xl sm:text-xl md:text-2xl lg:text-3xl font-bold leading-tight">
-                Assigned Issues
+                Accepted Tasks
               </h1>
               <p className="text-violet-100 text-sm sm:text-base md:text-lg mt-1">
                 Issues assigned to you!!
@@ -70,12 +71,56 @@ const AcceptedTasks = () => {
             </div>
           </div>
         </div>
-
         {loading ? (
           <Loader />
         ) : assignedIssues?.length > 0 ? (
           <div className="bg-card border border-border rounded-2xl shadow-sm overflow-hidden">
-            <div className="overflow-x-auto">
+            {/* Mobile Card View */}
+            <div className="md:hidden divide-y divide-border">
+              {assignedIssues.map((issue) => (
+                <div
+                  key={issue.assignment_id}
+                  className="p-4 hover:bg-muted/40 transition-all duration-200"
+                >
+                  <div className="flex items-start justify-between gap-3 mb-3">
+                    <div className="min-w-0 flex-1">
+                      <div className="font-medium text-card-foreground truncate">
+                        {issue?.title || "Untitled Issue"}
+                      </div>
+                      <div className="text-xs text-muted-foreground mt-0.5">
+                        #{issue.issue_id}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 flex-wrap mb-3">
+                    <StatusBadge
+                      type="priority"
+                      value={issue?.priority || "low"}
+                    />
+                    <StatusBadge type="status" value={issue?.status} />
+                    <StatusBadge
+                      type="status"
+                      value={issue?.assignment_status}
+                    />
+                  </div>
+
+                  <button
+                    onClick={() =>
+                      navigate(`/tasks/${issue.issue_id}`, {
+                        state: issue,
+                      })
+                    }
+                    className="w-full px-4 py-2 text-xs font-semibold text-white bg-violet-500 rounded-lg hover:bg-violet-600 transition shadow-sm"
+                  >
+                    View Details
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-muted/50 text-xs uppercase text-left">
                   <tr>
@@ -98,51 +143,51 @@ const AcceptedTasks = () => {
                 </thead>
 
                 <tbody className="divide-y divide-border">
-                  {assignedIssues.map((issue) => {
-                    const isPending = issue.assignment_status === "pending";
-                    const isLoading = actionLoading === issue.assignment_id;
-                    const isOpen = openDropdown === issue.assignment_id;
+                  {assignedIssues.map((issue) => (
+                    <tr
+                      key={issue.assignment_id}
+                      className="hover:bg-muted/40 transition-all duration-200 group"
+                    >
+                      <td className="px-6 py-4">
+                        <div className="font-medium text-card-foreground">
+                          {issue?.title || "Untitled Issue"}
+                        </div>
+                        <div className="text-xs text-muted-foreground mt-0.5">
+                          #{issue.issue_id}
+                        </div>
+                      </td>
 
-                    return (
-                      <tr
-                        key={issue.assignment_id}
-                        className="hover:bg-muted/40 transition-all duration-200 group"
-                      >
-                        <td className="px-6 py-4">
-                          <div className="font-medium text-card-foreground">
-                            {issue?.title || "Untitled Issue"}
-                          </div>
-                          <div className="text-xs text-muted-foreground mt-0.5">
-                            #{issue.issue_id}
-                          </div>
-                        </td>
+                      <td className="px-6 py-4">
+                        <StatusBadge
+                          type="priority"
+                          value={issue?.priority || "low"}
+                        />
+                      </td>
+                      <td className="px-6 py-4">
+                        <StatusBadge type="status" value={issue?.status} />
+                      </td>
 
-                        <td className="px-6 py-4">
-                          <StatusBadge type="priority" value={issue?.priority || "low"} />
-                        </td>
-                        <td className="px-6 py-4">
-                          <StatusBadge type="status" value={issue?.status} />
-                        </td>
+                      <td className="px-6 py-4">
+                        <StatusBadge
+                          type="status"
+                          value={issue?.assignment_status}
+                        />
+                      </td>
 
-                        <td className="px-6 py-4">
-                          <StatusBadge type="status" value={issue?.assignment_status} />
-                        </td>
-
-                        <td className="px-6 py-4 text-right">
-                          <button
-                            onClick={() =>
-                              navigate(`/tasks/${issue.issue_id}`, {
-                                state: issue,
-                              })
-                            }
-                            className="inline-block px-4 py-1.5 text-xs font-semibold text-white bg-violet-500 rounded-lg hover:bg-violet-600 transition shadow-sm"
-                          >
-                            View Details
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
+                      <td className="px-6 py-4 text-right">
+                        <button
+                          onClick={() =>
+                            navigate(`/tasks/${issue.issue_id}`, {
+                              state: issue,
+                            })
+                          }
+                          className="inline-block px-4 py-1.5 text-xs font-semibold text-white bg-violet-500 rounded-lg hover:bg-violet-600 transition shadow-sm"
+                        >
+                          View Details
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>

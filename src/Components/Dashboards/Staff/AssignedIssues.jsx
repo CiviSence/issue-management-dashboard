@@ -88,7 +88,7 @@ const AssignedIssues = () => {
       <StaffSideNav />
       <BottomNav />
 
-      <div className="w-full p-4 lg:w-[calc(100vw-15vw)] bg-background text-foreground min-h-screen overflow-y-auto transition-colors duration-200">
+      <div className="w-full pb-20 md:pb-2 p-2 lg:p-4 lg:w-[calc(100vw-15vw)] overflow-x-auto">
         <div className="w-full bg-linear-to-r from-[#7E70EB] to-[#5A50A6] p-4 sm:p-5 lg:p-6 rounded-2xl md:rounded-3xl text-white shadow-lg mb-4 md:mb-6 border border-white/10">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             <div>
@@ -109,138 +109,225 @@ const AssignedIssues = () => {
             <Loader />
           ) : assignedIssues?.length > 0 ? (
             <div className="bg-card border border-border rounded-2xl shadow-sm overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead className="bg-muted/50 text-xs uppercase text-left">
-                    <tr>
-                      <th className="px-6 py-4 font-semibold text-muted-foreground">
-                        Issue
-                      </th>
-                      <th className="px-6 py-4 font-semibold text-muted-foreground">
-                        Priority
-                      </th>
-                      <th className="px-6 py-4 font-semibold text-muted-foreground">
-                        Issue Status
-                      </th>
-                      <th className="px-6 py-4 font-semibold text-muted-foreground">
-                        Status
-                      </th>
-                      <th className="px-6 py-4 font-semibold text-muted-foreground text-right">
-                        Actions
-                      </th>
-                    </tr>
-                  </thead>
+                {/* Mobile Card View */}
+                <div className="md:hidden divide-y divide-border">
+                  {assignedIssues.map((issue) => {
+                    const isPending = issue.assignment_status === "pending";
+                    const isLoading = actionLoading === issue.assignment_id;
+                    const isOpen = openDropdown === issue.assignment_id;
 
-                  <tbody className="divide-y divide-border">
-                    {assignedIssues.map((issue) => {
-                      const isPending = issue.assignment_status === "pending";
-                      const isLoading = actionLoading === issue.assignment_id;
-                      const isOpen = openDropdown === issue.assignment_id;
-
-                      return (
-                        <tr
-                          key={issue.assignment_id}
-                          className="hover:bg-muted/40 transition-all duration-200 group"
-                        >
-                          <td className="px-6 py-4">
-                            <div className="font-medium text-card-foreground">
+                    return (
+                      <div
+                        key={issue.assignment_id}
+                        className="p-4 hover:bg-muted/40 transition-all duration-200"
+                      >
+                        <div className="flex items-start justify-between gap-3 mb-3">
+                          <div className="min-w-0 flex-1">
+                            <div className="font-medium text-card-foreground truncate">
                               {issue?.title || "Untitled Issue"}
                             </div>
                             <div className="text-xs text-muted-foreground mt-0.5">
                               #{issue.issue_id}
                             </div>
-                          </td>
+                          </div>
 
-                          <td className="px-6 py-4">
-                            <StatusBadge type="priority" value={issue?.priority || "low"} />
-                          </td>
-                          <td className="px-6 py-4">
-                            <StatusBadge type="status" value={issue?.status} />
-                          </td>
-
-                          <td className="px-6 py-4">
-                            <StatusBadge type="status" value={issue?.assignment_status} />
-                          </td>
-
-                          {/* Dropdown Actions */}
-                          <td className="px-6 py-4 text-right">
-                            <div
-                              className="relative inline-block"
-                              ref={(el) => {
-                                dropdownRefs.current[issue.assignment_id] = el;
-                              }}
+                          {/* Dropdown trigger */}
+                          <div
+                            className="relative shrink-0"
+                            ref={(el) => {
+                              dropdownRefs.current[issue.assignment_id] = el;
+                            }}
+                          >
+                            <button
+                              onClick={() => toggleDropdown(issue.assignment_id)}
+                              disabled={isLoading}
+                              className="p-2 rounded-lg hover:bg-muted active:bg-muted/80 transition disabled:opacity-50"
                             >
-                              <button
-                                onClick={() =>
-                                  toggleDropdown(issue.assignment_id)
-                                }
-                                disabled={isLoading}
-                                className="p-2 rounded-lg hover:bg-muted active:bg-muted/80 transition disabled:opacity-50"
-                              >
-                                {isLoading ? (
-                                  <Loader2 className="w-5 h-5 animate-spin text-primary" />
-                                ) : (
-                                  <MoreVertical className="w-5 h-5 text-muted-foreground" />
-                                )}
-                              </button>
-
-                              {isOpen && (
-                                <div className="absolute right-0 mt-2 w-48 bg-card rounded-xl shadow-lg border border-border z-50 text-sm overflow-hidden animate-in fade-in zoom-in-95 duration-100">
-                                  {/* View Details - Always Available */}
-                                  <button
-                                    onClick={() => {
-                                      navigate(`/tasks/${issue.issue_id}`, {
-                                        state: issue,
-                                      });
-                                      setOpenDropdown(null);
-                                    }}
-                                    className="w-full text-left px-4 py-3 hover:bg-muted/50 transition-colors flex items-center gap-2"
-                                  >
-                                    <Eye className="w-4 h-4 text-muted-foreground" />
-                                    <span>View Details</span>
-                                  </button>
-
-                                  {/* Accept/Reject - Only for Pending */}
-                                  {isPending && (
-                                    <>
-                                      <div className="border-t border-border" />
-
-                                      {/* ✅ FIXED: Proper onClick handler for Accept */}
-                                      <button
-                                        onClick={() =>
-                                          handleAccept(issue.assignment_id)
-                                        }
-                                        disabled={isLoading}
-                                        className="w-full text-left px-4 py-3 hover:bg-emerald-50 text-emerald-600 transition-colors flex items-center gap-2 disabled:opacity-50"
-                                      >
-                                        <CheckCircle className="w-4 h-4" />
-                                        <span>Accept</span>
-                                      </button>
-
-                                      {/* ✅ FIXED: Proper onClick handler for Reject */}
-                                      <button
-                                        onClick={() =>
-                                          handleReject(issue.assignment_id)
-                                        }
-                                        disabled={isLoading}
-                                        className="w-full text-left px-4 py-3 hover:bg-red-50 text-red-600 transition-colors flex items-center gap-2 disabled:opacity-50"
-                                      >
-                                        <XCircle className="w-4 h-4" />
-                                        <span>Reject</span>
-                                      </button>
-                                    </>
-                                  )}
-                                </div>
+                              {isLoading ? (
+                                <Loader2 className="w-5 h-5 animate-spin text-primary" />
+                              ) : (
+                                <MoreVertical className="w-5 h-5 text-muted-foreground" />
                               )}
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
+                            </button>
+
+                            {isOpen && (
+                              <div className="absolute right-0 mt-2 w-48 bg-card rounded-xl shadow-lg border border-border z-50 text-sm overflow-hidden animate-in fade-in zoom-in-95 duration-100">
+                                <button
+                                  onClick={() => {
+                                    navigate(`/tasks/${issue.issue_id}`, {
+                                      state: issue,
+                                    });
+                                    setOpenDropdown(null);
+                                  }}
+                                  className="w-full text-left px-4 py-3 hover:bg-muted/50 transition-colors flex items-center gap-2"
+                                >
+                                  <Eye className="w-4 h-4 text-muted-foreground" />
+                                  <span>View Details</span>
+                                </button>
+
+                                {isPending && (
+                                  <>
+                                    <div className="border-t border-border" />
+                                    <button
+                                      onClick={() => handleAccept(issue.assignment_id)}
+                                      disabled={isLoading}
+                                      className="w-full text-left px-4 py-3 hover:bg-emerald-50 text-emerald-600 transition-colors flex items-center gap-2 disabled:opacity-50"
+                                    >
+                                      <CheckCircle className="w-4 h-4" />
+                                      <span>Accept</span>
+                                    </button>
+                                    <button
+                                      onClick={() => handleReject(issue.assignment_id)}
+                                      disabled={isLoading}
+                                      className="w-full text-left px-4 py-3 hover:bg-red-50 text-red-600 transition-colors flex items-center gap-2 disabled:opacity-50"
+                                    >
+                                      <XCircle className="w-4 h-4" />
+                                      <span>Reject</span>
+                                    </button>
+                                  </>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <StatusBadge type="priority" value={issue?.priority || "low"} />
+                          <StatusBadge type="status" value={issue?.status} />
+                          <StatusBadge type="status" value={issue?.assignment_status} />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Desktop Table View */}
+                <div className="hidden md:block overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-muted/50 text-xs uppercase text-left">
+                      <tr>
+                        <th className="px-6 py-4 font-semibold text-muted-foreground">
+                          Issue
+                        </th>
+                        <th className="px-6 py-4 font-semibold text-muted-foreground">
+                          Priority
+                        </th>
+                        <th className="px-6 py-4 font-semibold text-muted-foreground">
+                          Issue Status
+                        </th>
+                        <th className="px-6 py-4 font-semibold text-muted-foreground">
+                          Status
+                        </th>
+                        <th className="px-6 py-4 font-semibold text-muted-foreground text-right">
+                          Actions
+                        </th>
+                      </tr>
+                    </thead>
+
+                    <tbody className="divide-y divide-border">
+                      {assignedIssues.map((issue) => {
+                        const isPending = issue.assignment_status === "pending";
+                        const isLoading = actionLoading === issue.assignment_id;
+                        const isOpen = openDropdown === issue.assignment_id;
+
+                        return (
+                          <tr
+                            key={issue.assignment_id}
+                            className="hover:bg-muted/40 transition-all duration-200 group"
+                          >
+                            <td className="px-6 py-4">
+                              <div className="font-medium text-card-foreground">
+                                {issue?.title || "Untitled Issue"}
+                              </div>
+                              <div className="text-xs text-muted-foreground mt-0.5">
+                                #{issue.issue_id}
+                              </div>
+                            </td>
+
+                            <td className="px-6 py-4">
+                              <StatusBadge type="priority" value={issue?.priority || "low"} />
+                            </td>
+                            <td className="px-6 py-4">
+                              <StatusBadge type="status" value={issue?.status} />
+                            </td>
+
+                            <td className="px-6 py-4">
+                              <StatusBadge type="status" value={issue?.assignment_status} />
+                            </td>
+
+                            {/* Dropdown Actions */}
+                            <td className="px-6 py-4 text-right">
+                              <div
+                                className="relative inline-block"
+                                ref={(el) => {
+                                  dropdownRefs.current[issue.assignment_id] = el;
+                                }}
+                              >
+                                <button
+                                  onClick={() =>
+                                    toggleDropdown(issue.assignment_id)
+                                  }
+                                  disabled={isLoading}
+                                  className="p-2 rounded-lg hover:bg-muted active:bg-muted/80 transition disabled:opacity-50"
+                                >
+                                  {isLoading ? (
+                                    <Loader2 className="w-5 h-5 animate-spin text-primary" />
+                                  ) : (
+                                    <MoreVertical className="w-5 h-5 text-muted-foreground" />
+                                  )}
+                                </button>
+
+                                {isOpen && (
+                                  <div className="absolute right-0 mt-2 w-48 bg-card rounded-xl shadow-lg border border-border z-50 text-sm overflow-hidden animate-in fade-in zoom-in-95 duration-100">
+                                    <button
+                                      onClick={() => {
+                                        navigate(`/tasks/${issue.issue_id}`, {
+                                          state: issue,
+                                        });
+                                        setOpenDropdown(null);
+                                      }}
+                                      className="w-full text-left px-4 py-3 hover:bg-muted/50 transition-colors flex items-center gap-2"
+                                    >
+                                      <Eye className="w-4 h-4 text-muted-foreground" />
+                                      <span>View Details</span>
+                                    </button>
+
+                                    {isPending && (
+                                      <>
+                                        <div className="border-t border-border" />
+                                        <button
+                                          onClick={() =>
+                                            handleAccept(issue.assignment_id)
+                                          }
+                                          disabled={isLoading}
+                                          className="w-full text-left px-4 py-3 hover:bg-emerald-50 text-emerald-600 transition-colors flex items-center gap-2 disabled:opacity-50"
+                                        >
+                                          <CheckCircle className="w-4 h-4" />
+                                          <span>Accept</span>
+                                        </button>
+                                        <button
+                                          onClick={() =>
+                                            handleReject(issue.assignment_id)
+                                          }
+                                          disabled={isLoading}
+                                          className="w-full text-left px-4 py-3 hover:bg-red-50 text-red-600 transition-colors flex items-center gap-2 disabled:opacity-50"
+                                        >
+                                          <XCircle className="w-4 h-4" />
+                                          <span>Reject</span>
+                                        </button>
+                                      </>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
               </div>
-            </div>
           ) : (
             <div className="text-center py-16 border border-dashed border-border rounded-2xl bg-muted/30">
               <div className="text-4xl mb-2">📭</div>

@@ -82,7 +82,7 @@ const StaffDashboard = () => {
     <>
       <StaffSideNav />
       <BottomNav />
-      <div className="w-full p-4 lg:w-[calc(100vw-15vw)] bg-[#FDFDFF] min-h-screen overflow-y-auto">
+      <div className="w-full pb-20 md:pb-2 p-2 lg:p-4 lg:w-[calc(100vw-15vw)]  overflow-x-auto">
         <div className="w-full mx-auto">
           {/* header */}
           <div className="w-full bg-linear-to-r from-[#7E70EB] to-[#5A50A6] p-4 sm:p-5 lg:p-6 rounded-2xl md:rounded-3xl text-white shadow-lg mb-4 md:mb-6 border border-white/10">
@@ -116,8 +116,8 @@ const StaffDashboard = () => {
             ) : assignedIssues?.length > 0 ? (
               <div className="bg-card border border-border rounded-2xl shadow-sm overflow-hidden">
                 {/* Header */}
-                <div className="flex items-center justify-between px-6 py-4 border-b border-border">
-                  <h2 className="text-  lg font-semibold">Recently Assigned</h2>
+                <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-border">
+                  <h2 className="text-lg font-semibold">Recently Assigned</h2>
 
                   <a
                     href="/assigned-issues"
@@ -127,8 +127,45 @@ const StaffDashboard = () => {
                   </a>
                 </div>
 
-                {/* Table */}
-                <div className="overflow-x-auto">
+                {/* Mobile Card View */}
+                <div className="md:hidden divide-y divide-border">
+                  {assignedIssues.slice(0, 5).map((issue) => (
+                    <div
+                      key={issue.id}
+                      className="p-4 hover:bg-muted/40 transition-all duration-200"
+                    >
+                      <div className="flex items-start justify-between gap-3 mb-3">
+                        <div className="min-w-0 flex-1">
+                          <div className="font-medium text-card-foreground truncate">
+                            {issue?.title || "Untitled Issue"}
+                          </div>
+                          <div className="text-xs text-muted-foreground mt-0.5">
+                            #{issue.issue_id}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2 flex-wrap mb-3">
+                        <StatusBadge type="priority" value={issue?.priority || "low"} />
+                        <StatusBadge type="status" value={issue?.assignment_status || "pending"} />
+                      </div>
+
+                      <button
+                        onClick={() =>
+                          navigate(`/tasks/${issue.issue_id}`, {
+                            state: issue,
+                          })
+                        }
+                        className="w-full px-4 py-2 text-xs font-bold text-white bg-[#6366f1] rounded-lg hover:bg-[#5445c9] transition shadow-md shadow-indigo-500/20 active:scale-95"
+                      >
+                        View Details
+                      </button>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Desktop Table View */}
+                <div className="hidden md:block overflow-x-auto">
                   <table className="w-full">
                     <thead className="bg-muted/50 text-xs uppercase text-left">
                       <tr>
@@ -147,12 +184,10 @@ const StaffDashboard = () => {
                           key={issue.id}
                           className="border-t border-border hover:bg-muted/40 transition-all duration-200"
                         >
-                          {/* Title */}
                           <td className="px-6 py-4">
                             <div className="font-medium">
                               {issue?.title || "Untitled Issue"}
                             </div>
-
                             <div className="text-xs text-muted-foreground">
                               #{issue.issue_id}
                             </div>
@@ -166,7 +201,6 @@ const StaffDashboard = () => {
                             <StatusBadge type="status" value={issue?.assignment_status || "pending"} />
                           </td>
 
-                          {/* Action */}
                           <td className="px-6 py-4 text-right">
                             <button
                               onClick={() =>

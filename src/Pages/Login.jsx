@@ -138,7 +138,7 @@ const Login = () => {
                 {/* Email/Username Input */}
                 <div className="space-y-1.5">
                   <label className="block text-xs font-medium text-gray-500 ml-1">
-                    Email / Registration no. / username
+                    Email
                   </label>
                   <input
                     className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6366f1] focus:ring-opacity-20 focus:border-[#6366f1] transition-all text-sm shadow-sm"
