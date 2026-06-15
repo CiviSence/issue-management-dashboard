@@ -84,6 +84,7 @@ const AdminDashboard = () => {
       color: "from-[#6366f1] to-[#8b5cf6]",
       color2: "bg-[#6366f1]",
       link: "/reported-issues",
+      icon: "ri-alarm-warning-line",
     },
     {
       name: "Pending Issues",
@@ -92,6 +93,7 @@ const AdminDashboard = () => {
       color: "from-[#f59e0b] to-[#fbbf24]",
       color2: "bg-[#f59e0b]",
       link: "/pending-issues",
+      icon: "ri-time-line",
     },
     {
       name: "In Progress",
@@ -100,6 +102,7 @@ const AdminDashboard = () => {
       color: "from-[#3b82f6] to-[#60a5fa]",
       color2: "bg-[#3b82f6]",
       link: "/in-progress",
+      icon: "ri-loader-4-line",
     },
     {
       name: "Resolved Issues",
@@ -108,6 +111,7 @@ const AdminDashboard = () => {
       color: "from-[#10b981] to-[#34d399]",
       color2: "bg-[#10b981]",
       link: "/resolved-issues",
+      icon: "ri-checkbox-circle-line",
     },
   ];
 

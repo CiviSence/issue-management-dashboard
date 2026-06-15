@@ -12,22 +12,27 @@ const IssueCard = ({ issue }) => {
         xl:w-[calc(25%-12px)]
         2xl:w-[calc(25%-12px)]
         bg-linear-to-r ${issue.color} 
-        opacity-80 hover:opacity-100
-        py-4 sm:py-5 lg:py-6 
-        px-4 sm:px-6 lg:px-8 
-        rounded-xl sm:rounded-md
-        flex justify-between
-        items-center
+        opacity-90 hover:opacity-100
+        py-3 sm:py-4 lg:py-6 
+        px-3 sm:px-4 lg:px-6 
+        rounded-xl
+        flex items-center gap-3
         transition-all duration-300
         hover:shadow-lg hover:scale-[1.02]
         group
       `}
     >
-      <div className="flex-1 min-w-0 pr-3">
-        <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold text-white truncate">
+      {issue.icon && (
+        <div className="h-9 w-9 sm:h-10 sm:w-10 rounded-xl bg-white/15 flex items-center justify-center shrink-0 text-white">
+          <i className={`${issue.icon} text-base sm:text-lg`}></i>
+        </div>
+      )}
+
+      <div className="flex-1 min-w-0 pr-1 sm:pr-2">
+        <h2 className="text-sm sm:text-base lg:text-lg font-bold text-white truncate">
           {issue.name}
         </h2>
-        <p className="text-white/90 text-xs sm:text-sm mt-1 line-clamp-2">
+        <p className="text-white/95 text-[10px] sm:text-xs md:text-sm mt-0.5 line-clamp-1 sm:line-clamp-2">
           {issue.description}
         </p>
       </div>
@@ -37,11 +42,11 @@ const IssueCard = ({ issue }) => {
           className={`
             ${issue.color2} 
             text-white 
-            text-lg sm:text-xl lg:text-2xl 
-            font-medium 
-            px-3 sm:px-4 
-            py-1.5 sm:py-2 
-            rounded-lg sm:rounded-md
+            text-sm sm:text-base lg:text-lg 
+            font-bold 
+            px-2 sm:px-3 
+            py-1 
+            rounded-lg
             shadow-sm
             group-hover:scale-110
             transition-transform
