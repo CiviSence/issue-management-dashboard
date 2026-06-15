@@ -17,12 +17,7 @@ const StaffSideNav = () => {
         icon="ri-clipboard-line"
         label="Assigned Tasks"
       />
-      <NavItem to="/accepted" icon="ri-loader-4-line" label="Accepted Tasks" />
-      <NavItem
-        to="/completed"
-        icon="ri-checkbox-circle-line"
-        label="Completed Tasks"
-      />
+
       <NavItem
         to="/notifications"
         icon="ri-notification-3-fill"

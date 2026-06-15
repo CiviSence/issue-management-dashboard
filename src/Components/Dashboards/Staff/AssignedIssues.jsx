@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import StaffSideNav from "./StaffSideNav";
 import BottomNav from "../../Templates/BottomNav";
 import { useUser } from "../../../Context/ProfileContext";
@@ -6,10 +6,26 @@ import {
   getAssignedIssues,
   acceptAssignment,
   rejectAssignment,
+  completeAssignment,
 } from "../../../Utils/staffissues";
 import Loader from "../../Templates/Loader";
 import { useNavigate } from "react-router-dom";
-import { MoreVertical, CheckCircle, XCircle, Eye, Loader2 } from "lucide-react";
+import {
+  CheckCircle,
+  XCircle,
+  Loader2,
+  Clock,
+  Upload,
+  X,
+  Search,
+  ArrowRight,
+  ClipboardList,
+  Hourglass,
+  CircleCheckBig,
+  CircleDashed,
+  LayoutGrid,
+  List,
+} from "lucide-react";
 import StatusBadge from "../../Templates/StatusBadge";
 
 const AssignedIssues = () => {
@@ -18,9 +34,18 @@ const AssignedIssues = () => {
   const [assignedIssues, setAssignedIssues] = useState([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(null);
-  const [openDropdown, setOpenDropdown] = useState(null);
-  const mobileDropdownRefs = useRef({});
-  const desktopDropdownRefs = useRef({});
+
+  // Filters
+  const [activeFilter, setActiveFilter] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [viewMode, setViewMode] = useState("cards"); // 'cards' | 'table'
+
+  // Modals state
+  const [activeModal, setActiveModal] = useState(null);
+  const [selectedAssignmentId, setSelectedAssignmentId] = useState(null);
+  const [notes, setNotes] = useState("");
+  const [rejectionReason, setRejectionReason] = useState("");
+  const [resolutionPhotos, setResolutionPhotos] = useState([]);
 
   const formatDate = (dateString) => {
     if (!dateString) return "N/A";
@@ -33,13 +58,22 @@ const AssignedIssues = () => {
     });
   };
 
+  const formatDateShort = (dateString) => {
+    if (!dateString) return "N/A";
+    return new Date(dateString).toLocaleString("en-US", {
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
   const fetchAssigned = useCallback(async () => {
     if (!profileData?.id) return;
     setLoading(true);
     try {
       const data = await getAssignedIssues(profileData.id);
       setAssignedIssues(data);
-      console.log("Issue Assigned to me : ", data);
     } catch (error) {
       console.error("Error fetching assigned issues:", error);
     } finally {
@@ -51,300 +85,460 @@ const AssignedIssues = () => {
     fetchAssigned();
   }, [fetchAssigned]);
 
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      const isOutsideMobile = Object.values(mobileDropdownRefs.current).every(
-        (ref) => ref && !ref.contains(event.target)
-      );
-      const isOutsideDesktop = Object.values(desktopDropdownRefs.current).every(
-        (ref) => ref && !ref.contains(event.target)
-      );
-      if (isOutsideMobile && isOutsideDesktop) {
-        setOpenDropdown(null);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  // Computed counts
+  const counts = useMemo(() => {
+    const all = assignedIssues.length;
+    const pending = assignedIssues.filter(
+      (i) => i.assignment_status === "pending"
+    ).length;
+    const accepted = assignedIssues.filter(
+      (i) => i.assignment_status === "accepted"
+    ).length;
+    const completed = assignedIssues.filter(
+      (i) => i.assignment_status === "completed"
+    ).length;
+    return { all, pending, accepted, completed };
+  }, [assignedIssues]);
 
-  const handleAccept = async (assignmentId) => {
-    setActionLoading(assignmentId);
+  // Filtered & searched issues
+  const filteredIssues = useMemo(() => {
+    let result = assignedIssues;
+    if (activeFilter !== "all") {
+      result = result.filter((i) => i.assignment_status === activeFilter);
+    }
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      result = result.filter(
+        (i) =>
+          i.title?.toLowerCase().includes(q) ||
+          String(i.issue_id).includes(q)
+      );
+    }
+    return result;
+  }, [assignedIssues, activeFilter, searchQuery]);
+
+  // Modal actions
+  const submitAcceptModal = async () => {
+    if (!selectedAssignmentId) return;
+    setActionLoading(selectedAssignmentId);
     try {
-      await acceptAssignment(assignmentId, "");
+      await acceptAssignment(selectedAssignmentId, notes);
+      setNotes("");
+      setActiveModal(null);
       await fetchAssigned();
     } catch (error) {
       console.error("Error accepting assignment:", error);
     } finally {
       setActionLoading(null);
-      setOpenDropdown(null);
     }
   };
 
-  const handleReject = async (assignmentId) => {
-    setActionLoading(assignmentId);
+  const submitRejectModal = async () => {
+    if (!selectedAssignmentId) return;
+    setActionLoading(selectedAssignmentId);
     try {
-      await rejectAssignment(assignmentId, "Staff rejected this assignment");
+      await rejectAssignment(
+        selectedAssignmentId,
+        rejectionReason || "Staff rejected this assignment"
+      );
+      setRejectionReason("");
+      setActiveModal(null);
       await fetchAssigned();
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error rejecting assignment:", error);
     } finally {
       setActionLoading(null);
-      setOpenDropdown(null);
     }
   };
 
-  const toggleDropdown = (assignmentId) => {
-    setOpenDropdown(openDropdown === assignmentId ? null : assignmentId);
+  const submitCompleteModal = async () => {
+    if (!selectedAssignmentId) return;
+    setActionLoading(selectedAssignmentId);
+    try {
+      await completeAssignment(selectedAssignmentId, notes, resolutionPhotos);
+      setNotes("");
+      setResolutionPhotos([]);
+      setActiveModal(null);
+      await fetchAssigned();
+    } catch (error) {
+      console.error("Error completing assignment:", error);
+    } finally {
+      setActionLoading(null);
+    }
   };
+
+  const handlePhotoUpload = (e) => {
+    const files = Array.from(e.target.files);
+    const newPhotos = files.map((file) => URL.createObjectURL(file));
+    setResolutionPhotos((prev) => [...prev, ...newPhotos]);
+  };
+
+  const removePhoto = (index) => {
+    setResolutionPhotos((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const filterTabs = [
+    {
+      key: "all",
+      label: "All",
+      count: counts.all,
+      icon: ClipboardList,
+      color: "text-[#6366f1]",
+      bg: "bg-[#6366f1]",
+      lightBg: "bg-indigo-50",
+    },
+    {
+      key: "pending",
+      label: "Pending",
+      count: counts.pending,
+      icon: Hourglass,
+      color: "text-amber-600",
+      bg: "bg-amber-500",
+      lightBg: "bg-amber-50",
+    },
+    {
+      key: "accepted",
+      label: "Accepted",
+      count: counts.accepted,
+      icon: CircleDashed,
+      color: "text-blue-600",
+      bg: "bg-blue-500",
+      lightBg: "bg-blue-50",
+    },
+    {
+      key: "completed",
+      label: "Completed",
+      count: counts.completed,
+      icon: CircleCheckBig,
+      color: "text-emerald-600",
+      bg: "bg-emerald-500",
+      lightBg: "bg-emerald-50",
+    },
+  ];
+
+
 
   return (
     <>
       <StaffSideNav />
       <BottomNav />
 
-      <div className="flex-1 h-screen overflow-y-auto pb-24 md:pb-6 p-3 md:p-6">
-        <div className="w-full bg-linear-to-r from-[#7E70EB] to-[#5A50A6] p-4 sm:p-5 lg:p-6 rounded-2xl md:rounded-3xl text-white shadow-lg mb-4 md:mb-6 border border-white/10">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+      <div className="flex-1 h-screen overflow-y-auto pb-24 md:pb-6 p-3 sm:p-4 md:p-6">
+        {/* ── Header Banner ── */}
+        <div className="w-full bg-gradient-to-br from-[#6366f1] via-[#7E70EB] to-[#5A50A6] p-5 sm:p-6 lg:p-8 rounded-2xl md:rounded-3xl text-white shadow-xl mb-5 md:mb-6 relative overflow-hidden">
+          {/* Decorative circles */}
+          <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/5 rounded-full" />
+          <div className="absolute -bottom-12 -left-8 w-32 h-32 bg-white/5 rounded-full" />
+
+          <div className="relative z-10 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
             <div>
-              <h1 className="text-xl sm:text-xl md:text-2xl lg:text-3xl font-bold leading-tight tracking-tight">
+              <div className="flex items-center gap-2 mb-1">
+                <div className="p-1.5 bg-white/15 rounded-lg">
+                  <ClipboardList className="w-5 h-5" />
+                </div>
+                <span className="text-xs font-semibold text-white/70 uppercase tracking-widest">
+                  Staff Dashboard
+                </span>
+              </div>
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold leading-tight tracking-tight">
                 Assigned Issues
               </h1>
-              <p className="text-indigo-100/90 text-sm sm:text-base md:text-lg mt-1 tracking-wide">
-                Issues assigned to you
+              <p className="text-indigo-200 text-sm sm:text-base mt-1.5 max-w-md">
+                Manage, accept, and complete issues assigned to you.
               </p>
+            </div>
+
+            {/* Quick stats pills */}
+            <div className="flex gap-2 flex-wrap">
+              {[
+                { label: "Pending", count: counts.pending, bg: "bg-amber-400/20 text-amber-100" },
+                { label: "In Progress", count: counts.accepted, bg: "bg-blue-400/20 text-blue-100" },
+                { label: "Done", count: counts.completed, bg: "bg-emerald-400/20 text-emerald-100" },
+              ].map((s) => (
+                <span
+                  key={s.label}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold ${s.bg}`}
+                >
+                  {s.count}
+                  <span className="font-medium opacity-80">{s.label}</span>
+                </span>
+              ))}
             </div>
           </div>
         </div>
 
-        
-          
+        {/* ── Search & Filter Bar ── */}
+        <div className="flex flex-col sm:flex-row gap-3 mb-5">
+          {/* Search */}
+          <div className="relative flex-1">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search by title or issue ID..."
+              className="w-full pl-10 pr-4 py-2.5 bg-card border border-border rounded-xl text-sm text-card-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-[#6366f1]/30 focus:border-[#6366f1] transition-all"
+            />
+          </div>
 
-          {loading ? (
-            <Loader />
-          ) : assignedIssues?.length > 0 ? (
-            <div className="bg-card border border-border rounded-2xl shadow-sm overflow-hidden">
-                {/* Mobile Card View */}
-                <div className="md:hidden divide-y divide-border">
-                  {assignedIssues.map((issue) => {
-                    const isPending = issue.assignment_status === "pending";
-                    const isLoading = actionLoading === issue.assignment_id;
-                    const isOpen = openDropdown === issue.assignment_id;
+          <div className="flex gap-2">
+            {/* Filter tabs */}
+            <div className="flex bg-card border border-border rounded-xl p-1 gap-0.5 overflow-x-auto no-scrollbar">
+              {filterTabs.map((tab) => (
+                <button
+                  key={tab.key}
+                  onClick={() => setActiveFilter(tab.key)}
+                  className={`flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
+                    activeFilter === tab.key
+                      ? `${tab.bg} text-white shadow-sm`
+                      : "text-muted-foreground hover:bg-muted"
+                  }`}
+                >
+                  <tab.icon className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">{tab.label}</span>
+                  <span
+                    className={`ml-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-bold ${
+                      activeFilter === tab.key
+                        ? "bg-white/25 text-white"
+                        : "bg-muted text-muted-foreground"
+                    }`}
+                  >
+                    {tab.count}
+                  </span>
+                </button>
+              ))}
+            </div>
 
-                    return (
+            {/* View toggle */}
+            <div className="hidden md:flex bg-card border border-border rounded-xl p-1 gap-0.5">
+              <button
+                onClick={() => setViewMode("cards")}
+                className={`p-2 rounded-lg transition-all ${
+                  viewMode === "cards"
+                    ? "bg-[#6366f1] text-white shadow-sm"
+                    : "text-muted-foreground hover:bg-muted"
+                }`}
+                title="Card view"
+              >
+                <LayoutGrid className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => setViewMode("table")}
+                className={`p-2 rounded-lg transition-all ${
+                  viewMode === "table"
+                    ? "bg-[#6366f1] text-white shadow-sm"
+                    : "text-muted-foreground hover:bg-muted"
+                }`}
+                title="Table view"
+              >
+                <List className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Content ── */}
+        {loading ? (
+          <Loader />
+        ) : filteredIssues.length > 0 ? (
+          <>
+            {/* ── Card View ── */}
+            {(viewMode === "cards" || typeof window !== "undefined" && window.innerWidth < 768) && (
+              <div className={`grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 ${viewMode === "table" ? "md:hidden" : ""}`}>
+                {filteredIssues.map((issue) => {
+                  const isPending = issue.assignment_status === "pending";
+                  const isAccepted = issue.assignment_status === "accepted";
+                  const isCompleted = issue.assignment_status === "completed";
+                  const isLoading = actionLoading === issue.assignment_id;
+
+                  const statusConfig = {
+                    pending: { label: "Pending", class: "bg-amber-50 text-amber-700 border-amber-200" },
+                    accepted: { label: "In Progress", class: "bg-blue-50 text-blue-700 border-blue-200" },
+                    completed: { label: "Completed", class: "bg-emerald-50 text-emerald-700 border-emerald-200" },
+                  };
+                  const badge = statusConfig[issue.assignment_status] || statusConfig.pending;
+
+                  return (
+                    <div
+                      key={issue.assignment_id}
+                      className="bg-card rounded-xl border border-border hover:border-border/80 hover:shadow-md transition-all duration-200 flex flex-col"
+                    >
                       <div
-                        key={issue.assignment_id}
-                        className="p-3 sm:p-4 hover:bg-muted/40 transition-all duration-200"
+                        className="p-4 flex-1 flex flex-col cursor-pointer"
+                        onClick={() =>
+                          navigate(`/tasks/${issue.issue_id || issue.id}`, {
+                            state: issue,
+                          })
+                        }
                       >
-                        <div className="flex items-start justify-between gap-3 mb-3">
-                          <div className="min-w-0 flex-1">
-                            <div className="font-medium text-card-foreground truncate">
-                              {issue?.title || "Untitled Issue"}
-                            </div>
-                            <div className="text-xs text-muted-foreground mt-0.5 flex flex-wrap items-center gap-1.5">
-                              <span>#{issue.issue_id}</span>
-                              {issue.assigned_at && (
-                                <>
-                                  <span className="text-muted-foreground/50">•</span>
-                                  <span>Assigned: {formatDate(issue.assigned_at)}</span>
-                                </>
-                              )}
-                            </div>
-                          </div>
-
-                          <div
-                            className="relative shrink-0"
-                            ref={(el) => {
-                              mobileDropdownRefs.current[issue.assignment_id] = el;
-                            }}
-                          >
-                            <button
-                              onClick={() => toggleDropdown(issue.assignment_id)}
-                              disabled={isLoading}
-                              className="p-2 rounded-lg hover:bg-muted active:bg-muted/80 transition disabled:opacity-50"
-                            >
-                              {isLoading ? (
-                                <Loader2 className="w-5 h-5 animate-spin text-primary" />
-                              ) : (
-                                <MoreVertical className="w-5 h-5 text-muted-foreground" />
-                              )}
-                            </button>
-
-                            {isOpen && (
-                              <div className="absolute right-0 mt-2 w-48 bg-card rounded-xl shadow-lg border border-border z-50 text-sm overflow-hidden animate-in fade-in zoom-in-95 duration-100">
-                                <button
-                                  onClick={() => {
-                                    navigate(`/tasks/${issue.issue_id || issue.id}`, {
-                                      state: issue,
-                                    });
-                                    setOpenDropdown(null);
-                                  }}
-                                  className="w-full text-left px-4 py-3 hover:bg-muted/50 transition-colors flex items-center gap-2"
-                                >
-                                  <Eye className="w-4 h-4 text-muted-foreground" />
-                                  <span>View Details</span>
-                                </button>
-
-                                {isPending && (
-                                  <>
-                                    <div className="border-t border-border" />
-                                    <button
-                                      onClick={() => handleAccept(issue.assignment_id)}
-                                      disabled={isLoading}
-                                      className="w-full text-left px-4 py-3 hover:bg-emerald-50 text-emerald-600 transition-colors flex items-center gap-2 disabled:opacity-50"
-                                    >
-                                      <CheckCircle className="w-4 h-4" />
-                                      <span>Accept</span>
-                                    </button>
-                                    <button
-                                      onClick={() => handleReject(issue.assignment_id)}
-                                      disabled={isLoading}
-                                      className="w-full text-left px-4 py-3 hover:bg-red-50 text-red-600 transition-colors flex items-center gap-2 disabled:opacity-50"
-                                    >
-                                      <XCircle className="w-4 h-4" />
-                                      <span>Reject</span>
-                                    </button>
-                                  </>
-                                )}
-                              </div>
-                            )}
-                          </div>
+                        <div className="flex items-center justify-between mb-3">
+                          <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-lg border ${badge.class}`}>
+                            {badge.label}
+                          </span>
+                          <span className="text-xs text-muted-foreground font-mono">
+                            #{issue.issue_id}
+                          </span>
                         </div>
-
-                        <div className="flex items-center gap-2 flex-wrap">
+                        <h3 className="font-semibold text-card-foreground text-[15px] leading-snug line-clamp-2 mb-3">
+                          {issue?.title || "Untitled Issue"}
+                        </h3>
+                        <div className="mt-auto flex items-center gap-3 text-xs text-muted-foreground">
+                          {issue.assigned_at && (
+                            <span className="flex items-center gap-1">
+                              <Clock className="w-3 h-3" />
+                              {formatDateShort(issue.assigned_at)}
+                            </span>
+                          )}
                           <StatusBadge type="priority" value={issue?.priority || "low"} />
-                          <StatusBadge type="status" value={issue?.status} />
-                          <StatusBadge type="status" value={issue?.assignment_status} />
                         </div>
                       </div>
-                    );
-                  })}
-                </div>
+                      <div className="px-4 pb-4 pt-0">
+                        <div className="border-t border-border pt-3 flex gap-2">
+                          {isPending && (
+                            <>
+                              <button
+                                onClick={() => { setSelectedAssignmentId(issue.assignment_id); setActiveModal("accept"); }}
+                                disabled={isLoading}
+                                className="flex-1 flex items-center justify-center gap-1.5 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg text-xs font-medium transition-colors disabled:opacity-50"
+                              >
+                                {isLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <CheckCircle className="w-3.5 h-3.5" />}
+                                Accept
+                              </button>
+                              <button
+                                onClick={() => { setSelectedAssignmentId(issue.assignment_id); setActiveModal("reject"); }}
+                                disabled={isLoading}
+                                className="flex-1 flex items-center justify-center gap-1.5 py-2 text-red-600 hover:bg-red-50 border border-red-200 rounded-lg text-xs font-medium transition-colors disabled:opacity-50"
+                              >
+                                <XCircle className="w-3.5 h-3.5" />
+                                Reject
+                              </button>
+                            </>
+                          )}
+                          {isAccepted && (
+                            <button
+                              onClick={() => { setSelectedAssignmentId(issue.assignment_id); setActiveModal("complete"); }}
+                              disabled={isLoading}
+                              className="flex-1 flex items-center justify-center gap-1.5 py-2 bg-[#6366f1] hover:bg-[#5445c9] text-white rounded-lg text-xs font-medium transition-colors disabled:opacity-50"
+                            >
+                              {isLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <CheckCircle className="w-3.5 h-3.5" />}
+                              Complete Task
+                            </button>
+                          )}
+                          {isCompleted && (
+                            <div className="flex-1 flex items-center justify-center gap-1.5 py-2 text-emerald-600 text-xs font-medium">
+                              <CircleCheckBig className="w-3.5 h-3.5" /> Done
+                            </div>
+                          )}
+                          <button
+                            onClick={() => navigate(`/tasks/${issue.issue_id || issue.id}`, { state: issue })}
+                            className="flex items-center justify-center gap-1 px-3 py-2 text-muted-foreground hover:text-card-foreground rounded-lg text-xs font-medium transition-colors hover:bg-muted"
+                          >
+                            <ArrowRight className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
 
-                {/* Desktop Table View */}
-                <div className="hidden md:block overflow-x-auto">
+            {/* ── Table View (md+ only) ── */}
+            {viewMode === "table" && (
+              <div className="hidden md:block bg-card border border-border rounded-xl overflow-hidden">
+                <div className="overflow-x-auto">
                   <table className="w-full">
-                    <thead className="bg-muted/50 text-xs uppercase text-left">
-                      <tr>
-                        <th className="px-6 py-4 font-semibold text-muted-foreground">
-                          Issue
-                        </th>
-                        <th className="px-6 py-4 font-semibold text-muted-foreground">
-                          Priority
-                        </th>
-                        <th className="px-6 py-4 font-semibold text-muted-foreground">
-                          Issue Status
-                        </th>
-                        <th className="px-6 py-4 font-semibold text-muted-foreground">
-                          Status
-                        </th>
-                        <th className="px-6 py-4 font-semibold text-muted-foreground text-right">
-                          Actions
-                        </th>
+                    <thead>
+                      <tr className="border-b border-border">
+                        <th className="text-left px-5 py-3.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Issue</th>
+                        <th className="text-left px-5 py-3.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Priority</th>
+                        <th className="text-left px-5 py-3.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Status</th>
+                        <th className="text-left px-5 py-3.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Assigned</th>
+                        <th className="text-right px-5 py-3.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Actions</th>
                       </tr>
                     </thead>
-
                     <tbody className="divide-y divide-border">
-                      {assignedIssues.map((issue) => {
+                      {filteredIssues.map((issue) => {
                         const isPending = issue.assignment_status === "pending";
+                        const isAccepted = issue.assignment_status === "accepted";
+                        const isCompleted = issue.assignment_status === "completed";
                         const isLoading = actionLoading === issue.assignment_id;
-                        const isOpen = openDropdown === issue.assignment_id;
+
+                        const statusConfig = {
+                          pending: { label: "Pending", class: "bg-amber-50 text-amber-700 border-amber-200" },
+                          accepted: { label: "In Progress", class: "bg-blue-50 text-blue-700 border-blue-200" },
+                          completed: { label: "Completed", class: "bg-emerald-50 text-emerald-700 border-emerald-200" },
+                        };
+                        const badge = statusConfig[issue.assignment_status] || statusConfig.pending;
 
                         return (
                           <tr
                             key={issue.assignment_id}
-                            className="hover:bg-muted/40 transition-all duration-200 group"
+                            className="hover:bg-muted/30 transition-colors cursor-pointer"
+                            onClick={() => navigate(`/tasks/${issue.issue_id || issue.id}`, { state: issue })}
                           >
-                            <td className="px-6 py-4">
-                              <div className="font-medium text-card-foreground">
-                                {issue?.title || "Untitled Issue"}
-                              </div>
-                              <div className="text-xs text-muted-foreground mt-0.5 flex flex-wrap items-center gap-1.5">
-                                <span>#{issue.issue_id}</span>
-                                {issue.assigned_at && (
-                                  <>
-                                    <span className="text-muted-foreground/50">•</span>
-                                    <span>Assigned: {formatDate(issue.assigned_at)}</span>
-                                  </>
-                                )}
+                            <td className="px-5 py-3.5">
+                              <div className="flex flex-col">
+                                <span className="font-medium text-sm text-card-foreground line-clamp-1">
+                                  {issue?.title || "Untitled Issue"}
+                                </span>
+                                <span className="text-xs text-muted-foreground font-mono mt-0.5">#{issue.issue_id}</span>
                               </div>
                             </td>
-
-                            <td className="px-6 py-4">
+                            <td className="px-5 py-3.5">
                               <StatusBadge type="priority" value={issue?.priority || "low"} />
                             </td>
-                            <td className="px-6 py-4">
-                              <StatusBadge type="status" value={issue?.status} />
+                            <td className="px-5 py-3.5">
+                              <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-lg border ${badge.class}`}>
+                                {badge.label}
+                              </span>
                             </td>
-
-                            <td className="px-6 py-4">
-                              <StatusBadge type="status" value={issue?.assignment_status} />
+                            <td className="px-5 py-3.5 text-xs text-muted-foreground whitespace-nowrap">
+                              {formatDateShort(issue.assigned_at)}
                             </td>
-
-                            {/* Dropdown Actions */}
-                            <td className="px-6 py-4 text-right">
-                              <div
-                                className="relative inline-block"
-                                ref={(el) => {
-                                  desktopDropdownRefs.current[issue.assignment_id] = el;
-                                }}
-                              >
-                                <button
-                                  onClick={() =>
-                                    toggleDropdown(issue.assignment_id)
-                                  }
-                                  disabled={isLoading}
-                                  className="p-2 rounded-lg hover:bg-muted active:bg-muted/80 transition disabled:opacity-50"
-                                >
-                                  {isLoading ? (
-                                    <Loader2 className="w-5 h-5 animate-spin text-primary" />
-                                  ) : (
-                                    <MoreVertical className="w-5 h-5 text-muted-foreground" />
-                                  )}
-                                </button>
-
-                                {isOpen && (
-                                  <div className="absolute right-0 mt-2 w-48 bg-card rounded-xl shadow-lg border border-border z-50 text-sm overflow-hidden animate-in fade-in zoom-in-95 duration-100">
+                            <td className="px-5 py-3.5" onClick={(e) => e.stopPropagation()}>
+                              <div className="flex items-center justify-end gap-2">
+                                {isPending && (
+                                  <>
                                     <button
-                                      onClick={() => {
-                                        navigate(`/tasks/${issue.issue_id || issue.id}`, {
-                                          state: issue,
-                                        });
-                                        setOpenDropdown(null);
-                                      }}
-                                      className="w-full text-left px-4 py-3 hover:bg-muted/50 transition-colors flex items-center gap-2"
+                                      onClick={() => { setSelectedAssignmentId(issue.assignment_id); setActiveModal("accept"); }}
+                                      disabled={isLoading}
+                                      className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg text-xs font-medium transition-colors disabled:opacity-50"
                                     >
-                                      <Eye className="w-4 h-4 text-muted-foreground" />
-                                      <span>View Details</span>
+                                      {isLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <CheckCircle className="w-3 h-3" />}
+                                      Accept
                                     </button>
-
-                                    {isPending && (
-                                      <>
-                                        <div className="border-t border-border" />
-                                        <button
-                                          onClick={() =>
-                                            handleAccept(issue.assignment_id)
-                                          }
-                                          disabled={isLoading}
-                                          className="w-full text-left px-4 py-3 hover:bg-emerald-50 text-emerald-600 transition-colors flex items-center gap-2 disabled:opacity-50"
-                                        >
-                                          <CheckCircle className="w-4 h-4" />
-                                          <span>Accept</span>
-                                        </button>
-                                        <button
-                                          onClick={() =>
-                                            handleReject(issue.assignment_id)
-                                          }
-                                          disabled={isLoading}
-                                          className="w-full text-left px-4 py-3 hover:bg-red-50 text-red-600 transition-colors flex items-center gap-2 disabled:opacity-50"
-                                        >
-                                          <XCircle className="w-4 h-4" />
-                                          <span>Reject</span>
-                                        </button>
-                                      </>
-                                    )}
-                                  </div>
+                                    <button
+                                      onClick={() => { setSelectedAssignmentId(issue.assignment_id); setActiveModal("reject"); }}
+                                      disabled={isLoading}
+                                      className="flex items-center gap-1.5 px-3 py-1.5 text-red-600 hover:bg-red-50 border border-red-200 rounded-lg text-xs font-medium transition-colors disabled:opacity-50"
+                                    >
+                                      <XCircle className="w-3 h-3" />
+                                      Reject
+                                    </button>
+                                  </>
                                 )}
+                                {isAccepted && (
+                                  <button
+                                    onClick={() => { setSelectedAssignmentId(issue.assignment_id); setActiveModal("complete"); }}
+                                    disabled={isLoading}
+                                    className="flex items-center gap-1.5 px-3 py-1.5 bg-[#6366f1] hover:bg-[#5445c9] text-white rounded-lg text-xs font-medium transition-colors disabled:opacity-50"
+                                  >
+                                    {isLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <CheckCircle className="w-3 h-3" />}
+                                    Complete
+                                  </button>
+                                )}
+                                {isCompleted && (
+                                  <span className="flex items-center gap-1.5 text-emerald-600 text-xs font-medium">
+                                    <CircleCheckBig className="w-3.5 h-3.5" /> Done
+                                  </span>
+                                )}
+                                <button
+                                  onClick={() => navigate(`/tasks/${issue.issue_id || issue.id}`, { state: issue })}
+                                  className="p-1.5 text-muted-foreground hover:text-card-foreground rounded-lg transition-colors hover:bg-muted"
+                                >
+                                  <ArrowRight className="w-3.5 h-3.5" />
+                                </button>
                               </div>
                             </td>
                           </tr>
@@ -354,19 +548,261 @@ const AssignedIssues = () => {
                   </table>
                 </div>
               </div>
-          ) : (
-            <div className="text-center py-16 border border-dashed border-border rounded-2xl bg-muted/30">
-              <div className="text-4xl mb-2">📭</div>
-              <p className="font-semibold text-muted-foreground">
-                No assigned issues
-              </p>
-              <p className="text-sm text-muted-foreground mt-1">
-                You're all caught up!
-              </p>
+            )}
+          </>
+        ) : (
+          <div className="flex flex-col items-center justify-center py-20 px-4">
+            <div className="w-20 h-20 rounded-full bg-muted/60 flex items-center justify-center mb-5">
+              {searchQuery || activeFilter !== "all" ? (
+                <Search className="w-8 h-8 text-muted-foreground/50" />
+              ) : (
+                <ClipboardList className="w-8 h-8 text-muted-foreground/50" />
+              )}
             </div>
-          )}
-       
+            <h3 className="text-lg font-bold text-card-foreground mb-1">
+              {searchQuery || activeFilter !== "all"
+                ? "No matching issues"
+                : "No assigned issues"}
+            </h3>
+            <p className="text-sm text-muted-foreground max-w-xs text-center">
+              {searchQuery || activeFilter !== "all"
+                ? "Try adjusting your search or filter to find what you're looking for."
+                : "You're all caught up! New assignments will appear here."}
+            </p>
+            {(searchQuery || activeFilter !== "all") && (
+              <button
+                onClick={() => {
+                  setSearchQuery("");
+                  setActiveFilter("all");
+                }}
+                className="mt-4 px-4 py-2 text-xs font-semibold text-[#6366f1] bg-[#6366f1]/10 hover:bg-[#6366f1]/20 rounded-xl transition-colors"
+              >
+                Clear Filters
+              </button>
+            )}
+          </div>
+        )}
       </div>
+
+      {/* ── Accept Modal ── */}
+      {activeModal === "accept" && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-card rounded-2xl shadow-xl max-w-md w-full p-6 border border-border animate-in fade-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-emerald-100 rounded-xl">
+                  <CheckCircle className="w-5 h-5 text-emerald-600" />
+                </div>
+                <h3 className="text-lg font-bold text-card-foreground">
+                  Accept Task
+                </h3>
+              </div>
+              <button
+                onClick={() => setActiveModal(null)}
+                className="p-2 hover:bg-muted rounded-full transition-colors"
+              >
+                <X className="w-5 h-5 text-muted-foreground" />
+              </button>
+            </div>
+            <p className="text-sm text-muted-foreground mb-4">
+              Are you sure you want to accept this task? Add any notes below.
+            </p>
+            <textarea
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              placeholder="Add notes (optional)..."
+              className="w-full p-3 border border-border rounded-xl bg-card text-card-foreground text-sm resize-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 outline-none transition-all"
+              rows={4}
+            />
+            <div className="flex gap-3 mt-4">
+              <button
+                onClick={() => setActiveModal(null)}
+                className="flex-1 px-4 py-2.5 border border-border text-muted-foreground rounded-xl text-sm font-medium hover:bg-muted transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={submitAcceptModal}
+                disabled={actionLoading !== null}
+                className="flex-1 px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                {actionLoading !== null ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle className="w-4 h-4" />
+                    Accept
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Reject Modal ── */}
+      {activeModal === "reject" && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-card rounded-2xl shadow-xl max-w-md w-full p-6 border border-border animate-in fade-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-red-100 rounded-xl">
+                  <XCircle className="w-5 h-5 text-red-600" />
+                </div>
+                <h3 className="text-lg font-bold text-card-foreground">
+                  Reject Task
+                </h3>
+              </div>
+              <button
+                onClick={() => setActiveModal(null)}
+                className="p-2 hover:bg-muted rounded-full transition-colors"
+              >
+                <X className="w-5 h-5 text-muted-foreground" />
+              </button>
+            </div>
+            <p className="text-sm text-muted-foreground mb-4">
+              Please provide a reason for rejecting this task.
+            </p>
+            <textarea
+              value={rejectionReason}
+              onChange={(e) => setRejectionReason(e.target.value)}
+              placeholder="Enter rejection reason..."
+              className="w-full p-3 border border-border rounded-xl bg-card text-card-foreground text-sm resize-none focus:ring-2 focus:ring-red-500/30 focus:border-red-500 outline-none transition-all"
+              rows={4}
+            />
+            <div className="flex gap-3 mt-4">
+              <button
+                onClick={() => setActiveModal(null)}
+                className="flex-1 px-4 py-2.5 border border-border text-muted-foreground rounded-xl text-sm font-medium hover:bg-muted transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={submitRejectModal}
+                disabled={actionLoading !== null || !rejectionReason.trim()}
+                className="flex-1 px-4 py-2.5 bg-red-500 hover:bg-red-600 text-white rounded-xl text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                {actionLoading !== null ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    <XCircle className="w-4 h-4" />
+                    Reject
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Complete Modal ── */}
+      {activeModal === "complete" && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-card rounded-2xl shadow-xl max-w-lg w-full p-6 border border-border max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-indigo-100 rounded-xl">
+                  <CircleCheckBig className="w-5 h-5 text-[#6366f1]" />
+                </div>
+                <h3 className="text-lg font-bold text-card-foreground">
+                  Complete Task
+                </h3>
+              </div>
+              <button
+                onClick={() => setActiveModal(null)}
+                className="p-2 hover:bg-muted rounded-full transition-colors"
+              >
+                <X className="w-5 h-5 text-muted-foreground" />
+              </button>
+            </div>
+            <p className="text-sm text-muted-foreground mb-4">
+              Add completion notes and upload resolution photos.
+            </p>
+
+            <div className="mb-4">
+              <label className="block text-xs font-semibold text-muted-foreground mb-2">
+                Completion Notes
+              </label>
+              <textarea
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                placeholder="Describe what was done..."
+                className="w-full p-3 border border-border rounded-xl bg-card text-card-foreground text-sm resize-none focus:ring-2 focus:ring-[#6366f1]/30 focus:border-[#6366f1] outline-none transition-all"
+                rows={3}
+              />
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-xs font-semibold text-muted-foreground mb-2">
+                Resolution Photos
+              </label>
+              <div className="flex flex-wrap gap-2 mb-2">
+                {resolutionPhotos.map((photo, index) => (
+                  <div key={index} className="relative">
+                    <img
+                      src={photo}
+                      alt={`Upload ${index + 1}`}
+                      className="w-20 h-20 object-cover rounded-lg border border-border"
+                    />
+                    <button
+                      onClick={() => removePhoto(index)}
+                      className="absolute -top-2 -right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600 transition-colors"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </div>
+                ))}
+                <label className="w-20 h-20 flex flex-col items-center justify-center border-2 border-dashed border-border rounded-lg cursor-pointer hover:border-[#6366f1] hover:bg-muted transition-colors">
+                  <Upload className="w-5 h-5 text-muted-foreground" />
+                  <span className="text-[10px] text-muted-foreground mt-1">
+                    Add
+                  </span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={handlePhotoUpload}
+                    className="hidden"
+                  />
+                </label>
+              </div>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => setActiveModal(null)}
+                className="flex-1 px-4 py-2.5 border border-border text-muted-foreground rounded-xl text-sm font-medium hover:bg-muted transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={submitCompleteModal}
+                disabled={actionLoading !== null}
+                className="flex-1 px-4 py-2.5 bg-[#6366f1] hover:bg-[#5445c9] text-white rounded-xl text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                {actionLoading !== null ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle className="w-4 h-4" />
+                    Complete Task
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

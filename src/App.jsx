@@ -6,8 +6,7 @@ import ResolvedIssues from "./Components/Dashboards/Admin/ResolvedIssues";
 import Leaderboard from "./Components/Dashboards/Admin/Leaderboard";
 import Profile from "./Components/Profile";
 import AssignedIssues from "./Components/Dashboards/Staff/AssignedIssues";
-import CompletedAssignments from "./Components/Dashboards/Staff/CompletedAssignments";
-import PendingAssignments from "./Components/Dashboards/Staff/AcceptedTasks.jsx";
+
 import IssueDetails from "./Components/Dashboards/Admin/IssuesDetails";
 import HelpSupport from "./Components/Dashboards/Common/HelpSupport";
 import Notifications from "./Components/Dashboards/Common/Notifications";
@@ -22,7 +21,7 @@ import { ThemeProvider } from "./Context/ThemeContext.jsx";
 import ProtectedRoute from "./routes/ProtectedRoute.jsx";
 import { ForgotPassword, ResetPassword } from "./Pages/forgetPassword.jsx";
 import AdminPanel from "./Components/Dashboards/Admin/AdminPanel.jsx";
-import AcceptedTasks from "./Components/Dashboards/Staff/AcceptedTasks.jsx";
+
 import TaskDetails from "./Components/Dashboards/Staff/TaskDetails.jsx";
 import TrustCenter from "./Pages/TrustCenter.jsx";
 import { useEffect } from "react";
@@ -234,22 +233,7 @@ const App = () => {
               </ProtectedRoute>
             }
           />
-          <Route
-            path="/accepted"
-            element={
-              <ProtectedRoute allowedRoles={["staff"]}>
-                <AcceptedTasks />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/completed"
-            element={
-              <ProtectedRoute allowedRoles={["staff"]}>
-                <CompletedAssignments />
-              </ProtectedRoute>
-            }
-          />
+
 
           {/* students */}
           <Route
