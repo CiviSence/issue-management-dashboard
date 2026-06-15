@@ -8,6 +8,7 @@ import IssueCard from "../../Templates/IssueCard";
 import { useNavigate } from "react-router-dom";
 import StatusBadge from "../../Templates/StatusBadge";
 import defaultProfile from "../../../assets/default-avatar.jpg";
+import axios from "../../../Utils/axios";
 
 const StaffDashboard = () => {
   const { profileData } = useUser();
@@ -19,51 +20,50 @@ const StaffDashboard = () => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState([]);
 
-  // Generate notifications based on assigned issues
-  useEffect(() => {
-    if (assignedIssues.length > 0) {
-      const generatedNotifs = [
-        {
-          id: 1,
-          text: `New task assigned: "${assignedIssues[0].title || "Untitled"}"`,
-          time: "Just now",
-          read: false,
-          icon: "ri-task-line",
-        },
-        ...assignedIssues.slice(1, 3).map((issue, idx) => ({
-          id: idx + 2,
-          text: `Task update pending for: "${issue.title || "Untitled"}"`,
-          time: "1 hour ago",
-          read: false,
-          icon: "ri-time-line",
-        })),
-        {
-          id: 10,
-          text: "Welcome to your Staff Dashboard!",
-          time: "1 day ago",
-          read: true,
-          icon: "ri-dashboard-line",
-        },
-      ];
-      setNotifications(generatedNotifs);
-    } else {
-      setNotifications([
-        {
-          id: 10,
-          text: "Welcome to your Staff Dashboard!",
-          time: "1 day ago",
-          read: true,
-          icon: "ri-dashboard-line",
-        },
-      ]);
+  const fetchNotifications = async () => {
+    try {
+      const response = await axios.get("/notifications/my-notifications");
+      setNotifications(response.data);
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
     }
-  }, [assignedIssues]);
-
-  const unreadCount = notifications.filter((n) => !n.read).length;
-
-  const markAllRead = () => {
-    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
   };
+
+  useEffect(() => {
+    fetchNotifications();
+  }, []);
+
+  const handleMarkAsRead = async (notificationId) => {
+    try {
+      await axios.patch("/notifications/mark-as-read", {
+        notification_ids: [notificationId],
+      });
+      setNotifications((prev) =>
+        prev.map((n) =>
+          n.id === notificationId ? { ...n, is_unread: false } : n
+        )
+      );
+    } catch (error) {
+      console.error("Error marking notification as read:", error);
+    }
+  };
+
+  const handleMarkAllRead = async () => {
+    const unreadIds = notifications.filter((n) => n.is_unread).map((n) => n.id);
+    if (unreadIds.length === 0) return;
+    try {
+      await axios.patch("/notifications/mark-as-read", {
+        notification_ids: unreadIds,
+      });
+      setNotifications((prev) =>
+        prev.map((n) => ({ ...n, is_unread: false }))
+      );
+    } catch (error) {
+      console.error("Error marking all read:", error);
+    }
+  };
+
+  const unreadCount = notifications.filter((n) => n.is_unread).length;
 
   // Close notifications dropdown on click outside
   useEffect(() => {
@@ -182,7 +182,13 @@ const StaffDashboard = () => {
                 {/* Notification Bell */}
                 <div className="relative notif-container">
                   <button
-                    onClick={() => setShowNotifications(!showNotifications)}
+                    onClick={() => {
+                      const newState = !showNotifications;
+                      setShowNotifications(newState);
+                      if (newState) {
+                        fetchNotifications();
+                      }
+                    }}
                     className="p-2 sm:p-2.5 bg-white/10 hover:bg-white/20 active:bg-white/30 rounded-xl transition-all relative cursor-pointer border border-white/10 hover:scale-105"
                   >
                     <i className="ri-notification-3-line text-lg sm:text-xl text-white"></i>
@@ -198,7 +204,7 @@ const StaffDashboard = () => {
                         <span className="font-bold text-sm">Notifications</span>
                         {unreadCount > 0 && (
                           <button
-                            onClick={markAllRead}
+                            onClick={handleMarkAllRead}
                             className="text-xs text-indigo-600 hover:underline font-semibold"
                           >
                             Mark all read
@@ -207,26 +213,44 @@ const StaffDashboard = () => {
                       </div>
                       <div className="max-h-64 overflow-y-auto divide-y divide-gray-50">
                         {notifications.length > 0 ? (
-                          notifications.map((notif) => (
-                            <div
-                              key={notif.id}
-                              className={`p-3 text-xs transition-colors hover:bg-gray-50 flex gap-2 ${
-                                notif.read ? "opacity-70" : "bg-indigo-50/30"
-                              }`}
-                            >
-                              <div className="mt-0.5 text-indigo-500">
-                                <i className={notif.icon + " text-base"}></i>
+                          notifications.map((notif) => {
+                            let icon = "ri-notification-3-line";
+                            if (notif.title?.toLowerCase().includes("assign")) {
+                              icon = "ri-clipboard-line";
+                            } else if (notif.title?.toLowerCase().includes("accept")) {
+                              icon = "ri-loader-4-line";
+                            } else if (notif.title?.toLowerCase().includes("complete") || notif.title?.toLowerCase().includes("resolve")) {
+                              icon = "ri-checkbox-circle-line";
+                            }
+
+                            return (
+                              <div
+                                key={notif.id}
+                                onClick={() => notif.is_unread && handleMarkAsRead(notif.id)}
+                                className={`p-3 text-xs transition-colors hover:bg-gray-50 flex gap-2 cursor-pointer ${
+                                  notif.is_unread ? "bg-indigo-50/30 font-medium" : "opacity-70"
+                                }`}
+                              >
+                                <div className="mt-0.5 text-indigo-500">
+                                  <i className={`${icon} text-base`}></i>
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <p className={`font-semibold text-gray-900 leading-snug ${notif.is_unread ? "" : "text-gray-600"}`}>
+                                    {notif.title}
+                                  </p>
+                                  <p className="text-gray-500 text-[11px] mt-0.5 leading-normal">
+                                    {notif.message}
+                                  </p>
+                                  <p className="text-[10px] text-gray-400 mt-1">
+                                    {formatDate(notif.sent_at)}
+                                  </p>
+                                </div>
+                                {notif.is_unread && (
+                                  <span className="h-2 w-2 bg-indigo-600 rounded-full mt-1.5 shrink-0"></span>
+                                )}
                               </div>
-                              <div className="flex-1 min-w-0">
-                                <p className="font-medium text-gray-900 leading-snug">
-                                  {notif.text}
-                                </p>
-                                <p className="text-[10px] text-gray-400 mt-1">
-                                  {notif.time}
-                                </p>
-                              </div>
-                            </div>
-                          ))
+                            );
+                          })
                         ) : (
                           <div className="py-8 text-center text-gray-400">
                             <i className="ri-notification-off-line text-2xl block mb-1"></i>

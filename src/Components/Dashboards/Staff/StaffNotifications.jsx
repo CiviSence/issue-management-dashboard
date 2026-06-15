@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import StaffSideNav from "./StaffSideNav";
 import BottomNav from "../../Templates/BottomNav";
 import { useUser } from "../../../Context/ProfileContext";
-import { getAssignedIssues } from "../../../Utils/staffissues";
 import Loader from "../../Templates/Loader";
 import { useNavigate } from "react-router-dom";
+import axios from "../../../Utils/axios";
 
 const StaffNotifications = () => {
   const { profileData } = useUser();
@@ -13,74 +13,89 @@ const StaffNotifications = () => {
   const [notifications, setNotifications] = useState([]);
   const [filter, setFilter] = useState("all");
 
+  const formatSmartTime = (dateString) => {
+    if (!dateString) return "Recently";
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInSeconds = Math.floor((now - date) / 1000);
+    const diffInMinutes = Math.floor(diffInSeconds / 60);
+    const diffInHours = Math.floor(diffInMinutes / 60);
+
+    if (diffInSeconds < 60) return "Just now";
+    if (diffInMinutes < 60)
+      return `${diffInMinutes} ${diffInMinutes === 1 ? "minute" : "minutes"} ago`;
+    if (diffInHours < 24)
+      return `${diffInHours} ${diffInHours === 1 ? "hour" : "hours"} ago`;
+    return date.toLocaleDateString();
+  };
+
+  const fetchNotifications = async () => {
+    if (!profileData?.id) return;
+    try {
+      const response = await axios.get("/notifications/my-notifications");
+      const items = response.data.map((notif) => {
+        let icon = "ri-notification-3-line";
+        if (notif.title?.toLowerCase().includes("assign")) {
+          icon = "ri-clipboard-line";
+        } else if (notif.title?.toLowerCase().includes("accept")) {
+          icon = "ri-loader-4-line";
+        } else if (notif.title?.toLowerCase().includes("complete") || notif.title?.toLowerCase().includes("resolve")) {
+          icon = "ri-checkbox-circle-line";
+        }
+
+        return {
+          id: notif.id,
+          title: notif.title,
+          description: notif.message,
+          time: formatSmartTime(notif.sent_at),
+          read: !notif.is_unread,
+          icon,
+          link: notif.action_url || notif.link,
+          state: null,
+        };
+      });
+      setNotifications(items);
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchNotifications = async () => {
-      if (!profileData?.id) return;
-      try {
-        const data = await getAssignedIssues(profileData.id);
-        
-        const items = data.map((issue) => {
-          let statusText = "New task assigned";
-          let icon = "ri-task-line";
-          let description = `You have been assigned the task: "${issue.title || "Untitled Issue"}". Please check the details.`;
-          
-          if (issue.assignment_status === "completed") {
-            statusText = "Task completed";
-            icon = "ri-checkbox-circle-line";
-            description = `The task "${issue.title || "Untitled Issue"}" has been marked as completed.`;
-          } else if (issue.assignment_status === "accepted") {
-            statusText = "Task accepted & in progress";
-            icon = "ri-time-line";
-            description = `You accepted the task "${issue.title || "Untitled Issue"}". Status is now In Progress.`;
-          }
-
-          return {
-            id: issue.assignment_id || issue.id,
-            title: statusText,
-            description,
-            time: new Date(issue.updated_at || issue.created_at || Date.now()).toLocaleDateString("en-US", {
-              month: "short",
-              day: "numeric",
-              hour: "2-digit",
-              minute: "2-digit",
-            }),
-            read: issue.assignment_status !== "pending",
-            icon,
-            link: `/tasks/${issue.issue_id}`,
-            state: issue
-          };
-        });
-
-        // Add welcome notification
-        items.push({
-          id: "welcome",
-          title: "Welcome to Notifications",
-          description: "All notifications related to your assigned complaints and task updates will appear here.",
-          time: "Recently",
-          read: true,
-          icon: "ri-notification-3-line",
-          link: "/dashboard"
-        });
-
-        setNotifications(items);
-      } catch (error) {
-        console.error("Error fetching notifications:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchNotifications();
   }, [profileData?.id]);
 
-  const handleMarkAllRead = () => {
-    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+  const handleMarkAllRead = async () => {
+    const unreadIds = notifications.filter((n) => !n.read).map((n) => n.id);
+    if (unreadIds.length === 0) return;
+    try {
+      await axios.patch("/notifications/mark-as-read", {
+        notification_ids: unreadIds,
+      });
+      setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+    } catch (error) {
+      console.error("Error marking all notifications as read:", error);
+    }
   };
 
-  const handleToggleRead = (id) => {
-    setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, read: !n.read } : n))
-    );
+  const handleToggleRead = async (id, currentRead) => {
+    if (!currentRead) {
+      try {
+        await axios.patch("/notifications/mark-as-read", {
+          notification_ids: [id],
+        });
+        setNotifications((prev) =>
+          prev.map((n) => (n.id === id ? { ...n, read: true } : n))
+        );
+      } catch (error) {
+        console.error("Error marking notification as read:", error);
+      }
+    } else {
+      setNotifications((prev) =>
+        prev.map((n) => (n.id === id ? { ...n, read: false } : n))
+      );
+    }
   };
 
   const filteredNotifications = notifications.filter((n) => {
@@ -176,7 +191,7 @@ const StaffNotifications = () => {
                         </button>
                       )}
                       <button
-                        onClick={() => handleToggleRead(notif.id)}
+                        onClick={() => handleToggleRead(notif.id, notif.read)}
                         className="text-xs font-semibold text-gray-400 hover:text-gray-600 transition cursor-pointer"
                       >
                         {notif.read ? "Mark as unread" : "Mark as read"}

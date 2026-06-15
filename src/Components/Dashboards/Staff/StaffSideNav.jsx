@@ -14,13 +14,13 @@ const StaffSideNav = () => {
       <NavItem to="/dashboard" icon="ri-dashboard-fill" label="Dashboard" />
       <NavItem
         to="/assigned-issues"
-        icon="ri-file-list-line"
+        icon="ri-clipboard-line"
         label="Assigned Tasks"
       />
-      <NavItem to="/accepted" icon="ri-file-list-line" label="Accepted Tasks" />
+      <NavItem to="/accepted" icon="ri-loader-4-line" label="Accepted Tasks" />
       <NavItem
         to="/completed"
-        icon="ri-file-list-line"
+        icon="ri-checkbox-circle-line"
         label="Completed Tasks"
       />
       <NavItem
