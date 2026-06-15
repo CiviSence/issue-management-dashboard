@@ -39,6 +39,10 @@ const BottomNav = () => {
 
             <span className="text-xs">Panel</span>
           </NavLink>
+          <NavLink to="/notifications" className={navClass}>
+            <i className="ri-notification-3-fill text-xl"></i>
+            <span className="text-xs">Notifications</span>
+          </NavLink>
         </>
       )}
 
@@ -50,9 +54,9 @@ const BottomNav = () => {
             <span className="text-xs">Tasks</span>
           </NavLink>
 
-          <NavLink to="/help-support" className={navClass}>
-            <i className="ri-customer-service-2-fill text-xl"></i>
-            <span className="text-xs">Help</span>
+          <NavLink to="/notifications" className={navClass}>
+            <i className="ri-notification-3-fill text-xl"></i>
+            <span className="text-xs">Notifications</span>
           </NavLink>
         </>
       )}

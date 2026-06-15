@@ -24,9 +24,9 @@ const StaffSideNav = () => {
         label="Completed Tasks"
       />
       <NavItem
-        to="/help-support"
-        icon="ri-customer-service-2-fill"
-        label="Help & Support"
+        to="/notifications"
+        icon="ri-notification-3-fill"
+        label="Notifications"
       />
       <NavItem to="/profile" icon="ri-user-fill" label="My Profile" />
     </SideNavLayout>

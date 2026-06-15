@@ -10,6 +10,7 @@ import CompletedAssignments from "./Components/Dashboards/Staff/CompletedAssignm
 import PendingAssignments from "./Components/Dashboards/Staff/AcceptedTasks.jsx";
 import IssueDetails from "./Components/Dashboards/Admin/IssuesDetails";
 import HelpSupport from "./Components/Dashboards/Common/HelpSupport";
+import Notifications from "./Components/Dashboards/Common/Notifications";
 import Login from "./Pages/Login";
 import PrivateRoute from "./routes/PrivateRoute";
 import AuthRoute from "./routes/AuthRoute";
@@ -139,6 +140,14 @@ const App = () => {
             element={
               <PrivateRoute>
                 <HelpSupport />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/notifications"
+            element={
+              <PrivateRoute>
+                <Notifications />
               </PrivateRoute>
             }
           />
