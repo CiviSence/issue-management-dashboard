@@ -19,7 +19,8 @@ const AssignedIssues = () => {
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(null);
   const [openDropdown, setOpenDropdown] = useState(null);
-  const dropdownRefs = useRef({});
+  const mobileDropdownRefs = useRef({});
+  const desktopDropdownRefs = useRef({});
 
   const formatDate = (dateString) => {
     if (!dateString) return "N/A";
@@ -53,10 +54,13 @@ const AssignedIssues = () => {
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
-      const isOutside = Object.values(dropdownRefs.current).every(
-        (ref) => ref && !ref.contains(event.target),
+      const isOutsideMobile = Object.values(mobileDropdownRefs.current).every(
+        (ref) => ref && !ref.contains(event.target)
       );
-      if (isOutside) {
+      const isOutsideDesktop = Object.values(desktopDropdownRefs.current).every(
+        (ref) => ref && !ref.contains(event.target)
+      );
+      if (isOutsideMobile && isOutsideDesktop) {
         setOpenDropdown(null);
       }
     };
@@ -148,11 +152,10 @@ const AssignedIssues = () => {
                             </div>
                           </div>
 
-                          {/* Dropdown trigger */}
                           <div
                             className="relative shrink-0"
                             ref={(el) => {
-                              dropdownRefs.current[issue.assignment_id] = el;
+                              mobileDropdownRefs.current[issue.assignment_id] = el;
                             }}
                           >
                             <button
@@ -171,7 +174,7 @@ const AssignedIssues = () => {
                               <div className="absolute right-0 mt-2 w-48 bg-card rounded-xl shadow-lg border border-border z-50 text-sm overflow-hidden animate-in fade-in zoom-in-95 duration-100">
                                 <button
                                   onClick={() => {
-                                    navigate(`/tasks/${issue.issue_id}`, {
+                                    navigate(`/tasks/${issue.issue_id || issue.id}`, {
                                       state: issue,
                                     });
                                     setOpenDropdown(null);
@@ -283,7 +286,7 @@ const AssignedIssues = () => {
                               <div
                                 className="relative inline-block"
                                 ref={(el) => {
-                                  dropdownRefs.current[issue.assignment_id] = el;
+                                  desktopDropdownRefs.current[issue.assignment_id] = el;
                                 }}
                               >
                                 <button
@@ -304,7 +307,7 @@ const AssignedIssues = () => {
                                   <div className="absolute right-0 mt-2 w-48 bg-card rounded-xl shadow-lg border border-border z-50 text-sm overflow-hidden animate-in fade-in zoom-in-95 duration-100">
                                     <button
                                       onClick={() => {
-                                        navigate(`/tasks/${issue.issue_id}`, {
+                                        navigate(`/tasks/${issue.issue_id || issue.id}`, {
                                           state: issue,
                                         });
                                         setOpenDropdown(null);

@@ -84,8 +84,6 @@ const TaskDetails = () => {
       });
     } catch (error) {
       console.error("Failed to fetch issue details. ID:", id, "Error:", error);
-      // If we already have partial data from state, we can still show the page
-      // but maybe show a small warning that full details couldn't be loaded
       if (!task && !location.state) {
         setTask(null);
       }
@@ -452,24 +450,25 @@ const TaskDetails = () => {
               </h3>
               <div className="space-y-3">
                 {/* Show Accept/Reject for pending tasks */}
-                {task.assignment_status === "pending" && task.status !== "resolved" && (
-                  <>
-                    <button
-                      onClick={() => setActiveModal("accept")}
-                      className="w-full flex items-center justify-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 bg-green-500 hover:bg-green-600 text-white rounded-xl text-sm sm:text-base font-medium transition-colors"
-                    >
-                      <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5" />
-                      Accept Task
-                    </button>
-                    <button
-                      onClick={() => setActiveModal("reject")}
-                      className="w-full flex items-center justify-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl text-sm sm:text-base font-medium transition-colors"
-                    >
-                      <XCircle className="w-4 h-4 sm:w-5 sm:h-5" />
-                      Reject Task
-                    </button>
-                  </>
-                )}
+                {task.assignment_status === "pending" &&
+                  task.status !== "resolved" && (
+                    <>
+                      <button
+                        onClick={() => setActiveModal("accept")}
+                        className="w-full flex items-center justify-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 bg-green-500 hover:bg-green-600 text-white rounded-xl text-sm sm:text-base font-medium transition-colors"
+                      >
+                        <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5" />
+                        Accept Task
+                      </button>
+                      <button
+                        onClick={() => setActiveModal("reject")}
+                        className="w-full flex items-center justify-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl text-sm sm:text-base font-medium transition-colors"
+                      >
+                        <XCircle className="w-4 h-4 sm:w-5 sm:h-5" />
+                        Reject Task
+                      </button>
+                    </>
+                  )}
 
                 {/* Show Complete for accepted tasks */}
                 {task.assignment_status === "accepted" && (
@@ -483,7 +482,7 @@ const TaskDetails = () => {
                 )}
 
                 {/* Show resolved status */}
-                {(task.assignment_status === "completed") && (
+                {task.assignment_status === "completed" && (
                   <div className="text-center p-4 bg-green-50 rounded-xl">
                     <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-2" />
                     <p className="font-semibold text-green-700">

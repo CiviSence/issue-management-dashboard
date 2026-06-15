@@ -106,7 +106,7 @@ const CompletedAssignment = () => {
 
                       <button
                         onClick={() =>
-                          navigate(`/tasks/${issue.issue_id}`, {
+                          navigate(`/tasks/${issue.issue_id || issue.id}`, {
                             state: issue,
                           })
                         }
@@ -169,7 +169,7 @@ const CompletedAssignment = () => {
                           <td className="px-6 py-4 text-right">
                             <button
                               onClick={() =>
-                                navigate(`/tasks/${issue.issue_id}`, {
+                                navigate(`/tasks/${issue.issue_id || issue.id}`, {
                                   state: issue,
                                 })
                               }

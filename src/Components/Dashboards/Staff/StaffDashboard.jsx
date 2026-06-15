@@ -63,6 +63,23 @@ const StaffDashboard = () => {
     }
   };
 
+  const handleNotificationClick = (notif) => {
+    if (notif.is_unread) {
+      handleMarkAsRead(notif.id);
+    }
+    let targetUrl = notif.action_url || notif.link;
+    if (!targetUrl && notif.issue_id) {
+      targetUrl = `/tasks/${notif.issue_id}`;
+    }
+    if (targetUrl) {
+      if (targetUrl.startsWith("/issues/")) {
+        targetUrl = targetUrl.replace("/issues/", "/tasks/");
+      }
+      navigate(targetUrl);
+      setShowNotifications(false);
+    }
+  };
+
   const unreadCount = notifications.filter((n) => n.is_unread).length;
 
   // Close notifications dropdown on click outside
@@ -226,7 +243,7 @@ const StaffDashboard = () => {
                             return (
                               <div
                                 key={notif.id}
-                                onClick={() => notif.is_unread && handleMarkAsRead(notif.id)}
+                                onClick={() => handleNotificationClick(notif)}
                                 className={`p-3 text-xs transition-colors hover:bg-gray-50 flex gap-2 cursor-pointer ${
                                   notif.is_unread ? "bg-indigo-50/30 font-medium" : "opacity-70"
                                 }`}
@@ -338,7 +355,7 @@ const StaffDashboard = () => {
 
                       <button
                         onClick={() =>
-                          navigate(`/tasks/${issue.issue_id}`, {
+                          navigate(`/tasks/${issue.issue_id || issue.id}`, {
                             state: issue,
                           })
                         }
@@ -400,7 +417,7 @@ const StaffDashboard = () => {
                           <td className="px-6 py-4 text-right">
                             <button
                               onClick={() =>
-                                navigate(`/tasks/${issue.issue_id}`, {
+                                navigate(`/tasks/${issue.issue_id || issue.id}`, {
                                   state: issue,
                                 })
                               }
