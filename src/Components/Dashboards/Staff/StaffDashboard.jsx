@@ -245,10 +245,9 @@ const StaffDashboard = () => {
     <>
       <StaffSideNav />
       <BottomNav />
-      <div className="w-full pt-0 pb-20 md:pb-2 lg:p-4 lg:w-[calc(100vw-15vw)] overflow-x-auto">
-        <div className="w-full mx-auto">
+<div className="w-full h-screen overflow-y-auto pt-0 pb-24 md:p-2 lg:p-4 lg:w-[calc(100vw-15vw)]">        <div className="w-full mx-auto">
           {/* header */}
-          <div className="w-full bg-linear-to-r from-[#7E70EB] to-[#5A50A6] p-5 sm:p-5 lg:p-6 rounded-b-4xl lg:rounded-2xl md:rounded-3xl text-white shadow-lg  md:mb-6">
+          <div className="w-full bg-linear-to-r from-[#7E70EB] to-[#5A50A6] p-5 sm:p-5 lg:p-6 rounded-b-4xl lg:rounded-2xl md:rounded-3xl text-white shadow-lg md:mb-6 sticky top-0 z-40 md:static">
             <div className="flex items-center justify-between gap-4">
               {/* LEFT */}
               <div>
@@ -372,7 +371,7 @@ const StaffDashboard = () => {
           </div>
 
           {/* Dashboard Main Content sections */}
-          <div className="flex flex-col gap-6 p-4">
+          <div className="flex flex-col gap-2 px-2 md:gap-6 md:p-4">
             {loading ? (
               <Loader />
             ) : assignedIssues?.length > 0 ? (

@@ -182,7 +182,7 @@ const TaskDetails = () => {
       <>
         <StaffSideNav />
         <BottomNav />
-        <div className="flex-1 h-screen overflow-y-auto pb-24 md:pb-6 p-3 md:p-6 bg-background text-foreground flex items-center justify-center">
+        <div className="flex-1 h-screen overflow-y-auto pt-0 md:pt-6 pb-24 md:pb-6 px-3 md:px-6 bg-background text-foreground flex items-center justify-center">
           <Loader />
         </div>
       </>
@@ -194,7 +194,7 @@ const TaskDetails = () => {
       <>
         <StaffSideNav />
         <BottomNav />
-        <div className="flex-1 h-screen overflow-y-auto pb-24 md:pb-6 p-3 md:p-6 bg-background text-foreground flex items-center justify-center">
+        <div className="flex-1 h-screen overflow-y-auto pt-0 md:pt-6 pb-24 md:pb-6 px-3 md:px-6 bg-background text-foreground flex items-center justify-center">
           <div className="text-center">
             <AlertCircle className="w-16 h-16 text-gray-400 mx-auto mb-4" />
             <h2 className="text-xl font-semibold text-gray-600">
@@ -214,9 +214,9 @@ const TaskDetails = () => {
       <StaffSideNav />
       <BottomNav />
 
-      <div className="flex-1 h-screen overflow-y-auto pb-24 md:pb-6 p-3 md:p-6 bg-background text-foreground transition-colors duration-200">
+      <div className="flex-1 h-screen overflow-y-auto pt-0 md:pt-6 pb-24 md:pb-6 px-3 md:px-6 bg-background text-foreground transition-colors duration-200">
         {/* Header */}
-        <div className="w-full bg-gradient-to-br from-[#6366f1] via-[#7E70EB] to-[#5A50A6] p-4 sm:p-5 lg:p-6 rounded-2xl md:rounded-3xl text-white shadow-lg mb-4 md:mb-6">
+        <div className="w-full bg-gradient-to-br from-[#6366f1] via-[#7E70EB] to-[#5A50A6] p-4 sm:p-5 lg:p-6 rounded-t-none rounded-b-2xl md:rounded-3xl text-white shadow-lg mb-4 md:mb-6 sticky top-0 z-40 md:static">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div className="flex items-center gap-3">
               <button

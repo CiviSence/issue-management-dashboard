@@ -39,7 +39,10 @@ const StaffNotifications = () => {
           icon = "ri-clipboard-line";
         } else if (notif.title?.toLowerCase().includes("accept")) {
           icon = "ri-loader-4-line";
-        } else if (notif.title?.toLowerCase().includes("complete") || notif.title?.toLowerCase().includes("resolve")) {
+        } else if (
+          notif.title?.toLowerCase().includes("complete") ||
+          notif.title?.toLowerCase().includes("resolve")
+        ) {
           icon = "ri-checkbox-circle-line";
         }
 
@@ -86,14 +89,14 @@ const StaffNotifications = () => {
           notification_ids: [id],
         });
         setNotifications((prev) =>
-          prev.map((n) => (n.id === id ? { ...n, read: true } : n))
+          prev.map((n) => (n.id === id ? { ...n, read: true } : n)),
         );
       } catch (error) {
         console.error("Error marking notification as read:", error);
       }
     } else {
       setNotifications((prev) =>
-        prev.map((n) => (n.id === id ? { ...n, read: false } : n))
+        prev.map((n) => (n.id === id ? { ...n, read: false } : n)),
       );
     }
   };
@@ -109,7 +112,7 @@ const StaffNotifications = () => {
       <StaffSideNav />
       <BottomNav />
       <div className="flex-1 h-screen overflow-y-auto pb-24 md:pb-6 p-3 md:p-6 bg-[#F0EEFF]">
-        <div className="w-full bg-linear-to-r from-[#7E70EB] to-[#5A50A6] p-4 sm:p-5 lg:p-6 rounded-2xl md:rounded-3xl text-white shadow-lg mb-4 md:mb-6 border border-white/10">
+        <div className="w-full bg-linear-to-r from-[#7E70EB] to-[#5A50A6] p-4 sm:p-5 lg:p-6 rounded-2xl md:rounded-3xl text-white shadow-lg mb-4 md:mb-6 border border-white/10">{" "}
           <div className="flex justify-between items-center">
             <div>
               <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold leading-tight">
@@ -164,9 +167,13 @@ const StaffNotifications = () => {
                   {!notif.read && (
                     <div className="absolute left-1 top-1/2 -translate-y-1/2 w-1.5 h-8 bg-[#6366f1] rounded-r-md" />
                   )}
-                  <div className={`p-2 rounded-xl shrink-0 h-10 w-10 flex items-center justify-center ${
-                    notif.read ? "bg-gray-100 text-gray-500" : "bg-indigo-100 text-[#6366f1]"
-                  }`}>
+                  <div
+                    className={`p-2 rounded-xl shrink-0 h-10 w-10 flex items-center justify-center ${
+                      notif.read
+                        ? "bg-gray-100 text-gray-500"
+                        : "bg-indigo-100 text-[#6366f1]"
+                    }`}
+                  >
                     <i className={`${notif.icon} text-lg`}></i>
                   </div>
                   <div className="flex-1 min-w-0">
@@ -184,7 +191,9 @@ const StaffNotifications = () => {
                     <div className="flex gap-3 mt-3">
                       {notif.link && (
                         <button
-                          onClick={() => navigate(notif.link, { state: notif.state })}
+                          onClick={() =>
+                            navigate(notif.link, { state: notif.state })
+                          }
                           className="text-xs font-bold text-[#6366f1] hover:underline cursor-pointer"
                         >
                           View Details

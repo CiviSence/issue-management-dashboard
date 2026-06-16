@@ -89,13 +89,13 @@ const AssignedIssues = () => {
   const counts = useMemo(() => {
     const all = assignedIssues.length;
     const pending = assignedIssues.filter(
-      (i) => i.assignment_status === "pending"
+      (i) => i.assignment_status === "pending",
     ).length;
     const accepted = assignedIssues.filter(
-      (i) => i.assignment_status === "accepted"
+      (i) => i.assignment_status === "accepted",
     ).length;
     const completed = assignedIssues.filter(
-      (i) => i.assignment_status === "completed"
+      (i) => i.assignment_status === "completed",
     ).length;
     return { all, pending, accepted, completed };
   }, [assignedIssues]);
@@ -110,8 +110,7 @@ const AssignedIssues = () => {
       const q = searchQuery.toLowerCase();
       result = result.filter(
         (i) =>
-          i.title?.toLowerCase().includes(q) ||
-          String(i.issue_id).includes(q)
+          i.title?.toLowerCase().includes(q) || String(i.issue_id).includes(q),
       );
     }
     return result;
@@ -139,7 +138,7 @@ const AssignedIssues = () => {
     try {
       await rejectAssignment(
         selectedAssignmentId,
-        rejectionReason || "Staff rejected this assignment"
+        rejectionReason || "Staff rejected this assignment",
       );
       setRejectionReason("");
       setActiveModal(null);
@@ -216,372 +215,475 @@ const AssignedIssues = () => {
     },
   ];
 
-
-
   return (
     <>
       <StaffSideNav />
       <BottomNav />
 
-      <div className="flex-1 h-screen overflow-y-auto pb-24 md:pb-6 p-3 sm:p-4 md:p-6">
-        {/* ── Header Banner ── */}
-        <div className="w-full bg-gradient-to-br from-[#6366f1] via-[#7E70EB] to-[#5A50A6] p-5 sm:p-6 lg:p-8 rounded-2xl md:rounded-3xl text-white shadow-xl mb-5 md:mb-6 relative overflow-hidden">
-          {/* Decorative circles */}
-          <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/5 rounded-full" />
-          <div className="absolute -bottom-12 -left-8 w-32 h-32 bg-white/5 rounded-full" />
+      <div className="w-full h-screen overflow-y-auto pt-0 pb-24 md:p-2 lg:p-4 lg:w-[calc(100vw-15vw)]">
+        {" "}
+        <div className="w-full mx-auto">
+          {/* ── Header Banner ── */}
+<div className="w-full bg-linear-to-r from-[#7E70EB] to-[#5A50A6] p-5 sm:p-5 lg:p-6 rounded-b-4xl lg:rounded-2xl md:rounded-3xl text-white shadow-lg md:mb-6 sticky top-0 z-40 md:static">            <div className="flex items-center justify-between gap-4">
+              {/* LEFT */}
+              <div>
+                <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold leading-tight">
+                 Your Tasks
+                </h1>
 
-          <div className="relative z-10 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-2 mb-1">
-                <div className="p-1.5 bg-white/15 rounded-lg">
-                  <ClipboardList className="w-5 h-5" />
-                </div>
-                <span className="text-xs font-semibold text-white/70 uppercase tracking-widest">
-                  Staff Dashboard
-                </span>
+                <p className="text-violet-100 text-xs sm:text-sm md:text-base mt-1">
+                  Welcome back,{" "}
+                  <span className="font-semibold">
+                    {profileData?.name || "staff"}
+                  </span>
+                  !
+                </p>
               </div>
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold leading-tight tracking-tight">
-                Assigned Issues
-              </h1>
-              <p className="text-indigo-200 text-sm sm:text-base mt-1.5 max-w-md">
-                Manage, accept, and complete issues assigned to you.
-              </p>
-            </div>
 
-            {/* Quick stats pills */}
-            <div className="flex gap-2 flex-wrap">
-              {[
-                { label: "Pending", count: counts.pending, bg: "bg-amber-400/20 text-amber-100" },
-                { label: "In Progress", count: counts.accepted, bg: "bg-blue-400/20 text-blue-100" },
-                { label: "Done", count: counts.completed, bg: "bg-emerald-400/20 text-emerald-100" },
-              ].map((s) => (
-                <span
-                  key={s.label}
-                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold ${s.bg}`}
-                >
-                  {s.count}
-                  <span className="font-medium opacity-80">{s.label}</span>
-                </span>
-              ))}
+             
             </div>
           </div>
         </div>
-
         {/* ── Search & Filter Bar ── */}
-        <div className="flex flex-col sm:flex-row gap-3 mb-5">
-          {/* Search */}
-          <div className="relative flex-1">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search by title or issue ID..."
-              className="w-full pl-10 pr-4 py-2.5 bg-card border border-border rounded-xl text-sm text-card-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-[#6366f1]/30 focus:border-[#6366f1] transition-all"
-            />
-          </div>
+        <div className="p-2 md:p-0">
+          <div className="flex flex-col sm:flex-row gap-1 md:gap-2 lg:gap-3 mb-0 md:mb-5">
+            {/* Search */}
+            <div className="relative flex-1">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search by title or issue ID..."
+                className="w-full pl-10 pr-4 py-2.5 bg-card border border-border rounded-full lg:rounded-xl text-sm text-card-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-[#6366f1]/30 focus:border-[#6366f1] transition-all"
+              />
+            </div>
 
-          <div className="flex gap-2">
-            {/* Filter tabs */}
-            <div className="flex bg-card border border-border rounded-xl p-1 gap-0.5 overflow-x-auto no-scrollbar">
-              {filterTabs.map((tab) => (
-                <button
-                  key={tab.key}
-                  onClick={() => setActiveFilter(tab.key)}
-                  className={`flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
-                    activeFilter === tab.key
-                      ? `${tab.bg} text-white shadow-sm`
-                      : "text-muted-foreground hover:bg-muted"
-                  }`}
-                >
-                  <tab.icon className="w-3.5 h-3.5" />
-                  <span className="hidden sm:inline">{tab.label}</span>
-                  <span
-                    className={`ml-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-bold ${
+            <div className="flex gap-2">
+              {/* Filter tabs */}
+              <div className="flex bg-card border border-border rounded-xl p-1 gap-0.5 overflow-x-auto no-scrollbar">
+                {filterTabs.map((tab) => (
+                  <button
+                    key={tab.key}
+                    onClick={() => setActiveFilter(tab.key)}
+                    className={`flex items-center gap-1 px-3 sm:px-4 py-2 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
                       activeFilter === tab.key
-                        ? "bg-white/25 text-white"
-                        : "bg-muted text-muted-foreground"
+                        ? `${tab.bg} text-white shadow-sm`
+                        : "text-muted-foreground hover:bg-muted"
                     }`}
                   >
-                    {tab.count}
-                  </span>
-                </button>
-              ))}
-            </div>
+                    <tab.icon className="w-3.5 h-3.5" />
+                    <span className="">{tab.label}</span>
+                    <span
+                      className={`hidden md:inline ml-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-bold ${
+                        activeFilter === tab.key
+                          ? "bg-white/25 text-white"
+                          : "bg-muted text-muted-foreground"
+                      }`}
+                    >
+                      {tab.count}
+                    </span>
+                  </button>
+                ))}
+              </div>
 
-            {/* View toggle */}
-            <div className="hidden md:flex bg-card border border-border rounded-xl p-1 gap-0.5">
-              <button
-                onClick={() => setViewMode("cards")}
-                className={`p-2 rounded-lg transition-all ${
-                  viewMode === "cards"
-                    ? "bg-[#6366f1] text-white shadow-sm"
-                    : "text-muted-foreground hover:bg-muted"
-                }`}
-                title="Card view"
-              >
-                <LayoutGrid className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => setViewMode("table")}
-                className={`p-2 rounded-lg transition-all ${
-                  viewMode === "table"
-                    ? "bg-[#6366f1] text-white shadow-sm"
-                    : "text-muted-foreground hover:bg-muted"
-                }`}
-                title="Table view"
-              >
-                <List className="w-4 h-4" />
-              </button>
+              {/* View toggle */}
+              <div className="hidden md:flex bg-card border border-border rounded-xl p-1 gap-0.5">
+                <button
+                  onClick={() => setViewMode("cards")}
+                  className={`p-2 rounded-lg transition-all ${
+                    viewMode === "cards"
+                      ? "bg-[#6366f1] text-white shadow-sm"
+                      : "text-muted-foreground hover:bg-muted"
+                  }`}
+                  title="Card view"
+                >
+                  <LayoutGrid className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => setViewMode("table")}
+                  className={`p-2 rounded-lg transition-all ${
+                    viewMode === "table"
+                      ? "bg-[#6366f1] text-white shadow-sm"
+                      : "text-muted-foreground hover:bg-muted"
+                  }`}
+                  title="Table view"
+                >
+                  <List className="w-4 h-4" />
+                </button>
+              </div>
             </div>
           </div>
         </div>
-
         {/* ── Content ── */}
-        {loading ? (
-          <Loader />
-        ) : filteredIssues.length > 0 ? (
-          <>
-            {/* ── Card View ── */}
-            {(viewMode === "cards" || typeof window !== "undefined" && window.innerWidth < 768) && (
-              <div className={`grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 ${viewMode === "table" ? "md:hidden" : ""}`}>
-                {filteredIssues.map((issue) => {
-                  const isPending = issue.assignment_status === "pending";
-                  const isAccepted = issue.assignment_status === "accepted";
-                  const isCompleted = issue.assignment_status === "completed";
-                  const isLoading = actionLoading === issue.assignment_id;
+        <div className="p-2 pt-0 md:p-0">
+          {loading ? (
+            <Loader />
+          ) : filteredIssues.length > 0 ? (
+            <>
+              {/* ── Card View ── */}
+              {(viewMode === "cards" ||
+                (typeof window !== "undefined" && window.innerWidth < 768)) && (
+                <div
+                  className={`grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-1 md:gap-4 ${viewMode === "table" ? "md:hidden" : ""}`}
+                >
+                  {filteredIssues.map((issue) => {
+                    const isPending = issue.assignment_status === "pending";
+                    const isAccepted = issue.assignment_status === "accepted";
+                    const isCompleted = issue.assignment_status === "completed";
+                    const isLoading = actionLoading === issue.assignment_id;
 
-                  const statusConfig = {
-                    pending: { label: "Pending", class: "bg-amber-50 text-amber-700 border-amber-200" },
-                    accepted: { label: "In Progress", class: "bg-blue-50 text-blue-700 border-blue-200" },
-                    completed: { label: "Completed", class: "bg-emerald-50 text-emerald-700 border-emerald-200" },
-                  };
-                  const badge = statusConfig[issue.assignment_status] || statusConfig.pending;
+                    const statusConfig = {
+                      pending: {
+                        label: "Pending",
+                        class: "bg-amber-50 text-amber-700 border-amber-200",
+                      },
+                      accepted: {
+                        label: "In Progress",
+                        class: "bg-blue-50 text-blue-700 border-blue-200",
+                      },
+                      completed: {
+                        label: "Completed",
+                        class:
+                          "bg-emerald-50 text-emerald-700 border-emerald-200",
+                      },
+                    };
+                    const badge =
+                      statusConfig[issue.assignment_status] ||
+                      statusConfig.pending;
 
-                  return (
-                    <div
-                      key={issue.assignment_id}
-                      className="bg-card rounded-xl border border-border hover:border-border/80 hover:shadow-md transition-all duration-200 flex flex-col"
-                    >
+                    return (
                       <div
-                        className="p-4 flex-1 flex flex-col cursor-pointer"
-                        onClick={() =>
-                          navigate(`/tasks/${issue.issue_id || issue.id}`, {
-                            state: issue,
-                          })
-                        }
+                        key={issue.assignment_id}
+                        className="bg-card rounded-xl border border-border hover:border-border/80 hover:shadow-md transition-all duration-200 flex flex-col"
                       >
-                        <div className="flex items-center justify-between mb-3">
-                          <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-lg border ${badge.class}`}>
-                            {badge.label}
-                          </span>
-                          <span className="text-xs text-muted-foreground font-mono">
-                            #{issue.issue_id}
-                          </span>
-                        </div>
-                        <h3 className="font-semibold text-card-foreground text-[15px] leading-snug line-clamp-2 mb-3">
-                          {issue?.title || "Untitled Issue"}
-                        </h3>
-                        <div className="mt-auto flex items-center gap-3 text-xs text-muted-foreground">
-                          {issue.assigned_at && (
-                            <span className="flex items-center gap-1">
-                              <Clock className="w-3 h-3" />
-                              {formatDateShort(issue.assigned_at)}
-                            </span>
-                          )}
-                          <StatusBadge type="priority" value={issue?.priority || "low"} />
-                        </div>
-                      </div>
-                      <div className="px-4 pb-4 pt-0">
-                        <div className="border-t border-border pt-3 flex gap-2">
-                          {isPending && (
-                            <>
-                              <button
-                                onClick={() => { setSelectedAssignmentId(issue.assignment_id); setActiveModal("accept"); }}
-                                disabled={isLoading}
-                                className="flex-1 flex items-center justify-center gap-1.5 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg text-xs font-medium transition-colors disabled:opacity-50"
-                              >
-                                {isLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <CheckCircle className="w-3.5 h-3.5" />}
-                                Accept
-                              </button>
-                              <button
-                                onClick={() => { setSelectedAssignmentId(issue.assignment_id); setActiveModal("reject"); }}
-                                disabled={isLoading}
-                                className="flex-1 flex items-center justify-center gap-1.5 py-2 text-red-600 hover:bg-red-50 border border-red-200 rounded-lg text-xs font-medium transition-colors disabled:opacity-50"
-                              >
-                                <XCircle className="w-3.5 h-3.5" />
-                                Reject
-                              </button>
-                            </>
-                          )}
-                          {isAccepted && (
-                            <button
-                              onClick={() => { setSelectedAssignmentId(issue.assignment_id); setActiveModal("complete"); }}
-                              disabled={isLoading}
-                              className="flex-1 flex items-center justify-center gap-1.5 py-2 bg-[#6366f1] hover:bg-[#5445c9] text-white rounded-lg text-xs font-medium transition-colors disabled:opacity-50"
+                        <div
+                          className="p-4 flex-1 flex flex-col cursor-pointer"
+                          onClick={() =>
+                            navigate(`/tasks/${issue.issue_id || issue.id}`, {
+                              state: issue,
+                            })
+                          }
+                        >
+                          <div className="flex items-center justify-between mb-3">
+                            <span
+                              className={`text-[11px] font-semibold px-2.5 py-1 rounded-lg border ${badge.class}`}
                             >
-                              {isLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <CheckCircle className="w-3.5 h-3.5" />}
-                              Complete Task
+                              {badge.label}
+                            </span>
+                            <span className="text-xs text-muted-foreground font-mono">
+                              #{issue.issue_id}
+                            </span>
+                          </div>
+                          <h3 className="font-semibold text-card-foreground text-[15px] leading-snug line-clamp-2 mb-3">
+                            {issue?.title || "Untitled Issue"}
+                          </h3>
+                          <div className="mt-auto flex items-center gap-3 text-xs text-muted-foreground">
+                            {issue.assigned_at && (
+                              <span className="flex items-center gap-1">
+                                <Clock className="w-3 h-3" />
+                                {formatDateShort(issue.assigned_at)}
+                              </span>
+                            )}
+                            <StatusBadge
+                              type="priority"
+                              value={issue?.priority || "low"}
+                            />
+                          </div>
+                        </div>
+                        <div className="px-4 pb-4 pt-0">
+                          <div className="border-t border-border pt-3 flex gap-2">
+                            {isPending && (
+                              <>
+                                <button
+                                  onClick={() => {
+                                    setSelectedAssignmentId(
+                                      issue.assignment_id,
+                                    );
+                                    setActiveModal("accept");
+                                  }}
+                                  disabled={isLoading}
+                                  className="flex-1 flex items-center justify-center gap-1.5 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg text-xs font-medium transition-colors disabled:opacity-50"
+                                >
+                                  {isLoading ? (
+                                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                                  ) : (
+                                    <CheckCircle className="w-3.5 h-3.5" />
+                                  )}
+                                  Accept
+                                </button>
+                                <button
+                                  onClick={() => {
+                                    setSelectedAssignmentId(
+                                      issue.assignment_id,
+                                    );
+                                    setActiveModal("reject");
+                                  }}
+                                  disabled={isLoading}
+                                  className="flex-1 flex items-center justify-center gap-1.5 py-2 text-red-600 hover:bg-red-50 border border-red-200 rounded-lg text-xs font-medium transition-colors disabled:opacity-50"
+                                >
+                                  <XCircle className="w-3.5 h-3.5" />
+                                  Reject
+                                </button>
+                              </>
+                            )}
+                            {isAccepted && (
+                              <button
+                                onClick={() => {
+                                  setSelectedAssignmentId(issue.assignment_id);
+                                  setActiveModal("complete");
+                                }}
+                                disabled={isLoading}
+                                className="flex-1 flex items-center justify-center gap-1.5 py-2 bg-[#6366f1] hover:bg-[#5445c9] text-white rounded-lg text-xs font-medium transition-colors disabled:opacity-50"
+                              >
+                                {isLoading ? (
+                                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                                ) : (
+                                  <CheckCircle className="w-3.5 h-3.5" />
+                                )}
+                                Complete Task
+                              </button>
+                            )}
+                            {isCompleted && (
+                              <div className="flex-1 flex items-center justify-center gap-1.5 py-2 text-emerald-600 text-xs font-medium">
+                                <CircleCheckBig className="w-3.5 h-3.5" /> Done
+                              </div>
+                            )}
+                            <button
+                              onClick={() =>
+                                navigate(
+                                  `/tasks/${issue.issue_id || issue.id}`,
+                                  {
+                                    state: issue,
+                                  },
+                                )
+                              }
+                              className="flex items-center justify-center gap-1 px-3 py-2 text-muted-foreground hover:text-card-foreground rounded-lg text-xs font-medium transition-colors hover:bg-muted"
+                            >
+                              <span>details</span>
+                              <ArrowRight className="w-3.5 h-3.5" />
                             </button>
-                          )}
-                          {isCompleted && (
-                            <div className="flex-1 flex items-center justify-center gap-1.5 py-2 text-emerald-600 text-xs font-medium">
-                              <CircleCheckBig className="w-3.5 h-3.5" /> Done
-                            </div>
-                          )}
-                          <button
-                            onClick={() => navigate(`/tasks/${issue.issue_id || issue.id}`, { state: issue })}
-                            className="flex items-center justify-center gap-1 px-3 py-2 text-muted-foreground hover:text-card-foreground rounded-lg text-xs font-medium transition-colors hover:bg-muted"
-                          >
-                            <ArrowRight className="w-3.5 h-3.5" />
-                          </button>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-
-            {/* ── Table View (md+ only) ── */}
-            {viewMode === "table" && (
-              <div className="hidden md:block bg-card border border-border rounded-xl overflow-hidden">
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b border-border">
-                        <th className="text-left px-5 py-3.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Issue</th>
-                        <th className="text-left px-5 py-3.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Priority</th>
-                        <th className="text-left px-5 py-3.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Status</th>
-                        <th className="text-left px-5 py-3.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Assigned</th>
-                        <th className="text-right px-5 py-3.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-border">
-                      {filteredIssues.map((issue) => {
-                        const isPending = issue.assignment_status === "pending";
-                        const isAccepted = issue.assignment_status === "accepted";
-                        const isCompleted = issue.assignment_status === "completed";
-                        const isLoading = actionLoading === issue.assignment_id;
-
-                        const statusConfig = {
-                          pending: { label: "Pending", class: "bg-amber-50 text-amber-700 border-amber-200" },
-                          accepted: { label: "In Progress", class: "bg-blue-50 text-blue-700 border-blue-200" },
-                          completed: { label: "Completed", class: "bg-emerald-50 text-emerald-700 border-emerald-200" },
-                        };
-                        const badge = statusConfig[issue.assignment_status] || statusConfig.pending;
-
-                        return (
-                          <tr
-                            key={issue.assignment_id}
-                            className="hover:bg-muted/30 transition-colors cursor-pointer"
-                            onClick={() => navigate(`/tasks/${issue.issue_id || issue.id}`, { state: issue })}
-                          >
-                            <td className="px-5 py-3.5">
-                              <div className="flex flex-col">
-                                <span className="font-medium text-sm text-card-foreground line-clamp-1">
-                                  {issue?.title || "Untitled Issue"}
-                                </span>
-                                <span className="text-xs text-muted-foreground font-mono mt-0.5">#{issue.issue_id}</span>
-                              </div>
-                            </td>
-                            <td className="px-5 py-3.5">
-                              <StatusBadge type="priority" value={issue?.priority || "low"} />
-                            </td>
-                            <td className="px-5 py-3.5">
-                              <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-lg border ${badge.class}`}>
-                                {badge.label}
-                              </span>
-                            </td>
-                            <td className="px-5 py-3.5 text-xs text-muted-foreground whitespace-nowrap">
-                              {formatDateShort(issue.assigned_at)}
-                            </td>
-                            <td className="px-5 py-3.5" onClick={(e) => e.stopPropagation()}>
-                              <div className="flex items-center justify-end gap-2">
-                                {isPending && (
-                                  <>
-                                    <button
-                                      onClick={() => { setSelectedAssignmentId(issue.assignment_id); setActiveModal("accept"); }}
-                                      disabled={isLoading}
-                                      className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg text-xs font-medium transition-colors disabled:opacity-50"
-                                    >
-                                      {isLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <CheckCircle className="w-3 h-3" />}
-                                      Accept
-                                    </button>
-                                    <button
-                                      onClick={() => { setSelectedAssignmentId(issue.assignment_id); setActiveModal("reject"); }}
-                                      disabled={isLoading}
-                                      className="flex items-center gap-1.5 px-3 py-1.5 text-red-600 hover:bg-red-50 border border-red-200 rounded-lg text-xs font-medium transition-colors disabled:opacity-50"
-                                    >
-                                      <XCircle className="w-3 h-3" />
-                                      Reject
-                                    </button>
-                                  </>
-                                )}
-                                {isAccepted && (
-                                  <button
-                                    onClick={() => { setSelectedAssignmentId(issue.assignment_id); setActiveModal("complete"); }}
-                                    disabled={isLoading}
-                                    className="flex items-center gap-1.5 px-3 py-1.5 bg-[#6366f1] hover:bg-[#5445c9] text-white rounded-lg text-xs font-medium transition-colors disabled:opacity-50"
-                                  >
-                                    {isLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <CheckCircle className="w-3 h-3" />}
-                                    Complete
-                                  </button>
-                                )}
-                                {isCompleted && (
-                                  <span className="flex items-center gap-1.5 text-emerald-600 text-xs font-medium">
-                                    <CircleCheckBig className="w-3.5 h-3.5" /> Done
-                                  </span>
-                                )}
-                                <button
-                                  onClick={() => navigate(`/tasks/${issue.issue_id || issue.id}`, { state: issue })}
-                                  className="p-1.5 text-muted-foreground hover:text-card-foreground rounded-lg transition-colors hover:bg-muted"
-                                >
-                                  <ArrowRight className="w-3.5 h-3.5" />
-                                </button>
-                              </div>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
+                    );
+                  })}
                 </div>
+              )}
+
+              {/* ── Table View (md+ only) ── */}
+              {viewMode === "table" && (
+                <div className="hidden md:block bg-card border border-border rounded-xl overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="border-b border-border">
+                          <th className="text-left px-5 py-3.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+                            Issue
+                          </th>
+                          <th className="text-left px-5 py-3.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+                            Priority
+                          </th>
+                          <th className="text-left px-5 py-3.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+                            Status
+                          </th>
+                          <th className="text-left px-5 py-3.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+                            Assigned
+                          </th>
+                          <th className="text-right px-5 py-3.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+                            Actions
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-border">
+                        {filteredIssues.map((issue) => {
+                          const isPending =
+                            issue.assignment_status === "pending";
+                          const isAccepted =
+                            issue.assignment_status === "accepted";
+                          const isCompleted =
+                            issue.assignment_status === "completed";
+                          const isLoading =
+                            actionLoading === issue.assignment_id;
+
+                          const statusConfig = {
+                            pending: {
+                              label: "Pending",
+                              class:
+                                "bg-amber-50 text-amber-700 border-amber-200",
+                            },
+                            accepted: {
+                              label: "In Progress",
+                              class: "bg-blue-50 text-blue-700 border-blue-200",
+                            },
+                            completed: {
+                              label: "Completed",
+                              class:
+                                "bg-emerald-50 text-emerald-700 border-emerald-200",
+                            },
+                          };
+                          const badge =
+                            statusConfig[issue.assignment_status] ||
+                            statusConfig.pending;
+
+                          return (
+                            <tr
+                              key={issue.assignment_id}
+                              className="hover:bg-muted/30 transition-colors cursor-pointer"
+                              onClick={() =>
+                                navigate(
+                                  `/tasks/${issue.issue_id || issue.id}`,
+                                  {
+                                    state: issue,
+                                  },
+                                )
+                              }
+                            >
+                              <td className="px-5 py-3.5">
+                                <div className="flex flex-col">
+                                  <span className="font-medium text-sm text-card-foreground line-clamp-1">
+                                    {issue?.title || "Untitled Issue"}
+                                  </span>
+                                  <span className="text-xs text-muted-foreground font-mono mt-0.5">
+                                    #{issue.issue_id}
+                                  </span>
+                                </div>
+                              </td>
+                              <td className="px-5 py-3.5">
+                                <StatusBadge
+                                  type="priority"
+                                  value={issue?.priority || "low"}
+                                />
+                              </td>
+                              <td className="px-5 py-3.5">
+                                <span
+                                  className={`text-[11px] font-semibold px-2.5 py-1 rounded-lg border ${badge.class}`}
+                                >
+                                  {badge.label}
+                                </span>
+                              </td>
+                              <td className="px-5 py-3.5 text-xs text-muted-foreground whitespace-nowrap">
+                                {formatDateShort(issue.assigned_at)}
+                              </td>
+                              <td
+                                className="px-5 py-3.5"
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                <div className="flex items-center justify-end gap-2">
+                                  {isPending && (
+                                    <>
+                                      <button
+                                        onClick={() => {
+                                          setSelectedAssignmentId(
+                                            issue.assignment_id,
+                                          );
+                                          setActiveModal("accept");
+                                        }}
+                                        disabled={isLoading}
+                                        className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg text-xs font-medium transition-colors disabled:opacity-50"
+                                      >
+                                        {isLoading ? (
+                                          <Loader2 className="w-3 h-3 animate-spin" />
+                                        ) : (
+                                          <CheckCircle className="w-3 h-3" />
+                                        )}
+                                        Accept
+                                      </button>
+                                      <button
+                                        onClick={() => {
+                                          setSelectedAssignmentId(
+                                            issue.assignment_id,
+                                          );
+                                          setActiveModal("reject");
+                                        }}
+                                        disabled={isLoading}
+                                        className="flex items-center gap-1.5 px-3 py-1.5 text-red-600 hover:bg-red-50 border border-red-200 rounded-lg text-xs font-medium transition-colors disabled:opacity-50"
+                                      >
+                                        <XCircle className="w-3 h-3" />
+                                        Reject
+                                      </button>
+                                    </>
+                                  )}
+                                  {isAccepted && (
+                                    <button
+                                      onClick={() => {
+                                        setSelectedAssignmentId(
+                                          issue.assignment_id,
+                                        );
+                                        setActiveModal("complete");
+                                      }}
+                                      disabled={isLoading}
+                                      className="flex items-center gap-1.5 px-3 py-1.5 bg-[#6366f1] hover:bg-[#5445c9] text-white rounded-lg text-xs font-medium transition-colors disabled:opacity-50"
+                                    >
+                                      {isLoading ? (
+                                        <Loader2 className="w-3 h-3 animate-spin" />
+                                      ) : (
+                                        <CheckCircle className="w-3 h-3" />
+                                      )}
+                                      Complete
+                                    </button>
+                                  )}
+                                  {isCompleted && (
+                                    <span className="flex items-center gap-1.5 text-emerald-600 text-xs font-medium">
+                                      <CircleCheckBig className="w-3.5 h-3.5" />{" "}
+                                      Done
+                                    </span>
+                                  )}
+                                  <button
+                                    onClick={() =>
+                                      navigate(
+                                        `/tasks/${issue.issue_id || issue.id}`,
+                                        { state: issue },
+                                      )
+                                    }
+                                    className="p-1.5 text-muted-foreground hover:text-card-foreground rounded-lg transition-colors hover:bg-muted"
+                                  >
+                                    <ArrowRight className="w-3.5 h-3.5" />
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-20 px-4">
+              <div className="w-20 h-20 rounded-full bg-muted/60 flex items-center justify-center mb-5">
+                {searchQuery || activeFilter !== "all" ? (
+                  <Search className="w-8 h-8 text-muted-foreground/50" />
+                ) : (
+                  <ClipboardList className="w-8 h-8 text-muted-foreground/50" />
+                )}
               </div>
-            )}
-          </>
-        ) : (
-          <div className="flex flex-col items-center justify-center py-20 px-4">
-            <div className="w-20 h-20 rounded-full bg-muted/60 flex items-center justify-center mb-5">
-              {searchQuery || activeFilter !== "all" ? (
-                <Search className="w-8 h-8 text-muted-foreground/50" />
-              ) : (
-                <ClipboardList className="w-8 h-8 text-muted-foreground/50" />
+              <h3 className="text-lg font-bold text-card-foreground mb-1">
+                {searchQuery || activeFilter !== "all"
+                  ? "No matching issues"
+                  : "No assigned issues"}
+              </h3>
+              <p className="text-sm text-muted-foreground max-w-xs text-center">
+                {searchQuery || activeFilter !== "all"
+                  ? "Try adjusting your search or filter to find what you're looking for."
+                  : "You're all caught up! New assignments will appear here."}
+              </p>
+              {(searchQuery || activeFilter !== "all") && (
+                <button
+                  onClick={() => {
+                    setSearchQuery("");
+                    setActiveFilter("all");
+                  }}
+                  className="mt-4 px-4 py-2 text-xs font-semibold text-[#6366f1] bg-[#6366f1]/10 hover:bg-[#6366f1]/20 rounded-xl transition-colors"
+                >
+                  Clear Filters
+                </button>
               )}
             </div>
-            <h3 className="text-lg font-bold text-card-foreground mb-1">
-              {searchQuery || activeFilter !== "all"
-                ? "No matching issues"
-                : "No assigned issues"}
-            </h3>
-            <p className="text-sm text-muted-foreground max-w-xs text-center">
-              {searchQuery || activeFilter !== "all"
-                ? "Try adjusting your search or filter to find what you're looking for."
-                : "You're all caught up! New assignments will appear here."}
-            </p>
-            {(searchQuery || activeFilter !== "all") && (
-              <button
-                onClick={() => {
-                  setSearchQuery("");
-                  setActiveFilter("all");
-                }}
-                className="mt-4 px-4 py-2 text-xs font-semibold text-[#6366f1] bg-[#6366f1]/10 hover:bg-[#6366f1]/20 rounded-xl transition-colors"
-              >
-                Clear Filters
-              </button>
-            )}
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       {/* ── Accept Modal ── */}

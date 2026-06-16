@@ -7,20 +7,25 @@ const BottomNav = () => {
 
   const navClass = ({ isActive }) =>
     `flex flex-col items-center justify-center gap-1
-     ${isActive ? "text-white scale-110 shadow-sm" : "text-indigo-100/60 transition-all hover:text-white"}`;
+     ${isActive ? "text-white scale-110 " : "text-indigo-100/60 transition-all hover:text-white"}`;
+
+  const isStaff = role === "staff";
 
   return (
     <div
-      className="
-        fixed bottom-0 left-0
-        w-full
+      className={`
+        fixed z-50
         h-16
-       bg-linear-to-r from-[#7E70EB] to-[#5A50A6]
-        rounded-t-3xl
+         bg-linear-to-r from-[#7E70EB] to-[#5A50A6]
         flex justify-around items-center
         md:hidden
-        z-50
-      "
+        transition-all duration-300
+        ${
+          isStaff
+             ? "bottom-4 left-4 right-4 rounded-full border border-white/15 px-4"
+            : "bottom-0 left-0 w-full rounded-t-3xl"
+        }
+      `}
     >
       <NavLink to="/dashboard" className={navClass}>
         <i className="ri-dashboard-fill text-xl"></i>
