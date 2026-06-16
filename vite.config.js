@@ -17,10 +17,10 @@ export default defineConfig({
       ],
 
       manifest: {
-        name: "CiviSence",
-        short_name: "CiviSence",
+        name: "CiviSence - Admin/Staff",
+        short_name: "CiviSence - Admin/Staff",
         description: "Smart Campus Issue Management System",
-        theme_color: "#4F46E5",
+        theme_color: "#796DCC",
         background_color: "#ffffff",
         display: "standalone",
         orientation: "portrait",
