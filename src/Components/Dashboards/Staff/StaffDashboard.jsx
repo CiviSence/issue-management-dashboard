@@ -62,8 +62,8 @@ const StaffDashboard = () => {
       });
       setNotifications((prev) =>
         prev.map((n) =>
-          n.id === notificationId ? { ...n, is_unread: false } : n
-        )
+          n.id === notificationId ? { ...n, is_unread: false } : n,
+        ),
       );
     } catch (error) {
       console.error("Error marking notification as read:", error);
@@ -77,9 +77,7 @@ const StaffDashboard = () => {
       await axios.patch("/notifications/mark-as-read", {
         notification_ids: unreadIds,
       });
-      setNotifications((prev) =>
-        prev.map((n) => ({ ...n, is_unread: false }))
-      );
+      setNotifications((prev) => prev.map((n) => ({ ...n, is_unread: false })));
     } catch (error) {
       console.error("Error marking all read:", error);
     }
@@ -168,7 +166,7 @@ const StaffDashboard = () => {
     try {
       await rejectAssignment(
         selectedAssignmentId,
-        rejectionReason || "Staff rejected this assignment"
+        rejectionReason || "Staff rejected this assignment",
       );
       setRejectionReason("");
       setActiveModal(null);
@@ -182,7 +180,7 @@ const StaffDashboard = () => {
   };
 
   const pendingIssues = assignedIssues.filter(
-    (issue) => issue.assignment_status === "pending"
+    (issue) => issue.assignment_status === "pending",
   );
 
   const formatDate = (dateString) => {
@@ -245,7 +243,8 @@ const StaffDashboard = () => {
     <>
       <StaffSideNav />
       <BottomNav />
-<div className="w-full h-screen overflow-y-auto pt-0 pb-24 md:p-2 lg:p-4 lg:w-[calc(100vw-15vw)]">        <div className="w-full mx-auto">
+      <div className="w-full h-screen overflow-y-auto pt-0 pb-24 md:p-2 lg:p-4 lg:w-[calc(100vw-15vw)]">
+        <div className="w-full mx-auto">
           {/* header */}
           <div className="w-full bg-linear-to-r from-[#7E70EB] to-[#5A50A6] p-5 sm:p-5 lg:p-6 rounded-b-4xl lg:rounded-2xl md:rounded-3xl text-white shadow-lg md:mb-6 sticky top-0 z-40 md:static">
             <div className="flex items-center justify-between gap-4">
@@ -304,9 +303,14 @@ const StaffDashboard = () => {
                             let icon = "ri-notification-3-line";
                             if (notif.title?.toLowerCase().includes("assign")) {
                               icon = "ri-clipboard-line";
-                            } else if (notif.title?.toLowerCase().includes("accept")) {
+                            } else if (
+                              notif.title?.toLowerCase().includes("accept")
+                            ) {
                               icon = "ri-loader-4-line";
-                            } else if (notif.title?.toLowerCase().includes("complete") || notif.title?.toLowerCase().includes("resolve")) {
+                            } else if (
+                              notif.title?.toLowerCase().includes("complete") ||
+                              notif.title?.toLowerCase().includes("resolve")
+                            ) {
                               icon = "ri-checkbox-circle-line";
                             }
 
@@ -315,14 +319,18 @@ const StaffDashboard = () => {
                                 key={notif.id}
                                 onClick={() => handleNotificationClick(notif)}
                                 className={`p-3 text-xs transition-colors hover:bg-gray-50 flex gap-2 cursor-pointer ${
-                                  notif.is_unread ? "bg-indigo-50/30 font-medium" : "opacity-70"
+                                  notif.is_unread
+                                    ? "bg-indigo-50/30 font-medium"
+                                    : "opacity-70"
                                 }`}
                               >
                                 <div className="mt-0.5 text-indigo-500">
                                   <i className={`${icon} text-base`}></i>
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                  <p className={`font-semibold text-gray-900 leading-snug ${notif.is_unread ? "" : "text-gray-600"}`}>
+                                  <p
+                                    className={`font-semibold text-gray-900 leading-snug ${notif.is_unread ? "" : "text-gray-600"}`}
+                                  >
                                     {notif.title}
                                   </p>
                                   <p className="text-gray-500 text-[11px] mt-0.5 leading-normal">
@@ -380,7 +388,9 @@ const StaffDashboard = () => {
                 <div className="bg-card border border-border rounded-2xl shadow-sm overflow-hidden">
                   <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 border-b border-border">
                     <div className="flex items-center gap-2">
-                      <h2 className="text-lg font-bold text-card-foreground">Pending Issues</h2>
+                      <h2 className="text-lg font-bold text-card-foreground">
+                        Pending Issues
+                      </h2>
                       {pendingIssues.length > 0 && (
                         <span className="bg-amber-100 text-amber-700 border border-amber-200 text-xs font-semibold px-2 py-0.5 rounded-full">
                           {pendingIssues.length}
@@ -394,7 +404,8 @@ const StaffDashboard = () => {
                       {/* Mobile Card View for Pending */}
                       <div className="md:hidden divide-y divide-border">
                         {pendingIssues.map((issue) => {
-                          const isLoading = actionLoading === issue.assignment_id;
+                          const isLoading =
+                            actionLoading === issue.assignment_id;
                           return (
                             <div
                               key={issue.assignment_id || issue.id}
@@ -405,15 +416,19 @@ const StaffDashboard = () => {
                                   <div
                                     className="font-semibold text-card-foreground hover:text-primary transition-colors cursor-pointer text-sm"
                                     onClick={() =>
-                                      navigate(`/tasks/${issue.issue_id || issue.id}`, {
-                                        state: issue,
-                                      })
+                                      navigate(
+                                        `/tasks/${issue.issue_id || issue.id}`,
+                                        {
+                                          state: issue,
+                                        },
+                                      )
                                     }
                                   >
                                     {issue?.title || "Untitled Issue"}
                                   </div>
                                   <div className="text-xs text-muted-foreground mt-0.5">
-                                    Assigned: {formatDateShort(issue.assigned_at)}
+                                    Assigned:{" "}
+                                    {formatDateShort(issue.assigned_at)}
                                   </div>
                                 </div>
                                 <span className="text-xs text-muted-foreground font-mono shrink-0">
@@ -434,7 +449,9 @@ const StaffDashboard = () => {
                               <div className="flex gap-2">
                                 <button
                                   onClick={() => {
-                                    setSelectedAssignmentId(issue.assignment_id);
+                                    setSelectedAssignmentId(
+                                      issue.assignment_id,
+                                    );
                                     setActiveModal("accept");
                                   }}
                                   disabled={actionLoading !== null}
@@ -449,7 +466,9 @@ const StaffDashboard = () => {
                                 </button>
                                 <button
                                   onClick={() => {
-                                    setSelectedAssignmentId(issue.assignment_id);
+                                    setSelectedAssignmentId(
+                                      issue.assignment_id,
+                                    );
                                     setActiveModal("reject");
                                   }}
                                   disabled={actionLoading !== null}
@@ -488,15 +507,19 @@ const StaffDashboard = () => {
                           </thead>
                           <tbody className="divide-y divide-border">
                             {pendingIssues.map((issue) => {
-                              const isLoading = actionLoading === issue.assignment_id;
+                              const isLoading =
+                                actionLoading === issue.assignment_id;
                               return (
                                 <tr
                                   key={issue.assignment_id || issue.id}
                                   className="hover:bg-muted/30 transition-colors cursor-pointer"
                                   onClick={() =>
-                                    navigate(`/tasks/${issue.issue_id || issue.id}`, {
-                                      state: issue,
-                                    })
+                                    navigate(
+                                      `/tasks/${issue.issue_id || issue.id}`,
+                                      {
+                                        state: issue,
+                                      },
+                                    )
                                   }
                                 >
                                   <td className="px-5 py-3.5">
@@ -530,7 +553,9 @@ const StaffDashboard = () => {
                                     <div className="flex items-center justify-end gap-2">
                                       <button
                                         onClick={() => {
-                                          setSelectedAssignmentId(issue.assignment_id);
+                                          setSelectedAssignmentId(
+                                            issue.assignment_id,
+                                          );
                                           setActiveModal("accept");
                                         }}
                                         disabled={actionLoading !== null}
@@ -545,7 +570,9 @@ const StaffDashboard = () => {
                                       </button>
                                       <button
                                         onClick={() => {
-                                          setSelectedAssignmentId(issue.assignment_id);
+                                          setSelectedAssignmentId(
+                                            issue.assignment_id,
+                                          );
                                           setActiveModal("reject");
                                         }}
                                         disabled={actionLoading !== null}
@@ -603,9 +630,12 @@ const StaffDashboard = () => {
                             <div
                               className="font-semibold text-card-foreground text-sm cursor-pointer hover:text-primary transition-colors"
                               onClick={() =>
-                                navigate(`/tasks/${issue.issue_id || issue.id}`, {
-                                  state: issue,
-                                })
+                                navigate(
+                                  `/tasks/${issue.issue_id || issue.id}`,
+                                  {
+                                    state: issue,
+                                  },
+                                )
                               }
                             >
                               {issue?.title || "Untitled Issue"}
@@ -675,8 +705,8 @@ const StaffDashboard = () => {
                             className="hover:bg-muted/40 transition-all duration-200 cursor-pointer"
                             onClick={() =>
                               navigate(`/tasks/${issue.issue_id || issue.id}`, {
-                                      state: issue,
-                                    })
+                                state: issue,
+                              })
                             }
                           >
                             <td className="px-5 py-3.5">
@@ -714,9 +744,12 @@ const StaffDashboard = () => {
                             >
                               <button
                                 onClick={() =>
-                                  navigate(`/tasks/${issue.issue_id || issue.id}`, {
-                                    state: issue,
-                                  })
+                                  navigate(
+                                    `/tasks/${issue.issue_id || issue.id}`,
+                                    {
+                                      state: issue,
+                                    },
+                                  )
                                 }
                                 className="inline-flex items-center gap-1 px-4 py-1.5 text-xs font-bold text-white bg-[#6366f1] rounded-lg hover:bg-[#5445c9] transition shadow-md shadow-indigo-500/20 active:scale-95"
                               >
