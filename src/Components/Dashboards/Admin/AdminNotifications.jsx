@@ -70,7 +70,7 @@ const AdminNotifications = () => {
     <>
       <AdminSideNav />
       <BottomNav />
-      <div className="flex-1 h-screen overflow-y-auto pb-24 md:pb-6 p-3 md:p-6 bg-[#F0EEFF]">
+      <div className="flex-1 h-screen overflow-y-auto pb-24 md:pb-6 p-0 md:p-2 lg:p-4 bg-[#F0EEFF]">
         <div className="w-full bg-linear-to-r from-[#7E70EB] to-[#5A50A6] p-4 sm:p-5 lg:p-6 rounded-2xl md:rounded-3xl text-white shadow-lg mb-4 md:mb-6 border border-white/10">
           <div className="flex justify-between items-center">
             <div>

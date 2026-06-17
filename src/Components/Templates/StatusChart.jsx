@@ -12,7 +12,7 @@ import {
 
 const StatusChart = ({data}) => {
   return (
-    <div className="bg-white rounded-xl p-3 sm:p-4 w-full h-75">
+    <div className="bg-white p-3 sm:p-4 w-full h-75 border border-border  rounded-2xl shadow-xs">
   <h2 className="text-base sm:text-lg font-semibold text-gray-700 mb-2">
     Status Distribution
   </h2>

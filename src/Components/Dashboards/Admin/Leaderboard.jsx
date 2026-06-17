@@ -27,8 +27,8 @@ const renderSideNav = () => {
     <>
       {renderSideNav()}
       <BottomNav />
-      <div className="pb-20 md:pb-2 min-h-screen w-full p-4 overflow-x-auto">
-        <div className="w-full bg-linear-to-r from-[#7E70EB] to-[#5A50A6] p-4 rounded-2xl shadow-lg border border-white/10">
+      <div className="pb-20 md:pb-2 min-h-screen w-full p-0 md:p-2 lg:p-4 overflow-x-auto">
+        <div className="w-full bg-linear-to-r from-[#7E70EB] to-[#5A50A6] p-4 rounded-b-2xl md:rounded-2xl shadow-lg border border-white/10">
           <div
             className="
       flex

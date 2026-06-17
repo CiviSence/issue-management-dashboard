@@ -61,7 +61,7 @@ const UserCard = ({ limit }) => {
   );
 
   return (
-    <div className="bg-white rounded-xl p-3 sm:p-4 w-full">
+    <div className="bg-white p-3 sm:p-4 w-full border border-border  rounded-2xl shadow-xs">
       {/* filter buttons */}
       <div className="flex overflow-x-auto scrollbar-hide">
         <div className="inline-flex bg-gray-200 rounded-xl p-1 min-w-max">
