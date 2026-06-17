@@ -28,9 +28,11 @@ export const loginUser = async (credentials) => {
 export const registerUser = async (userData) => {
   try {
     const { data } = await axios.post("/auth/register", userData);
+    console.log("data",data)
     return data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || "Registration failed");
+    console.log("reg error",error.response)
+    throw new Error(error.response?.data?.detail || "Registration failed");
   }
 };
 

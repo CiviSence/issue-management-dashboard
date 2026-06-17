@@ -11,14 +11,13 @@ const SignUp = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Add userType to form state
   const [formData, setFormData] = useState({
     userType: "staff", // 'staff' | 'admin' (default to staff)
     firstName: "",
     lastName: "",
     email: "",
-    designation: "",
     password: "",
+    phone_number: "",
     confirmPassword: "",
   });
 
@@ -47,6 +46,11 @@ const SignUp = () => {
       setError("Please select a user type");
       return false;
     }
+    // Phone number validation
+    if (!/^\d{10}$/.test(formData.phone_number)) {
+      setError("Phone number must contain exactly 10 digits");
+      return false;
+    }
 
     return true;
   };
@@ -66,27 +70,19 @@ const SignUp = () => {
         email: formData.email,
         name: `${formData.firstName} ${formData.lastName}`.trim(),
         password: formData.password,
-        registration_number: null,
-        gender: "prefer_not_to_say",
-        date_of_birth: "2000-01-01",
-        phone_number: null, // Set to null to avoid unique constraint collisions with default '0000000000'
-        pincode: null,
-        department: "General",
-        course: "N/A",
-        year: 0,
-        semester: 0,
-        role: formData.userType, // This differentiates user types
-        designation: formData.designation,
-        is_hosteler: false,
-        hostel_name: "N/A",
-        room_number: "000",
+        phone_number: formData.phone_number,
+        intended_role: formData.userType, // This differentiates user types
       };
 
+      console.log("signup payload", payload);
+
       const res = await registerUser(payload);
+      console.log(res);
 
       localStorage.setItem("pendingVerificationEmail", formData.email);
       navigate("/verify-otp");
     } catch (err) {
+      console.log(err);
       setError(
         err.response?.data?.message || "Registration failed. Please try again.",
       );
@@ -97,11 +93,8 @@ const SignUp = () => {
 
   return (
     <div className="min-h-screen w-full bg-[#f3f0ff] flex flex-col">
-
-
       {/* Main Content */}
       <div className="flex-1 flex">
-
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -113,7 +106,7 @@ const SignUp = () => {
             {/* Abstract Background Elements */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-32 -mt-32" />
             <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full blur-3xl -ml-24 -mb-24" />
-            
+
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -121,29 +114,41 @@ const SignUp = () => {
               className="relative z-10"
             >
               <div className="bg-white p-4 rounded-2xl w-20 h-20 mb-10 shadow-2xl flex items-center justify-center">
-                <img src={csmlogo} alt="CSM Logo" className="w-12 h-12 object-contain" />
+                <img
+                  src={csmlogo}
+                  alt="CSM Logo"
+                  className="w-12 h-12 object-contain"
+                />
               </div>
-              
+
               <h1 className="text-4xl lg:text-5xl font-bold mb-6 leading-tight">
                 Report. Track. <br />
                 <span className="text-indigo-200">Resolve.</span>
               </h1>
-              
+
               <p className="text-lg text-indigo-50/80 mb-12 max-w-md leading-relaxed">
-                Join our unified platform to streamline campus issue management. We empower staff and administrators to build a more responsive community together.
+                Join our unified platform to streamline campus issue management.
+                We empower staff and administrators to build a more responsive
+                community together.
               </p>
-              
+
               <div className="space-y-6">
                 {[
-                  { icon: "ri-checkbox-circle-line", text: "Seamless Issue Reporting" },
-                  { icon: "ri-bar-chart-box-line", text: "Real-time Status Tracking" },
-                  { icon: "ri-team-line", text: "Collaborative Resolution" }
+                  {
+                    icon: "ri-checkbox-circle-line",
+                    text: "Seamless Issue Reporting",
+                  },
+                  {
+                    icon: "ri-bar-chart-box-line",
+                    text: "Real-time Status Tracking",
+                  },
+                  { icon: "ri-team-line", text: "Collaborative Resolution" },
                 ].map((item, i) => (
-                  <motion.div 
-                    key={i} 
+                  <motion.div
+                    key={i}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.4 + (i * 0.1) }}
+                    transition={{ delay: 0.4 + i * 0.1 }}
                     className="flex items-center gap-4 text-indigo-50/90"
                   >
                     <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center backdrop-blur-sm border border-white/10">
@@ -162,7 +167,11 @@ const SignUp = () => {
               {/* Mobile Logo */}
               <div className="md:hidden flex flex-col items-center mb-8">
                 <div className="w-16 h-16 p-3 bg-violet-50 rounded-2xl mb-3">
-                  <img src={csmlogo} alt="CSM" className="w-full h-full object-contain" />
+                  <img
+                    src={csmlogo}
+                    alt="CSM"
+                    className="w-full h-full object-contain"
+                  />
                 </div>
                 <h2 className="text-2xl font-bold text-gray-900">CSM Portal</h2>
               </div>
@@ -170,7 +179,9 @@ const SignUp = () => {
               <h1 className="text-3xl font-bold text-[#6366f1] mb-2 text-center md:text-left">
                 Sign up
               </h1>
-              <p className="text-gray-500 mb-8 text-center md:text-left text-sm">Create your account to start managing issues.</p>
+              <p className="text-gray-500 mb-8 text-center md:text-left text-sm">
+                Create your account to start managing issues.
+              </p>
 
               {error && (
                 <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-r-lg text-red-700 text-sm flex items-center gap-3">
@@ -249,16 +260,16 @@ const SignUp = () => {
                   />
                 </div>
 
-                {/* Designation - for Staff/Admin */}
+                {/* Mobile Number */}
                 <div className="space-y-1">
                   <label className="text-xs font-medium text-gray-500 ml-1">
-                    Designation
+                    Phone Number
                   </label>
                   <input
                     type="text"
-                    name="designation"
-                    placeholder={formData.userType === "admin" ? "e.g. System Administrator" : "e.g. Faculty, Support Staff"}
-                    value={formData.designation}
+                    name="phone_number"
+                    placeholder={"1234567890"}
+                    value={formData.phone_number}
                     onChange={handleChange}
                     required
                     className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-[#6366f1] focus:ring-2 focus:ring-[#6366f1]/20 outline-none transition-all text-sm"

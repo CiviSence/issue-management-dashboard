@@ -38,7 +38,10 @@ const Login = () => {
       console.error("Login Error:", err);
 
       // Specifically handle unverified email case (403)
-      if (err.message.includes("verify your email") || err.message.includes("verification")) {
+      if (
+        err.message.includes("verify your email") ||
+        err.message.includes("verification")
+      ) {
         localStorage.setItem("pendingVerificationEmail", email);
         navigate("/verify-otp");
         return;
@@ -52,11 +55,8 @@ const Login = () => {
 
   return (
     <div className="min-h-screen w-full bg-[#f3f0ff] flex flex-col">
-
-
       {/* Main Content */}
       <div className="flex-1 flex">
-
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -64,11 +64,11 @@ const Login = () => {
           className="w-full flex min-h-screen"
         >
           {/* Left Side - Branding */}
-          <div className="hidden md:flex w-1/2 bg-linear-to-br from-[#7E70EB] to-[#5A50A6] p-16 flex-col justify-center text-white relative overflow-hidden">
+          <div className="hidden  md:flex rounded-r-4xl w-1/2 bg-linear-to-br from-[#7E70EB] to-[#5A50A6] p-16 flex-col justify-center text-white relative overflow-hidden">
             {/* Abstract Background Elements */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-32 -mt-32" />
             <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full blur-3xl -ml-24 -mb-24" />
-            
+
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -76,29 +76,41 @@ const Login = () => {
               className="relative z-10"
             >
               <div className="bg-white p-4 rounded-2xl w-20 h-20 mb-10 shadow-2xl flex items-center justify-center">
-                <img src={csmlogo} alt="CSM Logo" className="w-12 h-12 object-contain" />
+                <img
+                  src={csmlogo}
+                  alt="CSM Logo"
+                  className="w-12 h-12 object-contain"
+                />
               </div>
-              
+
               <h1 className="text-4xl lg:text-5xl font-bold mb-6 leading-tight">
                 Report. Track. <br />
                 <span className="text-indigo-200">Resolve.</span>
               </h1>
-              
+
               <p className="text-lg text-indigo-50/80 mb-12 max-w-md leading-relaxed">
-                Join our unified platform to streamline campus issue management. We empower staff and administrators to build a more responsive community together.
+                Join our unified platform to streamline campus issue management.
+                We empower staff and administrators to build a more responsive
+                community together.
               </p>
-              
+
               <div className="space-y-6">
                 {[
-                  { icon: "ri-checkbox-circle-line", text: "Seamless Issue Reporting" },
-                  { icon: "ri-bar-chart-box-line", text: "Real-time Status Tracking" },
-                  { icon: "ri-team-line", text: "Collaborative Resolution" }
+                  {
+                    icon: "ri-checkbox-circle-line",
+                    text: "Seamless Issue Reporting",
+                  },
+                  {
+                    icon: "ri-bar-chart-box-line",
+                    text: "Real-time Status Tracking",
+                  },
+                  { icon: "ri-team-line", text: "Collaborative Resolution" },
                 ].map((item, i) => (
-                  <motion.div 
-                    key={i} 
+                  <motion.div
+                    key={i}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.4 + (i * 0.1) }}
+                    transition={{ delay: 0.4 + i * 0.1 }}
                     className="flex items-center gap-4 text-indigo-50/90"
                   >
                     <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center backdrop-blur-sm border border-white/10">
@@ -117,7 +129,11 @@ const Login = () => {
               {/* Mobile Logo */}
               <div className="md:hidden flex flex-col items-center mb-8">
                 <div className="w-16 h-16 p-3 bg-violet-50 rounded-2xl mb-3">
-                  <img src={csmlogo} alt="CSM" className="w-full h-full object-contain" />
+                  <img
+                    src={csmlogo}
+                    alt="CSM"
+                    className="w-full h-full object-contain"
+                  />
                 </div>
                 <h2 className="text-2xl font-bold text-gray-900">CSM Portal</h2>
               </div>
@@ -125,7 +141,9 @@ const Login = () => {
               <h1 className="text-3xl font-bold text-[#6366f1] mb-2 text-center md:text-left">
                 Sign in
               </h1>
-              <p className="text-gray-500 mb-8 text-center md:text-left text-sm">Welcome back! Please enter your details.</p>
+              <p className="text-gray-500 mb-8 text-center md:text-left text-sm">
+                Welcome back! Please enter your details.
+              </p>
 
               {error && (
                 <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-r-lg text-red-700 text-sm flex items-center gap-3 text-center md:text-left">
@@ -152,7 +170,9 @@ const Login = () => {
                 {/* Password Input */}
                 <div className="space-y-1.5">
                   <div className="flex justify-between items-center px-1">
-                    <label className="text-xs font-medium text-gray-500">Your Password</label>
+                    <label className="text-xs font-medium text-gray-500">
+                      Your Password
+                    </label>
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
@@ -179,7 +199,9 @@ const Login = () => {
                       onChange={(e) => setRememberMe(e.target.checked)}
                       className="mr-2 w-4 h-4 border-gray-300 rounded text-[#6366f1] focus:ring-[#6366f1]"
                     />
-                    <span className="group-hover:text-gray-700 transition-colors font-medium">Remember me</span>
+                    <span className="group-hover:text-gray-700 transition-colors font-medium">
+                      Remember me
+                    </span>
                   </label>
                   <Link
                     to={"/forgot-password"}
@@ -204,20 +226,13 @@ const Login = () => {
 
                 {/* Terms and Links */}
                 <div className="space-y-4 pt-4">
-                  <p className="text-[11px] text-gray-400 text-center leading-relaxed">
-                    By signing in, you agree to our{" "}
-                    <Link to="/terms" className="text-gray-600 hover:text-[#6366f1] underline">Terms of service</Link>
-                    {" "}and{" "}
-                    <Link to="/privacy-policy" className="text-gray-600 hover:text-[#6366f1] underline">Privacy Policy</Link>.
-                  </p>
-
                   <p className="text-sm text-gray-500 text-center">
                     Don't have an account?{" "}
                     <Link
                       to="/signup"
                       className="text-[#6366f1] font-bold hover:underline"
                     >
-                      Sign up for free
+                      Sign up
                     </Link>
                   </p>
                 </div>
