@@ -7,7 +7,7 @@ import BottomNav from "./Templates/BottomNav";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import ProfileEditForm from "../Components/Inputs/ProfileEditForm";
-import { updateMyProfile } from "../Utils/profile-api";
+import { updateMyProfile, getMyOrganization } from "../Utils/profile-api";
 import { clearSession } from "../Utils/auth-utils";
 import {
   getActiveSessions,
@@ -15,22 +15,30 @@ import {
   logoutUser,
   revokeSession,
 } from "../Utils/auth-api";
+import StatusBadge from "./Templates/StatusBadge";
 import defaultProfile from "../assets/default-avatar.jpg";
 import { useEffect, useState } from "react";
 
-const InfoCard = ({ title, children }) => (
-  <div className="bg-white shadow-md rounded-lg p-4 h-full">
-    <h2 className="text-xl font-semibold mb-4 text-gray-800 border-b pb-2">
+// ─── Reusable Sub-components ────────────────────────────────────────────────
+
+const InfoCard = ({ title, children, icon, className = "" }) => (
+  <div
+    className={`bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow ${className}`}
+  >
+    <h2 className="text-sm font-bold text-gray-900 mb-5 flex items-center gap-2 uppercase tracking-wider">
+      {icon && <i className={`${icon} text-violet-600 text-lg`}></i>}
       {title}
     </h2>
-    <div className="space-y-3">{children}</div>
+    <div className="space-y-4">{children}</div>
   </div>
 );
 
 const Info = ({ label, value }) => (
-  <div className="flex justify-between items-center text-sm py-1 border-b border-gray-50 last:border-0">
-    <span className="text-gray-500">{label}</span>
-    <span className="font-medium text-gray-800 text-right">{value || "—"}</span>
+  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-sm gap-1 sm:gap-4 py-3 border-b border-gray-50 last:border-0">
+    <span className="text-gray-500 font-medium">{label}</span>
+    <span className="font-semibold text-gray-800 break-words text-right">
+      {value || "—"}
+    </span>
   </div>
 );
 
@@ -41,47 +49,7 @@ const formatDate = (date) =>
     year: "numeric",
   });
 
-// Role-based data filtering
-const getProfileDataByRole = (profileData, role) => {
-  const data = {
-    common: {
-      name: profileData.name,
-      email: profileData.email,
-      phone_number: profileData.phone_number,
-      email_verified: profileData.email_verified,
-      verification_status: profileData.verification_status,
-    },
-    student: {
-      gender: profileData.gender,
-      date_of_birth: profileData.date_of_birth,
-      address: profileData.address,
-      pincode: profileData.pincode,
-      registration_number: profileData.registration_number,
-      department: profileData.department,
-      course: profileData.course,
-      year: profileData.year,
-      semester: profileData.semester,
-      is_hosteler: profileData.is_hosteler,
-      hostel_name: profileData.hostel_name,
-      room_number: profileData.room_number,
-      reputation_points: profileData.reputation_points,
-      verified_at: profileData.verified_at,
-    },
-    staff: {
-      designation: profileData.designation,
-      reputation_points: profileData.reputation_points,
-      role_verified: profileData.role_verified,
-      verified_at: profileData.verified_at,
-    },
-    admin: {
-      can_verify_others: profileData.can_verify_others,
-      role_verified: profileData.role_verified,
-      verified_at: profileData.verified_at,
-    },
-  };
-
-  return data;
-};
+// ─── Sessions Card ──────────────────────────────────────────────────────────
 
 const SessionsCard = () => {
   const [sessions, setSessions] = useState([]);
@@ -112,7 +80,6 @@ const SessionsCard = () => {
       setSessions((prev) =>
         prev.filter((s) => s !== sessionId && s.id !== sessionId),
       );
-      // Refresh to be sure
       fetchSessions();
     } catch (error) {
       alert("Failed to revoke session");
@@ -122,12 +89,15 @@ const SessionsCard = () => {
   };
 
   return (
-    <div className="bg-white shadow-md rounded-lg p-4 h-full border border-gray-100">
-      <div className="flex justify-between items-center mb-4 border-b pb-2">
-        <h2 className="text-xl font-semibold text-gray-800">Active Sessions</h2>
+    <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm transition-shadow">
+      <div className="flex justify-between items-center mb-5">
+        <h2 className="text-sm font-bold text-gray-900 flex items-center gap-2 uppercase tracking-wider">
+          <i className="ri-shield-user-line text-violet-600 text-lg"></i>
+          Active Sessions
+        </h2>
         <button
           onClick={fetchSessions}
-          className="text-violet-600 hover:text-violet-700 p-1"
+          className="text-violet-600 hover:bg-violet-50 p-1.5 rounded-lg transition-colors"
           title="Refresh"
         >
           <i className="ri-refresh-line"></i>
@@ -139,14 +109,13 @@ const SessionsCard = () => {
           {[1, 2].map((i) => (
             <div
               key={i}
-              className="h-12 bg-gray-100 animate-pulse rounded-lg"
+              className="h-14 bg-gray-50 animate-pulse rounded-xl"
             ></div>
           ))}
         </div>
       ) : sessions.length > 0 ? (
         <div className="space-y-3">
           {sessions.map((session, index) => {
-            // The API returns strings or objects based on the schema
             const id = typeof session === "object" ? session.id : session;
             const label =
               typeof session === "object"
@@ -156,17 +125,17 @@ const SessionsCard = () => {
             return (
               <div
                 key={id || index}
-                className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-gray-100 hover:border-violet-200 transition-colors"
+                className="flex items-center justify-between p-4 bg-gray-50/50 rounded-xl border border-gray-100 hover:border-violet-200 hover:bg-white transition-all group"
               >
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-violet-100 text-violet-600 rounded-lg">
+                  <div className="p-2.5 bg-white shadow-sm border border-gray-100 text-violet-600 rounded-xl group-hover:bg-violet-600 group-hover:text-white transition-all">
                     <i className="ri-device-line text-lg"></i>
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-gray-800">
+                    <p className="text-sm font-bold text-gray-800 transition-colors">
                       {label}
                     </p>
-                    <p className="text-[10px] text-gray-400 uppercase tracking-wider">
+                    <p className="text-[10px] font-bold text-violet-500 uppercase tracking-widest mt-0.5">
                       Active Now
                     </p>
                   </div>
@@ -174,7 +143,7 @@ const SessionsCard = () => {
                 <button
                   onClick={() => handleRevoke(id)}
                   disabled={revokingId === id}
-                  className="text-xs text-red-500 hover:text-red-700 font-medium px-3 py-1.5 rounded-md hover:bg-red-50 transition-colors disabled:opacity-50"
+                  className="text-xs text-red-500 hover:bg-red-50 font-bold px-3 py-2 rounded-lg transition-all border border-transparent hover:border-red-100 disabled:opacity-50 uppercase tracking-wider"
                 >
                   {revokingId === id ? "Revoking..." : "Revoke"}
                 </button>
@@ -183,8 +152,8 @@ const SessionsCard = () => {
           })}
         </div>
       ) : (
-        <div className="text-center py-6">
-          <p className="text-gray-400 text-sm">
+        <div className="bg-gray-50 rounded-xl py-8 text-center border border-dashed border-gray-200">
+          <p className="text-gray-400 text-sm font-medium">
             No other active sessions found.
           </p>
         </div>
@@ -193,6 +162,93 @@ const SessionsCard = () => {
   );
 };
 
+// ─── Organization Card ──────────────────────────────────────────────────────
+
+const OrganizationCard = ({ orgData, loadingOrg }) => {
+  if (loadingOrg) {
+    return (
+      <InfoCard title="Organization" icon="ri-community-line">
+        <div className="space-y-3 animate-pulse">
+          <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+          <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+          <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+        </div>
+      </InfoCard>
+    );
+  }
+
+  const orgItem = Array.isArray(orgData) ? orgData[0] : orgData;
+  if (!orgItem) return null;
+  const org = orgItem.organization || orgItem;
+
+  return (
+    <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
+      <h2 className="text-sm font-bold text-gray-900 mb-5 flex items-center gap-2 uppercase tracking-wider">
+        <i className="ri-community-line text-violet-600 text-lg"></i>
+        Organization
+      </h2>
+
+      {/* Org banner */}
+      <div className="bg-gradient-to-br from-violet-50 to-purple-50 rounded-xl p-4 mb-5 border border-violet-100">
+        <div className="flex items-start gap-3">
+          <div className="p-2.5 bg-violet-600 text-white rounded-xl shadow-lg shadow-violet-200 shrink-0">
+            <i className="ri-building-2-line text-xl"></i>
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-base font-black text-gray-900 truncate">
+              {org.name}
+            </p>
+            {org.code && (
+              <p className="text-xs font-bold text-violet-600 mt-0.5 uppercase tracking-wider">
+                {org.code}
+              </p>
+            )}
+            {org.description && (
+              <p className="text-xs text-gray-500 mt-1.5 leading-relaxed line-clamp-2">
+                {org.description}
+              </p>
+            )}
+          </div>
+          {org.status && (
+            <span
+              className={`shrink-0 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${
+                org.is_active
+                  ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                  : "bg-gray-100 text-gray-500 border-gray-200"
+              }`}
+            >
+              {org.status}
+            </span>
+          )}
+        </div>
+      </div>
+
+      <div className="space-y-4">
+        {org.official_email && (
+          <Info label="Official Email" value={org.official_email} />
+        )}
+        {org.phone && <Info label="Phone" value={org.phone} />}
+        {org.address && <Info label="Address" value={org.address} />}
+        {orgItem.role && (
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-sm gap-1 sm:gap-4 py-3 border-b border-gray-50 last:border-0">
+            <span className="text-gray-500 font-medium">Your Role</span>
+            <StatusBadge
+              type="profile"
+              value={orgItem.role}
+              showDot={false}
+            />
+          </div>
+        )}
+        {orgItem.joined_at && (
+          <Info label="Joined At" value={formatDate(orgItem.joined_at)} />
+        )}
+      </div>
+    </div>
+  );
+};
+
+// ─── Main Profile Component ─────────────────────────────────────────────────
+
 const Profile = () => {
   const { profileData, setProfileData } = useUser();
   const [isEditing, setIsEditing] = useState(false);
@@ -200,20 +256,37 @@ const Profile = () => {
   const [logoutInput, setLogoutInput] = useState("");
   const [logoutType, setLogoutType] = useState("current");
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [orgData, setOrgData] = useState(null);
+  const [loadingOrg, setLoadingOrg] = useState(true);
 
-  console.log("Profile data:", profileData);
+  useEffect(() => {
+    let isMounted = true;
+    const fetchOrg = async () => {
+      try {
+        const data = await getMyOrganization();
+        if (isMounted) setOrgData(data);
+      } catch (err) {
+        console.error("Failed to fetch organization:", err);
+      } finally {
+        if (isMounted) setLoadingOrg(false);
+      }
+    };
+    fetchOrg();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const role = profileData?.role?.toLowerCase();
 
-  // If student (on mobile or desktop), use the specialized StudentProfile component
+  // Students use their own specialized profile
   if (role === "student") {
     return <StudentProfile />;
   }
 
   const renderSideNav = () => {
-    if (role === "student") return <StudentSideNav />;
     if (role === "staff") return <StaffSideNav />;
-    return <AdminSideNav />; // Default/Admin
+    return <AdminSideNav />;
   };
 
   const handleLogoutConfirm = async () => {
@@ -238,8 +311,6 @@ const Profile = () => {
   const handleSaveProfile = async (updates) => {
     try {
       const updatedProfile = await updateMyProfile(updates);
-      // If setProfileData is available in context, use it to update global state
-      // Otherwise we might need to rely on the page refreshing or context refetching
       if (setProfileData) {
         setProfileData(updatedProfile);
       }
@@ -250,41 +321,40 @@ const Profile = () => {
     }
   };
 
+  // ── Loading Skeleton ────────────────────────────────────────────────────
+
   const LoadingSkeleton = () => (
     <SkeletonTheme baseColor="#f3f4f6" highlightColor="#ffffff">
-      <div className="w-full h-full overflow-hidden bg-gray-50">
-        {/* Header Skeleton */}
-        <div className="flex flex-col md:flex-row items-center gap-6 bg-violet-500/10 p-5 lg:p-15 border-b border-violet-100">
-          <Skeleton circle width={128} height={128} className="shadow-lg" />
-          <div className="flex flex-col gap-3 items-center md:items-start w-full max-w-sm">
-            <Skeleton width={240} height={36} />
-            <Skeleton width={180} height={20} />
-            <Skeleton width={100} height={28} borderRadius={20} />
+      <div className="w-full h-full overflow-hidden bg-[#F8F9FF]">
+        <div className="bg-white border-b border-gray-100 px-6 py-10 lg:px-20 lg:py-16">
+          <div className="flex flex-col md:flex-row items-center gap-8">
+            <Skeleton
+              circle
+              width={144}
+              height={144}
+              className="shadow-lg"
+            />
+            <div className="flex flex-col gap-3 items-center md:items-start w-full max-w-sm">
+              <Skeleton width={260} height={40} />
+              <Skeleton width={200} height={22} />
+              <Skeleton width={110} height={30} borderRadius={20} />
+            </div>
           </div>
         </div>
-
-        {/* Body Skeletons */}
-        <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6 pb-24 md:pb-6">
-          {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="bg-white shadow-md rounded-lg p-5 h-55">
-              <Skeleton width={160} height={28} className="mb-6" />
+        <div className="p-6 lg:p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <div
+              key={i}
+              className="bg-white border border-gray-100 rounded-2xl p-6"
+            >
+              <Skeleton width={160} height={20} className="mb-6" />
               <div className="space-y-4">
-                <div className="flex justify-between">
-                  <Skeleton width={80} />
-                  <Skeleton width={120} />
-                </div>
-                <div className="flex justify-between">
-                  <Skeleton width={100} />
-                  <Skeleton width={140} />
-                </div>
-                <div className="flex justify-between">
-                  <Skeleton width={70} />
-                  <Skeleton width={110} />
-                </div>
-                <div className="flex justify-between">
-                  <Skeleton width={90} />
-                  <Skeleton width={130} />
-                </div>
+                {[1, 2, 3].map((j) => (
+                  <div key={j} className="flex justify-between">
+                    <Skeleton width={80} />
+                    <Skeleton width={120} />
+                  </div>
+                ))}
               </div>
             </div>
           ))}
@@ -293,104 +363,245 @@ const Profile = () => {
     </SkeletonTheme>
   );
 
+  // ── Render ──────────────────────────────────────────────────────────────
+
   return (
     <>
       {renderSideNav()}
       <BottomNav />
 
       {profileData ? (
-        <div className="mx-auto w-full shadow-lg overflow-y-auto bg-gray-50 min-h-screen">
-          {/* HEADER */}
-          <div className="flex flex-col md:flex-row items-center gap-6 bg-linear-to-r from-[#7E70EB] to-[#5A50A6] p-5 lg:p-15 text-white shadow-lg relative border-b border-white/10">
-            <img
-              src={profileData.avatar_url || defaultProfile}
-              alt="Profile"
-              className="w-32 h-32 rounded-full border-4 border-white/30 object-cover shadow-2xl"
-            />
-            <div className="text-center md:text-left flex-1">
-              <h1 className="text-4xl font-bold tracking-tight">
-                {profileData.name}
-              </h1>
-              <p className="opacity-90 text-lg mt-1 tracking-wide">
-                {profileData.email}
-              </p>
-              <span className="inline-block mt-3 px-4 py-1.5 text-sm font-semibold tracking-wide rounded-full bg-white/20 backdrop-blur-md border border-white/30 capitalize">
-                {profileData.role}
-              </span>
+        <div className="mx-auto w-full overflow-y-auto bg-[#F8F9FF] min-h-screen">
+          {/* ── PROFILE HEADER ────────────────────────────────────── */}
+          <div className="bg-white border-b border-gray-100 shadow-sm px-6 py-10 lg:px-20 lg:py-16 relative overflow-hidden">
+            {/* Decorative blurs */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-violet-50 rounded-full blur-3xl opacity-60 -mr-20 -mt-20"></div>
+            <div className="absolute bottom-0 left-0 w-48 h-48 bg-purple-50 rounded-full blur-3xl opacity-40 -ml-10 -mb-10"></div>
+
+            <div className="relative z-10 flex flex-col md:flex-row items-center gap-8 lg:gap-12">
+              {/* Avatar */}
+              <div className="relative group">
+                <img
+                  src={profileData.avatar_url || defaultProfile}
+                  alt="Profile"
+                  className="w-32 h-32 md:w-36 md:h-36 rounded-3xl border-4 border-white object-cover shadow-xl ring-1 ring-violet-100 transition-transform group-hover:scale-[1.02]"
+                />
+                <div className="absolute -bottom-2 -right-2 bg-violet-600 text-white p-2 rounded-xl shadow-lg border-2 border-white">
+                  <i className="ri-checkbox-circle-fill"></i>
+                </div>
+              </div>
+
+              {/* Name / Email / Role */}
+              <div className="text-center md:text-left flex-1 space-y-2">
+                <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 justify-center md:justify-start">
+                  <h1 className="text-3xl lg:text-4xl font-black text-gray-900 tracking-tight">
+                    {profileData.name}
+                  </h1>
+                  <StatusBadge
+                    type="profile"
+                    value={profileData.role}
+                    className="mx-auto md:mx-0"
+                    showDot={false}
+                  />
+                </div>
+                <p className="text-gray-500 font-medium text-lg flex items-center justify-center md:justify-start gap-2">
+                  <i className="ri-mail-line text-violet-400"></i>
+                  {profileData.email}
+                </p>
+                {profileData.created_at && (
+                  <p className="text-gray-400 text-sm flex items-center justify-center md:justify-start gap-1.5">
+                    <i className="ri-calendar-line text-gray-300"></i>
+                    Member since {formatDate(profileData.created_at)}
+                  </p>
+                )}
+              </div>
+
+              {/* Action buttons */}
+              <div className="flex gap-3 mt-4 md:mt-0">
+                <button
+                  onClick={() => setIsEditing(true)}
+                  className="bg-violet-600 text-white font-bold px-6 py-3 rounded-2xl hover:bg-violet-700 transition shadow-lg shadow-violet-200 active:scale-95 flex items-center gap-2"
+                >
+                  <i className="ri-edit-circle-line text-lg"></i>
+                  Edit Profile
+                </button>
+                <button
+                  onClick={() => setShowLogoutConfirm(true)}
+                  className="hidden md:flex bg-white border border-gray-200 text-gray-700 font-bold px-4 py-3 rounded-2xl hover:bg-red-50 hover:text-red-600 hover:border-red-100 transition active:scale-95 items-center gap-2"
+                  title="Log Out"
+                >
+                  <i className="ri-logout-box-line text-lg"></i>
+                </button>
+              </div>
             </div>
-            <button
-              onClick={() => setIsEditing(true)}
-              className="absolute top-5 right-5 md:static md:ml-auto bg-white/20 hover:bg-white/30 p-2 rounded-full md:px-4 md:py-2 md:rounded-lg border border-white/30 transition shadow-lg backdrop-blur-sm active:scale-95"
-            >
-              <i className="ri-edit-line md:mr-2"></i>
-              <span className="hidden md:inline">Edit Profile</span>
-            </button>
           </div>
 
-          {/* BODY */}
-          <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6 pb-24 md:pb-12">
-            {role === "student" && (
-              <>
-                {/* Personal Information - Student */}
-                <InfoCard title="Personal Information">
+          {/* ── BODY ──────────────────────────────────────────────── */}
+          <div className="p-4 lg:p-8 space-y-6 pb-32">
+            {/* ── Quick Stats ─────────────────────────────────────── */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">
+                <div className="p-3 bg-violet-50 text-violet-600 rounded-xl">
+                  <i className="ri-shield-check-line text-xl"></i>
+                </div>
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+                    Verification
+                  </p>
+                  <p className="text-base font-black text-gray-900 capitalize">
+                    {profileData.verification_status || "Pending"}
+                  </p>
+                </div>
+              </div>
+              <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">
+                <div className="p-3 bg-emerald-50 text-emerald-600 rounded-xl">
+                  <i className="ri-checkbox-circle-line text-xl"></i>
+                </div>
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+                    Role Verified
+                  </p>
+                  <p className="text-base font-black text-gray-900">
+                    {profileData.role_verified ? "✓ Yes" : "✗ No"}
+                  </p>
+                </div>
+              </div>
+              <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">
+                <div className="p-3 bg-amber-50 text-amber-600 rounded-xl">
+                  <i className="ri-copper-coin-line text-xl"></i>
+                </div>
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+                    Reputation
+                  </p>
+                  <p className="text-xl font-black text-gray-900">
+                    {profileData.reputation_points || 0}
+                  </p>
+                </div>
+              </div>
+              <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">
+                <div className="p-3 bg-blue-50 text-blue-600 rounded-xl">
+                  <i className="ri-mail-check-line text-xl"></i>
+                </div>
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+                    Email
+                  </p>
+                  <p className="text-base font-black text-gray-900">
+                    {profileData.email_verified ? "✓ Verified" : "✗ Unverified"}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* ── Info Cards Grid ─────────────────────────────────── */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {/* Personal Information */}
+              <InfoCard title="Personal Information" icon="ri-user-3-line">
+                <Info label="Name" value={profileData.name} />
+                <Info label="Email" value={profileData.email} />
+                <Info label="Phone" value={profileData.phone_number} />
+                {profileData.gender && (
                   <Info label="Gender" value={profileData.gender} />
+                )}
+                {profileData.date_of_birth && (
                   <Info
                     label="Date of Birth"
-                    value={
-                      profileData.date_of_birth
-                        ? formatDate(profileData.date_of_birth)
-                        : null
-                    }
+                    value={formatDate(profileData.date_of_birth)}
                   />
-                  <Info label="Phone" value={profileData.phone_number} />
+                )}
+                {profileData.address && (
                   <Info label="Address" value={profileData.address} />
+                )}
+                {profileData.pincode && (
                   <Info label="Pincode" value={profileData.pincode} />
-                </InfoCard>
+                )}
+              </InfoCard>
 
-                {/* Academic Details - Student */}
-                <InfoCard title="Academic Details">
+              {/* Role-specific Cards */}
+              {role === "staff" && (
+                <InfoCard
+                  title="Professional Details"
+                  icon="ri-briefcase-4-line"
+                >
                   <Info
-                    label="Registration No"
-                    value={profileData.registration_number}
+                    label="Designation"
+                    value={profileData.designation}
                   />
-                  <Info label="Department" value={profileData.department} />
-                  <Info label="Course" value={profileData.course} />
-                  <Info
-                    label="Year / Semester"
-                    value={`${profileData.year} / ${profileData.semester}`}
-                  />
-                </InfoCard>
-
-                {/* Hostel Details - Student */}
-                <InfoCard title="Hostel Details">
-                  <Info
-                    label="Hosteler"
-                    value={profileData.is_hosteler ? "Yes" : "No"}
-                  />
-                  {profileData.is_hosteler && (
-                    <>
-                      <Info
-                        label="Hostel Name"
-                        value={profileData.hostel_name}
-                      />
-                      <Info
-                        label="Room Number"
-                        value={profileData.room_number}
-                      />
-                    </>
+                  {profileData.department && (
+                    <Info
+                      label="Department"
+                      value={profileData.department}
+                    />
                   )}
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-sm gap-1 sm:gap-4 py-3 border-b border-gray-50 last:border-0">
+                    <span className="text-gray-500 font-medium">
+                      Role Verified
+                    </span>
+                    <span
+                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border shadow-sm ${
+                        profileData.role_verified
+                          ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                          : "bg-amber-50 text-amber-700 border-amber-200"
+                      }`}
+                    >
+                      <span
+                        className={`w-1.5 h-1.5 rounded-full ${
+                          profileData.role_verified
+                            ? "bg-emerald-500"
+                            : "bg-amber-500"
+                        }`}
+                      />
+                      {profileData.role_verified ? "Verified" : "Pending"}
+                    </span>
+                  </div>
                 </InfoCard>
+              )}
 
-                {/* Account Status - Student */}
-                <InfoCard title="Account Status">
-                  <Info
-                    label="Email Verified"
-                    value={profileData.email_verified ? "Yes" : "No"}
-                  />
-                  <Info
-                    label="Verification Status"
-                    value={profileData.verification_status}
-                  />
+              {role === "admin" && (
+                <InfoCard title="Admin Privileges" icon="ri-admin-line">
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-sm gap-1 sm:gap-4 py-3 border-b border-gray-50">
+                    <span className="text-gray-500 font-medium">
+                      Role Verified
+                    </span>
+                    <span
+                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border shadow-sm ${
+                        profileData.role_verified
+                          ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                          : "bg-amber-50 text-amber-700 border-amber-200"
+                      }`}
+                    >
+                      <span
+                        className={`w-1.5 h-1.5 rounded-full ${
+                          profileData.role_verified
+                            ? "bg-emerald-500"
+                            : "bg-amber-500"
+                        }`}
+                      />
+                      {profileData.role_verified ? "Verified" : "Pending"}
+                    </span>
+                  </div>
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-sm gap-1 sm:gap-4 py-3 border-b border-gray-50">
+                    <span className="text-gray-500 font-medium">
+                      Can Verify Others
+                    </span>
+                    <span
+                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border shadow-sm ${
+                        profileData.can_verify_others
+                          ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                          : "bg-gray-100 text-gray-600 border-gray-200"
+                      }`}
+                    >
+                      <span
+                        className={`w-1.5 h-1.5 rounded-full ${
+                          profileData.can_verify_others
+                            ? "bg-emerald-500"
+                            : "bg-gray-400"
+                        }`}
+                      />
+                      {profileData.can_verify_others ? "Yes" : "No"}
+                    </span>
+                  </div>
                   <Info
                     label="Reputation Points"
                     value={profileData.reputation_points}
@@ -404,101 +615,119 @@ const Profile = () => {
                     }
                   />
                 </InfoCard>
-              </>
-            )}
+              )}
 
-            {role === "staff" && (
-              <>
-                {/* Personal Information - Staff */}
-                <InfoCard title="Personal Information">
-                  <Info label="Name" value={profileData.name} />
-                  <Info label="Email" value={profileData.email} />
-                  <Info label="Phone" value={profileData.phone_number} />
-                </InfoCard>
-
-                {/* Professional Details - Staff */}
-                <InfoCard title="Professional Details">
-                  <Info label="Designation" value={profileData.designation} />
-                  <Info
-                    label="Email Verified"
-                    value={profileData.email_verified ? "Yes" : "No"}
+              {/* Account Status */}
+              <InfoCard title="Account Status" icon="ri-verified-badge-line">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-sm gap-1 sm:gap-4 py-3 border-b border-gray-50">
+                  <span className="text-gray-500 font-medium">
+                    Verification Status
+                  </span>
+                  <StatusBadge
+                    type="profile"
+                    value={profileData.verification_status || "unverified"}
+                    showDot={true}
                   />
-                  <Info
-                    label="Role Verified"
-                    value={profileData.role_verified ? "Yes" : "No"}
-                  />
-                </InfoCard>
-
-                {/* Account Status - Staff */}
-                <InfoCard title="Account Status">
+                </div>
+                <Info
+                  label="Email Verified"
+                  value={profileData.email_verified ? "Yes" : "No"}
+                />
+                {role === "staff" && (
+                  <>
+                    <Info
+                      label="Reputation Points"
+                      value={profileData.reputation_points}
+                    />
+                    <Info
+                      label="Verified At"
+                      value={
+                        profileData.verified_at
+                          ? formatDate(profileData.verified_at)
+                          : "—"
+                      }
+                    />
+                  </>
+                )}
+                {role === "admin" && (
                   <Info
                     label="Verification Status"
                     value={profileData.verification_status}
                   />
-                  <Info
-                    label="Reputation Points"
-                    value={profileData.reputation_points}
-                  />
-                  <Info
-                    label="Verified At"
-                    value={
-                      profileData.verified_at
-                        ? formatDate(profileData.verified_at)
-                        : "—"
-                    }
-                  />
-                </InfoCard>
-              </>
-            )}
+                )}
+              </InfoCard>
 
-            {role === "admin" && (
-              <>
-                {/* Personal Information - Admin */}
-                <InfoCard title="Personal Information">
-                  <Info label="Name" value={profileData.name} />
-                  <Info label="Email" value={profileData.email} />
-                  <Info label="Phone" value={profileData.phone_number} />
-                </InfoCard>
+              {/* Organization Details */}
+              <OrganizationCard orgData={orgData} loadingOrg={loadingOrg} />
 
-                {/* Admin Settings */}
-                <InfoCard title="Admin Settings">
-                  <Info
-                    label="Email Verified"
-                    value={profileData.email_verified ? "Yes" : "No"}
-                  />
-                  <Info
-                    label="Role Verified"
-                    value={profileData.role_verified ? "Yes" : "No"}
-                  />
-                  <Info
-                    label="Can Verify Others"
-                    value={profileData.can_verify_others ? "Yes" : "No"}
-                  />
-                </InfoCard>
+              {/* Account Settings */}
+              <InfoCard title="Account Settings" icon="ri-settings-4-line">
+                <div className="flex items-center justify-between py-2">
+                  <span className="text-sm font-medium text-gray-700">
+                    Email Notifications
+                  </span>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      className="sr-only peer"
+                      defaultChecked
+                    />
+                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-violet-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-violet-600"></div>
+                  </label>
+                </div>
+                <div className="flex items-center justify-between py-2">
+                  <span className="text-sm font-medium text-gray-700">
+                    SMS Alerts
+                  </span>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" className="sr-only peer" />
+                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-violet-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-violet-600"></div>
+                  </label>
+                </div>
+              </InfoCard>
 
-                {/* Account Status - Admin */}
-                <InfoCard title="Account Status">
-                  <Info
-                    label="Verification Status"
-                    value={profileData.verification_status}
-                  />
-                  <Info
-                    label="Verified At"
-                    value={
-                      profileData.verified_at
-                        ? formatDate(profileData.verified_at)
-                        : "—"
-                    }
-                  />
-                </InfoCard>
-              </>
-            )}
+              {/* Security */}
+              <InfoCard title="Security" icon="ri-shield-check-line">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3 p-3 bg-emerald-50 rounded-xl border border-emerald-100">
+                    <i className="ri-shield-keyhole-line text-emerald-600"></i>
+                    <div className="flex-1">
+                      <p className="text-[10px] font-black uppercase tracking-widest text-emerald-700">
+                        Password
+                      </p>
+                      <p className="text-sm font-bold text-gray-800">Strong</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 p-3 bg-amber-50 rounded-xl border border-amber-100">
+                    <i className="ri-lock-2-line text-amber-600"></i>
+                    <div className="flex-1">
+                      <p className="text-[10px] font-black uppercase tracking-widest text-amber-700">
+                        2FA
+                      </p>
+                      <p className="text-sm font-bold text-gray-800">
+                        Recommended
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </InfoCard>
 
-            <SessionsCard />
+              {/* Sessions — full-width on larger screens */}
+              <div className="lg:col-span-3">
+                <SessionsCard />
+              </div>
+            </div>
           </div>
 
-          {/* Mobile Logout Button Section */}
-          <div className="md:hidden px-6 pb-24">
+          {/* ── Mobile Logout / Help ──────────────────────────────── */}
+          <div className="md:hidden px-6 pb-24 space-y-3">
+            <a
+              href="/help-support"
+              className="w-full bg-white border border-gray-200 text-gray-700 py-4 rounded-2xl font-bold shadow-sm active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+            >
+              <i className="ri-customer-service-2-line text-lg text-violet-600"></i>
+              Help & Support
+            </a>
             <button
               onClick={() => setShowLogoutConfirm(true)}
               className="w-full bg-red-500 hover:bg-red-600 text-white py-4 rounded-2xl font-bold shadow-xl active:scale-[0.98] transition-all"
@@ -511,8 +740,9 @@ const Profile = () => {
         <LoadingSkeleton />
       )}
 
+      {/* ── Logout Confirmation Modal ─────────────────────────────── */}
       {showLogoutConfirm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-100">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-[1002]">
           <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-sm">
             <h3 className="text-xl font-bold mb-4 text-gray-800 text-center">
               Confirm Logout

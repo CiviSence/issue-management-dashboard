@@ -4,7 +4,7 @@ import StudentBottomNav from "./StudentBottomNav";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import ProfileEditForm from "../../Inputs/ProfileEditForm";
-import { updateMyProfile } from "../../../Utils/profile-api";
+import { updateMyProfile, getMyOrganization } from "../../../Utils/profile-api";
 import {
     getActiveSessions,
     logoutAllSessions,
@@ -160,6 +160,26 @@ const StudentProfile = () => {
     const [logoutType, setLogoutType] = useState("current");
     const [isLoggingOut, setIsLoggingOut] = useState(false);
     const [myIssues, setMyIssues] = useState([]);
+    const [orgData, setOrgData] = useState(null);
+    const [loadingOrg, setLoadingOrg] = useState(true);
+
+    useEffect(() => {
+        let isMounted = true;
+        const fetchOrg = async () => {
+            try {
+                const data = await getMyOrganization();
+                if (isMounted) setOrgData(data);
+            } catch (err) {
+                console.error("Failed to fetch organization:", err);
+            } finally {
+                if (isMounted) setLoadingOrg(false);
+            }
+        };
+        fetchOrg();
+        return () => {
+            isMounted = false;
+        };
+    }, []);
 
     useEffect(() => {
         if (profileData?.id) {
@@ -340,6 +360,7 @@ const StudentProfile = () => {
                                     }
                                 />
                                 <Info label="Phone" value={profileData.phone_number} />
+                                <Info label="Address" value={profileData.address} />
                                 <Info label="Pincode" value={profileData.pincode} />
                             </InfoCard>
 
@@ -431,6 +452,38 @@ const StudentProfile = () => {
                                     </div>
                                 </div>
                             </InfoCard>
+
+                            {/* Organization Details */}
+                            {loadingOrg ? (
+                                <InfoCard title="Organization Details" icon="ri-community-line">
+                                    <div className="space-y-3 animate-pulse">
+                                        <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+                                        <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                                        <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                                    </div>
+                                </InfoCard>
+                            ) : (() => {
+                                const orgItem = Array.isArray(orgData) ? orgData[0] : orgData;
+                                if (!orgItem) return null;
+                                const org = orgItem.organization || orgItem;
+                                return (
+                                    <InfoCard title="Organization Details" icon="ri-community-line">
+                                        <Info label="Name" value={org.name} />
+                                        {org.code && <Info label="Code" value={org.code} />}
+                                        {org.description && <Info label="Description" value={org.description} />}
+                                        {org.official_email && <Info label="Official Email" value={org.official_email} />}
+                                        {org.phone && <Info label="Phone" value={org.phone} />}
+                                        {org.address && <Info label="Address" value={org.address} />}
+                                        {orgItem.role && <Info label="Your Role" value={orgItem.role} />}
+                                        {orgItem.joined_at && (
+                                            <Info
+                                                label="Joined At"
+                                                value={formatDate(orgItem.joined_at)}
+                                            />
+                                        )}
+                                    </InfoCard>
+                                );
+                            })()}
 
                             <div className="lg:col-span-3">
                                 <SessionsCard />

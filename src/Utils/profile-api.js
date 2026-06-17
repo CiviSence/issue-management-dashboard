@@ -47,3 +47,16 @@ export const uploadAvatar = async (file) => {
         throw new Error(error.response?.data?.detail || 'Upload failed');
     }
 };
+
+/**
+ * Fetches the user's active organization details
+ * @returns {Promise<object>}
+ */
+export const getMyOrganization = async () => {
+    try {
+        const { data } = await axios.get('/organizations/my');
+        return data;
+    } catch (error) {
+        throw new Error(error.response?.data?.detail || 'Failed to fetch organization');
+    }
+};
