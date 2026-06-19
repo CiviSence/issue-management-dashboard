@@ -102,7 +102,7 @@ const SignUp = () => {
           className="w-full flex min-h-screen"
         >
           {/* Left Side - Branding */}
-          <div className="hidden md:flex w-1/2 bg-linear-to-br from-[#7E70EB] to-[#5A50A6] p-16 flex-col justify-center text-white relative overflow-hidden">
+          <div className="hidden md:flex w-1/2 rounded-r-4xl bg-linear-to-br from-[#7E70EB] to-[#5A50A6] p-16 flex-col justify-center text-white relative overflow-hidden">
             {/* Abstract Background Elements */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-32 -mt-32" />
             <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full blur-3xl -ml-24 -mb-24" />
@@ -205,8 +205,8 @@ const SignUp = () => {
                         }
                         className={`py-2 px-3 rounded-lg border text-sm font-medium capitalize transition-all ${
                           formData.userType === type
-                            ? "bg-[#6366f1] text-white border-[#6366f1]"
-                            : "bg-white text-gray-600 border-gray-200 hover:border-[#6366f1] hover:text-[#6366f1]"
+                            ? "bg-[#7E70EB] text-white border-[#7E70EB]"
+                            : "bg-white text-gray-600 border-gray-200 hover:border-[#7E70EB] hover:text-[#7E70EB]"
                         }`}
                       >
                         {type}
@@ -340,7 +340,7 @@ const SignUp = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-[#6e5fdb] hover:bg-[#5445c9] disabled:bg-gray-400 text-white font-medium py-3 rounded-full shadow-lg shadow-indigo-500/30 transition-all transform hover:scale-[1.02] active:scale-[0.98] disabled:transform-none flex items-center justify-center"
+                  className="w-full bg-[#7E70EB] hover:bg-[#5A50A6] disabled:bg-gray-400 text-white font-medium py-3 rounded-full shadow-lg shadow-indigo-500/30 transition-all transform hover:scale-[1.02] active:scale-[0.98] disabled:transform-none flex items-center justify-center"
                 >
                   {loading ? (
                     <svg
