@@ -14,6 +14,11 @@ const PieChartCard = lazy(() => import("../../Templates/PieChartCard"));
 const BarChartCard = lazy(() => import("../../Templates/BarChartCard"));
 const LineChartCard = lazy(() => import("../../Templates/LineChartCard"));
 const StatusChart = lazy(() => import("../../Templates/StatusChart"));
+const ResolutionRateCard = lazy(() => import("../../Templates/ResolutionRateCard"));
+const WeeklyComparisonCard = lazy(() => import("../../Templates/WeeklyComparisonCard"));
+const IssueAgingCard = lazy(() => import("../../Templates/IssueAgingCard"));
+const CategoryPriorityHeatmap = lazy(() => import("../../Templates/CategoryPriorityHeatmap"));
+const RecentActivityCard = lazy(() => import("../../Templates/RecentActivityCard"));
 
 const CardSkeleton = () => (
   <div className="w-full sm:w-[48%] lg:w-[35%] xl:w-[24%]">
@@ -173,6 +178,7 @@ const AdminDashboard = () => {
       <BottomNav />
 
       <div className="w-full p-0 md:p-2 lg:p-4 lg:w-[calc(100vw-15vw)] bg-[#FDFDFF] overflow-x-auto pb-20 ">
+        {/* ========== HEADER ========== */}
         <div className="w-full bg-linear-to-r from-[#7E70EB] to-[#5A50A6] p-4 rounded-b-2xl md:rounded-2xl shadow-lg border border-white/10">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sticky top-0">
             <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
@@ -182,6 +188,7 @@ const AdminDashboard = () => {
           </div>
         </div>
 
+        {/* ========== 1. STATUS CARDS — Instant overview ========== */}
         <div className="w-full md:mt-4 gap-1 sm:gap-2 md:gap-3 flex flex-wrap justify-center md:bg-[#F3F1FF] p-2 sm:p-2 md:p-3 lg:p-4 rounded-2xl ">
           {loadingStats ? (
             <>
@@ -199,14 +206,138 @@ const AdminDashboard = () => {
           )}
         </div>
 
-        {/* Assignment Statistics & Performance Section */}
+        {/* ========== 2. HEALTH PULSE — Resolution rate + Weekly comparison ========== */}
+        <h1 className="md:pt-4 pl-2 text-lg sm:text-xl md:text-2xl font-semibold text-[#363434]">
+          Health Pulse
+        </h1>
+
+        <div className="md:bg-[#F3F1FF] p-2 sm:p-2 md:p-3 lg:p-4 rounded-2xl">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {loadingIssues || loadingStats ? (
+              <>
+                <ChartSkeleton height={280} />
+                <ChartSkeleton height={280} />
+              </>
+            ) : (
+              <>
+                <Suspense fallback={<ChartSkeleton height={280} />}>
+                  <ResolutionRateCard
+                    resolved={allstats?.issues?.by_status?.resolved || 0}
+                    total={allstats?.issues?.total || 0}
+                  />
+                </Suspense>
+
+                <Suspense fallback={<ChartSkeleton height={280} />}>
+                  <WeeklyComparisonCard issues={issues} />
+                </Suspense>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* ========== 3. URGENT ACTIONS — Aging + Recent activity ========== */}
+        <h1 className="md:pt-4 pl-2 text-lg sm:text-xl md:text-2xl font-semibold text-[#363434]">
+          Needs Attention
+        </h1>
+
+        <div className="md:bg-[#F3F1FF] p-2 sm:p-2 md:p-3 lg:p-4 rounded-2xl">
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-3">
+            {loadingIssues ? (
+              <>
+                <div className="lg:col-span-2">
+                  <ChartSkeleton height={340} />
+                </div>
+                <div className="lg:col-span-3">
+                  <ChartSkeleton height={340} />
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="lg:col-span-2">
+                  <Suspense fallback={<ChartSkeleton height={340} />}>
+                    <IssueAgingCard issues={issues} />
+                  </Suspense>
+                </div>
+
+                <div className="lg:col-span-3">
+                  <Suspense fallback={<ChartSkeleton height={340} />}>
+                    <RecentActivityCard issues={issues} />
+                  </Suspense>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* ========== 4. TRENDS — Full-width line chart ========== */}
+        <h1 className="md:pt-4 pl-2 text-lg sm:text-xl md:text-2xl font-semibold text-[#363434]">
+          Issue Trends
+        </h1>
+
+        <div className="md:bg-[#F3F1FF] p-2 sm:p-2 md:p-3 lg:p-4 rounded-2xl">
+          {loadingIssues ? (
+            <ChartSkeleton height={280} />
+          ) : (
+            <Suspense fallback={<ChartSkeleton height={280} />}>
+              <LineChartCard />
+            </Suspense>
+          )}
+        </div>
+
+        {/* ========== 5. DETAILED BREAKDOWN — Priority + Category + Location ========== */}
+        <h1 className="md:pt-4 pl-2 text-lg sm:text-xl md:text-2xl font-semibold text-[#363434]">
+          Issue Breakdown
+        </h1>
+
+        <div className="md:bg-[#F3F1FF] p-2 sm:p-2 md:p-3 lg:p-4 rounded-2xl">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+            {loadingIssues ? (
+              <>
+                <ChartSkeleton />
+                <ChartSkeleton />
+                <ChartSkeleton />
+              </>
+            ) : (
+              <>
+                <Suspense fallback={<ChartSkeleton />}>
+                  <BarChartCard data={barChartData} />
+                </Suspense>
+
+                <Suspense fallback={<ChartSkeleton />}>
+                  <PieChartCard data={pieChartData} />
+                </Suspense>
+
+                <Suspense fallback={<ChartSkeleton />}>
+                  <StatusChart data={locationData} />
+                </Suspense>
+              </>
+            )}
+          </div>
+
+          {/* Heatmap — full-width below breakdowns */}
+          <div className="mt-3">
+            {loadingIssues ? (
+              <ChartSkeleton height={280} />
+            ) : (
+              <Suspense fallback={<ChartSkeleton height={280} />}>
+                <CategoryPriorityHeatmap issues={issues} />
+              </Suspense>
+            )}
+          </div>
+        </div>
+
+        {/* ========== 6. OPERATIONS — Assignment stats + Performance metrics ========== */}
+        <h1 className="md:pt-4 pl-2 text-lg sm:text-xl md:text-2xl font-semibold text-[#363434]">
+          Operations & Performance
+        </h1>
+
         {loadingStatsData ? (
-          <div className="w-full p-2 sm:p-2 md:p-3 lg:p-6  grid grid-cols-1 lg:grid-cols-2 gap-1 sm:gap-2 md:gap-3 lg:gap-6 md:bg-[#F3F1FF] rounded-2xl ">
+          <div className="w-full p-2 sm:p-2 md:p-3 lg:p-6 grid grid-cols-1 lg:grid-cols-2 gap-1 sm:gap-2 md:gap-3 lg:gap-6 md:bg-[#F3F1FF] rounded-2xl ">
             <Skeleton height={200} borderRadius={16} />
             <Skeleton height={200} borderRadius={16} />
           </div>
         ) : (
-          <div className="w-full p-2 sm:p-2 md:p-3 lg:p-4 md:mt-4 grid grid-cols-1 lg:grid-cols-2 gap-1 sm:gap-2 md:gap-3 lg:gap-6 md:bg-[#F3F1FF] rounded-2xl ">
+          <div className="w-full p-2 sm:p-2 md:p-3 lg:p-4 grid grid-cols-1 lg:grid-cols-2 gap-1 sm:gap-2 md:gap-3 lg:gap-6 md:bg-[#F3F1FF] rounded-2xl ">
             {/* Left: Overall Assignment Counts */}
             <div className="bg-card border border-border p-5 rounded-2xl shadow-xs">
               <h3 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
@@ -332,46 +463,7 @@ const AdminDashboard = () => {
           </div>
         )}
 
-        <h1 className="md:pt-4 pl-2 text-lg sm:text-xl md:text-2xl font-semibold text-[#363434]">
-          Issue Stats
-        </h1>
-
-        <div className="md:bg-[#F3F1FF] p-2 sm:p-2 md:p-3 lg:p-4 rounded-2xl ">
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 ">
-            {loadingIssues ? (
-              <>
-                <ChartSkeleton />
-                <ChartSkeleton />
-                <ChartSkeleton />
-              </>
-            ) : (
-              <>
-                <Suspense fallback={<ChartSkeleton />}>
-                  <PieChartCard data={pieChartData} />
-                </Suspense>
-
-                <Suspense fallback={<ChartSkeleton />}>
-                  <BarChartCard data={barChartData} />
-                </Suspense>
-
-                <Suspense fallback={<ChartSkeleton />}>
-                  <StatusChart data={locationData} />
-                </Suspense>
-              </>
-            )}
-          </div>
-          <div className="pt-3">
-            {loadingIssues ? (
-              <ChartSkeleton height={120} />
-            ) : (
-              <Suspense fallback={<ChartSkeleton height={120} />}>
-                <LineChartCard />
-              </Suspense>
-            )}
-          </div>
-        </div>
-
-        {/* ========== TOP REPORTERS ========== */}
+        {/* ========== 7. TOP REPORTERS — Community ========== */}
         <h1 className="md:pt-4 pl-2 text-lg sm:text-xl md:text-2xl font-semibold text-[#363434]">
           Top Reporters
         </h1>
