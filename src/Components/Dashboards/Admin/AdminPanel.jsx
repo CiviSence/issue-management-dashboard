@@ -982,9 +982,9 @@ const AdminPanel = () => {
 const QuickStat = ({ title, value, icon: Icon, color, trend, onClick }) => (
   <div
     onClick={onClick}
-    className="bg-white rounded-xl p-4 border border-gray-100 hover:shadow-md transition-all cursor-pointer group"
+    className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 hover:shadow-gray-200/40 transition-all duration-300 cursor-pointer group relative overflow-hidden"
   >
-    <div className="flex items-start justify-between">
+    <div className="flex items-start justify-between relative z-10">
       <div>
         <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">
           {title}
@@ -1020,8 +1020,6 @@ const DashboardTab = ({
   notificationStats,
   stats,
   setActiveTab,
-  fetchSentNotifications,
-  fetchNotificationStats,
 }) => {
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -2338,64 +2336,80 @@ const DashboardTab = ({
   };
 
   const BannedTab = () => {
-    if (loadingBanned) return <BannedSkeleton />;
+  if (loadingBanned) return <BannedSkeleton />;
 
-    return (
+  return (
     <div className="space-y-6">
-      <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-        <div className="p-6 border-b border-gray-100">
-          <h3 className="text-lg font-semibold text-gray-800 flex items-center">
-            <Ban className="w-5 h-5 mr-2" />
-            Banned Users ({bannedUsers.length})
-          </h3>
-        </div>
-
-        <div className="divide-y divide-gray-100">
+    {/* Users List */}
+      {bannedUsers.length > 0 ? (
+        <div className="grid gap-5">
           {bannedUsers.map((user) => (
             <div
               key={user.id}
-              className="p-6 flex items-center justify-between hover:bg-gray-50 transition-colors"
+              className="bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 p-4"
             >
-              <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
-                  <UserX className="w-6 h-6 text-red-600" />
-                </div>
-                <div>
-                  <h4 className="font-semibold text-gray-800">{user.name}</h4>
-                  <p className="text-sm text-gray-500">{user.email}</p>
-                  <div className="flex items-center space-x-2 mt-1">
-                    <span className="text-xs text-red-600 bg-red-50 px-2 py-1 rounded-full">
-                      Banned on {new Date(user.banned_at).toLocaleDateString()}
-                    </span>
-                    <span className="text-xs text-gray-500">
-                      Reason: {user.ban_reason || "Violation of terms"}
-                    </span>
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                {/* User Info */}
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-red-50 flex items-center justify-center shrink-0">
+                    <UserX className="w-6 h-6 text-red-500" />
+                  </div>
+
+                  <div>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h3 className="text-lg font-semibold text-gray-800">
+                        {user.name}
+                      </h3>
+
+                      <span className="px-3 py-1 text-xs font-medium rounded-full bg-red-100 text-red-600">
+                        Banned
+                      </span>
+                    </div>
+
+                    <p className="text-gray-500 text-sm">{user.email}</p>
+
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <span className="px-3 py-1 rounded-full bg-gray-100 text-gray-600 text-xs">
+                         {new Date(user.banned_at).toLocaleDateString()}
+                      </span>
+
+                      <span className="px-3 py-1 rounded-full bg-amber-50 text-amber-600 text-xs">
+                         {user.ban_reason || "Violation of terms"}
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <button
-                onClick={() => handleUnbanUser(user.id)}
-                className="px-6 py-2 bg-green-500 text-white rounded-xl font-medium hover:bg-green-600 transition-colors flex items-center space-x-2"
-              >
-                <RefreshCw className="w-4 h-4" />
-                <span>Unban</span>
-              </button>
+                {/* Action */}
+                <button
+                  onClick={() => handleUnbanUser(user.id)}
+                  className="flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-emerald-500 text-white text-sm font-medium hover:bg-emerald-600 transition-all shadow-sm hover:shadow-md"
+                >
+                  <RefreshCw className="w-4 h-4" />
+                  <span>Unban</span>
+                </button>
+              </div>
             </div>
           ))}
-
-          {bannedUsers.length === 0 && (
-            <div className="text-center py-12 text-gray-500">
-              <Shield className="w-16 h-16 mx-auto mb-4 text-green-500 opacity-50" />
-              <p className="text-lg font-medium">No banned users</p>
-              <p className="text-sm">Your community is healthy!</p>
-            </div>
-          )}
         </div>
-      </div>
+      ) : (
+        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 py-20 text-center">
+          <div className="w-20 h-20 mx-auto bg-green-100 rounded-full flex items-center justify-center mb-5">
+            <Shield className="w-10 h-10 text-green-500" />
+          </div>
+
+          <h3 className="text-xl font-semibold text-gray-800">
+            No banned users
+          </h3>
+
+          <p className="text-gray-500 mt-2">
+            Your community is healthy and safe!!
+          </p>
+        </div>
+      )}
     </div>
   );
-  };
+};
 
   const ReportsTab = () => {
     // filter reports by search query
@@ -2666,9 +2680,9 @@ const DashboardTab = ({
       <SideNav />
       <BottomNav />
 
-      <div className="w-full pb-20 md:pb-2 p-2 lg:p-4 lg:w-[calc(100vw-15vw)] overflow-x-auto min-h-screen">
+      <div className="w-full p-0 md:p-2 lg:p-4 lg:w-[calc(100vw-15vw)] bg-[#FDFDFF] overflow-x-auto pb-20 min-h-screen">
         {/* Header */}
-        <div className="w-full bg-linear-to-r from-[#7E70EB] to-[#5A50A6] p-4 rounded-2xl mb-6 shadow-lg border border-white/10">
+        <div className="w-full bg-linear-to-r from-[#7E70EB] to-[#5A50A6] p-4 rounded-b-2xl md:rounded-2xl mb-2 lg:mb-6 shadow-lg border border-white/10">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
@@ -2682,7 +2696,7 @@ const DashboardTab = ({
         </div>
 
         {/* Navigation Tabs */}
-        <div className="flex overflow-x-auto pb-2 mb-6 gap-2">
+        <div className="flex overflow-x-auto pb-2 mb-2 lg:mb-6 gap-2 px-2 md:px-0 ">
           {[
             { id: "dashboard", label: "Dashboard", icon: Activity },
             { id: "users", label: "All Users", icon: Users },
@@ -2711,8 +2725,8 @@ const DashboardTab = ({
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center space-x-1 sm:space-x-2 px-3 sm:px-4 md:px-6 py-2 sm:py-3 rounded-xl font-medium transition-all whitespace-nowrap ${
                 activeTab === tab.id
-                  ? "bg-[#6366f1] text-white shadow-lg shadow-indigo-100"
-                  : "bg-white text-gray-600 hover:bg-gray-100"
+                  ? "bg-[#7E70EB] text-white shadow-lg shadow-indigo-100"
+                  : "bg-gray-100 text-gray-600 hover:bg-gray-300"
               }`}
             >
               <tab.icon className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
@@ -2733,7 +2747,7 @@ const DashboardTab = ({
         </div>
 
         {/* Content Area */}
-        <div className="animate-fade-in">
+        <div className="animate-fade-in md:bg-[#F3F1FF] p-2 sm:p-2 md:p-4 rounded-2xl min-h-[500px]">
           {activeTab === "dashboard" && (
             <DashboardTab
               loadingUsers={loadingUsers}
