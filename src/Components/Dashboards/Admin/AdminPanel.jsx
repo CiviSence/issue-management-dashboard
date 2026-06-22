@@ -2403,7 +2403,7 @@ const DashboardTab = ({
           </h3>
 
           <p className="text-gray-500 mt-2">
-            Your community is healthy and safe!!
+            Your community is healthy and safe!
           </p>
         </div>
       )}
