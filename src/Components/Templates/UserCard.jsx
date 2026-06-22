@@ -21,7 +21,7 @@ const UserCard = ({ limit }) => {
     { label: "Yearly", value: "year" },
   ];
 
-  const [timePeriod, setTimePeriod] = useState("month");
+  const [timePeriod, setTimePeriod] = useState("all");
 
   useEffect(() => {
     const loadLeaderboard = async () => {

@@ -206,6 +206,48 @@ const AdminDashboard = () => {
           )}
         </div>
 
+          {/* ========== 5. DETAILED BREAKDOWN — Priority + Category + Location ========== */}
+        <h1 className="md:pt-4 pl-2 text-lg sm:text-xl md:text-2xl font-semibold text-[#363434]">
+          Issue Breakdown
+        </h1>
+
+        <div className="md:bg-[#F3F1FF] p-2 sm:p-2 md:p-3 lg:p-4 rounded-2xl">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+            {loadingIssues ? (
+              <>
+                <ChartSkeleton />
+                <ChartSkeleton />
+                <ChartSkeleton />
+              </>
+            ) : (
+              <>
+                <Suspense fallback={<ChartSkeleton />}>
+                  <BarChartCard data={barChartData} />
+                </Suspense>
+
+                <Suspense fallback={<ChartSkeleton />}>
+                  <PieChartCard data={pieChartData} />
+                </Suspense>
+
+                <Suspense fallback={<ChartSkeleton />}>
+                  <StatusChart data={locationData} />
+                </Suspense>
+              </>
+            )}
+          </div>
+
+          {/* Heatmap — full-width below breakdowns */}
+          <div className="mt-3">
+            {loadingIssues ? (
+              <ChartSkeleton height={280} />
+            ) : (
+              <Suspense fallback={<ChartSkeleton height={280} />}>
+                <CategoryPriorityHeatmap issues={issues} />
+              </Suspense>
+            )}
+          </div>
+        </div>
+
         {/* ========== 2. HEALTH PULSE — Resolution rate + Weekly comparison ========== */}
         <h1 className="md:pt-4 pl-2 text-lg sm:text-xl md:text-2xl font-semibold text-[#363434]">
           Health Pulse
@@ -282,48 +324,6 @@ const AdminDashboard = () => {
               <LineChartCard />
             </Suspense>
           )}
-        </div>
-
-        {/* ========== 5. DETAILED BREAKDOWN — Priority + Category + Location ========== */}
-        <h1 className="md:pt-4 pl-2 text-lg sm:text-xl md:text-2xl font-semibold text-[#363434]">
-          Issue Breakdown
-        </h1>
-
-        <div className="md:bg-[#F3F1FF] p-2 sm:p-2 md:p-3 lg:p-4 rounded-2xl">
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
-            {loadingIssues ? (
-              <>
-                <ChartSkeleton />
-                <ChartSkeleton />
-                <ChartSkeleton />
-              </>
-            ) : (
-              <>
-                <Suspense fallback={<ChartSkeleton />}>
-                  <BarChartCard data={barChartData} />
-                </Suspense>
-
-                <Suspense fallback={<ChartSkeleton />}>
-                  <PieChartCard data={pieChartData} />
-                </Suspense>
-
-                <Suspense fallback={<ChartSkeleton />}>
-                  <StatusChart data={locationData} />
-                </Suspense>
-              </>
-            )}
-          </div>
-
-          {/* Heatmap — full-width below breakdowns */}
-          <div className="mt-3">
-            {loadingIssues ? (
-              <ChartSkeleton height={280} />
-            ) : (
-              <Suspense fallback={<ChartSkeleton height={280} />}>
-                <CategoryPriorityHeatmap issues={issues} />
-              </Suspense>
-            )}
-          </div>
         </div>
 
         {/* ========== 6. OPERATIONS — Assignment stats + Performance metrics ========== */}

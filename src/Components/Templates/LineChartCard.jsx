@@ -12,7 +12,7 @@ import {
 
 const LineChartCard = () => {
   const [trendData, setTrendData] = useState([]);
-  const [period, setPeriod] = useState("7d");
+  const [period, setPeriod] = useState("90d");
   const [loading, setLoading] = useState(false);
   const [totals, setTotals] = useState({
     totalIssues: 0,

@@ -11,62 +11,58 @@ import { useUsers } from "../../../Context/UserContext";
 import { Navigate, useNavigate } from "react-router-dom";
 import StatusBadge from "../../Templates/StatusBadge";
 
-
 const IssuesSkeleton = () => {
   return (
-     <div className="w-full lg:w-[calc(100vw-19vw)] overflow-x-auto">
-          {/* Table Container */}
-          <div className="bg-white rounded-xl shadow-sm p-4 md:p-6 w-full mt-2">
-            {/* Table header */}
-            <div className="flex justify-between items-center mb-5">
-              <Skeleton height={25} width={200} />
-              <div className="flex gap-2 flex-col md:flex-row">
-                <Skeleton height={25} width={140} />
-                <Skeleton height={25} width={140} />
-              </div>
-            </div>
-    
-            {/* ===== DESKTOP TABLE SKELETON ===== */}
-            <div className="hidden md:block">
-              {[...Array(15)].map((_, i) => (
-                <div
-                  key={i}
-                  className="grid grid-cols-5 gap-4 py-2 border-none"
-                >
-                  <Skeleton height={25} />
-                  <Skeleton height={25} />
-                  <Skeleton height={25} />
-                  <Skeleton height={25} />
-                  <Skeleton height={25} />
-                </div>
-              ))}
-            </div>
-    
-            {/* ===== MOBILE CARDS SKELETON ===== */}
-            <div className="md:hidden space-y-4">
-              {[...Array(4)].map((_, i) => (
-                <div key={i} className=" rounded-lg p-4 shadow-sm space-y-3">
-                  <div className="flex justify-between items-center">
-                    <Skeleton height={18} width={180} />
-                    <Skeleton height={20} width={70} />
-                  </div>
-    
-                  <div className="flex gap-2">
-                    <Skeleton height={20} width={80} />
-                    <Skeleton height={20} width={80} />
-                  </div>
-    
-                  <Skeleton height={16} width="90%" />
-    
-                  <div className="flex justify-between">
-                    <Skeleton height={14} width={100} />
-                    <Skeleton height={14} width={60} />
-                  </div>
-                </div>
-              ))}
-            </div>
+    <div className="w-full lg:w-[calc(100vw-19vw)] overflow-x-auto">
+      {/* Table Container */}
+      <div className="bg-white rounded-xl shadow-sm p-4 md:p-6 w-full mt-2">
+        {/* Table header */}
+        <div className="flex justify-between items-center mb-5">
+          <Skeleton height={25} width={200} />
+          <div className="flex gap-2 flex-col md:flex-row">
+            <Skeleton height={25} width={140} />
+            <Skeleton height={25} width={140} />
           </div>
         </div>
+
+        {/* ===== DESKTOP TABLE SKELETON ===== */}
+        <div className="hidden md:block">
+          {[...Array(15)].map((_, i) => (
+            <div key={i} className="grid grid-cols-5 gap-4 py-2 border-none">
+              <Skeleton height={25} />
+              <Skeleton height={25} />
+              <Skeleton height={25} />
+              <Skeleton height={25} />
+              <Skeleton height={25} />
+            </div>
+          ))}
+        </div>
+
+        {/* ===== MOBILE CARDS SKELETON ===== */}
+        <div className="md:hidden space-y-4">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className=" rounded-lg p-4 shadow-sm space-y-3">
+              <div className="flex justify-between items-center">
+                <Skeleton height={18} width={180} />
+                <Skeleton height={20} width={70} />
+              </div>
+
+              <div className="flex gap-2">
+                <Skeleton height={20} width={80} />
+                <Skeleton height={20} width={80} />
+              </div>
+
+              <Skeleton height={16} width="90%" />
+
+              <div className="flex justify-between">
+                <Skeleton height={14} width={100} />
+                <Skeleton height={14} width={60} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 };
 
@@ -170,9 +166,9 @@ const ReportedIssues = () => {
     } catch (error) {
       toast.error(
         error.response?.data?.message ||
-        error.response?.data?.error ||
-        error.message ||
-        "Failed to assign staff",
+          error.response?.data?.error ||
+          error.message ||
+          "Failed to assign staff",
       );
     }
   };
@@ -193,7 +189,6 @@ const ReportedIssues = () => {
   const uniqueLocations = [
     ...new Set(issues.map((i) => i.location_building).filter(Boolean)),
   ];
-
 
   useEffect(() => {
     fetchStaff();
@@ -218,31 +213,21 @@ const ReportedIssues = () => {
       />
       <SideNav />
       <BottomNav />
-      
-          <div className="w-full pb-20 md:pb-2 p-2 lg:p-4 lg:w-[calc(100vw-15vw)]  overflow-x-auto ">
-            <div className="w-full bg-linear-to-r from-[#7E70EB] to-[#5A50A6] p-4 rounded-2xl shadow-lg border border-white/10">
-              <div
-                className="
-      flex
-      flex-col
-      sm:flex-row
-      sm:items-center
-      sm:justify-between
-      gap-2
-    "
-              >
-                {/* Dashboard Title */}
-                <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
-                  Resolved Issues
-                </h1>
-                {/* Searchbar */}
-                <Searchbar />
-              </div>
-            </div>
-            {loadingIssues ? (
-        <IssuesSkeleton />
-      ) : issues.length > 0 ? (
-        <>
+
+      <div className="w-full p-0 md:p-2 lg:p-4 lg:w-[calc(100vw-15vw)] bg-[#FDFDFF] overflow-x-auto pb-20 ">
+        {/* ========== HEADER ========== */}
+        <div className="w-full bg-linear-to-r from-[#7E70EB] to-[#5A50A6] p-4 rounded-b-2xl md:rounded-2xl shadow-lg border border-white/10">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sticky top-0">
+            <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
+              Resolved Issues
+            </h1>
+            <Searchbar />
+          </div>
+        </div>
+        {loadingIssues ? (
+          <IssuesSkeleton />
+        ) : issues.length > 0 ? (
+          <>
             <div className="bg-white rounded-xl shadow-sm p-2 lg:p-5 w-full mt-2">
               {/* Header */}
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-5">
@@ -346,7 +331,10 @@ const ReportedIssues = () => {
                       >
                         <td className="p-3 font-medium">{issue.title}</td>
                         <td className="p-3">
-                          <StatusBadge type="category" value={issue.main_category} />
+                          <StatusBadge
+                            type="category"
+                            value={issue.main_category}
+                          />
                         </td>
 
                         <td className="p-3">
@@ -556,7 +544,11 @@ const ReportedIssues = () => {
 
                     {/* Category + Priority Row */}
                     <div className="flex justify-between items-center">
-                      <StatusBadge type="category" value={issue.main_category} showDot={false} />
+                      <StatusBadge
+                        type="category"
+                        value={issue.main_category}
+                        showDot={false}
+                      />
                       <StatusBadge type="priority" value={issue.priority} />
                     </div>
 
@@ -584,21 +576,24 @@ const ReportedIssues = () => {
                   </div>
                 ))}
               </div>
-            </div>  
-        </>  
-      ) : (
-        <div className="w-full min-h-[60vh] flex flex-col items-center justify-center text-center p-6 bg-white rounded-2xl shadow-sm mt-4 mx-auto lg:w-[calc(100vw-15vw)]">
-          <div className="w-24 h-24 bg-violet-50 rounded-full flex items-center justify-center mb-6">
-            <i className="ri-file-search-line text-4xl text-violet-500"></i>
+            </div>
+          </>
+        ) : (
+          <div className="w-full min-h-[60vh] flex flex-col items-center justify-center text-center p-6 bg-white rounded-2xl shadow-sm mt-4 mx-auto lg:w-[calc(100vw-15vw)]">
+            <div className="w-24 h-24 bg-violet-50 rounded-full flex items-center justify-center mb-6">
+              <i className="ri-file-search-line text-4xl text-violet-500"></i>
+            </div>
+            <h2 className="text-2xl font-bold text-gray-800 mb-2">
+              No Issues Found
+            </h2>
+            <p className="text-gray-500 max-w-sm">
+              We couldn't find any reported issues at the moment. When students
+              report problems, they'll appear here.
+            </p>
           </div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">No Issues Found</h2>
-          <p className="text-gray-500 max-w-sm">
-            We couldn't find any reported issues at the moment. When students report problems, they'll appear here.
-          </p>
-        </div>
-      )}
+        )}
       </div>
-     
+
       {showAssignModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           {/* Blurred Background */}
@@ -640,8 +635,8 @@ const ReportedIssues = () => {
             </div>
           </div>
         </div>
-      )}  
-      </>
+      )}
+    </>
   );
 };
 

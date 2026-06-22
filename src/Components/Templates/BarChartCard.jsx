@@ -8,33 +8,62 @@ import {
   Cell,
 } from "recharts";
 
-const COLORS = ["#4ABC33","#F6DE4B", "#3081CA","#E34A4D"];
+// Vibrant, modern colors
+const COLORS = ["#10b981", "#f59e0b", "#3b82f6", "#ef4444", "#8b5cf6"];
 
 const BarChartCard = ({data}) => {
   return (
-    <div className="bg-white p-4 pb-10  w-full h-75 border border-border rounded-2xl shadow-xs">
-      <h2 className="text-lg pb-2 font-semibold text-gray-700">Issues by Priority</h2>
+    <div className="bg-white p-6 pb-12 w-full min-h-[340px] rounded-2xl shadow-xl shadow-gray-200/40 border border-gray-100 hover:-translate-y-1 transition-all duration-300 ease-in-out group relative overflow-hidden flex flex-col">
+      {/* Decorative background glow */}
+      <div className="absolute -top-10 -right-10 w-32 h-32 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 transition-colors duration-500"></div>
+      
+      <div className="mb-6 flex items-center justify-between relative z-10">
+        <div>
+          <h2 className="text-xl font-bold text-gray-800 tracking-tight">Issues by Priority</h2>
+          <p className="text-xs text-gray-500 mt-1">Breakdown of reported issues</p>
+        </div>
+      </div>
 
-      <ResponsiveContainer width="90%" height="100%">
-        <BarChart data={data}>
-          <XAxis dataKey="status" />
-          <YAxis />
-          <Tooltip  />
-          <Bar
-            stroke="none"
-  activeBar={{
-    stroke: "none",
-    fillOpacity: 1,
-  }}
-            dataKey="count"
-            radius={[6, 6, 0, 0]}
-          >
-            {data.map((_, index) => (
-              <Cell key={index} fill={COLORS[index % COLORS.length]} />
-            ))}
-          </Bar>
-        </BarChart>
-      </ResponsiveContainer>
+      <div className="flex-1 w-full relative z-10">
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+            <XAxis 
+              dataKey="status" 
+              axisLine={false}
+              tickLine={false}
+              tick={{ fill: '#6b7280', fontSize: 12, fontWeight: 500 }}
+              dy={10}
+            />
+            <YAxis 
+              axisLine={false}
+              tickLine={false}
+              tick={{ fill: '#9ca3af', fontSize: 12 }}
+            />
+            <Tooltip 
+              cursor={{ fill: 'transparent' }}
+              contentStyle={{ 
+                borderRadius: '12px', 
+                border: 'none', 
+                boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
+                backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                backdropFilter: 'blur(8px)',
+                fontWeight: 500
+              }}
+              itemStyle={{ color: '#1f2937' }}
+            />
+            <Bar
+              dataKey="count"
+              radius={[6, 6, 0, 0]}
+              maxBarSize={50}
+              animationDuration={1500}
+            >
+              {data?.map((_, index) => (
+                <Cell key={index} fill={COLORS[index % COLORS.length]} />
+              ))}
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 };
