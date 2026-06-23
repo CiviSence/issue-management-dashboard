@@ -8,7 +8,7 @@ import {
 
 const PieChartCard = ({data}) => {
   return (
-    <div className="bg-white w-full min-h-[340px] border border-gray-100 p-6 rounded-2xl shadow-xl shadow-gray-200/40 hover:-translate-y-1 transition-all duration-300 ease-in-out group relative overflow-hidden flex flex-col">
+    <div className="bg-white border border-border p-5 rounded-2xl shadow-xs w-full min-h-[340px] shadow-gray-200/40 hover:-translate-y-1 transition-all duration-300 ease-in-out group relative overflow-hidden flex flex-col">
       {/* Decorative background glow */}
       <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-secondary/10 rounded-full blur-3xl group-hover:bg-secondary/20 transition-colors duration-500"></div>
 

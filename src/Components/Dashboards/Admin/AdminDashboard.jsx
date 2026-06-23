@@ -189,7 +189,7 @@ const AdminDashboard = () => {
         </div>
 
         {/* ========== 1. STATUS CARDS — Instant overview ========== */}
-        <div className="w-full md:mt-4 gap-1 sm:gap-2 md:gap-3 flex flex-wrap justify-center md:bg-[#F3F1FF] p-2 sm:p-2 md:p-3 lg:p-4 rounded-2xl ">
+        <div className="w-full md:mt-4 gap-1.5 sm:gap-2 md:gap-3 flex flex-wrap justify-center md:bg-[#F3F1FF] p-2 sm:p-2 md:p-3 lg:p-4 rounded-2xl ">
           {loadingStats ? (
             <>
               <CardSkeleton />
