@@ -12,15 +12,15 @@ import {
 
 const StatusChart = ({data}) => {
   return (
-    <div className="bg-white p-6 w-full min-h-[340px] border border-gray-100 rounded-2xl shadow-xl shadow-gray-200/40 hover:-translate-y-1 transition-all duration-300 ease-in-out group relative overflow-hidden flex flex-col">
+    <div className="bg-white border border-border p-5 rounded-2xl shadow-xs  w-full min-h-[340px]  shadow-gray-200/40 hover:-translate-y-1 transition-all duration-300 ease-in-out group relative overflow-hidden flex flex-col">
       {/* Decorative background glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 transition-colors duration-500"></div>
 
       <div className="mb-6 relative z-10">
         <h2 className="text-xl font-bold text-gray-800 tracking-tight">
-          Status Distribution
+          Location Distribution
         </h2>
-        <p className="text-xs text-gray-500 mt-1">Current state of all tickets</p>
+        <p className="text-xs text-gray-500 mt-1">Location distribution of issues</p>
       </div>
       
       <div className="flex-1 relative z-10 w-full outline-none focus:outline-none">
