@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useUser } from "../../../Context/ProfileContext";
 import { Link, NavLink } from "react-router-dom";
 import defaultProfile from "../../../assets/default-avatar.jpg";
+import csmLogo from "../../../assets/logo/logowhite.png";
 
 export const NavItem = ({ to, icon, label }) => {
   const navLinkClass = ({ isActive }) =>
@@ -65,18 +66,19 @@ const SideNavLayout = ({ children }) => {
         w-20 lg:w-[17vw]
         shrink-0
         h-screen overflow-x-visible relative z-40
-        p-3 lg:p-5 xl:p-8
+        p-3 lg:p-3 xl:p-5
         text-white"
     >
-      <div className="w-full flex flex-col items-center lg:items-start">
+      <div className="w-full flex flex-col items-center lg:items-start mt-3">
         {/* Logo */}
-        <h1 className="text-xl font-bold flex items-center">
-          <Link to="/" className="hidden lg:inline text-2xl ml-2">
-            Issue Dashboard
+          <Link to="/" className="flex items-center gap-1">
+            <img src={csmLogo} alt="CSM Logo" className="h-10 lg:h-12 w-auto object-contain" />
+            <span className="hidden lg:inline text-sm  lg:text-xl xl:text-2xl font-semibold">
+              CiviSence
+            </span>
           </Link>
-        </h1>
         {/* Main Nav */}
-        <nav className="flex flex-col gap-4 pt-10 w-full">{children}</nav>
+        <nav className="flex flex-col gap-4 pt-8 w-full">{children}</nav>
       </div>
 
       <div className="relative">

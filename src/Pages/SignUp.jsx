@@ -92,7 +92,7 @@ const SignUp = () => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#f3f0ff] flex flex-col">
+    <div className="min-h-screen w-full flex flex-col">
       {/* Main Content */}
       <div className="flex-1 flex">
         <motion.div

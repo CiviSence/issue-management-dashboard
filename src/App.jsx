@@ -52,7 +52,7 @@ const App = () => {
 
   return (
     <ThemeProvider>
-      <div className="w-full h-screen bg-[#F0EEFF] flex ">
+      <div className="w-full h-screen bg-white flex ">
         <Analytics />
         <SpeedInsights />
         <Routes>
