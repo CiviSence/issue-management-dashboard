@@ -38,7 +38,7 @@ export const getStaff = async () => {
   try {
     const { data } = await axios.get("/analytics/users-by-role", {
       params: {
-        role: "staff",
+        role: "official",
         include_details: false,
         limit: 50,
       },

@@ -928,7 +928,7 @@ const AdminPanel = () => {
         payload = {
           title: notificationForm.title,
           message: notificationForm.message,
-          role: notificationForm.role,
+          role: notificationForm.role === 'student' ? 'citizen' : notificationForm.role === 'staff' ? 'official' : notificationForm.role,
           channels: ["in_app"],
         };
         break;

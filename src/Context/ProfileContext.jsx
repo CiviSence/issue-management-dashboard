@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "../Utils/axios";
 import { getUserData, getAccessToken, setSession, clearSession } from "../Utils/auth-utils";
+import { getMyProfile } from "../Utils/profile-api";
 import { ProfileContext } from "./ProfileContext.js"; // Explicitly import the JS file
 
 export const ProfileDataProvider = ({ children }) => {
@@ -15,7 +16,7 @@ export const ProfileDataProvider = ({ children }) => {
       if (!token) return;
 
       try {
-        const { data } = await axios.get("/auth/me");
+        const data = await getMyProfile();
         if (isMounted) {
           setProfileData(data);
         }

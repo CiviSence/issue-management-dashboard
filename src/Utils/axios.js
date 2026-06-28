@@ -90,6 +90,10 @@ instance.interceptors.response.use(
         });
         // Persist the new tokens (user object is typically not returned here, use null or cached data)
         // Backend returns access_token and usually refresh_token if rotated
+        if (data.user?.role) {
+          if (data.user.role.toLowerCase() === 'citizen') data.user.role = 'student';
+          if (data.user.role.toLowerCase() === 'official') data.user.role = 'staff';
+        }
         setSession(
           data.access_token,
           data.user || null,

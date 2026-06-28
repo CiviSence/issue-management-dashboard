@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {  Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import csmlogo from "../assets/logo/CSM-logo.png";
@@ -16,6 +16,14 @@ const Login = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [cooldown, setCooldown] = useState(0);
+
+  useEffect(() => {
+    if (cooldown > 0) {
+      const timer = setTimeout(() => setCooldown(cooldown - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [cooldown]);
 
   const navigate = useNavigate();
   const { setProfileData } = useUser();
@@ -44,6 +52,13 @@ const Login = () => {
       ) {
         localStorage.setItem("pendingVerificationEmail", email);
         navigate("/verify-otp");
+        return;
+      }
+
+      if (err.status === 429) {
+        const retry = parseInt(err.retryAfter, 10) || 60;
+        setCooldown(retry);
+        setError(`Too many attempts. Please try again in ${retry} seconds`);
         return;
       }
 
@@ -214,10 +229,12 @@ const Login = () => {
                 {/* Sign In Button */}
                 <button
                   type="submit"
-                  disabled={loading}
+                  disabled={loading || cooldown > 0}
                   className="w-full bg-[#6e5fdb] hover:bg-[#5445c9] text-white py-3 rounded-full font-bold text-lg shadow-lg shadow-indigo-500/30 transform hover:scale-[1.02] active:scale-[0.98] transition-all flex justify-center items-center disabled:bg-gray-400 disabled:transform-none"
                 >
-                  {loading ? (
+                  {cooldown > 0 ? (
+                    `Try again in ${cooldown}s`
+                  ) : loading ? (
                     <i className="ri-loader-4-line animate-spin text-xl"></i>
                   ) : (
                     "Sign in"

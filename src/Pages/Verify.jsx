@@ -66,8 +66,8 @@ const Verify = () => {
 
   const handleResendOtp = async () => {
     try {
-      await resendOtp({ email });
-      alert("New OTP sent to your email!");
+      const res = await resendOtp({ email });
+      alert(res?.message || "If this email is registered, a new OTP has been sent.");
     } catch (err) {
       setError("Failed to resend OTP. Please try again.", err);
     }

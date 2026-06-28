@@ -7,6 +7,8 @@ import axios from '../Utils/axios';
 export const getMyProfile = async () => {
     try {
         const { data } = await axios.get('/auth/me');
+        if (data.role?.toLowerCase() === 'citizen') data.role = 'student';
+        if (data.role?.toLowerCase() === 'official') data.role = 'staff';
         return data;
     } catch (error) {
         throw new Error('Failed to fetch profile', error);
@@ -21,6 +23,8 @@ export const getMyProfile = async () => {
 export const updateMyProfile = async (updates) => {
     try {
         const { data } = await axios.patch('/auth/profile', updates);
+        if (data.role?.toLowerCase() === 'citizen') data.role = 'student';
+        if (data.role?.toLowerCase() === 'official') data.role = 'staff';
         return data;
     } catch (error) {
         throw new Error('Failed to update profile', error);

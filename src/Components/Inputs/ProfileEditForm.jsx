@@ -167,7 +167,7 @@ const ProfileEditForm = ({ profile, onSave, onCancel }) => {
           old_password: passwordData.old_password,
           new_password: passwordData.new_password,
         });
-        setSuccess("Password changed successfully!");
+        setSuccess("Password updated. Other logged-in sessions have been revoked.");
         setPasswordData({ old_password: "", new_password: "", confirm_password: "" });
       }
     } catch (err) {

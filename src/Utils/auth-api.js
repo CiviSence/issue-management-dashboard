@@ -8,6 +8,10 @@ import axios from "./axios";
 export const loginUser = async (credentials) => {
   try {
     const { data } = await axios.post("/auth/login", credentials);
+    if (data.user?.role) {
+      if (data.user.role.toLowerCase() === 'citizen') data.user.role = 'student';
+      if (data.user.role.toLowerCase() === 'official') data.user.role = 'staff';
+    }
     return data;
   } catch (error) {
     if (error.response?.status === 422) {
@@ -15,6 +19,12 @@ export const loginUser = async (credentials) => {
       if (Array.isArray(detail)) {
         throw new Error(detail[0]?.msg || "Invalid input data");
       }
+    }
+    if (error.response?.status === 429) {
+      const err = new Error(error.response?.data?.detail || "Too many attempts");
+      err.status = 429;
+      err.retryAfter = error.response.headers["retry-after"] || error.response.headers["Retry-After"] || 60;
+      throw err;
     }
     throw new Error(error.response?.data?.detail || "Login failed");
   }
@@ -27,7 +37,15 @@ export const loginUser = async (credentials) => {
  */
 export const registerUser = async (userData) => {
   try {
-    const { data } = await axios.post("/auth/register", userData);
+    const payload = { ...userData };
+    if (payload.userType?.toLowerCase() === 'student') payload.userType = 'citizen';
+    if (payload.userType?.toLowerCase() === 'staff') payload.userType = 'official';
+    if (payload.role?.toLowerCase() === 'student') payload.role = 'citizen';
+    if (payload.role?.toLowerCase() === 'staff') payload.role = 'official';
+    if (payload.intended_role?.toLowerCase() === 'student') payload.intended_role = 'citizen';
+    if (payload.intended_role?.toLowerCase() === 'staff') payload.intended_role = 'official';
+    
+    const { data } = await axios.post("/auth/register", payload);
     console.log("data",data)
     return data;
   } catch (error) {
