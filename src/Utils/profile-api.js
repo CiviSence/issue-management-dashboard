@@ -7,8 +7,17 @@ import axios from '../Utils/axios';
 export const getMyProfile = async () => {
     try {
         const { data } = await axios.get('/auth/me');
-        if (data.role?.toLowerCase() === 'citizen') data.role = 'student';
-        if (data.role?.toLowerCase() === 'official') data.role = 'staff';
+        let roleStr = data.role || data.intended_role || data.userType || data.user_type;
+        if (!roleStr && data.user) {
+            roleStr = data.user.role || data.user.intended_role || data.user.userType || data.user.user_type;
+        }
+        if (roleStr) {
+            let normalizedRole = roleStr.toLowerCase();
+            if (normalizedRole === 'citizen') normalizedRole = 'student';
+            if (normalizedRole === 'official') normalizedRole = 'staff';
+            data.role = normalizedRole;
+            if (data.user) data.user.role = normalizedRole;
+        }
         return data;
     } catch (error) {
         throw new Error('Failed to fetch profile', error);
@@ -23,8 +32,17 @@ export const getMyProfile = async () => {
 export const updateMyProfile = async (updates) => {
     try {
         const { data } = await axios.patch('/auth/profile', updates);
-        if (data.role?.toLowerCase() === 'citizen') data.role = 'student';
-        if (data.role?.toLowerCase() === 'official') data.role = 'staff';
+        let roleStr = data.role || data.intended_role || data.userType || data.user_type;
+        if (!roleStr && data.user) {
+            roleStr = data.user.role || data.user.intended_role || data.user.userType || data.user.user_type;
+        }
+        if (roleStr) {
+            let normalizedRole = roleStr.toLowerCase();
+            if (normalizedRole === 'citizen') normalizedRole = 'student';
+            if (normalizedRole === 'official') normalizedRole = 'staff';
+            data.role = normalizedRole;
+            if (data.user) data.user.role = normalizedRole;
+        }
         return data;
     } catch (error) {
         throw new Error('Failed to update profile', error);

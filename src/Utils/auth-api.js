@@ -8,9 +8,14 @@ import axios from "./axios";
 export const loginUser = async (credentials) => {
   try {
     const { data } = await axios.post("/auth/login", credentials);
-    if (data.user?.role) {
-      if (data.user.role.toLowerCase() === 'citizen') data.user.role = 'student';
-      if (data.user.role.toLowerCase() === 'official') data.user.role = 'staff';
+    if (data.user) {
+      let roleStr = data.user.role || data.user.intended_role || data.user.userType || data.user.user_type;
+      if (roleStr) {
+        let normalizedRole = roleStr.toLowerCase();
+        if (normalizedRole === 'citizen') normalizedRole = 'student';
+        if (normalizedRole === 'official') normalizedRole = 'staff';
+        data.user.role = normalizedRole;
+      }
     }
     return data;
   } catch (error) {
