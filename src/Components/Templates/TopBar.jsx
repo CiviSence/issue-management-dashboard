@@ -4,13 +4,14 @@ import { useUser } from "../../Context/ProfileContext";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "../../Utils/axios";
 
-const Searchbar = () => {
+const TopBar = ({ title }) => {
   const { profileData } = useUser();
   const { issues } = useIssues();
   const navigate = useNavigate();
 
   const [query, setQuery] = useState("");
   const [showResults, setShowResults] = useState(false);
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
 
   // Notification states
   const [notifications, setNotifications] = useState([]);
@@ -19,7 +20,7 @@ const Searchbar = () => {
   const [loadingNotifications, setLoadingNotifications] = useState(false);
 
   const notificationRef = useRef(null);
-  const searchRef = useRef(null); // Add ref for search dropdown
+  const searchRef = useRef(null);
 
   // Close dropdowns when clicking outside
   useEffect(() => {
@@ -61,9 +62,7 @@ const Searchbar = () => {
     setLoadingNotifications(true);
     try {
       const response = await axios.get("/notifications/my-notifications");
-      console.log(response);
-      const notifs = response.data;
-      setNotifications(notifs);
+      setNotifications(response.data);
     } catch (error) {
       console.error("Error fetching notifications:", error);
       setNotifications([]);
@@ -147,14 +146,12 @@ const Searchbar = () => {
     return date.toLocaleDateString();
   };
 
-  // Handle notification click - navigate if URL provided and mark as read
+  // Handle notification click
   const handleNotificationClick = (notification) => {
-    // Mark as read immediately on click if unread
     if (notification.is_unread) {
       markAsRead(notification.id);
     }
 
-    // Navigate if action_url or related issue URL exists
     const targetUrl = notification.action_url || notification.link;
     if (targetUrl) {
       navigate(targetUrl);
@@ -163,67 +160,90 @@ const Searchbar = () => {
   };
 
   return (
-    <div
-      ref={searchRef} // Add ref here to track clicks outside search
-      className="
-        bg-white
-        relative
-        w-full
-        sm:w-[90%]
-        md:w-[70%]
-        lg:w-[50%]
-        xl:w-[40%]
-        2xl:w-[35%]
-        rounded-full
-        p-1.5
-        sm:p-2
-        flex
-        items-center
-        justify-between
-        gap-2
-        sm:gap-3
-        shadow-sm
-        border
-        border-gray-100
-      "
-    >
-      {/* Search Input */}
-      <input
-        type="text"
-        placeholder="Search issues"
-        value={query}
-        onChange={(e) => {
-          setQuery(e.target.value);
-          setShowResults(true);
-        }}
-        className="
-          w-full
-          bg-[#F0EEFF]
-          px-3
-          sm:px-4
-          py-2
-          sm:py-2.5
-          rounded-full
-          focus:outline-none
-          focus:ring-2
-          focus:ring-violet-500/20
-          text-sm
-          placeholder:text-gray-400
-        "
-      />
+    <div className="relative sticky top-0 z-50 w-full bg-linear-to-br from-[#5A50A6] to-[#7E70EB] border-b border-white/10 px-4 py-3 flex items-center justify-between shadow-md">
+      {/* Page Title */}
+      <div className="shrink-0 mr-4">
+        <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight hidden sm:block">
+          {title}
+        </h1>
+        <h1 className="text-lg font-bold text-white tracking-tight sm:hidden">
+          {title?.length > 15 ? title.substring(0, 15) + "..." : title}
+        </h1>
+      </div>
 
-      {/* Right Icons */}
-      <div className="flex items-center gap-2 sm:gap-4 md:gap-6 shrink-0">
-        {/* Notification Icon with Dropdown */}
-        <div className="relative hidden sm:block" ref={notificationRef}>
+      {/* Right Side: Search, Notifications, Profile */}
+      <div className="flex items-center gap-2 sm:gap-4 flex-1 justify-end">
+        {/* Mobile Search Toggle */}
+        <button
+          onClick={() => setIsMobileSearchOpen(true)}
+          className="sm:hidden p-2 text-white hover:bg-white/10 rounded-full transition-colors flex items-center justify-center"
+        >
+          <i className="ri-search-line text-xl"></i>
+        </button>
+
+        {/* Search Input Container */}
+        <div ref={searchRef} className={`w-full max-w-sm ${isMobileSearchOpen ? 'absolute inset-0 z-50 flex items-center bg-gradient-to-r from-[#7E70EB] to-[#5A50A6] px-4' : 'hidden sm:block relative'}`}>
+          {isMobileSearchOpen && (
+            <button
+              onClick={() => {
+                setIsMobileSearchOpen(false);
+                setQuery("");
+              }}
+              className="mr-3 text-white shrink-0 p-1 hover:bg-white/10 rounded-full"
+            >
+              <i className="ri-arrow-left-line text-xl"></i>
+            </button>
+          )}
+          <div className="relative w-full">
+            <input
+              type="text"
+              placeholder="Search issues..."
+              value={query}
+              onChange={(e) => {
+                setQuery(e.target.value);
+                setShowResults(true);
+              }}
+              className="w-full bg-white/10 px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-white/30 text-sm text-white placeholder:text-white/70"
+            />
+
+            {/* Search Results Dropdown */}
+            {showResults && query && (
+              <div className="absolute top-12 left-0 right-0 bg-white shadow-lg rounded-xl max-h-60 overflow-y-auto z-50 border border-gray-100">
+                {filteredIssues.length > 0 ? (
+                  filteredIssues.map((issue) => (
+                    <div
+                      key={issue.id}
+                      onClick={() => handleSelect(issue)}
+                      className="px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-50 last:border-b-0 transition-colors"
+                    >
+                      <p className="font-medium text-sm text-gray-900">
+                        {issue.title}
+                      </p>
+                      <p className="text-gray-500 text-xs truncate mt-0.5">
+                        {issue.description}
+                      </p>
+                    </div>
+                  ))
+                ) : (
+                  <p className="px-4 py-3 text-sm text-gray-500">
+                    No issues found
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Notification Icon */}
+        <div className="relative" ref={notificationRef}>
           <button
             onClick={toggleNotifications}
-            className="relative p-1 hover:bg-gray-100 rounded-full transition-colors"
+            className="relative p-2 hover:bg-white/10 rounded-full transition-colors flex items-center justify-center"
             aria-label="Notifications"
           >
-            <i className="ri-notification-3-line text-lg sm:text-xl text-[#aaaaaa]"></i>
+            <i className="ri-notification-3-line text-xl text-white"></i>
             {unreadCount > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-[10px] font-bold min-w-[16px] h-4 px-1 rounded-full flex items-center justify-center">
+              <span className="absolute top-0 right-0 bg-red-500 text-white text-[10px] font-bold min-w-[16px] h-4 px-1 rounded-full flex items-center justify-center border border-white">
                 {unreadCount > 99 ? "99+" : unreadCount}
               </span>
             )}
@@ -231,8 +251,7 @@ const Searchbar = () => {
 
           {/* Notification Dropdown */}
           {showNotifications && (
-            <div className="absolute right-0 top-10 w-80 sm:w-96 bg-white rounded-xl shadow-xl border border-gray-100 z-50 overflow-hidden">
-              {/* Header - Removed toggle, kept mark all read */}
+            <div className="absolute right-0 top-12 w-80 sm:w-96 bg-white rounded-xl shadow-xl border border-gray-100 z-50 overflow-hidden">
               <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 bg-gray-50/50">
                 <h3 className="font-semibold text-gray-800">Notifications</h3>
                 {unreadCount > 0 && (
@@ -245,7 +264,6 @@ const Searchbar = () => {
                 )}
               </div>
 
-              {/* Notification List */}
               <div className="max-h-96 overflow-y-auto">
                 {loadingNotifications ? (
                   <div className="flex items-center justify-center py-8">
@@ -261,13 +279,11 @@ const Searchbar = () => {
                     <div
                       key={notification.id}
                       onClick={() => handleNotificationClick(notification)}
-                      className={`group flex items-start gap-3 px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-50 last:border-b-0 transition-colors ${
-                        notification.is_unread
-                          ? "bg-violet-50/50 border-l-4 border-l-violet-500"
-                          : ""
-                      }`}
+                      className={`group flex items-start gap-3 px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-50 last:border-b-0 transition-colors ${notification.is_unread
+                        ? "bg-violet-50/50 border-l-4 border-l-violet-500"
+                        : ""
+                        }`}
                     >
-                      {/* Unread indicator dot */}
                       <div className="shrink-0 mt-1.5">
                         {notification.is_unread && (
                           <div className="w-2 h-2 bg-violet-500 rounded-full"></div>
@@ -276,34 +292,29 @@ const Searchbar = () => {
 
                       <div className="flex-1 min-w-0">
                         <p
-                          className={`text-sm ${
-                            notification.is_unread
-                              ? "font-semibold text-gray-900"
-                              : "text-gray-700"
-                          }`}
+                          className={`text-sm ${notification.is_unread
+                            ? "font-semibold text-gray-900"
+                            : "text-gray-700"
+                            }`}
                         >
                           {notification.title}
                         </p>
                         <p
-                          className={`text-xs mt-0.5 line-clamp-2 ${
-                            notification.is_unread
-                              ? "text-gray-600"
-                              : "text-gray-500"
-                          }`}
+                          className={`text-xs mt-0.5 line-clamp-2 ${notification.is_unread
+                            ? "text-gray-600"
+                            : "text-gray-500"
+                            }`}
                         >
                           {notification.message}
                         </p>
-                        <div className="flex items-center gap-2 mt-1">
-                          <p
-                            className={`text-[10px] ${
-                              notification.is_unread
-                                ? "text-violet-500 font-medium"
-                                : "text-gray-400"
+                        <p
+                          className={`text-[10px] mt-1 ${notification.is_unread
+                            ? "text-violet-500 font-medium"
+                            : "text-gray-400"
                             }`}
-                          >
-                            {getRelativeTime(notification.sent_at)}
-                          </p>
-                        </div>
+                        >
+                          {getRelativeTime(notification.sent_at)}
+                        </p>
                       </div>
                     </div>
                   ))
@@ -313,24 +324,10 @@ const Searchbar = () => {
           )}
         </div>
 
-        {/* theme toggle icon - hidden on smallest screens */}
-        <button
-          className="hidden sm:block p-1 hover:bg-gray-100 rounded-full transition-colors"
-          aria-label="Toggle theme"
-        >
-          <i className="ri-moon-line text-lg sm:text-xl text-[#aaaaaa]"></i>
-        </button>
-        <button
-          className=" sm:hidden pr-2 hover:bg-gray-100 rounded-full transition-colors"
-          aria-label="Toggle theme"
-        >
-          <i className="ri-search-line text-xl text-[#aaaaaa]"></i>
-        </button>
-
-        {/* User */}
+        {/* Profile Avatar */}
         <Link
           to="/profile"
-          className="hidden sm:block shrink-0 rounded-full bg-amber-300 h-8 w-8 sm:h-9 sm:w-9 text-center overflow-hidden hover:ring-2 hover:ring-violet-500/30 transition-all"
+          className="shrink-0 rounded-full bg-white/20 h-9 w-9 text-center overflow-hidden hover:ring-2 hover:ring-white/50 transition-all ml-1"
         >
           <img
             src={profileData?.avatar_url}
@@ -339,53 +336,8 @@ const Searchbar = () => {
           />
         </Link>
       </div>
-
-      {/* Search Results Dropdown */}
-      {showResults && query && (
-        <div
-          className="
-            absolute 
-            top-12 
-            sm:top-14 
-            left-0 
-            right-0
-            sm:right-auto
-            sm:w-[80%]
-            md:w-[75%]
-            bg-white 
-            shadow-lg 
-            rounded-xl 
-            max-h-60 
-            overflow-y-auto 
-            z-50
-            border
-            border-gray-100
-          "
-        >
-          {filteredIssues.length > 0 ? (
-            filteredIssues.map((issue) => (
-              <div
-                key={issue.id}
-                onClick={() => handleSelect(issue)}
-                className="px-3 sm:px-4 py-2.5 sm:py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-50 last:border-b-0 transition-colors"
-              >
-                <p className="font-medium text-sm text-gray-900">
-                  {issue.title}
-                </p>
-                <p className="text-gray-500 text-xs truncate mt-0.5">
-                  {issue.description}
-                </p>
-              </div>
-            ))
-          ) : (
-            <p className="px-3 sm:px-4 py-2.5 sm:py-3 text-sm text-gray-500">
-              No issues found
-            </p>
-          )}
-        </div>
-      )}
     </div>
   );
 };
 
-export default Searchbar;
+export default TopBar;

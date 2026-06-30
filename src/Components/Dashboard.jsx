@@ -13,7 +13,7 @@ const Dashboard = () => {
     return <Loader />;
   }
 
-  const role = profileData.role?.toLowerCase() || "student";
+  const role = profileData.role?.toLowerCase();
 
   if (role === "admin" || role === "institute") {
     return <AdminDashboard />;
