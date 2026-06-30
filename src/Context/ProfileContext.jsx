@@ -18,7 +18,7 @@ export const ProfileDataProvider = ({ children }) => {
       try {
         const data = await getMyProfile();
         if (isMounted) {
-          setProfileData(data);
+          setProfileData(prev => ({ ...prev, ...data }));
         }
       } catch (err) {
         // If fetch fails with 401, clear everything

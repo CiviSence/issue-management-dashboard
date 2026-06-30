@@ -463,7 +463,9 @@ const StudentProfile = () => {
                                     </div>
                                 </InfoCard>
                             ) : (() => {
-                                const orgItem = Array.isArray(orgData) ? orgData[0] : orgData;
+                                const orgItem = Array.isArray(orgData) 
+                                    ? (orgData.find(item => item.status === 'approved' || item.is_active || (item.organization && item.organization.is_active)) || orgData[0]) 
+                                    : orgData;
                                 if (!orgItem) return null;
                                 const org = orgItem.organization || orgItem;
                                 return (
