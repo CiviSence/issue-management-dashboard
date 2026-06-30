@@ -4,6 +4,7 @@ import BottomNav from "../../Templates/BottomNav";
 import { useIssues } from "../../../Context/IssueContext.js";
 import Loader from "../../Templates/Loader";
 import { useNavigate } from "react-router-dom";
+import TopBar from "../../Templates/TopBar";
 
 const AdminNotifications = () => {
   const navigate = useNavigate();
@@ -70,27 +71,19 @@ const AdminNotifications = () => {
     <>
       <AdminSideNav />
       <BottomNav />
-      <div className="flex-1 h-screen overflow-y-auto pb-24 md:pb-6 p-0 md:p-2 lg:p-4 bg-[#F0EEFF]">
-        <div className="w-full bg-linear-to-r from-[#7E70EB] to-[#5A50A6] p-4 sm:p-5 lg:p-6 rounded-b-2xl md:rounded-3xl text-white shadow-lg mb-4 md:mb-6 border border-white/10">
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold leading-tight">
-                Notifications
-              </h1>
-              <p className="text-violet-100 text-xs sm:text-sm mt-1">
-                Overview of reported complaints and updates
-              </p>
-            </div>
+      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#FDFDFF] overflow-x-hidden overflow-y-auto h-screen pb-20">
+        <TopBar title="Notifications" />
+        <div className="p-2 lg:p-4 w-full min-h-screen">
+          <div className="flex justify-end mb-4">
             {notifications.some((n) => !n.read) && (
               <button
                 onClick={handleMarkAllRead}
-                className="px-3 py-1.5 bg-white/20 hover:bg-white/30 active:bg-white/40 text-white rounded-xl text-xs font-bold transition-all cursor-pointer hover:scale-105"
+                className="px-4 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-xl text-sm font-bold transition-all cursor-pointer"
               >
                 Mark all read
               </button>
             )}
           </div>
-        </div>
 
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
           {/* Filters */}
@@ -167,6 +160,7 @@ const AdminNotifications = () => {
               <p className="font-bold text-sm">No notifications found</p>
             </div>
           )}
+        </div>
         </div>
       </div>
     </>

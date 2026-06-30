@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import SideNav from "./AdminSideNav";
 import BottomNav from "../../Templates/BottomNav";
-import Searchbar from "../../Templates/Searchbar";
+import TopBar from "../../Templates/TopBar";
 import "react-loading-skeleton/dist/skeleton.css";
 import { toast, ToastContainer } from "react-toastify";
 import axios from "../../../Utils/axios";
@@ -2680,21 +2680,9 @@ const DashboardTab = ({
       <SideNav />
       <BottomNav />
 
-      <div className="w-full p-0 md:p-2 lg:p-4 lg:w-[calc(100vw-15vw)] bg-[#FDFDFF] overflow-x-auto pb-20 min-h-screen">
-        {/* Header */}
-        <div className="w-full bg-linear-to-r from-[#7E70EB] to-[#5A50A6] p-4 rounded-b-2xl md:rounded-2xl mb-2 lg:mb-6 shadow-lg border border-white/10">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
-                Admin Control Panel
-              </h1>
-              <p className="text-indigo-100/90 text-sm mt-1 tracking-wide">
-                Manage users, verifications, and system notifications
-              </p>
-            </div>
-          </div>
-        </div>
-
+      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#FDFDFF] overflow-x-hidden overflow-y-auto h-screen pb-20">
+        <TopBar title="Admin Control Panel" />
+        <div className="p-2 lg:p-4 w-full min-h-screen">
         {/* Navigation Tabs */}
         <div className="flex overflow-x-auto pb-2 mb-2 lg:mb-6 gap-2 px-2 md:px-0 ">
           {[
@@ -3381,6 +3369,7 @@ const DashboardTab = ({
             </div>
           </div>
         )}
+        </div>
       </div>
     </>
   );

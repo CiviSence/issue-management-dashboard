@@ -1,6 +1,6 @@
 import SideNav from "./AdminSideNav";
 import BottomNav from "../../Templates/BottomNav";
-import Searchbar from "../../Templates/Searchbar";
+import TopBar from "../../Templates/TopBar";
 // import { useUsers } from "../../../Context/UserContext";
 import UserCard from "../../Templates/UserCard";
 import { useUser } from "../../../Context/ProfileContext";
@@ -27,28 +27,12 @@ const renderSideNav = () => {
     <>
       {renderSideNav()}
       <BottomNav />
-      <div className="pb-20 md:pb-2 min-h-screen w-full p-0 md:p-2 lg:p-4 overflow-x-auto">
-        <div className="w-full bg-linear-to-r from-[#7E70EB] to-[#5A50A6] p-4 rounded-b-2xl md:rounded-2xl shadow-lg border border-white/10">
-          <div
-            className="
-      flex
-      flex-col
-      sm:flex-row
-      sm:items-center
-      sm:justify-between
-      gap-2
-    "
-          >
-            {/* Dashboard Title */}
-            <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
-              Top Reporters
-            </h1>
-            {/* Searchbar */}
-            <Searchbar />
-          </div>
-        </div>
+      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#FDFDFF] overflow-x-hidden overflow-y-auto h-screen pb-20">
+        <TopBar title="Top Reporters" />
+        <div className="w-full pb-20 md:pb-2 p-2 lg:p-4">
         <div className=" mx-auto mt-2">
           <UserCard />
+        </div>
         </div>
       </div>
     </>

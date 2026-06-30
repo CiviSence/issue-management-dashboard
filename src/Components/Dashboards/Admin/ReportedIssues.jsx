@@ -1,6 +1,6 @@
 import SideNav from "./AdminSideNav";
 import BottomNav from "../../Templates/BottomNav";
-import Searchbar from "../../Templates/Searchbar";
+import TopBar from "../../Templates/TopBar";
 import { useIssues } from "../../../Context/IssueContext.js";
 import { useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
@@ -214,16 +214,10 @@ const ReportedIssues = () => {
       <SideNav />
       <BottomNav />
 
-      <div className="w-full p-0 md:p-2 lg:p-4 lg:w-[calc(100vw-15vw)] bg-[#FDFDFF] overflow-x-auto pb-20 ">
-        {/* ========== HEADER ========== */}
-        <div className="w-full bg-linear-to-r from-[#7E70EB] to-[#5A50A6] p-4 rounded-b-2xl md:rounded-2xl shadow-lg border border-white/10">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sticky top-0">
-            <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
-              Resolved Issues
-            </h1>
-            <Searchbar />
-          </div>
-        </div>
+      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#FDFDFF] overflow-x-hidden overflow-y-auto h-screen pb-20">
+        <TopBar title="Reported Issues" />
+        
+        <div className="p-2 lg:p-4 w-full">
         {loadingIssues ? (
           <IssuesSkeleton />
         ) : issues.length > 0 ? (
@@ -592,6 +586,7 @@ const ReportedIssues = () => {
             </p>
           </div>
         )}
+      </div>
       </div>
 
       {showAssignModal && (
