@@ -5,6 +5,7 @@ import { useUser } from "../../../Context/ProfileContext";
 import Loader from "../../Templates/Loader";
 import { useNavigate } from "react-router-dom";
 import axios from "../../../Utils/axios";
+import TopBar from "../../Templates/TopBar";
 
 const StaffNotifications = () => {
   const { profileData } = useUser();
@@ -111,24 +112,9 @@ const StaffNotifications = () => {
     <>
       <StaffSideNav />
       <BottomNav />
-      <div className="w-full h-screen overflow-y-auto pt-0 pb-24 md:p-2 lg:p-4 lg:w-[calc(100vw-15vw)]">
-        <div className="w-full mx-auto">
-          {/* header */}
-          <div className="w-full bg-linear-to-r from-[#7E70EB] to-[#5A50A6] p-5 sm:p-5 lg:p-6 rounded-b-4xl lg:rounded-2xl md:rounded-3xl text-white shadow-lg md:mb-6 sticky top-0 z-40 md:static">
-            <div className="flex items-center justify-between gap-4">
-              {/* LEFT */}
-              <div>
-                <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold leading-tight">
-                  Notifications
-                </h1>
-
-                <p className="text-violet-100 text-xs sm:text-sm md:text-base mt-1">
-                  Notification and updates
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#FDFDFF] overflow-x-hidden overflow-y-auto h-screen pb-20">
+        <TopBar title="Notifications" />
+        <div className="w-full mx-auto p-2 lg:p-4">
         <div className="p-2 md:p-0">
           <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
             {/* Filters */}
@@ -214,6 +200,7 @@ const StaffNotifications = () => {
               </div>
             )}
           </div>
+        </div>
         </div>
       </div>
     </>

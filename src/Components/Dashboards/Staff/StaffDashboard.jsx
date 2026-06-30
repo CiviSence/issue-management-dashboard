@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import StaffSideNav from "./StaffSideNav";
 import BottomNav from "../../Templates/BottomNav";
+import TopBar from "../../Templates/TopBar";
 import { useUser } from "../../../Context/ProfileContext";
 import {
   getAssignedIssues,
@@ -243,135 +244,9 @@ const StaffDashboard = () => {
     <>
       <StaffSideNav />
       <BottomNav />
-      <div className="w-full h-screen overflow-y-auto pt-0 pb-24 md:p-2 lg:p-4 lg:w-[calc(100vw-15vw)]">
-        <div className="w-full mx-auto">
-          {/* header */}
-          <div className="w-full bg-linear-to-r from-[#7E70EB] to-[#5A50A6] p-5 sm:p-5 lg:p-6 rounded-b-4xl lg:rounded-2xl md:rounded-3xl text-white shadow-lg md:mb-6 sticky top-0 z-40 md:static">
-            <div className="flex items-center justify-between gap-4">
-              {/* LEFT */}
-              <div>
-                <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold leading-tight">
-                  Your Dashboard
-                </h1>
-
-                <p className="text-violet-100 text-xs sm:text-sm md:text-base mt-1">
-                  Welcome back,{" "}
-                  <span className="font-semibold">
-                    {profileData?.name || summary.staff_name || "staff"}
-                  </span>
-                  !
-                </p>
-              </div>
-
-              {/* RIGHT */}
-              <div className="flex items-center gap-3 sm:gap-4 shrink-0">
-                {/* Notification Bell */}
-                <div className="relative notif-container">
-                  <button
-                    onClick={() => {
-                      const newState = !showNotifications;
-                      setShowNotifications(newState);
-                      if (newState) {
-                        fetchNotifications();
-                      }
-                    }}
-                    className="p-2 sm:p-2.5 bg-white/10 hover:bg-white/20 active:bg-white/30 rounded-xl transition-all relative cursor-pointer border border-white/10 hover:scale-105"
-                  >
-                    <i className="ri-notification-3-line text-lg sm:text-xl text-white"></i>
-                    {unreadCount > 0 && (
-                      <span className="absolute top-1 right-1 h-2.5 w-2.5 bg-red-500 rounded-full border border-[#7E70EB] animate-pulse"></span>
-                    )}
-                  </button>
-
-                  {/* Notifications Dropdown */}
-                  {showNotifications && (
-                    <div className="absolute right-0 mt-3 w-72 sm:w-80 bg-white rounded-2xl shadow-xl border border-gray-100 z-50 text-gray-800 p-2 overflow-hidden animate-in fade-in zoom-in-95 duration-100">
-                      <div className="flex items-center justify-between px-3 py-2 border-b border-gray-100">
-                        <span className="font-bold text-sm">Notifications</span>
-                        {unreadCount > 0 && (
-                          <button
-                            onClick={handleMarkAllRead}
-                            className="text-xs text-indigo-600 hover:underline font-semibold"
-                          >
-                            Mark all read
-                          </button>
-                        )}
-                      </div>
-                      <div className="max-h-64 overflow-y-auto divide-y divide-gray-50">
-                        {notifications.length > 0 ? (
-                          notifications.map((notif) => {
-                            let icon = "ri-notification-3-line";
-                            if (notif.title?.toLowerCase().includes("assign")) {
-                              icon = "ri-clipboard-line";
-                            } else if (
-                              notif.title?.toLowerCase().includes("accept")
-                            ) {
-                              icon = "ri-loader-4-line";
-                            } else if (
-                              notif.title?.toLowerCase().includes("complete") ||
-                              notif.title?.toLowerCase().includes("resolve")
-                            ) {
-                              icon = "ri-checkbox-circle-line";
-                            }
-
-                            return (
-                              <div
-                                key={notif.id}
-                                onClick={() => handleNotificationClick(notif)}
-                                className={`p-3 text-xs transition-colors hover:bg-gray-50 flex gap-2 cursor-pointer ${
-                                  notif.is_unread
-                                    ? "bg-indigo-50/30 font-medium"
-                                    : "opacity-70"
-                                }`}
-                              >
-                                <div className="mt-0.5 text-indigo-500">
-                                  <i className={`${icon} text-base`}></i>
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                  <p
-                                    className={`font-semibold text-gray-900 leading-snug ${notif.is_unread ? "" : "text-gray-600"}`}
-                                  >
-                                    {notif.title}
-                                  </p>
-                                  <p className="text-gray-500 text-[11px] mt-0.5 leading-normal">
-                                    {notif.message}
-                                  </p>
-                                  <p className="text-[10px] text-gray-400 mt-1">
-                                    {formatDate(notif.sent_at)}
-                                  </p>
-                                </div>
-                                {notif.is_unread && (
-                                  <span className="h-2 w-2 bg-indigo-600 rounded-full mt-1.5 shrink-0"></span>
-                                )}
-                              </div>
-                            );
-                          })
-                        ) : (
-                          <div className="py-8 text-center text-gray-400">
-                            <i className="ri-notification-off-line text-2xl block mb-1"></i>
-                            <p>No new notifications</p>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Profile Pic */}
-                <button
-                  onClick={() => navigate("/profile")}
-                  className="h-10 w-10 sm:h-12 sm:w-12 rounded-full overflow-hidden border border-white/20 hover:border-white/50 transition-all hover:scale-105 cursor-pointer shrink-0"
-                >
-                  <img
-                    src={profileData?.avatar_url || defaultProfile}
-                    alt="Profile"
-                    className="h-full w-full object-cover"
-                  />
-                </button>
-              </div>
-            </div>
-          </div>
-
+      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#FDFDFF] overflow-x-hidden overflow-y-auto h-screen pb-20">
+        <TopBar title="Your Dashboard" />
+        <div className="w-full mx-auto p-2 lg:p-4">
           <div className="w-full gap-2 flex flex-wrap justify-center p-4 rounded-2xl ">
             {stats?.map((item, index) => (
               <IssueCard key={index} issue={item} />
