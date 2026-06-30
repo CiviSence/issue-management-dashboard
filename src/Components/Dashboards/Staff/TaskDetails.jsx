@@ -8,11 +8,13 @@ import {
   rejectAssignment,
   completeAssignment,
   getAssignedIssues,
+  unassignIssue,
 } from "../../../Utils/staffissues";
 import { getIssueById } from "../../../Utils/issues";
+import { uploadMultipleMedia } from "../../../Utils/issuesStudent";
 import Loader from "../../Templates/Loader";
 import StatusBadge from "../../Templates/StatusBadge";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import {
   CheckCircle,
   XCircle,
@@ -40,6 +42,7 @@ const TaskDetails = () => {
   const { profileData } = useUser();
   const { id } = useParams();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const [task, setTask] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -48,6 +51,7 @@ const TaskDetails = () => {
   const [notes, setNotes] = useState("");
   const [rejectionReason, setRejectionReason] = useState("");
   const [resolutionPhotos, setResolutionPhotos] = useState([]);
+  const [resolutionFiles, setResolutionFiles] = useState([]);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
 
   // Fetch task details
@@ -140,13 +144,35 @@ const TaskDetails = () => {
     if (!task?.assignment_id) return;
     setActionLoading(true);
     try {
-      await completeAssignment(task.assignment_id, notes, resolutionPhotos);
+      let uploadedUrls = [];
+      if (resolutionFiles.length > 0) {
+        uploadedUrls = await uploadMultipleMedia(resolutionFiles);
+      }
+      
+      await completeAssignment(task.assignment_id, notes, uploadedUrls);
       setActiveModal(null);
       setNotes("");
       setResolutionPhotos([]);
+      setResolutionFiles([]);
       await fetchTaskDetails();
     } catch (error) {
       console.error("Error completing assignment:", error);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  // Handle Unassign Task
+  const handleUnassign = async () => {
+    if (!task?.assignment_id) return;
+    setActionLoading(true);
+    try {
+      await unassignIssue(task.assignment_id);
+      setActiveModal(null);
+      // Navigate back to the previous page since the task is no longer assigned to us
+      navigate(-1);
+    } catch (error) {
+      console.error("Error unassigning task:", error);
     } finally {
       setActionLoading(false);
     }
@@ -157,11 +183,13 @@ const TaskDetails = () => {
     const files = Array.from(e.target.files);
     const newPhotos = files.map((file) => URL.createObjectURL(file));
     setResolutionPhotos((prev) => [...prev, ...newPhotos]);
+    setResolutionFiles((prev) => [...prev, ...files]);
   };
 
   // Remove uploaded photo
   const removePhoto = (index) => {
     setResolutionPhotos((prev) => prev.filter((_, i) => i !== index));
+    setResolutionFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
   // Format date
@@ -206,6 +234,8 @@ const TaskDetails = () => {
             </p>
           </div>
         </div>
+
+
       </>
     );
   }
@@ -462,13 +492,22 @@ const TaskDetails = () => {
 
                   {/* Show Complete for accepted tasks */}
                   {task.assignment_status === "accepted" && (
-                    <button
-                      onClick={() => setActiveModal("complete")}
-                      className="w-full flex items-center justify-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 bg-[#6366f1] hover:bg-[#5445c9] text-white rounded-xl text-sm sm:text-base font-medium transition-colors cursor-pointer"
-                    >
-                      <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5" />
-                      Mark as Complete
-                    </button>
+                    <>
+                      <button
+                        onClick={() => setActiveModal("complete")}
+                        className="w-full flex items-center justify-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 bg-[#6366f1] hover:bg-[#5445c9] text-white rounded-xl text-sm sm:text-base font-medium transition-colors cursor-pointer"
+                      >
+                        <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5" />
+                        Mark as Complete
+                      </button>
+                      <button
+                        onClick={() => setActiveModal("unassign")}
+                        className="w-full flex items-center justify-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 text-red-600 hover:bg-red-50 border border-red-200 rounded-xl text-sm sm:text-base font-medium transition-colors cursor-pointer bg-transparent"
+                      >
+                        <XCircle className="w-4 h-4 sm:w-5 sm:h-5" />
+                        Unassign Task (Revert)
+                      </button>
+                    </>
                   )}
 
                   {/* Show resolved status */}
@@ -720,6 +759,35 @@ const TaskDetails = () => {
           </div>
         )}
       </div>
+
+      {/* Unassign Modal */}
+      {activeModal === "unassign" && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="bg-white rounded-2xl w-full max-w-md p-6">
+            <h3 className="text-xl font-semibold mb-2">Unassign Task</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              Are you sure you want to unassign yourself from this task? It will be returned to the issue pool.
+            </p>
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={() => setActiveModal(null)}
+                className="flex-1 py-2.5 bg-muted hover:bg-muted/80 text-muted-foreground font-medium rounded-xl transition-colors"
+                disabled={actionLoading}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleUnassign}
+                disabled={actionLoading}
+                className="flex-1 py-2.5 bg-red-600 hover:bg-red-700 text-white font-medium rounded-xl transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+              >
+                {actionLoading && <Loader2 className="w-4 h-4 animate-spin" />}
+                Unassign
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </>
   );

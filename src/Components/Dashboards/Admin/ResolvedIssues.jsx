@@ -5,6 +5,7 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useIssues } from "../../../Context/IssueContext.js";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { deleteIssue } from "../../../Utils/issues";
 import { toast, ToastContainer } from "react-toastify";
 import StatusBadge from "../../Templates/StatusBadge";
@@ -68,8 +69,10 @@ const SkeletonLoader = () => {
 };
 
 const ResolvedIssues = () => {
+  const navigate = useNavigate();
   const [selectedLocation, setSelectedLocation] = useState("all");
   const [priority, setPriority] = useState("all");
+  const [selectedIssue, setSelectedIssue] = useState(null);
   const { resolvedIssues, setResolvedIssues, loadingResolved } = useIssues();
 
   const handleDeleteIssue = async (id) => {
@@ -102,7 +105,6 @@ const ResolvedIssues = () => {
     ...new Set(resolvedIssues.map((i) => i.location_address).filter(Boolean)),
   ];
 
-
   return (
     <>
       <ToastContainer
@@ -123,203 +125,300 @@ const ResolvedIssues = () => {
       <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#FDFDFF] overflow-x-hidden overflow-y-auto h-screen pb-20">
         <TopBar title="Resolved Issues" />
         <div className="w-full pb-20 md:pb-2 p-2 lg:p-4">
-{loadingResolved ? (
-        <SkeletonLoader />
-      ) : resolvedIssues.length > 0 ? (
-        <>
-            <div className="bg-white rounded-xl shadow-sm p-4 md:p-6 w-full mt-2">
-              {/* Header */}
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-5">
-                <h2 className="text-lg font-semibold text-gray-800">
-                  All Resolved Issues
-                </h2>
+          {loadingResolved ? (
+            <SkeletonLoader />
+          ) : resolvedIssues.length > 0 ? (
+            <>
+              <div className="bg-white rounded-xl shadow-sm p-4 md:p-6 w-full mt-2">
+                {/* Header */}
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-5">
+                  <h2 className="text-lg font-semibold text-gray-800">
+                    All Resolved Issues
+                  </h2>
 
-                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
-                  {/* Location Select */}
-                  <div className="relative w-full sm:w-40 md:w-48">
-                    <select
-                      value={selectedLocation}
-                      onChange={(e) => setSelectedLocation(e.target.value)}
-                      className="w-full appearance-none bg-white border border-gray-300 text-gray-700 text-sm rounded-lg pl-3 pr-8 py-2 sm:px-4 sm:pr-10 sm:py-2.5 shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-600 focus:border-violet-600 transition duration-200 cursor-pointer"
-                    >
-                      <option value="all">Location: All</option>
-                      {uniqueLocations.map((location, index) => (
-                        <option key={index} value={location}>
-                          {location
-                            .split("-")
-                            .map(
-                              (word) =>
-                                word.charAt(0).toUpperCase() + word.slice(1),
-                            )
-                            .join(" ")}
-                        </option>
-                      ))}
-                    </select>
-                    {/* Custom dropdown arrow */}
-                    <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                      <svg
-                        className="w-4 h-4 text-gray-500"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
+                  <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
+                    {/* Location Select */}
+                    <div className="relative w-full sm:w-40 md:w-48">
+                      <select
+                        value={selectedLocation}
+                        onChange={(e) => setSelectedLocation(e.target.value)}
+                        className="w-full appearance-none bg-white border border-gray-300 text-gray-700 text-sm rounded-lg pl-3 pr-8 py-2 sm:px-4 sm:pr-10 sm:py-2.5 shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-600 focus:border-violet-600 transition duration-200 cursor-pointer"
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M19 9l-7 7-7-7"
-                        />
-                      </svg>
+                        <option value="all">Location: All</option>
+                        {uniqueLocations.map((location, index) => (
+                          <option key={index} value={location}>
+                            {location
+                              .split("-")
+                              .map(
+                                (word) =>
+                                  word.charAt(0).toUpperCase() + word.slice(1),
+                              )
+                              .join(" ")}
+                          </option>
+                        ))}
+                      </select>
+                      {/* Custom dropdown arrow */}
+                      <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                        <svg
+                          className="w-4 h-4 text-gray-500"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M19 9l-7 7-7-7"
+                          />
+                        </svg>
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Priority Select */}
-                  <div className="relative w-full sm:w-32 md:w-36">
-                    <select
-                      value={priority}
-                      onChange={(e) => setPriority(e.target.value)}
-                      className="w-full appearance-none bg-white border border-gray-300 text-gray-700 text-sm rounded-lg pl-3 pr-8 py-2 sm:px-4 sm:pr-10 sm:py-2.5 shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-600 focus:border-violet-600 transition duration-200 cursor-pointer"
-                    >
-                      <option value="all">Priority: All</option>
-                      <option value="low">Low</option>
-                      <option value="medium">Medium</option>
-                      <option value="high">High</option>
-                    </select>
-                    {/* Custom dropdown arrow */}
-                    <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                      <svg
-                        className="w-4 h-4 text-gray-500"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
+                    {/* Priority Select */}
+                    <div className="relative w-full sm:w-32 md:w-36">
+                      <select
+                        value={priority}
+                        onChange={(e) => setPriority(e.target.value)}
+                        className="w-full appearance-none bg-white border border-gray-300 text-gray-700 text-sm rounded-lg pl-3 pr-8 py-2 sm:px-4 sm:pr-10 sm:py-2.5 shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-600 focus:border-violet-600 transition duration-200 cursor-pointer"
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M19 9l-7 7-7-7"
-                        />
-                      </svg>
+                        <option value="all">Priority: All</option>
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                      </select>
+                      {/* Custom dropdown arrow */}
+                      <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                        <svg
+                          className="w-4 h-4 text-gray-500"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M19 9l-7 7-7-7"
+                          />
+                        </svg>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              {/* ===== DESKTOP TABLE ===== */}
-              <div className="hidden md:block overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead className="bg-gray-100 text-gray-600">
-                    <tr>
-                      <th className="text-left p-3">Issue Title</th>
-                      <th className="text-left p-3">Category</th>
-                      <th className="text-left p-3">Location</th>
-                      <th className="text-left p-3">Priority</th>
-                      <th className="text-left p-3">Status</th>
-                      <th className="text-left p-3">Reported</th>
-                      <th className="text-left p-3">Action</th>
-                    </tr>
-                  </thead>
-
-                  <tbody>
-                    {filteredIssues?.map((issue, i) => (
-                      <tr
-                        key={i}
-                        className="border-b border-zinc-200 last:border-none"
-                      >
-                        <td className="p-3 font-medium">{issue.title}</td>
-                        <td className="p-3">
-                          <StatusBadge type="category" value={issue.main_category} />
-                        </td>
-
-                        <td className="p-3">{issue.location_address}</td>
-
-                        <td className="p-3">
-                          <StatusBadge type="priority" value={issue.priority} />
-                        </td>
-
-                        <td className="p-3">
-                          <StatusBadge type="status" value={issue.status} />
-                        </td>
-
-                        <td className="p-3 text-gray-500">
-                          {issue.created_at.split("T")[0]}
-                        </td>
-
-                        <td className="p-3 cursor-pointer">
-                          <i
-                            onClick={() => handleDeleteIssue(issue.id)}
-                            className="ri-delete-bin-line text-xl text-gray-400 hover:text-red-500"
-                          ></i>
-                        </td>
+                {/* ===== DESKTOP TABLE ===== */}
+                <div className="hidden md:block overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead className="bg-gray-100 text-gray-600">
+                      <tr>
+                        <th className="text-left p-3">Issue Title</th>
+                        <th className="text-left p-3">Category</th>
+                        <th className="text-left p-3">Location</th>
+                        <th className="text-left p-3">Priority</th>
+                        <th className="text-left p-3">Status</th>
+                        <th className="text-left p-3">Resolution Notes</th>
+                        <th className="text-left p-3">Reported</th>
+                        <th className="text-left p-3">Action</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+
+                    <tbody>
+                      {filteredIssues?.map((issue, i) => (
+                        <tr
+                          key={i}
+                          className="border-b border-zinc-200 last:border-none cursor-pointer hover:bg-gray-50 transition-colors"
+                          onClick={() => setSelectedIssue(issue)}
+                        >
+                          <td className="p-3 font-medium">{issue.title}</td>
+                          <td className="p-3">
+                            <StatusBadge type="category" value={issue.main_category} />
+                          </td>
+
+                          <td className="p-3">{issue.location_address}</td>
+
+                          <td className="p-3">
+                            <StatusBadge type="priority" value={issue.priority} />
+                          </td>
+
+                          <td className="p-3">
+                            <StatusBadge type="status" value={issue.status} />
+                          </td>
+
+                          <td className="p-3 text-sm text-gray-600 max-w-xs truncate">
+                            {issue.resolution_notes || "N/A"}
+                          </td>
+
+                          <td className="p-3 text-gray-500">
+                            {issue.created_at.split("T")[0]}
+                          </td>
+
+                          <td className="p-3">
+                            <i
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteIssue(issue.id);
+                              }}
+                              className="ri-delete-bin-line text-xl text-gray-400 hover:text-red-500 cursor-pointer"
+                            ></i>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                <div className="md:hidden space-y-3">
+                  {filteredIssues.map((issue, i) => (
+                    <div
+                      key={i}
+                      onClick={() => setSelectedIssue(issue)}
+                      className="
+          bg-white
+          rounded-xl
+          p-4
+          shadow-sm
+          border border-gray-100
+          space-y-3
+          active:scale-[0.98]
+          transition
+          cursor-pointer
+        "
+                    >
+                      {/* Title + Priority */}
+                      <div className="flex items-start justify-between gap-2">
+                        <h3 className="font-semibold text-gray-900 text-sm leading-snug">
+                          {issue.title}
+                        </h3>
+
+                        <StatusBadge type="priority" value={issue.priority} />
+                      </div>
+
+                      {/* Badges */}
+                      <div className="flex flex-wrap gap-2">
+                        <StatusBadge type="category" value={issue.main_category} showDot={false} />
+                        <StatusBadge type="status" value={issue.status} />
+                      </div>
+
+                      {/* Location */}
+                      <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                        <span>📍</span>
+                        <span>{issue.location_address}</span>
+                      </div>
+
+                      {/* Resolution Notes */}
+                      {issue.resolution_notes && (
+                        <div className="text-xs text-gray-600 bg-gray-50 p-2 rounded border border-gray-100 line-clamp-2">
+                          <span className="font-semibold text-gray-700">Staff Notes: </span>
+                          {issue.resolution_notes}
+                        </div>
+                      )}
+
+                      {/* Footer */}
+                      <div className="flex items-center justify-between pt-1 text-xs text-gray-400">
+                        <span>{issue.created_at.split("T")[0]}</span>
+
+                        <button onClick={(e) => { e.stopPropagation(); handleDeleteIssue(issue.id); }} className="text-red-400 font-medium z-10 relative">
+                          delete
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>   
+            </>
+          ) : (
+            <div className="w-full min-h-[60vh] flex flex-col items-center justify-center text-center p-6 bg-white rounded-2xl shadow-sm mt-4 mx-auto lg:w-[calc(100vw-15vw)]">
+              <div className="w-24 h-24 bg-emerald-50 rounded-full flex items-center justify-center mb-6">
+                <i className="ri-checkbox-circle-line text-4xl text-emerald-500"></i>
+              </div>
+              <h2 className="text-2xl font-bold text-gray-800 mb-2">No Resolved Issues</h2>
+              <p className="text-gray-500 max-w-sm">
+                Great news! There are no resolved issues to display right now. Check back later as more problems are fixed.
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Resolution Details Modal */}
+      {selectedIssue && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 relative">
+            <button
+              onClick={() => setSelectedIssue(null)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-full p-2 transition-colors"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            
+            <h3 className="text-xl font-bold text-gray-900 pr-10 mb-2">{selectedIssue.title}</h3>
+            <div className="flex gap-2 mb-6">
+              <StatusBadge type="status" value={selectedIssue.status} />
+              <StatusBadge type="priority" value={selectedIssue.priority} />
+            </div>
+
+            <div className="space-y-6">
+              <div>
+                <h4 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-2 flex items-center gap-2">
+                  <span className="w-4 h-0.5 bg-violet-500 rounded-full" />
+                  Issue Description
+                </h4>
+                <p className="text-gray-700 text-sm bg-gray-50 p-3 rounded-xl border border-gray-100">
+                  {selectedIssue.description || "No description provided."}
+                </p>
               </div>
 
-              {/* ===== MOBILE CARDS ===== */}
-              <div className="md:hidden space-y-3">
-                {filteredIssues.map((issue, i) => (
-                  <div
-                    key={i}
-                    className="
-        bg-white
-        rounded-xl
-        p-4
-        shadow-sm
-        border border-gray-100
-        space-y-3
-        active:scale-[0.98]
-        transition
-      "
-                  >
-                    {/* Title + Priority */}
-                    <div className="flex items-start justify-between gap-2">
-                      <h3 className="font-semibold text-gray-900 text-sm leading-snug">
-                        {issue.title}
-                      </h3>
-
-                      <StatusBadge type="priority" value={issue.priority} />
-                    </div>
-
-                    {/* Badges */}
-                    <div className="flex flex-wrap gap-2">
-                      <StatusBadge type="category" value={issue.main_category} showDot={false} />
-                      <StatusBadge type="status" value={issue.status} />
-                    </div>
-
-                    {/* Location */}
-                    <div className="flex items-center gap-1.5 text-xs text-gray-500">
-                      <span>📍</span>
-                      <span>{issue.location_address}</span>
-                    </div>
-
-                    {/* Footer */}
-                    <div className="flex items-center justify-between pt-1 text-xs text-gray-400">
-                      <span>{issue.created_at.split("T")[0]}</span>
-
-                      <button onClick={() => handleDeleteIssue(issue.id)} className="text-red-400 font-medium">
-                        delete
-                      </button>
-                    </div>
+              <div>
+                <h4 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-2 flex items-center gap-2">
+                  <span className="w-4 h-0.5 bg-green-500 rounded-full" />
+                  Resolution Details
+                </h4>
+                <div className="bg-green-50/50 p-4 rounded-xl border border-green-100 text-gray-700">
+                  <div className="mb-4">
+                    <span className="font-semibold block mb-1 text-sm">Staff Notes:</span>
+                    <p className="text-sm">{selectedIssue.resolution_notes || "No resolution notes provided."}</p>
                   </div>
-                ))}
+                  
+                  {selectedIssue.resolution_media_urls && selectedIssue.resolution_media_urls.length > 0 && (
+                    <div>
+                      <span className="font-semibold block mb-2 text-sm">Resolution Proof (Photos):</span>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                        {selectedIssue.resolution_media_urls.map((url, idx) => (
+                          <a key={idx} href={url} target="_blank" rel="noopener noreferrer" className="block w-full aspect-square rounded-lg overflow-hidden border border-gray-200">
+                            <img src={url} alt={`Resolution proof ${idx + 1}`} className="w-full h-full object-cover hover:scale-105 transition-transform" />
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>   
-        </>
-      ) : (
-        <div className="w-full min-h-[60vh] flex flex-col items-center justify-center text-center p-6 bg-white rounded-2xl shadow-sm mt-4 mx-auto lg:w-[calc(100vw-15vw)]">
-          <div className="w-24 h-24 bg-emerald-50 rounded-full flex items-center justify-center mb-6">
-            <i className="ri-checkbox-circle-line text-4xl text-emerald-500"></i>
+            </div>
+
+            <div className="mt-8 flex justify-end gap-3 pt-4 border-t border-gray-100">
+              <button
+                onClick={() => setSelectedIssue(null)}
+                className="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl transition-colors"
+              >
+                Close
+              </button>
+              <button
+                onClick={() => navigate(`/issues/${selectedIssue.id}`, { state: selectedIssue })}
+                className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-xl transition-colors flex items-center gap-2"
+              >
+                View Full Details
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              </button>
+            </div>
           </div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">No Resolved Issues</h2>
-          <p className="text-gray-500 max-w-sm">
-            Great news! There are no resolved issues to display right now. Check back later as more problems are fixed.
-          </p>
         </div>
       )}
-       </div>
-      </div>
+
     </>
   );
 };

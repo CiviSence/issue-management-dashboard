@@ -9,6 +9,7 @@ import {
   rejectAssignment,
   completeAssignment,
 } from "../../../Utils/staffissues";
+import { uploadMultipleMedia } from "../../../Utils/issuesStudent";
 import Loader from "../../Templates/Loader";
 import { useNavigate } from "react-router-dom";
 import {
@@ -47,6 +48,7 @@ const AssignedIssues = () => {
   const [notes, setNotes] = useState("");
   const [rejectionReason, setRejectionReason] = useState("");
   const [resolutionPhotos, setResolutionPhotos] = useState([]);
+  const [resolutionFiles, setResolutionFiles] = useState([]);
 
   const formatDate = (dateString) => {
     if (!dateString) return "N/A";
@@ -155,9 +157,14 @@ const AssignedIssues = () => {
     if (!selectedAssignmentId) return;
     setActionLoading(selectedAssignmentId);
     try {
-      await completeAssignment(selectedAssignmentId, notes, resolutionPhotos);
+      let uploadedUrls = [];
+      if (resolutionFiles.length > 0) {
+        uploadedUrls = await uploadMultipleMedia(resolutionFiles);
+      }
+      await completeAssignment(selectedAssignmentId, notes, uploadedUrls);
       setNotes("");
       setResolutionPhotos([]);
+      setResolutionFiles([]);
       setActiveModal(null);
       await fetchAssigned();
     } catch (error) {
@@ -171,10 +178,12 @@ const AssignedIssues = () => {
     const files = Array.from(e.target.files);
     const newPhotos = files.map((file) => URL.createObjectURL(file));
     setResolutionPhotos((prev) => [...prev, ...newPhotos]);
+    setResolutionFiles((prev) => [...prev, ...files]);
   };
 
   const removePhoto = (index) => {
     setResolutionPhotos((prev) => prev.filter((_, i) => i !== index));
+    setResolutionFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
   const filterTabs = [

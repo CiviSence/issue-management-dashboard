@@ -68,13 +68,20 @@ const IssuePool = () => {
     return result;
   }, [issues, searchQuery]);
 
-  const handleSelfAssign = async (issueId) => {
-    setActionLoading(issueId);
+  const [confirmSelfAssignId, setConfirmSelfAssignId] = useState(null);
+
+  const handleSelfAssignClick = (issueId) => {
+    setConfirmSelfAssignId(issueId);
+  };
+
+  const confirmSelfAssign = async () => {
+    if (!confirmSelfAssignId) return;
+    setActionLoading(confirmSelfAssignId);
     try {
-      await selfAssignIssue(issueId);
+      await selfAssignIssue(confirmSelfAssignId);
       // Remove it from the local list upon success
-      setIssues(prev => prev.filter(i => i.id !== issueId));
-      // Optionally show a toast here
+      setIssues(prev => prev.filter(i => i.id !== confirmSelfAssignId));
+      setConfirmSelfAssignId(null);
     } catch (error) {
       console.error("Error self-assigning issue:", error);
     } finally {
@@ -175,7 +182,7 @@ const IssuePool = () => {
                             <div className="px-4 pb-4 pt-0">
                               <div className="border-t border-border pt-3 flex gap-2">
                                 <button
-                                  onClick={() => handleSelfAssign(issue.id)}
+                                  onClick={() => handleSelfAssignClick(issue.id)}
                                   disabled={isLoading}
                                   className="flex-1 flex items-center justify-center gap-1.5 py-2 bg-[#6366f1] hover:bg-[#5445c9] text-white rounded-lg text-xs font-medium transition-colors disabled:opacity-50"
                                 >
@@ -238,7 +245,7 @@ const IssuePool = () => {
                                 <td className="px-5 py-3.5" onClick={(e) => e.stopPropagation()}>
                                   <div className="flex items-center justify-end gap-2">
                                     <button
-                                      onClick={() => handleSelfAssign(issue.id)}
+                                      onClick={() => handleSelfAssignClick(issue.id)}
                                       disabled={isLoading}
                                       className="flex items-center gap-1.5 px-3 py-1.5 bg-[#6366f1] hover:bg-[#5445c9] text-white rounded-lg text-xs font-medium transition-colors disabled:opacity-50"
                                     >
@@ -282,6 +289,39 @@ const IssuePool = () => {
           </div>
         </div>
       </div>
+      
+      {/* Confirmation Modal */}
+      {confirmSelfAssignId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-sm p-6 transform transition-all">
+            <h3 className="text-lg font-bold text-gray-900 mb-2">Confirm Assignment</h3>
+            <p className="text-sm text-gray-500 mb-6">
+              Are you sure you want to assign this task to yourself? You will be responsible for completing it.
+            </p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setConfirmSelfAssignId(null)}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+                disabled={actionLoading}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmSelfAssign}
+                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors disabled:opacity-50"
+                disabled={actionLoading}
+              >
+                {actionLoading === confirmSelfAssignId ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <CheckCircle className="w-4 h-4" />
+                )}
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

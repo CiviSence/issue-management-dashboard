@@ -1160,6 +1160,35 @@ const IssueDetails = () => {
                       </div>
                     </div>
 
+                    {/* Resolution Details */}
+                    {(issue.resolution_notes || (issue.resolution_media_urls && issue.resolution_media_urls.length > 0)) && (
+                      <div className="mb-6 sm:mb-8">
+                        <h2 className="text-xs sm:text-sm font-bold text-gray-900 uppercase tracking-wider mb-2 sm:mb-3 flex items-center gap-2">
+                          <span className="w-6 sm:w-8 h-0.5 bg-green-500 rounded-full" />
+                          Resolution Details
+                        </h2>
+                        <div className="p-3 sm:p-4 rounded-xl border bg-green-50/50 border-green-100 text-gray-700">
+                          {issue.resolution_notes && (
+                            <p className="text-sm sm:text-base leading-relaxed mb-4">
+                              <span className="font-semibold block mb-1">Staff Notes:</span>
+                              {issue.resolution_notes}
+                            </p>
+                          )}
+                          {issue.resolution_media_urls && issue.resolution_media_urls.length > 0 && (
+                            <div>
+                              <span className="font-semibold block mb-2 text-sm">Resolution Proof:</span>
+                              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                                {issue.resolution_media_urls.map((url, idx) => (
+                                  <a key={idx} href={url} target="_blank" rel="noopener noreferrer" className="block w-full aspect-square rounded-lg overflow-hidden border border-gray-200">
+                                    <img src={url} alt={`Resolution proof ${idx + 1}`} className="w-full h-full object-cover hover:scale-105 transition-transform" />
+                                  </a>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
                     {/* Engagement Stats */}
                     <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between pt-4 sm:pt-6 border-t border-gray-100 gap-3 sm:gap-0">
                       <div className="flex items-center gap-2 sm:gap-4 justify-between sm:justify-start">

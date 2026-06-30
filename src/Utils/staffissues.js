@@ -89,10 +89,17 @@ export const getAssignmentStats = async () => {
 // Self-assign an unassigned issue (staff)
 export const selfAssignIssue = async (issueId) => {
   try {
-    const { data } = await axios.post(`/assignments/${issueId}/self-assign`);
+    const { data } = await axios.post(`/assignments/${issueId}/self-assign`, {});
     return data;
   } catch (error) {
     throw new Error(error.response?.data?.message || "Failed to self-assign issue");
   }
 };
-
+export const unassignIssue = async (assignmentId) => {
+  try {
+    const { data } = await axios.post(`/assignments/${assignmentId}/unassign`);
+    return data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "Failed to unassign issue");
+  }
+};
