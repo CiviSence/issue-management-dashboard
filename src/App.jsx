@@ -6,6 +6,7 @@ import ResolvedIssues from "./Components/Dashboards/Admin/ResolvedIssues";
 import Leaderboard from "./Components/Dashboards/Admin/Leaderboard";
 import Profile from "./Components/Profile";
 import AssignedIssues from "./Components/Dashboards/Staff/AssignedIssues";
+import IssuePool from "./Components/Dashboards/Staff/IssuePool";
 
 import IssueDetails from "./Components/Dashboards/Admin/IssuesDetails";
 import HelpSupport from "./Components/Dashboards/Common/HelpSupport";
@@ -110,7 +111,7 @@ const App = () => {
             path="/"
             element={
               <AuthRoute>
-                <Navigate to="/signup" replace />
+                <Navigate to="/login" replace />
               </AuthRoute>
             }
           />
@@ -222,6 +223,14 @@ const App = () => {
             element={
               <ProtectedRoute allowedRoles={["staff"]}>
                 <AssignedIssues />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/issue-pool"
+            element={
+              <ProtectedRoute allowedRoles={["staff"]}>
+                <IssuePool />
               </ProtectedRoute>
             }
           />

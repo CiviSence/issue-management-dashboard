@@ -13,6 +13,11 @@ const StaffSideNav = () => {
     <SideNavLayout>
       <NavItem to="/dashboard" icon="ri-dashboard-fill" label="Dashboard" />
       <NavItem
+        to="/issue-pool"
+        icon="ri-inbox-archive-line"
+        label="Issue Pool"
+      />
+      <NavItem
         to="/assigned-issues"
         icon="ri-clipboard-line"
         label="Assigned Tasks"
