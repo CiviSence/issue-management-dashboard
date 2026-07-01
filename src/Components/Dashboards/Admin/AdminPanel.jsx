@@ -908,7 +908,7 @@ const AdminPanel = () => {
           message: notificationForm.message,
           recipient_type: "all",
           recipient_filter: {},
-          channels: ["in_app"],
+          channels: ["in_app", "push"],
           priority: notificationForm.priority,
           scheduled_for: new Date().toISOString(),
         };
@@ -919,7 +919,7 @@ const AdminPanel = () => {
         payload = {
           title: notificationForm.title,
           message: notificationForm.message,
-          channels: ["in_app", "email"],
+          channels: ["in_app", "email", "push"],
         };
         break;
 
@@ -929,7 +929,7 @@ const AdminPanel = () => {
           title: notificationForm.title,
           message: notificationForm.message,
           role: notificationForm.role === 'student' ? 'citizen' : notificationForm.role === 'staff' ? 'official' : notificationForm.role,
-          channels: ["in_app"],
+          channels: ["in_app", "push"],
         };
         break;
 
@@ -939,7 +939,7 @@ const AdminPanel = () => {
           title: notificationForm.title,
           message: notificationForm.message,
           user_id: notificationForm.userId,
-          channels: ["in_app"],
+          channels: ["in_app", "push"],
         };
         break;
 
