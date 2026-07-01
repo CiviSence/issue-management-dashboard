@@ -10,6 +10,7 @@ import { IssueProvider } from "./Context/IssueContext.jsx";
 import { ProfileDataProvider } from "./Context/ProfileContext.jsx";
 import { UserProvider } from "./Context/UserContext.jsx";
 import { IssuesProvider } from "./Context/IssuesContext.jsx";
+import { NotificationProvider } from "./Components/NotificationProvider.jsx";
 import "remixicon/fonts/remixicon.css";
 
 registerSW({
@@ -22,7 +23,9 @@ createRoot(document.getElementById("root")).render(
       <ProfileDataProvider>
         <IssuesProvider>
           <IssueProvider>
-            <App />
+            <NotificationProvider>
+              <App />
+            </NotificationProvider>
           </IssueProvider>
         </IssuesProvider>
       </ProfileDataProvider>
