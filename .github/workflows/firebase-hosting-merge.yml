@@ -27,10 +27,18 @@ jobs:
           VITE_FIREBASE_APP_ID: ${{ secrets.VITE_FIREBASE_APP_ID }}
           VITE_FIREBASE_VAPID_KEY: ${{ secrets.VITE_FIREBASE_VAPID_KEY }}
           
-      - name: Deploy to Firebase
-        uses: FirebaseExtended/action-hosting-deploy@v0
-        with:
-          repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_CIVISENCE_ADMIN }}
-          channelId: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && 'live' || '' }}
-          projectId: civisence-admin
+      - name: Deploy to Firebase Hosting (Live)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_CIVISENCE_ADMIN }}' > service-account.json
+          export GOOGLE_APPLICATION_CREDENTIALS=service-account.json
+          npx firebase-tools deploy --only hosting --project civisence-admin
+          rm service-account.json
+
+      - name: Deploy to Firebase Hosting (Preview)
+        if: github.event_name == 'pull_request'
+        run: |
+          echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_CIVISENCE_ADMIN }}' > service-account.json
+          export GOOGLE_APPLICATION_CREDENTIALS=service-account.json
+          npx firebase-tools hosting:channel:deploy pr-${{ github.event.number }} --project civisence-admin
+          rm service-account.json
