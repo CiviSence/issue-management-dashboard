@@ -234,6 +234,16 @@ const TopBar = ({ title }) => {
           </div>
         </div>
 
+        {/* Refresh Icon */}
+        <button
+          onClick={() => window.location.reload()}
+          className="p-2 hover:bg-white/10 rounded-full transition-colors flex items-center justify-center text-white"
+          title="Refresh Page"
+          aria-label="Refresh"
+        >
+          <i className="ri-refresh-line text-xl"></i>
+        </button>
+
         {/* Notification Icon */}
         <div className="relative" ref={notificationRef}>
           <button

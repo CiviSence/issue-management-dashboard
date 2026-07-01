@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import StudentSideNav from "./StudentSideNav";
 import StudentBottomNav from "./StudentBottomNav";
 import UserCard from "../../Templates/UserCard";
+import PullToRefresh from "../../Templates/PullToRefresh";
 import { useUser } from "../../../Context/ProfileContext";
 import { useIssues } from "../../../Context/IssuesContext.js";
 import { ToastContainer, toast } from "react-toastify";
@@ -148,7 +149,8 @@ const StudentDashboard = () => {
       <StudentSideNav />
       <StudentBottomNav />
 
-      <div className="w-full p-2 lg:p-4 lg:w-[calc(100vw-15vw)] bg-[#FDFDFF] overflow-y-auto h-screen">
+      <div className="w-full p-2 lg:p-4 lg:w-[calc(100vw-15vw)] bg-[#FDFDFF] overflow-y-auto h-screen" id="dashboardScroll">
+        <PullToRefresh scrollContainerId="dashboardScroll" onRefresh={() => fetchIssues(true)}>
         {/* Desktop Header */}
         <div className="hidden sm:block w-full bg-linear-to-r from-[#7E70EB] to-[#5A50A6] p-4 sm:p-5 lg:p-6 rounded-2xl md:rounded-3xl text-white shadow-lg mb-4 md:mb-6 border border-white/10">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
@@ -177,9 +179,18 @@ const StudentDashboard = () => {
         {/* Mobile Header */}
         <div className="sm:hidden mb-3">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">{getGreeting()}</p>
-              <h1 className="text-lg font-bold text-gray-900">{firstName}</h1>
+            <div className="flex items-center gap-3">
+              <div>
+                <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">{getGreeting()}</p>
+                <h1 className="text-lg font-bold text-gray-900">{firstName}</h1>
+              </div>
+              <button
+                onClick={() => window.location.reload()}
+                className="p-1.5 bg-gray-150 hover:bg-gray-200 text-gray-600 rounded-full transition active:scale-95 flex items-center justify-center"
+                title="Refresh Page"
+              >
+                <i className="ri-refresh-line text-sm"></i>
+              </button>
             </div>
             <button
               onClick={() => setFormModal({ mode: "create" })}
@@ -538,6 +549,7 @@ const StudentDashboard = () => {
             </div>
           </div>
         </div>
+        </PullToRefresh>
       </div>
 
       {/* Report Issue Modal */}

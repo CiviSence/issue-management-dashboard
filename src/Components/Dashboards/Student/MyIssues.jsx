@@ -2,6 +2,7 @@ import { useState } from "react";
 import StudentSideNav from "./StudentSideNav";
 import StudentBottomNav from "./StudentBottomNav";
 import UserCard from "../../Templates/UserCard";
+import PullToRefresh from "../../Templates/PullToRefresh";
 import { toast } from "react-toastify";
 import { useUser } from "../../../Context/ProfileContext";
 import Skeleton from "react-loading-skeleton";
@@ -278,7 +279,20 @@ const MyIssues = () => {
     <>
       <StudentSideNav />
       <StudentBottomNav />
-      <div className="w-full p-2 lg:p-4 lg:w-[calc(100vw-15vw)] bg-[#F0EEFF] overflow-y-auto h-screen">
+      <div className="w-full p-2 lg:p-4 lg:w-[calc(100vw-15vw)] bg-[#F0EEFF] overflow-y-auto h-screen" id="myIssuesScroll">
+        <PullToRefresh scrollContainerId="myIssuesScroll" onRefresh={() => fetchIssues(true)}>
+        {/* Mobile Header */}
+        <div className="sm:hidden mb-3 flex items-center justify-between">
+          <h1 className="text-lg font-bold text-gray-900">My Reports</h1>
+          <button
+            onClick={() => window.location.reload()}
+            className="p-1.5 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-full transition active:scale-95 flex items-center justify-center h-8 w-8"
+            title="Refresh Page"
+          >
+            <i className="ri-refresh-line text-sm"></i>
+          </button>
+        </div>
+
         {/* Desktop Header */}
         <div className="hidden sm:block w-full bg-violet-500 p-4 sm:p-5 lg:p-6 rounded-2xl md:rounded-3xl text-white shadow-md mb-4">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
@@ -372,31 +386,8 @@ const MyIssues = () => {
               <div className="space-y-3">
                 <InfiniteScroll
                   dataLength={filtered.length}
-                  next={() => { }} // No infinite scroll for MyIssues yet, just for pull-to-refresh
+                  next={() => { }}
                   hasMore={false}
-                  pullDownToRefresh
-                  pullDownToRefreshThreshold={50}
-                  refreshFunction={() => fetchIssues(true)}
-                  pullDownToRefreshContent={
-                    <div className="flex flex-col items-center py-4 bg-white/50 backdrop-blur-sm rounded-xl mb-3 border border-violet-100 shadow-sm transition-all animate-pulse">
-                      <div className="p-2 bg-violet-100 rounded-full mb-1">
-                        <svg className="w-5 h-5 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                        </svg>
-                      </div>
-                      <span className="text-violet-600 font-bold text-sm">Pull down to refresh</span>
-                    </div>
-                  }
-                  releaseToRefreshContent={
-                    <div className="flex flex-col items-center py-4 bg-violet-500 rounded-xl mb-3 shadow-lg shadow-violet-200 border border-violet-400 transition-all scale-105">
-                      <div className="p-2 bg-white/20 rounded-full mb-1">
-                        <svg className="w-5 h-5 text-white animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
-                        </svg>
-                      </div>
-                      <span className="text-white font-bold text-sm">Release to refresh</span>
-                    </div>
-                  }
                 >
                   {filtered.map((issue) => (
                     <IssueRow
@@ -477,6 +468,7 @@ const MyIssues = () => {
             )}
           </div>
         </div>
+        </PullToRefresh>
       </div>
 
       {/* Form Modal */}

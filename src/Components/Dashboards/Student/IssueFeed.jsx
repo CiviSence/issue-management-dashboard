@@ -1,6 +1,7 @@
 import StudentSideNav from "./StudentSideNav";
 import StudentBottomNav from "./StudentBottomNav";
 import UserCard from "../../Templates/UserCard";
+import PullToRefresh from "../../Templates/PullToRefresh";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { toast } from "react-toastify";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -651,6 +652,7 @@ const IssueFeed = () => {
       <StudentSideNav />
       <StudentBottomNav />
       <div className="w-full p-2 lg:p-4 lg:w-[calc(100vw-15vw)] bg-[#F0EEFF] overflow-y-auto h-screen" id="mainScroll">
+        <PullToRefresh scrollContainerId="mainScroll" onRefresh={() => fetchIssues(true)}>
         {/* Mobile Greeting - Only on small screens */}
         <AnimatePresence>
           {showGreeting && (
@@ -718,7 +720,7 @@ const IssueFeed = () => {
               </div>
 
               {/* Status filter */}
-              <div className="flex gap-1 ml-auto">
+              <div className="flex gap-1 ml-auto items-center">
                 {[
                   { label: "All", val: undefined },
                   { label: "Active", val: false },
@@ -735,6 +737,13 @@ const IssueFeed = () => {
                     {label}
                   </button>
                 ))}
+                <button
+                  onClick={() => window.location.reload()}
+                  className="p-1.5 bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-500 hover:text-violet-600 rounded-lg transition active:scale-95 flex items-center justify-center h-8 w-8"
+                  title="Refresh Feed"
+                >
+                  <i className="ri-refresh-line text-sm"></i>
+                </button>
               </div>
             </div>
 
@@ -749,29 +758,6 @@ const IssueFeed = () => {
                 hasMore={hasMore}
                 loader={<Loader />}
                 scrollableTarget={window.innerWidth >= 1024 ? "feedScroll" : "mainScroll"}
-                pullDownToRefresh
-                pullDownToRefreshThreshold={50}
-                refreshFunction={() => fetchIssues(true)}
-                pullDownToRefreshContent={
-                  <div className="flex flex-col items-center py-4 bg-white/50 backdrop-blur-sm rounded-xl mb-3 border border-violet-100 shadow-sm transition-all animate-pulse">
-                    <div className="p-2 bg-violet-100 rounded-full mb-1">
-                      <svg className="w-5 h-5 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                      </svg>
-                    </div>
-                    <span className="text-violet-600 font-bold text-sm">Pull down to refresh</span>
-                  </div>
-                }
-                releaseToRefreshContent={
-                  <div className="flex flex-col items-center py-4 bg-violet-500 rounded-xl mb-3 shadow-lg shadow-violet-200 border border-violet-400 transition-all scale-105">
-                    <div className="p-2 bg-white/20 rounded-full mb-1">
-                      <svg className="w-5 h-5 text-white animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
-                      </svg>
-                    </div>
-                    <span className="text-white font-bold text-sm">Release to refresh</span>
-                  </div>
-                }
                 endMessage={
                   <p className="text-center text-gray-400 text-sm py-6">
                     {issues.length === 0 ? "No issues found." : "You've seen it all! 🎉"}
@@ -835,6 +821,7 @@ const IssueFeed = () => {
             </div>
           </div>
         </div>
+        </PullToRefresh>
       </div>
 
       {/* Comments Modal */}

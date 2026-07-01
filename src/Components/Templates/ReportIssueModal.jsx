@@ -5,6 +5,8 @@ import {
     updateMyIssue,
     uploadMultipleMedia,
 } from "../../Utils/issuesStudent";
+import { Capacitor } from "@capacitor/core";
+import { Camera, CameraResultType } from "@capacitor/camera";
 
 const CATEGORIES = ["security", "cleanliness", "maintenance", "infrastructure", "facilities", "other"];
 const BUILDINGS = [
@@ -30,6 +32,8 @@ const MediaUploadZone = ({ newFiles, setNewFiles, existingUrls, setExistingUrls 
     const inputRef = useRef(null);
     const [dragging, setDragging] = useState(false);
 
+    const isNative = Capacitor.isNativePlatform();
+
     const addFiles = useCallback((incoming) => {
         const valid = Array.from(incoming).filter((f) =>
             f.type.startsWith("image/") || f.type.startsWith("video/")
@@ -43,6 +47,32 @@ const MediaUploadZone = ({ newFiles, setNewFiles, existingUrls, setExistingUrls 
         );
         setNewFiles((prev) => [...prev, ...withPreview]);
     }, [newFiles, existingUrls, setNewFiles]);
+
+    const takePhoto = async () => {
+        try {
+            if (newFiles.length + existingUrls.length >= 6) {
+                toast.warning("Max 6 media files allowed");
+                return;
+            }
+
+            const image = await Camera.getPhoto({
+                quality: 90,
+                allowEditing: false,
+                resultType: CameraResultType.Uri,
+            });
+
+            const response = await fetch(image.webPath);
+            const blob = await response.blob();
+            const file = new File([blob], `camera-${Date.now()}.jpg`, { type: "image/jpeg" });
+            
+            Object.assign(file, { preview: URL.createObjectURL(file) });
+            setNewFiles((prev) => [...prev, file]);
+        } catch (error) {
+            if (error.message !== "User cancelled photos app") {
+                toast.error("Failed to capture image: " + error.message);
+            }
+        }
+    };
 
     const onDrop = (e) => {
         e.preventDefault();
@@ -74,32 +104,67 @@ const MediaUploadZone = ({ newFiles, setNewFiles, existingUrls, setExistingUrls 
                 <span className="text-[10px] font-medium text-gray-400 uppercase tracking-widest">{total} / 6 files</span>
             </div>
 
-            {/* Drop zone */}
+            {/* Drop/Upload zone */}
             {total < 6 && (
-                <div
-                    onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
-                    onDragLeave={() => setDragging(false)}
-                    onDrop={onDrop}
-                    onClick={() => inputRef.current?.click()}
-                    className={`border border-dashed rounded-xl px-4 py-6 text-center cursor-pointer transition-all duration-200
-                        ${dragging ? "border-violet-500 bg-violet-50/50 shadow-sm" : "border-gray-300 bg-gray-50/30 hover:bg-gray-50 hover:border-violet-400"}`}
-                >
-                    <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center mx-auto mb-2 shadow-sm border border-gray-100">
-                        <i className="ri-upload-2-line text-lg text-violet-600" />
+                isNative ? (
+                    <div className="grid grid-cols-2 gap-3">
+                        <button
+                            type="button"
+                            onClick={takePhoto}
+                            className="flex flex-col items-center justify-center border border-gray-200 rounded-xl p-4 bg-gray-50/20 hover:bg-gray-50 hover:border-violet-400 cursor-pointer transition-all text-center"
+                        >
+                            <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center mb-2 shadow-sm border border-gray-100">
+                                <i className="ri-camera-line text-lg text-violet-600" />
+                            </div>
+                            <span className="text-sm font-semibold text-gray-700">Take Photo</span>
+                            <span className="text-[10px] text-gray-400 mt-0.5">Use device camera</span>
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => inputRef.current?.click()}
+                            className="flex flex-col items-center justify-center border border-gray-200 rounded-xl p-4 bg-gray-50/20 hover:bg-gray-50 hover:border-violet-400 cursor-pointer transition-all text-center"
+                        >
+                            <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center mb-2 shadow-sm border border-gray-100">
+                                <i className="ri-image-line text-lg text-violet-600" />
+                            </div>
+                            <span className="text-sm font-semibold text-gray-700">Library</span>
+                            <span className="text-[10px] text-gray-400 mt-0.5">Upload gallery media</span>
+                        </button>
+                        <input
+                            ref={inputRef}
+                            type="file"
+                            multiple
+                            accept="image/*,video/*"
+                            className="hidden"
+                            onChange={(e) => addFiles(e.target.files)}
+                        />
                     </div>
-                    <p className="text-sm text-gray-600 font-medium">
-                        Click to upload or <span className="text-violet-600">drag and drop</span>
-                    </p>
-                    <p className="text-xs text-gray-400 mt-1">Photos or videos of the issue</p>
-                    <input
-                        ref={inputRef}
-                        type="file"
-                        multiple
-                        accept="image/*,video/*"
-                        className="hidden"
-                        onChange={(e) => addFiles(e.target.files)}
-                    />
-                </div>
+                ) : (
+                    <div
+                        onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
+                        onDragLeave={() => setDragging(false)}
+                        onDrop={onDrop}
+                        onClick={() => inputRef.current?.click()}
+                        className={`border border-dashed rounded-xl px-4 py-6 text-center cursor-pointer transition-all duration-200
+                            ${dragging ? "border-violet-500 bg-violet-50/50 shadow-sm" : "border-gray-300 bg-gray-50/30 hover:bg-gray-50 hover:border-violet-400"}`}
+                    >
+                        <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center mx-auto mb-2 shadow-sm border border-gray-100">
+                            <i className="ri-upload-2-line text-lg text-violet-600" />
+                        </div>
+                        <p className="text-sm text-gray-600 font-medium">
+                            Click to upload or <span className="text-violet-600">drag and drop</span>
+                        </p>
+                        <p className="text-xs text-gray-400 mt-1">Photos or videos of the issue</p>
+                        <input
+                            ref={inputRef}
+                            type="file"
+                            multiple
+                            accept="image/*,video/*"
+                            className="hidden"
+                            onChange={(e) => addFiles(e.target.files)}
+                        />
+                    </div>
+                )
             )}
 
             {/* Previews grid */}
