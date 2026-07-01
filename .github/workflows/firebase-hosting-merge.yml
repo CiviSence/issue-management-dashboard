@@ -32,13 +32,37 @@ jobs:
         run: |
           echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_CIVISENCE_ADMIN }}' > service-account.json
           export GOOGLE_APPLICATION_CREDENTIALS=service-account.json
-          npx firebase-tools deploy --only hosting --project civisence-admin
-          rm service-account.json
+          export NO_COLOR=1
+          export CI=true
+          status=0
+          npx firebase-tools deploy --only hosting --project civisence-admin --non-interactive > deploy.log 2>&1 || status=$?
+          cat deploy.log
+          if [ $status -ne 0 ]; then
+            if grep -q "current active version" deploy.log; then
+              echo "Warning: Firebase returned 'current active version' error, ignoring."
+            else
+              rm -f service-account.json
+              exit $status
+            fi
+          fi
+          rm -f service-account.json
 
       - name: Deploy to Firebase Hosting (Preview)
         if: github.event_name == 'pull_request'
         run: |
           echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_CIVISENCE_ADMIN }}' > service-account.json
           export GOOGLE_APPLICATION_CREDENTIALS=service-account.json
-          npx firebase-tools hosting:channel:deploy pr-${{ github.event.number }} --project civisence-admin
-          rm service-account.json
+          export NO_COLOR=1
+          export CI=true
+          status=0
+          npx firebase-tools hosting:channel:deploy pr-${{ github.event.number }} --project civisence-admin --non-interactive > deploy.log 2>&1 || status=$?
+          cat deploy.log
+          if [ $status -ne 0 ]; then
+            if grep -q "current active version" deploy.log; then
+              echo "Warning: Firebase returned 'current active version' error, ignoring."
+            else
+              rm -f service-account.json
+              exit $status
+            fi
+          fi
+          rm -f service-account.json
