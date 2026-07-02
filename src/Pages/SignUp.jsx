@@ -173,7 +173,7 @@ const SignUp = () => {
                     className="w-full h-full object-contain"
                   />
                 </div>
-                <h2 className="text-2xl font-bold text-gray-900">CSM Portal</h2>
+                <h2 className="text-2xl font-bold text-gray-900">Civisence-Admin</h2>
               </div>
 
               <h1 className="text-3xl font-bold text-[#6366f1] mb-2 text-center md:text-left">
@@ -203,11 +203,10 @@ const SignUp = () => {
                         onClick={() =>
                           setFormData((prev) => ({ ...prev, userType: type }))
                         }
-                        className={`py-2 px-3 rounded-lg border text-sm font-medium capitalize transition-all ${
-                          formData.userType === type
+                        className={`py-2 px-3 rounded-lg border text-sm font-medium capitalize transition-all ${formData.userType === type
                             ? "bg-[#7E70EB] text-white border-[#7E70EB]"
                             : "bg-white text-gray-600 border-gray-200 hover:border-[#7E70EB] hover:text-[#7E70EB]"
-                        }`}
+                          }`}
                       >
                         {type}
                       </button>

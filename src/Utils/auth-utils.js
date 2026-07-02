@@ -19,6 +19,7 @@ export const setSession = (accessToken, user, refreshToken) => {
       priority: 'High',
       sameSite: 'Strict'
     });
+    localStorage.setItem(AUTH_TOKEN_KEY, accessToken);
   }
 
   if (refreshToken) {
@@ -28,6 +29,7 @@ export const setSession = (accessToken, user, refreshToken) => {
       priority: 'High',
       sameSite: 'Strict'
     });
+    localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
   }
 
   if (user) {
@@ -55,7 +57,7 @@ export const setSession = (accessToken, user, refreshToken) => {
  * @returns {string|undefined} The access token or undefined
  */
 export const getAccessToken = () => {
-  return Cookies.get(AUTH_TOKEN_KEY);
+  return Cookies.get(AUTH_TOKEN_KEY) || localStorage.getItem(AUTH_TOKEN_KEY) || undefined;
 };
 
 /**
@@ -63,7 +65,7 @@ export const getAccessToken = () => {
  * @returns {string|undefined} The refresh token or undefined
  */
 export const getRefreshToken = () => {
-  return Cookies.get(REFRESH_TOKEN_KEY);
+  return Cookies.get(REFRESH_TOKEN_KEY) || localStorage.getItem(REFRESH_TOKEN_KEY) || undefined;
 };
 
 /**
@@ -99,5 +101,7 @@ export const clearSession = () => {
   Cookies.remove(AUTH_TOKEN_KEY);
   Cookies.remove(REFRESH_TOKEN_KEY);
   Cookies.remove(USER_PREVIEW_KEY);
+  localStorage.removeItem(AUTH_TOKEN_KEY);
+  localStorage.removeItem(REFRESH_TOKEN_KEY);
   localStorage.removeItem(USER_DATA_KEY);
 };

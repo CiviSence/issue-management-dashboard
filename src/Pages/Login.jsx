@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {  Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import csmlogo from "../assets/logo/CSM-logo.png";
 import { loginUser } from "../Utils/auth-api";
@@ -150,7 +150,7 @@ const Login = () => {
                     className="w-full h-full object-contain"
                   />
                 </div>
-                <h2 className="text-2xl font-bold text-gray-900">CSM Portal</h2>
+                <h2 className="text-2xl font-bold text-gray-900">Civisence-Admin</h2>
               </div>
 
               <h1 className="text-3xl font-bold text-[#6366f1] mb-2 text-center md:text-left">

@@ -11,7 +11,7 @@ import { ProfileDataProvider } from "./Context/ProfileContext.jsx";
 import { UserProvider } from "./Context/UserContext.jsx";
 import { IssuesProvider } from "./Context/IssuesContext.jsx";
 import { NotificationProvider } from "./Components/NotificationProvider.jsx";
-import "remixicon/fonts/remixicon.css";
+import "./assets/remixicon-custom.css";
 
 registerSW({
   immediate: true,
