@@ -334,6 +334,13 @@ const StudentSideNav = () => {
 
             </div>
 
+            {/* Legal Links Footer */}
+            <div className="hidden lg:flex px-2 mb-4 space-x-3 text-[10px] font-medium text-violet-300">
+                <Link to="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link>
+                <span>&bull;</span>
+                <Link to="/terms" className="hover:text-white transition-colors">Terms of Use</Link>
+            </div>
+
             {/* Profile Card */}
             <div className="relative" ref={popupRef}>
                 {/* Popup */}

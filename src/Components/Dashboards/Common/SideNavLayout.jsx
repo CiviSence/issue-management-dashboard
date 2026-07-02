@@ -81,7 +81,13 @@ const SideNavLayout = ({ children }) => {
         <nav className="flex flex-col gap-4 pt-8 w-full">{children}</nav>
       </div>
 
-      <div className="relative">
+      <div className="relative mt-auto">
+        {/* Legal Links Footer */}
+        <div className="hidden lg:flex px-2 mb-4 space-x-3 text-[10px] font-medium text-indigo-200">
+          <Link to="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link>
+          <span>&bull;</span>
+          <Link to="/terms" className="hover:text-white transition-colors">Terms of Use</Link>
+        </div>
         {/* Profile button */}
         <div
           onMouseEnter={() => setShowProfileMenu((prev) => !prev)}

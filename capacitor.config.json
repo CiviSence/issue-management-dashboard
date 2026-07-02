@@ -1,6 +1,6 @@
 {
-  "appId": "app.web.civisence_admin.twa",
-  "appName": "CiviSence - Admin/Staff",
+  "appId": "com.civisence.admin",
+  "appName": "CiviSence-Admin",
   "webDir": "dist",
   "bundledWebRuntime": false
 }

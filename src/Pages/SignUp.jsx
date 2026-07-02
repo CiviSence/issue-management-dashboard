@@ -327,13 +327,13 @@ const SignUp = () => {
                 {/* Terms Text */}
                 <p className="text-[10px] text-gray-500 text-center px-4">
                   by continuing, you agree to the{" "}
-                  <a href="#" className="underline hover:text-[#6e5fdb]">
+                  <Link to="/terms" className="underline hover:text-[#6e5fdb]">
                     Terms of use
-                  </a>{" "}
+                  </Link>{" "}
                   and{" "}
-                  <a href="#" className="underline hover:text-[#6e5fdb]">
+                  <Link to="/privacy-policy" className="underline hover:text-[#6e5fdb]">
                     Privacy Policy
-                  </a>
+                  </Link>
                 </p>
 
                 {/* Submit Button */}

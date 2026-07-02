@@ -241,9 +241,19 @@ const Login = () => {
                   )}
                 </button>
 
-                {/* Terms and Links */}
                 <div className="space-y-4 pt-4">
-                  <p className="text-sm text-gray-500 text-center">
+                  {/* Terms Text */}
+                  <p className="text-[10px] text-gray-500 text-center px-4">
+                    by continuing, you agree to the{" "}
+                    <Link to="/terms" className="underline hover:text-[#6e5fdb]">
+                      Terms of use
+                    </Link>{" "}
+                    and{" "}
+                    <Link to="/privacy-policy" className="underline hover:text-[#6e5fdb]">
+                      Privacy Policy
+                    </Link>
+                  </p>
+                  <p className="text-sm text-gray-500 text-center mt-2">
                     Don't have an account?{" "}
                     <Link
                       to="/signup"
