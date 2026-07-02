@@ -29,6 +29,7 @@ import { useEffect } from "react";
 import { toast } from "react-toastify";
 import PrivacyPolicy from "./Components/legal/privacyPolicy.jsx";
 import TermsOfUse from "./Components/legal/TermsOfUse.jsx";
+import CsaePolicy from "./Components/legal/CsaePolicy.jsx";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 
@@ -60,6 +61,7 @@ const App = () => {
           {/* public routes */}
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<TermsOfUse />} />
+          <Route path="/csae-policy" element={<CsaePolicy />} />
 
           {/* Auth Routs - login / signup / verify / forget password */}
           <Route
