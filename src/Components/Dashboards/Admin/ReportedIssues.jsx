@@ -1,6 +1,7 @@
 import SideNav from "./AdminSideNav";
 import BottomNav from "../../Templates/BottomNav";
 import TopBar from "../../Templates/TopBar";
+import PullToRefresh from "../../Templates/PullToRefresh";
 import { useIssues } from "../../../Context/IssueContext.js";
 import { useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
@@ -68,7 +69,7 @@ const IssuesSkeleton = () => {
 
 const ReportedIssues = () => {
   const navigate = useNavigate();
-  const { issues, setIssues, loadingIssues } = useIssues();
+  const { issues, setIssues, loadingIssues, fetchIssues } = useIssues();
   const [selectedLocation, setSelectedLocation] = useState("all");
   const [priority, setPriority] = useState("all");
   const [openDropdown, setOpenDropdown] = useState(null);
@@ -76,6 +77,17 @@ const ReportedIssues = () => {
   const { staff, fetchStaff } = useUsers();
   const [selectedIssue, setSelectedIssue] = useState(null);
   const [showAssignModal, setShowAssignModal] = useState(false);
+
+  const handleRefresh = async () => {
+    try {
+      await Promise.all([
+        fetchIssues ? fetchIssues() : Promise.resolve(),
+        fetchStaff ? fetchStaff() : Promise.resolve(),
+      ]);
+    } catch (err) {
+      console.error("Refresh failed:", err);
+    }
+  };
 
   const openAssignModal = (issueId) => {
     setSelectedIssue(issueId);
@@ -214,10 +226,10 @@ const ReportedIssues = () => {
       <SideNav />
       <BottomNav />
 
-      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#FDFDFF] overflow-x-hidden overflow-y-auto h-screen pb-20">
+      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#FDFDFF] overflow-x-hidden overflow-y-auto h-screen pb-20" id="reportedIssuesScroll">
         <TopBar title="Reported Issues" />
-        
-        <div className="p-2 lg:p-4 w-full">
+        <PullToRefresh scrollContainerId="reportedIssuesScroll" onRefresh={handleRefresh}>
+          <div className="p-2 lg:p-4 w-full">
         {loadingIssues ? (
           <IssuesSkeleton />
         ) : issues.length > 0 ? (
@@ -587,6 +599,7 @@ const ReportedIssues = () => {
           </div>
         )}
       </div>
+        </PullToRefresh>
       </div>
 
       {showAssignModal && (

@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
 import { useUsers } from "../../Context/UserContext";
-import profileSvg from "../../assets/default-avatar.jpg";
+import defaultPfpFemale from "../../assets/default-pfp/default-pfp-female.svg";
+import defaultPfpMale from "../../assets/default-pfp/default-pfp-male.svg";
+
+const getDefaultAvatar = (gender) => {
+  const g = gender?.toLowerCase();
+  return g === "female" || g === "f" || g === "woman" ? defaultPfpFemale : defaultPfpMale;
+};
 
 const getInitials = (name = "") =>
   name
@@ -132,7 +138,7 @@ const UserCard = ({ limit }) => {
                         <div className="flex items-center gap-2 sm:gap-3">
                           <div className="w-7 h-7 sm:w-9 sm:h-9 rounded-full overflow-hidden shrink-0">
                             <img
-                              src={user.avatar_url || profileSvg}
+                              src={user.avatar_url || getDefaultAvatar(user.gender)}
                               alt=""
                               className="w-full h-full object-cover"
                             />

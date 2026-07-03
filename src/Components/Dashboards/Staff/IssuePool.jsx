@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback, useMemo } from "react";
 import StaffSideNav from "./StaffSideNav";
 import BottomNav from "../../Templates/BottomNav";
 import TopBar from "../../Templates/TopBar";
+import PullToRefresh from "../../Templates/PullToRefresh";
 import { getAllIssues } from "../../../Utils/issues";
 import { selfAssignIssue } from "../../../Utils/staffissues";
 import Loader from "../../Templates/Loader";
@@ -94,9 +95,10 @@ const IssuePool = () => {
       <StaffSideNav />
       <BottomNav />
 
-      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#FDFDFF] overflow-x-hidden overflow-y-auto h-screen pb-20">
+      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#FDFDFF] overflow-x-hidden overflow-y-auto h-screen pb-20" id="issuePoolScroll">
         <TopBar title="Issue Pool" />
-        <div className="w-full mx-auto p-2 lg:p-4">
+        <PullToRefresh scrollContainerId="issuePoolScroll" onRefresh={fetchPool}>
+          <div className="w-full mx-auto p-2 lg:p-4">
           <div className="p-2 md:p-0">
             <div className="flex flex-col sm:flex-row gap-1 md:gap-2 lg:gap-3 mb-0 md:mb-5">
               <div className="relative flex-1">
@@ -288,6 +290,7 @@ const IssuePool = () => {
             )}
           </div>
         </div>
+        </PullToRefresh>
       </div>
       
       {/* Confirmation Modal */}

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import StaffSideNav from "./StaffSideNav";
 import BottomNav from "../../Templates/BottomNav";
 import TopBar from "../../Templates/TopBar";
+import PullToRefresh from "../../Templates/PullToRefresh";
 import { useUser } from "../../../Context/ProfileContext";
 import {
   getAssignedIssues,
@@ -13,7 +14,6 @@ import Loader from "../../Templates/Loader";
 import IssueCard from "../../Templates/IssueCard";
 import { useNavigate } from "react-router-dom";
 import StatusBadge from "../../Templates/StatusBadge";
-import defaultProfile from "../../../assets/default-avatar.jpg";
 import axios from "../../../Utils/axios";
 import {
   CheckCircle,
@@ -145,6 +145,18 @@ const StaffDashboard = () => {
     fetchSummary();
   }, [profileData?.id]);
 
+  const handleRefresh = async () => {
+    try {
+      await Promise.all([
+        fetchAssigned(),
+        fetchSummary(),
+        fetchNotifications(),
+      ]);
+    } catch (err) {
+      console.error("Refresh failed:", err);
+    }
+  };
+
   const submitAcceptModal = async () => {
     if (!selectedAssignmentId) return;
     setActionLoading(selectedAssignmentId);
@@ -244,9 +256,10 @@ const StaffDashboard = () => {
     <>
       <StaffSideNav />
       <BottomNav />
-      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#FDFDFF] overflow-x-hidden overflow-y-auto h-screen pb-20">
+      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#FDFDFF] overflow-x-hidden overflow-y-auto h-screen pb-20" id="staffDashboardScroll">
         <TopBar title="Your Dashboard" />
-        <div className="w-full mx-auto p-2 lg:p-4">
+        <PullToRefresh scrollContainerId="staffDashboardScroll" onRefresh={handleRefresh}>
+          <div className="w-full mx-auto p-2 lg:p-4">
           <div className="w-full gap-2 flex flex-wrap justify-center p-4 rounded-2xl ">
             {stats?.map((item, index) => (
               <IssueCard key={index} issue={item} />
@@ -654,6 +667,7 @@ const StaffDashboard = () => {
             )}
           </div>
         </div>
+        </PullToRefresh>
       </div>
 
       {/* ── Accept Modal ── */}

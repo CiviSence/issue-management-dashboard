@@ -16,8 +16,14 @@ import {
   revokeSession,
 } from "../Utils/auth-api";
 import StatusBadge from "./Templates/StatusBadge";
-import defaultProfile from "../assets/default-avatar.jpg";
+import defaultPfpFemale from "../assets/default-pfp/default-pfp-female.svg";
+import defaultPfpMale from "../assets/default-pfp/default-pfp-male.svg";
 import { useEffect, useState } from "react";
+
+const getDefaultAvatar = (gender) => {
+  const g = gender?.toLowerCase();
+  return g === "female" || g === "f" || g === "woman" ? defaultPfpFemale : defaultPfpMale;
+};
 
 // ─── Reusable Sub-components ────────────────────────────────────────────────
 
@@ -397,7 +403,7 @@ const Profile = () => {
               {/* Avatar */}
               <div className="relative group">
                 <img
-                  src={profileData.avatar_url || defaultProfile}
+                  src={profileData?.avatar_url || getDefaultAvatar(profileData?.gender)}
                   alt="Profile"
                   className="w-32 h-32 md:w-36 md:h-36 rounded-3xl border-4 border-white object-cover shadow-xl ring-1 ring-violet-100 transition-transform group-hover:scale-[1.02]"
                 />

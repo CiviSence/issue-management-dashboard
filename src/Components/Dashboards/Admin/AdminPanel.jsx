@@ -3,10 +3,18 @@ import { useNavigate } from "react-router-dom";
 import SideNav from "./AdminSideNav";
 import BottomNav from "../../Templates/BottomNav";
 import TopBar from "../../Templates/TopBar";
+import PullToRefresh from "../../Templates/PullToRefresh";
 import "react-loading-skeleton/dist/skeleton.css";
 import { toast, ToastContainer } from "react-toastify";
 import axios from "../../../Utils/axios";
-import noProfile from "../../../assets/default-avatar.jpg";
+import defaultPfpFemale from "../../../assets/default-pfp/default-pfp-female.svg";
+import defaultPfpMale from "../../../assets/default-pfp/default-pfp-male.svg";
+
+const getDefaultAvatar = (gender) => {
+  const g = gender?.toLowerCase();
+  return g === "female" || g === "f" || g === "woman" ? defaultPfpFemale : defaultPfpMale;
+};
+const noProfile = defaultPfpMale;
 import {
   adminGetAllRequests,
   adminGetUnverifiedUsers,
@@ -17,6 +25,12 @@ import {
   adminBanUser,
   adminUnbanUser,
 } from "../../../Utils/verification";
+import {
+  createCustomNotification,
+  broadcastNotification,
+  sendRoleNotification,
+  sendUserNotification,
+} from "../../../Utils/Notifications/notifications";
 import {
   Users,
   Shield,
@@ -77,7 +91,24 @@ const NotificationsTab = ({
   loading,
   notificationStats,
   sentNotifications,
-}) => (
+}) => {
+  const handleCustomRoleToggle = (roleId) => {
+    const currentRoles = notificationForm.customRoles || ["citizen"];
+    const updated = currentRoles.includes(roleId)
+      ? currentRoles.filter((item) => item !== roleId)
+      : [...currentRoles, roleId];
+    setNotificationForm({ ...notificationForm, customRoles: updated });
+  };
+
+  const handleChannelToggle = (channel) => {
+    const currentChannels = notificationForm.channels || ["in_app", "email", "push"];
+    const updated = currentChannels.includes(channel)
+      ? currentChannels.filter((item) => item !== channel)
+      : [...currentChannels, channel];
+    setNotificationForm({ ...notificationForm, channels: updated });
+  };
+
+  return (
   <div className="space-y-6">
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* Send Notification Panel */}
@@ -101,8 +132,8 @@ const NotificationsTab = ({
                 onClick={() => setNotificationType(type.id)}
                 className={`p-4 rounded-xl border-2 transition-all flex flex-col items-center space-y-2 ${
                   notificationType === type.id
-                    ? "border-violet-500 bg-violet-50 text-violet-700"
-                    : "border-gray-200 hover:border-violet-200"
+                    ? "border-[#7E70EB] bg-[#7E70EB]/10 text-[#7E70EB]"
+                    : "border-gray-200 hover:border-[#7E70EB]/40"
                 }`}
               >
                 <type.icon className="w-6 h-6" />
@@ -149,37 +180,39 @@ const NotificationsTab = ({
               />
             </div>
 
+            {/* Target Role Section */}
             {notificationType === "role" && (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Target Role
+              <div className="p-4 bg-violet-50/50 rounded-xl border border-violet-100 space-y-2">
+                <label className="block text-sm font-medium text-gray-700">
+                  Recipient Group
                 </label>
                 <select
-                  value={notificationForm.role}
+                  value={notificationForm.role || "citizen"}
                   onChange={(e) =>
                     setNotificationForm({
                       ...notificationForm,
                       role: e.target.value,
                     })
                   }
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-violet-500 focus:ring-2 focus:ring-violet-200 outline-none"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-violet-500 focus:ring-2 focus:ring-violet-200 outline-none bg-white"
                 >
-                  <option value="student">Students</option>
-                  <option value="staff">Staff</option>
-                  <option value="admin">Admins</option>
-                  <option value="developer">Developers</option>
+                  <option value="all">All Users</option>
+                  <option value="citizen">Citizens (Students)</option>
+                  <option value="official">Officials (Staff)</option>
+                  <option value="admin">Administrators</option>
                 </select>
               </div>
             )}
 
+            {/* Target User Section */}
             {notificationType === "user" && (
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  User ID
+                  Target User ID (UUID)
                 </label>
                 <input
                   type="text"
-                  value={notificationForm.userId}
+                  value={notificationForm.userId || ""}
                   onChange={(e) =>
                     setNotificationForm({
                       ...notificationForm,
@@ -187,47 +220,152 @@ const NotificationsTab = ({
                     })
                   }
                   className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-violet-500 focus:ring-2 focus:ring-violet-200 outline-none"
-                  placeholder="Enter user ID..."
+                  placeholder="e.g. 71ecdac0-c479-4ab7-9ce6-4f117bbed2f5"
                   required
                 />
               </div>
             )}
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Priority
-              </label>
-              <div className="flex gap-4">
-                {["low", "normal", "high", "urgent"].map((priority) => (
-                  <label
-                    key={priority}
-                    className="flex items-center space-x-2 cursor-pointer"
+            {/* Custom Notification Section */}
+            {notificationType === "custom" && (
+              <div className="p-4 bg-violet-50/50 rounded-xl border border-violet-100 space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Recipient Type
+                  </label>
+                  <select
+                    value={notificationForm.customRecipientType || "all"}
+                    onChange={(e) =>
+                      setNotificationForm({
+                        ...notificationForm,
+                        customRecipientType: e.target.value,
+                      })
+                    }
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-violet-500 focus:ring-2 focus:ring-violet-200 outline-none bg-white text-sm"
                   >
+                    <option value="all">All Users</option>
+                    <option value="role">By Role</option>
+                    <option value="individual">Single Individual</option>
+                    <option value="custom">Custom Criteria</option>
+                  </select>
+                </div>
+
+                {notificationForm.customRecipientType === "role" && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Select Target Roles
+                    </label>
+                    <div className="grid grid-cols-2 gap-2">
+                      {[
+                        { id: "all", label: "All Users" },
+                        { id: "citizen", label: "Citizens" },
+                        { id: "official", label: "Officials" },
+                        { id: "admin", label: "Admins" },
+                      ].map((r) => (
+                        <button
+                          key={r.id}
+                          type="button"
+                          onClick={() => handleCustomRoleToggle(r.id)}
+                          className={`py-2 px-3 rounded-xl text-xs font-semibold capitalize border transition cursor-pointer truncate ${
+                            (notificationForm.customRoles || ["citizen"]).includes(r.id)
+                              ? "bg-[#7E70EB] border-[#7E70EB] text-white shadow-sm shadow-[#7E70EB]/20"
+                              : "bg-white border-gray-200 text-gray-600 hover:bg-gray-50"
+                          }`}
+                        >
+                          {r.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {notificationForm.customRecipientType === "individual" && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Target User ID (UUID)
+                    </label>
                     <input
-                      type="radio"
-                      name="priority"
-                      value={priority}
-                      checked={notificationForm.priority === priority}
+                      type="text"
+                      placeholder="e.g. 71ecdac0-c479-4ab7-9ce6-4f117bbed2f5"
+                      value={notificationForm.customUserId || ""}
                       onChange={(e) =>
                         setNotificationForm({
                           ...notificationForm,
-                          priority: e.target.value,
+                          customUserId: e.target.value,
                         })
                       }
-                      className="w-4 h-4 text-violet-600 focus:ring-violet-500"
+                      className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-violet-200 focus:border-violet-500"
                     />
-                    <span
-                      className={`text-sm capitalize ${
-                        priority === "urgent"
-                          ? "text-red-600 font-medium"
-                          : priority === "high"
-                            ? "text-orange-600"
-                            : "text-gray-600"
-                      }`}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Priority Section (Not shown for role notification) */}
+            {notificationType !== "role" && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Priority Level
+                </label>
+                <div className="flex gap-4 flex-wrap">
+                  {["low", "normal", "high", "urgent"].map((priority) => (
+                    <label
+                      key={priority}
+                      className="flex items-center space-x-2 cursor-pointer"
                     >
-                      {priority}
-                    </span>
-                  </label>
+                      <input
+                        type="radio"
+                        name="priority"
+                        value={priority}
+                        checked={notificationForm.priority === priority}
+                        onChange={(e) =>
+                          setNotificationForm({
+                            ...notificationForm,
+                            priority: e.target.value,
+                          })
+                        }
+                        className="w-4 h-4 text-violet-600 focus:ring-violet-500"
+                      />
+                      <span
+                        className={`text-sm capitalize ${
+                          priority === "urgent"
+                            ? "text-red-600 font-medium"
+                            : priority === "high"
+                              ? "text-orange-600"
+                              : "text-gray-600"
+                        }`}
+                      >
+                        {priority}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Delivery Channels */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Delivery Channels
+              </label>
+              <div className="flex flex-wrap gap-3">
+                {[
+                  { id: "in_app", label: "In-App Notification" },
+                  { id: "email", label: "Email Broadcast" },
+                  { id: "push", label: "Push Notification" },
+                ].map((ch) => (
+                  <button
+                    key={ch.id}
+                    type="button"
+                    onClick={() => handleChannelToggle(ch.id)}
+                    className={`px-4 py-2 rounded-xl text-xs font-semibold border transition-all cursor-pointer flex items-center space-x-2 ${
+                      (notificationForm.channels || ["in_app", "email", "push"]).includes(ch.id)
+                        ? "bg-[#7E70EB] border-[#7E70EB] text-white shadow-sm shadow-[#7E70EB]/20"
+                        : "bg-white border-gray-200 text-gray-600 hover:bg-gray-50"
+                    }`}
+                  >
+                    <span>{ch.label}</span>
+                  </button>
                 ))}
               </div>
             </div>
@@ -235,7 +373,7 @@ const NotificationsTab = ({
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-[#6366f1] text-white rounded-xl font-semibold hover:bg-[#5445c9] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+              className="w-full py-3 bg-[#7E70EB] text-white rounded-xl font-semibold hover:bg-[#6858e3] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
             >
               {loading ? (
                 <RefreshCw className="w-5 h-5 animate-spin" />
@@ -314,7 +452,8 @@ const NotificationsTab = ({
       </div>
     </div>
   </div>
-);
+  );
+};
 
 // Skeleton components for loading states
 const DashboardSkeleton = () => (
@@ -382,6 +521,7 @@ const DashboardSkeleton = () => (
     </div>
   </div>
 );
+
 
 const UsersTableSkeleton = () => (
   <div className="space-y-4 animate-pulse">
@@ -513,6 +653,8 @@ const BannedSkeleton = () => (
   </div>
 );
 
+
+
 const AdminPanel = () => {
   const navigate = useNavigate();
   // States
@@ -565,9 +707,13 @@ const AdminPanel = () => {
   const [notificationForm, setNotificationForm] = useState({
     title: "",
     message: "",
-    role: "student",
+    role: "citizen",
     userId: "",
     priority: "normal",
+    channels: ["in_app", "email", "push"],
+    customRecipientType: "all",
+    customRoles: ["citizen"],
+    customUserId: "",
   });
 
   // Fetch initial data
@@ -584,6 +730,22 @@ const AdminPanel = () => {
   useEffect(() => {
     fetchReports(reportsStatusFilter);
   }, [reportsStatusFilter, activeTab]);
+
+  const handleRefresh = async () => {
+    try {
+      await Promise.all([
+        fetchDashboardStats(),
+        fetchUnverifiedUsers(),
+        fetchVerificationRequests(),
+        fetchBannedUsers(),
+        fetchSentNotifications(),
+        fetchNotificationStats(),
+        fetchReports(reportsStatusFilter),
+      ]);
+    } catch (error) {
+      console.error("Refresh failed:", error);
+    }
+  };
 
   // API Functions
   const fetchDashboardStats = async () => {
@@ -896,76 +1058,103 @@ const AdminPanel = () => {
     e.preventDefault();
     setLoading(true);
 
-    let endpoint;
-    let payload;
+    try {
+      if (notificationType === "custom") {
+        let rFilter = {};
+        if (notificationForm.customRecipientType === "role") {
+          if (!notificationForm.customRoles || notificationForm.customRoles.length === 0) {
+            toast.error("Please select at least one role for custom notification");
+            setLoading(false);
+            return;
+          }
+          rFilter = {
+            roles: notificationForm.customRoles,
+            role: notificationForm.customRoles.length === 1 ? notificationForm.customRoles[0] : notificationForm.customRoles,
+          };
+          notificationForm.customRoles.forEach((r) => {
+            rFilter[r] = true;
+          });
+        } else if (notificationForm.customRecipientType === "individual") {
+          if (!notificationForm.customUserId || !notificationForm.customUserId.trim()) {
+            toast.error("User ID is required for custom individual notification");
+            setLoading(false);
+            return;
+          }
+          rFilter = {
+            user_id: notificationForm.customUserId.trim(),
+            userId: notificationForm.customUserId.trim(),
+          };
+        } else if (notificationForm.customRecipientType === "all") {
+          rFilter = { all: true };
+        }
 
-    // Build payload according to API specs
-    switch (notificationType) {
-      case "custom":
-        endpoint = "/notifications/custom";
-        payload = {
+        await createCustomNotification({
           title: notificationForm.title,
           message: notificationForm.message,
-          recipient_type: "all",
-          recipient_filter: {},
-          channels: ["in_app", "push"],
+          recipient_type: notificationForm.customRecipientType,
+          recipient_filter: rFilter,
+          channels: notificationForm.channels || ["in_app", "email", "push"],
           priority: notificationForm.priority,
           scheduled_for: new Date().toISOString(),
-        };
-        break;
-
-      case "broadcast":
-        endpoint = "/notifications/broadcast";
-        payload = {
-          title: notificationForm.title,
-          message: notificationForm.message,
-          channels: ["in_app", "email", "push"],
-        };
-        break;
-
-      case "role":
-        endpoint = "/notifications/send-to-role";
-        payload = {
-          title: notificationForm.title,
-          message: notificationForm.message,
-          role: notificationForm.role === 'student' ? 'citizen' : notificationForm.role === 'staff' ? 'official' : notificationForm.role,
-          channels: ["in_app", "push"],
-        };
-        break;
-
-      case "user":
-        endpoint = "/notifications/send-to-user";
-        payload = {
-          title: notificationForm.title,
-          message: notificationForm.message,
-          user_id: notificationForm.userId,
-          channels: ["in_app", "push"],
-        };
-        break;
-
-      default:
-        endpoint = "/notifications/custom";
-        payload = {};
-    }
-
-    try {
-      const response = await axios.post(endpoint, payload);
-
-      if (response.status === 200 || response.status === 201) {
-        toast.success("Notification sent successfully");
-        setNotificationForm({
-          title: "",
-          message: "",
-          role: "student",
-          userId: "",
-          priority: "normal",
         });
-        fetchSentNotifications();
-        fetchNotificationStats();
+      } else if (notificationType === "broadcast") {
+        await broadcastNotification({
+          title: notificationForm.title,
+          message: notificationForm.message,
+          channels: notificationForm.channels || ["in_app", "email", "push"],
+        });
+      } else if (notificationType === "role") {
+        await sendRoleNotification({
+          title: notificationForm.title,
+          message: notificationForm.message,
+          role: notificationForm.role === "officials" ? "official" : notificationForm.role,
+          channels: notificationForm.channels || ["in_app", "email", "push"],
+        });
+      } else if (notificationType === "user") {
+        if (!notificationForm.userId || !notificationForm.userId.trim()) {
+          toast.error("User ID is required");
+          setLoading(false);
+          return;
+        }
+        await sendUserNotification({
+          title: notificationForm.title,
+          message: notificationForm.message,
+          user_id: notificationForm.userId.trim(),
+          channels: notificationForm.channels || ["in_app", "email", "push"],
+        });
       }
+
+      toast.success("Notification sent successfully");
+      setNotificationForm({
+        title: "",
+        message: "",
+        role: "citizen",
+        userId: "",
+        priority: "normal",
+        channels: ["in_app", "email", "push"],
+        customRecipientType: "all",
+        customRoles: ["citizen"],
+        customUserId: "",
+      });
+      fetchSentNotifications();
+      fetchNotificationStats();
     } catch (error) {
-      console.error("Error sending notification:", error);
-      toast.error("Failed to send notification");
+      console.error("Failed to send notification:", error);
+      let errMsg = "Failed to send notification";
+      if (error.response?.data?.detail) {
+        if (Array.isArray(error.response.data.detail)) {
+          errMsg = error.response.data.detail
+            .map((err) => `${err.loc?.slice(-1)[0] || "field"}: ${err.msg}`)
+            .join(", ");
+        } else if (typeof error.response.data.detail === "string") {
+          errMsg = error.response.data.detail;
+        } else {
+          errMsg = JSON.stringify(error.response.data.detail);
+        }
+      } else if (error.response?.data?.message) {
+        errMsg = error.response.data.message;
+      }
+      toast.error(errMsg);
     } finally {
       setLoading(false);
     }
@@ -1121,7 +1310,7 @@ const DashboardTab = ({
                   >
                     <div className="flex items-center gap-3">
                       <img
-                        src={user.avatar_url || noProfile}
+                        src={user.avatar_url || getDefaultAvatar(user.gender)}
                         alt={user.name}
                         className="w-12 h-12 rounded-full object-cover border-2 border-gray-100"
                       />{" "}
@@ -1137,7 +1326,7 @@ const DashboardTab = ({
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => handleVerifyUser(user.id)}
-                        className="px-3 py-1.5 bg-violet-600 text-white text-xs font-medium rounded-lg hover:bg-violet-700 transition-colors"
+                        className="px-3 py-1.5 bg-[#7E70EB] text-white text-xs font-medium rounded-lg hover:bg-[#6858e3] transition-colors"
                       >
                         Verify
                       </button>
@@ -1155,7 +1344,7 @@ const DashboardTab = ({
                 {unverifiedUsers.length > 5 && (
                   <button
                     onClick={() => setActiveTab("unverified")}
-                    className="w-full py-2.5 text-sm text-violet-600 hover:text-violet-700 hover:bg-violet-50 font-medium transition-colors"
+                    className="w-full py-2.5 text-sm text-[#7E70EB] hover:text-[#6858e3] hover:bg-[#7E70EB]/10 font-medium transition-colors"
                   >
                     View all {unverifiedUsers.length} pending →
                   </button>
@@ -1401,7 +1590,7 @@ const DashboardTab = ({
             <div className="flex items-center gap-3">
               <div className="relative">
                 <img
-                  src={user.avatar_url || noProfile}
+                  src={user.avatar_url || getDefaultAvatar(user.gender)}
                   alt={user.name}
                   className="w-12 h-12 rounded-full object-cover border-2 border-gray-100"
                 />
@@ -1513,7 +1702,7 @@ const DashboardTab = ({
 
           <div className="relative shrink-0">
             <img
-              src={user.avatar_url || noProfile}
+              src={user.avatar_url || getDefaultAvatar(user.gender)}
               alt={user.name}
               className="w-10 h-10 rounded-full object-cover"
             />
@@ -1716,13 +1905,13 @@ const DashboardTab = ({
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setSelectedUsers([])}
-                className="px-3 py-1.5 text-sm text-violet-700 hover:text-violet-900"
+                className="px-3 py-1.5 text-sm text-[#7E70EB] hover:text-[#6858e3]"
               >
                 Clear
               </button>
               <button
                 onClick={() => handleBulkAction("export")}
-                className="px-3 py-1.5 bg-white border border-violet-300 text-violet-700 text-sm font-medium rounded-lg hover:bg-violet-50"
+                className="px-3 py-1.5 bg-white border border-[#7E70EB]/40 text-[#7E70EB] text-sm font-medium rounded-lg hover:bg-[#7E70EB]/10"
               >
                 <Download className="w-4 h-4 inline mr-1" />
                 Export
@@ -1819,7 +2008,7 @@ const DashboardTab = ({
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-3">
                           <img
-                            src={user.avatar_url || noProfile}
+                            src={user.avatar_url || getDefaultAvatar(user.gender)}
                             alt={user.name}
                             className="w-9 h-9 rounded-full object-cover"
                           />
@@ -1866,7 +2055,7 @@ const DashboardTab = ({
                           <button
                             title="Details"
                             onClick={() => fetchUserDetails(user.id)}
-                            className="p-1.5 text-gray-400 hover:text-violet-600 hover:bg-violet-50 rounded transition-colors"
+                            className="p-1.5 text-gray-400 hover:text-[#7E70EB] hover:bg-[#7E70EB]/10 rounded transition-colors"
                           >
                             <Eye className="w-4 h-4" />
                           </button>
@@ -2011,7 +2200,7 @@ const DashboardTab = ({
             <div className="flex items-center gap-3">
               <div className="relative">
                 <img
-                  src={user.avatar_url || noProfile}
+                  src={user.avatar_url || getDefaultAvatar(user.gender)}
                   alt={user.name}
                   className="w-12 h-12 rounded-full object-cover border-2 border-gray-100"
                 />
@@ -2174,17 +2363,17 @@ const DashboardTab = ({
           <div className="flex gap-2 bg-white/50 p-1 rounded-xl border border-gray-100 w-fit">
             <button
               onClick={() => setSubTab("users")}
-              className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-all ${subTab === "users" ? "bg-violet-600 text-white shadow-md" : "text-gray-500 hover:bg-white"}`}
+              className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-all ${subTab === "users" ? "bg-[#7E70EB] text-white shadow-md" : "text-gray-500 hover:bg-white"}`}
             >
               Unverified Users
             </button>
             <button
               onClick={() => setSubTab("requests")}
-              className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-all ${subTab === "requests" ? "bg-violet-600 text-white shadow-md" : "text-gray-500 hover:bg-white"}`}
+              className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-all ${subTab === "requests" ? "bg-[#7E70EB] text-white shadow-md" : "text-gray-500 hover:bg-white"}`}
             >
               Review Requests{" "}
               {verificationRequests.filter((r) => r.status?.toLowerCase() === "pending").length > 0 && (
-                <span className="ml-1 px-1.5 bg-white text-violet-600 rounded-md text-[10px]">
+                <span className="ml-1 px-1.5 bg-white text-[#7E70EB] rounded-md text-[10px]">
                   {verificationRequests.filter((r) => r.status?.toLowerCase() === "pending").length}
                 </span>
               )}
@@ -2254,7 +2443,7 @@ const DashboardTab = ({
                       />
                       <div className="relative shrink-0">
                         <img
-                          src={user.avatar_url || noProfile}
+                          src={user.avatar_url || getDefaultAvatar(user.gender)}
                           alt={user.name}
                           className="w-10 h-10 rounded-full object-cover border-2 border-gray-100"
                         />
@@ -2464,7 +2653,7 @@ const DashboardTab = ({
                 onClick={() => setReportsStatusFilter(filter.id)}
                 className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${
                   reportsStatusFilter === filter.id
-                    ? "bg-[#6366f1] text-white shadow-sm"
+                    ? "bg-[#7E70EB] text-white shadow-sm"
                     : "text-gray-500 hover:text-gray-900"
                 }`}
               >
@@ -2570,7 +2759,7 @@ const DashboardTab = ({
                       {report.issue_id && (
                         <button
                           onClick={() => navigate(`/issues/${report.issue_id}`)}
-                          className="px-3 py-1 bg-white hover:bg-indigo-50 text-indigo-600 text-xs font-bold rounded-lg border border-indigo-200 transition-colors shadow-xs cursor-pointer"
+                          className="px-3 py-1 bg-white hover:bg-[#7E70EB]/10 text-[#7E70EB] text-xs font-bold rounded-lg border border-[#7E70EB]/30 transition-colors shadow-xs cursor-pointer"
                         >
                           View Issue: "{report.issue_title || `ID: ${report.issue_id}`}"
                         </button>
@@ -2636,7 +2825,7 @@ const DashboardTab = ({
                     <button
                       onClick={() => handleReviewReport(report)}
                       disabled={actioningReportId === report.id}
-                      className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition-all shadow-md shadow-indigo-100 flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                      className="px-5 py-2 bg-[#7E70EB] hover:bg-[#6858e3] text-white text-xs font-bold rounded-xl transition-all shadow-md shadow-[#7E70EB]/20 flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
                     >
                       {actioningReportId === report.id ? (
                         <RefreshCw className="w-3.5 h-3.5 animate-spin" />
@@ -2680,9 +2869,10 @@ const DashboardTab = ({
       <SideNav />
       <BottomNav />
 
-      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#FDFDFF] overflow-x-hidden overflow-y-auto h-screen pb-20">
+      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#FDFDFF] overflow-x-hidden overflow-y-auto h-screen pb-20" id="adminPanelScroll">
         <TopBar title="Admin Control Panel" />
-        <div className="p-2 lg:p-4 w-full min-h-screen">
+        <PullToRefresh scrollContainerId="adminPanelScroll" onRefresh={handleRefresh}>
+          <div className="p-2 lg:p-4 w-full min-h-screen">
         {/* Navigation Tabs */}
         <div className="flex overflow-x-auto pb-2 mb-2 lg:mb-6 gap-2 px-2 md:px-0 ">
           {[
@@ -2831,7 +3021,7 @@ const DashboardTab = ({
                 <button
                   onClick={confirmReviewReport}
                   disabled={actioningReportId === selectedReport.id}
-                  className="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs cursor-pointer shadow-md shadow-indigo-100 flex items-center gap-1.5 transition-colors disabled:opacity-50"
+                  className="px-5 py-2.5 rounded-xl bg-[#7E70EB] hover:bg-[#6858e3] text-white font-bold text-xs cursor-pointer shadow-md shadow-[#7E70EB]/20 flex items-center gap-1.5 transition-colors disabled:opacity-50"
                 >
                   {actioningReportId === selectedReport.id ? (
                     <RefreshCw className="w-3.5 h-3.5 animate-spin" />
@@ -2921,7 +3111,7 @@ const DashboardTab = ({
                   <div className="relative">
                     <div className="w-24 h-24 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-4xl font-bold ring-4 ring-white/30">
                       <img
-                        src={userDetails.user.avatar_url || noProfile}
+                        src={userDetails.user.avatar_url || getDefaultAvatar(userDetails.user.gender)}
                         alt={userDetails.user?.name}
                         className="w-full h-full rounded-2xl object-cover"
                       />
@@ -3359,7 +3549,7 @@ const DashboardTab = ({
                       setActiveTab("notifications");
                       setNotificationType("user");
                     }}
-                    className="w-full py-3 bg-violet-500 hover:bg-violet-600 text-white rounded-xl font-medium transition-all duration-200 flex items-center justify-center gap-2 shadow-sm hover:shadow-md"
+                    className="w-full py-3 bg-[#7E70EB] hover:bg-[#6858e3] text-white rounded-xl font-medium transition-all duration-200 flex items-center justify-center gap-2 shadow-sm hover:shadow-md"
                   >
                     <Mail className="w-5 h-5" />
                     <span>Send Notification</span>
@@ -3370,9 +3560,9 @@ const DashboardTab = ({
           </div>
         )}
         </div>
+        </PullToRefresh>
       </div>
     </>
   );
 };
-
 export default AdminPanel;

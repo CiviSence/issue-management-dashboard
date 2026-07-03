@@ -1,8 +1,14 @@
 import { useState } from "react";
 import { useUser } from "../../../Context/ProfileContext";
 import { Link, NavLink } from "react-router-dom";
-import defaultProfile from "../../../assets/default-avatar.jpg";
+import defaultPfpFemale from "../../../assets/default-pfp/default-pfp-female.svg";
+import defaultPfpMale from "../../../assets/default-pfp/default-pfp-male.svg";
 import csmLogo from "../../../assets/logo/logowhite.png";
+
+const getDefaultAvatar = (gender) => {
+  const g = gender?.toLowerCase();
+  return g === "female" || g === "f" || g === "woman" ? defaultPfpFemale : defaultPfpMale;
+};
 
 export const NavItem = ({ to, icon, label }) => {
   const navLinkClass = ({ isActive }) =>
@@ -95,7 +101,7 @@ const SideNavLayout = ({ children }) => {
         >
           <div className="h-10 w-10 rounded-full  shrink-0 flex items-center justify-center">
             <img
-              src={profileData?.avatar_url || defaultProfile}
+              src={profileData?.avatar_url || getDefaultAvatar(profileData?.gender)}
               alt="Profile"
               className="h-9 w-9 rounded-full border border-black object-cover"
             />
@@ -118,7 +124,7 @@ const SideNavLayout = ({ children }) => {
             <div className="flex items-center gap-3 px-3 py-2">
               <div className="h-10 w-10 rounded-full shrink-0 flex items-center justify-center">
                 <img
-                  src={profileData?.avatar_url || defaultProfile}
+                  src={profileData?.avatar_url || getDefaultAvatar(profileData?.gender)}
                   alt="Profile"
                   className="h-9 w-9 rounded-full border object-cover"
                 />

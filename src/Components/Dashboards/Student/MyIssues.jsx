@@ -10,7 +10,6 @@ import "react-loading-skeleton/dist/skeleton.css";
 import { deleteMyIssue } from "../../../Utils/issuesStudent";
 import { useIssues } from "../../../Context/IssuesContext.js";
 import ReportIssueModal from "../../Templates/ReportIssueModal";
-import defaultAvatar from "../../../assets/default-avatar.jpg";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { statusStyles } from "../../../Utils/badgeStyles";
 import StatusBadge from "../../Templates/StatusBadge";

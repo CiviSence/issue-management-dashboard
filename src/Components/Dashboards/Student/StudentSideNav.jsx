@@ -7,8 +7,14 @@ import {
     logoutUser as logoutUserApi,
     logoutAllSessions,
 } from "../../../Utils/auth-api";
-import defaultAvatar from "../../../assets/default-avatar.jpg";
+import defaultPfpFemale from "../../../assets/default-pfp/default-pfp-female.svg";
+import defaultPfpMale from "../../../assets/default-pfp/default-pfp-male.svg";
 import logoImg from "../../../assets/logo/logowhite.png";
+
+const getDefaultAvatar = (gender) => {
+    const g = gender?.toLowerCase();
+    return g === "female" || g === "f" || g === "woman" ? defaultPfpFemale : defaultPfpMale;
+};
 
 // sidebar links  config
 const NAV_ITEMS = [
@@ -84,9 +90,9 @@ const ProfilePopup = ({ profileData, onLogout, onClose }) => {
                     {/* Square avatar */}
                     <div className="w-14 h-14 rounded-xl border-2 border-white/40 overflow-hidden shrink-0 shadow-lg">
                         <img
-                            src={profileData?.avatar_url || defaultAvatar}
+                            src={profileData?.avatar_url || getDefaultAvatar(profileData?.gender)}
                             alt={profileData?.name}
-                            onError={(e) => { e.target.src = defaultAvatar; }}
+                            onError={(e) => { e.target.src = getDefaultAvatar(profileData?.gender); }}
                             className="w-full h-full object-cover"
                         />
                     </div>
@@ -367,9 +373,9 @@ const StudentSideNav = () => {
                     {/* Square avatar */}
                     <div className="w-10 h-10 rounded-xl border-2 border-white/30 overflow-hidden shrink-0 shadow-md">
                         <img
-                            src={profileData?.avatar_url || defaultAvatar}
+                            src={profileData?.avatar_url || getDefaultAvatar(profileData?.gender)}
                             alt={profileData?.name || "Profile"}
-                            onError={(e) => { e.target.src = defaultAvatar; }}
+                            onError={(e) => { e.target.src = getDefaultAvatar(profileData?.gender); }}
                             className="w-full h-full object-cover"
                         />
                     </div>

@@ -1,6 +1,7 @@
 import SideNav from "./AdminSideNav";
 import BottomNav from "../../Templates/BottomNav";
 import TopBar from "../../Templates/TopBar";
+import PullToRefresh from "../../Templates/PullToRefresh";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useIssues } from "../../../Context/IssueContext.js";
@@ -73,7 +74,17 @@ const ResolvedIssues = () => {
   const [selectedLocation, setSelectedLocation] = useState("all");
   const [priority, setPriority] = useState("all");
   const [selectedIssue, setSelectedIssue] = useState(null);
-  const { resolvedIssues, setResolvedIssues, loadingResolved } = useIssues();
+  const { resolvedIssues, setResolvedIssues, loadingResolved, fetchResolvedIssues } = useIssues();
+
+  const handleRefresh = async () => {
+    try {
+      if (fetchResolvedIssues) {
+        await fetchResolvedIssues();
+      }
+    } catch (err) {
+      console.error("Refresh failed:", err);
+    }
+  };
 
   const handleDeleteIssue = async (id) => {
     if (!window.confirm("Are you sure you want to delete this issue?")) return;
@@ -122,9 +133,10 @@ const ResolvedIssues = () => {
       <SideNav />
       <BottomNav />
       
-      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#FDFDFF] overflow-x-hidden overflow-y-auto h-screen pb-20">
+      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#FDFDFF] overflow-x-hidden overflow-y-auto h-screen pb-20" id="resolvedIssuesScroll">
         <TopBar title="Resolved Issues" />
-        <div className="w-full pb-20 md:pb-2 p-2 lg:p-4">
+        <PullToRefresh scrollContainerId="resolvedIssuesScroll" onRefresh={handleRefresh}>
+          <div className="w-full pb-20 md:pb-2 p-2 lg:p-4">
           {loadingResolved ? (
             <SkeletonLoader />
           ) : resolvedIssues.length > 0 ? (
@@ -339,6 +351,7 @@ const ResolvedIssues = () => {
             </div>
           )}
         </div>
+        </PullToRefresh>
       </div>
 
       {/* Resolution Details Modal */}

@@ -91,7 +91,7 @@ const PullToRefresh = ({ onRefresh, children, scrollContainerId }) => {
   }, [onRefresh, pullDistance, refreshState, scrollContainerId]);
 
   return (
-    <div ref={containerRef} className="relative w-full h-full flex flex-col overflow-hidden">
+    <div ref={containerRef} className="relative w-full min-h-full flex flex-col">
       {/* Pull Indicator Container */}
       <div 
         className="absolute left-0 right-0 flex items-center justify-center pointer-events-none transition-all duration-200 z-[9999]"
@@ -103,12 +103,12 @@ const PullToRefresh = ({ onRefresh, children, scrollContainerId }) => {
       >
         <div className="bg-white p-2.5 rounded-full shadow-md border border-gray-150 flex items-center justify-center">
           {refreshState === 'refreshing' ? (
-            <svg className="w-5 h-5 text-violet-600 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-[#7E70EB] animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 7.89" />
             </svg>
           ) : (
             <svg 
-              className="w-5 h-5 text-violet-600 transition-transform duration-200" 
+              className="w-5 h-5 text-[#7E70EB] transition-transform duration-200" 
               style={{ transform: `rotate(${pullDistance * 4}deg) scale(${Math.min(1.2, pullDistance / pullThreshold)})` }}
               fill="none" 
               stroke="currentColor" 
@@ -121,7 +121,7 @@ const PullToRefresh = ({ onRefresh, children, scrollContainerId }) => {
       </div>
       {/* Content wrapper */}
       <div 
-        className="w-full h-full flex flex-col transition-transform duration-200 ease-out"
+        className="w-full min-h-full flex flex-col transition-transform duration-200 ease-out"
         style={{ transform: `translateY(${pullDistance}px)` }}
       >
         {children}
