@@ -1,134 +1,216 @@
 import { useEffect, useState } from "react";
 import AdminSideNav from "./AdminSideNav";
 import BottomNav from "../../Templates/BottomNav";
-import { useIssues } from "../../../Context/IssueContext.js";
+import { useUser } from "../../../Context/ProfileContext";
 import Loader from "../../Templates/Loader";
 import { useNavigate } from "react-router-dom";
 import TopBar from "../../Templates/TopBar";
 import axios from "../../../Utils/axios";
+import {
+  fetchNotifications,
+  handleMarkAllRead as markAllReadUtils,
+  broadcastNotification,
+  sendRoleNotification,
+  sendUserNotification,
+  createCustomNotification,
+} from "../../../Utils/Notifications/notifications";
 import { toast, ToastContainer } from "react-toastify";
 
 const AdminNotifications = () => {
   const navigate = useNavigate();
-  const { issues, loadingIssues } = useIssues();
+  const { profileData } = useUser();
+  const [loadingNotifications, setLoadingNotifications] = useState(true);
   const [notifications, setNotifications] = useState([]);
   const [filter, setFilter] = useState("all");
+  console.log(notifications);
 
   // Modal and Form States
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
   const [modalMessage, setModalMessage] = useState("");
-  const [recipientType, setRecipientType] = useState("all"); // all, role, individual
+  const [recipientType, setRecipientType] = useState("all"); // all, role, individual, custom
   const [recipientRole, setRecipientRole] = useState("citizen"); // citizen, official, admin, developer
   const [recipientUserId, setRecipientUserId] = useState("");
-  const [channels, setChannels] = useState(["in_app", "push"]); // in_app, push, email, websocket
+  const [customRecipientType, setCustomRecipientType] = useState("all"); // all, role, individual, custom
+  const [customRoles, setCustomRoles] = useState(["citizen"]); // all, citizen, official, admin
+  const [customUserId, setCustomUserId] = useState("");
+  const [customPriority, setCustomPriority] = useState("normal"); // normal, low, high, urgent
+  const [selectedChannels, setSelectedChannels] = useState([
+    "in_app",
+    "email",
+    "push",
+  ]);
   const [isSending, setIsSending] = useState(false);
 
-  useEffect(() => {
-    if (issues && issues.length > 0) {
-      const items = issues.slice(0, 15).map((issue) => {
-        let title = `New issue reported: ${issue.title || "Untitled"}`;
-        let description = `A new issue has been reported in category "${issue.main_category}" at ${issue.location_building || "location"}.`;
-        let icon = "ri-alert-line";
-        let read = issue.status !== "new";
-
-        if (issue.priority?.toLowerCase() === "high" || issue.priority?.toLowerCase() === "critical") {
-          title = `⚠️ High Priority: ${issue.title || "Untitled"}`;
-          icon = "ri-error-warning-line";
-        } else if (issue.status === "resolved") {
-          title = `✅ Resolved: ${issue.title || "Untitled"}`;
-          description = `Issue #${issue.id} has been marked as resolved by staff.`;
-          icon = "ri-checkbox-circle-line";
-          read = true;
-        }
-
-        return {
-          id: issue.id,
-          title,
-          description,
-          time: new Date(issue.created_at || Date.now()).toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-          }),
-          read,
-          icon,
-          link: `/issues/${issue.id}`,
-          state: issue
-        };
-      });
-
+  //fetch notification - src/utils/notifications.js
+  const loadNotifications = async () => {
+    if (!profileData?.id) return;
+    setLoadingNotifications(true);
+    try {
+      const items = await fetchNotifications("/admin/issues");
       setNotifications(items);
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
+      toast.error("Failed to load notifications");
+    } finally {
+      setLoadingNotifications(false);
     }
-  }, [issues]);
-
-  const handleMarkAllRead = () => {
-    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
   };
 
-  const handleToggleRead = (id) => {
+  useEffect(() => {
+    loadNotifications();
+  }, [profileData?.id]);
+
+  //mark all as read - src/utils/notifications.js
+  const handleMarkAllRead = () =>
+    markAllReadUtils(notifications, setNotifications, toast);
+
+  const handleToggleRead = async (id, currentRead) => {
+    if (!currentRead) {
+      try {
+        await axios.patch("/notifications/mark-as-read", {
+          notification_ids: [id],
+        });
+      } catch (error) {
+        console.error("Error marking notification as read:", error);
+      }
+    }
     setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, read: !n.read } : n))
+      prev.map((n) => (n.id === id ? { ...n, read: !n.read } : n)),
     );
   };
 
-  const handleChannelChange = (channel) => {
-    if (channels.includes(channel)) {
-      setChannels(channels.filter((c) => c !== channel));
+  //toggle role - admin/official/citizen/all
+  const handleCustomRoleToggle = (r) => {
+    if (customRoles.includes(r)) {
+      setCustomRoles(customRoles.filter((item) => item !== r));
     } else {
-      setChannels([...channels, channel]);
+      setCustomRoles([...customRoles, r]);
     }
   };
 
+  //toggle channel - in_app/push/email
+  const handleChannelToggle = (ch) => {
+    if (selectedChannels.includes(ch)) {
+      setSelectedChannels(selectedChannels.filter((c) => c !== ch));
+    } else {
+      setSelectedChannels([...selectedChannels, ch]);
+    }
+  };
+
+  //notification validator
   const handleSendNotification = async (e) => {
     e.preventDefault();
     if (!modalTitle.trim() || !modalMessage.trim()) {
       toast.error("Title and message are required");
       return;
     }
-    if (channels.length === 0) {
-      toast.error("At least one communication channel must be selected");
+    if (selectedChannels.length === 0) {
+      toast.error("Please select at least one delivery channel");
       return;
     }
 
     setIsSending(true);
     try {
-      let endpoint = "/notifications/custom";
-      let payload = {
-        title: modalTitle,
-        message: modalMessage,
-        channels: channels,
-      };
-
       if (recipientType === "all") {
-        payload.recipient_type = "all";
+        await broadcastNotification({
+          title: modalTitle,
+          message: modalMessage,
+          channels: selectedChannels,
+        });
       } else if (recipientType === "role") {
-        payload.recipient_type = "role";
-        payload.recipient_filter = { role: recipientRole };
+        await sendRoleNotification({
+          title: modalTitle,
+          message: modalMessage,
+          role: recipientRole === "officials" ? "official" : recipientRole,
+          channels: selectedChannels,
+        });
       } else if (recipientType === "individual") {
-        payload.recipient_type = "individual";
         if (!recipientUserId.trim()) {
           toast.error("User ID is required for individual notifications");
           setIsSending(false);
           return;
         }
-        payload.recipient_filter = { user_id: recipientUserId.trim() };
+        await sendUserNotification({
+          title: modalTitle,
+          message: modalMessage,
+          user_id: recipientUserId.trim(),
+          channels: selectedChannels,
+        });
+      } else if (recipientType === "custom") {
+        let rFilter = {};
+        if (customRecipientType === "role") {
+          if (customRoles.length === 0) {
+            toast.error(
+              "Please select at least one role for custom notification",
+            );
+            setIsSending(false);
+            return;
+          }
+          rFilter = {
+            roles: customRoles,
+            role: customRoles.length === 1 ? customRoles[0] : customRoles,
+          };
+          customRoles.forEach((r) => {
+            rFilter[r] = true;
+          });
+        } else if (customRecipientType === "individual") {
+          if (!customUserId.trim()) {
+            toast.error(
+              "User ID is required for custom individual notification",
+            );
+            setIsSending(false);
+            return;
+          }
+          rFilter = {
+            user_id: customUserId.trim(),
+            userId: customUserId.trim(),
+          };
+        } else if (customRecipientType === "all") {
+          rFilter = { all: true };
+        }
+
+        await createCustomNotification({
+          title: modalTitle,
+          message: modalMessage,
+          recipient_type: customRecipientType,
+          recipient_filter: rFilter,
+          channels: selectedChannels,
+          priority: customPriority,
+          scheduled_for: new Date().toISOString(),
+        });
       }
 
-      const response = await axios.post(endpoint, payload);
-      toast.success("Notification broadcast scheduled successfully!");
-      
+      toast.success("Notification sent successfully");
+      loadNotifications();
+
       // Reset form & close modal
       setModalTitle("");
       setModalMessage("");
       setRecipientType("all");
       setRecipientUserId("");
-      setChannels(["in_app", "push"]);
+      setCustomRecipientType("all");
+      setCustomRoles(["citizen"]);
+      setCustomUserId("");
+      setCustomPriority("normal");
+      setSelectedChannels(["in_app", "email", "push"]);
       setIsModalOpen(false);
     } catch (error) {
       console.error("Failed to send notification:", error);
-      const errMsg = error.response?.data?.detail || error.response?.data?.message || "Failed to broadcast notification";
+      let errMsg = "Failed to send notification";
+      if (error.response?.data?.detail) {
+        if (Array.isArray(error.response.data.detail)) {
+          errMsg = error.response.data.detail
+            .map((err) => `${err.loc?.slice(-1)[0] || "field"}: ${err.msg}`)
+            .join(", ");
+        } else if (typeof error.response.data.detail === "string") {
+          errMsg = error.response.data.detail;
+        } else {
+          errMsg = JSON.stringify(error.response.data.detail);
+        }
+      } else if (error.response?.data?.message) {
+        errMsg = error.response.data.message;
+      }
       toast.error(errMsg);
     } finally {
       setIsSending(false);
@@ -137,7 +219,6 @@ const AdminNotifications = () => {
 
   const filteredNotifications = notifications.filter((n) => {
     if (filter === "unread") return !n.read;
-    if (filter === "read") return n.read;
     return true;
   });
 
@@ -149,46 +230,47 @@ const AdminNotifications = () => {
       <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#FDFDFF] overflow-x-hidden overflow-y-auto h-screen pb-20">
         <TopBar title="Notifications" />
         <div className="p-2 lg:p-4 w-full min-h-screen">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-bold text-gray-800">System Bulletins</h2>
-            <div className="flex gap-2">
-              <button
-                onClick={() => setIsModalOpen(true)}
-                className="px-4 py-2 bg-[#6366f1] hover:bg-[#4f46e5] text-white rounded-xl text-sm font-bold flex items-center gap-2 shadow-md shadow-indigo-500/20 transition-all cursor-pointer"
-              >
-                <i className="ri-send-plane-fill"></i>
-                Send Notification
-              </button>
-              {notifications.some((n) => !n.read) && (
-                <button
-                  onClick={handleMarkAllRead}
-                  className="px-4 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-xl text-sm font-bold transition-all cursor-pointer"
-                >
-                  Mark all read
-                </button>
-              )}
-            </div>
-          </div>
-
           <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-            {/* Filters */}
-            <div className="flex border-b border-gray-150 px-4 py-3 gap-2 bg-gray-50/50">
-              {["all", "unread", "read"].map((type) => (
+            {/* Filters and Actions */}
+            <div className="flex flex-wrap items-center justify-between border-b border-gray-150 px-4 py-3 gap-3 bg-gray-50/50">
+              <div className="flex items-center gap-2">
+                {["all", "unread"].map((type) => (
+                  <button
+                    key={type}
+                    onClick={() => setFilter(type)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold capitalize transition cursor-pointer ${
+                      filter === type
+                        ? "bg-[#6366f1] text-white shadow-md shadow-indigo-500/20"
+                        : "text-gray-600 hover:bg-gray-100"
+                    }`}
+                  >
+                    {type}
+                  </button>
+                ))}
+              </div>
+
+              <div className="flex items-center gap-2">
                 <button
-                  key={type}
-                  onClick={() => setFilter(type)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold capitalize transition cursor-pointer ${
-                    filter === type
-                      ? "bg-[#6366f1] text-white shadow-md shadow-indigo-500/20"
-                      : "text-gray-600 hover:bg-gray-100"
-                  }`}
+                  onClick={() => setIsModalOpen(true)}
+                  className="px-3 py-1.5 bg-[#6366f1] hover:bg-[#4f46e5] text-white rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-sm shadow-indigo-500/20 transition-all cursor-pointer capitalize"
                 >
-                  {type}
+                  <i className="ri-send-plane-fill"></i>
+                  <span>
+                    Send<span className="hidden lg:inline"> Notifications</span>
+                  </span>
                 </button>
-              ))}
+                {notifications.some((n) => !n.read) && (
+                  <button
+                    onClick={handleMarkAllRead}
+                    className="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-lg text-xs font-bold transition-all cursor-pointer"
+                  >
+                    Mark all read
+                  </button>
+                )}
+              </div>
             </div>
 
-            {loadingIssues ? (
+            {loadingNotifications ? (
               <div className="p-8">
                 <Loader />
               </div>
@@ -204,9 +286,13 @@ const AdminNotifications = () => {
                     {!notif.read && (
                       <div className="absolute left-1 top-1/2 -translate-y-1/2 w-1.5 h-8 bg-[#6366f1] rounded-r-md" />
                     )}
-                    <div className={`p-2 rounded-xl shrink-0 h-10 w-10 flex items-center justify-center ${
-                      notif.read ? "bg-gray-100 text-gray-500" : "bg-[#7e70eb]/15 text-[#7e70eb]"
-                    }`}>
+                    <div
+                      className={`p-2 rounded-xl shrink-0 h-10 w-10 flex items-center justify-center ${
+                        notif.read
+                          ? "bg-gray-100 text-gray-500"
+                          : "bg-[#7e70eb]/15 text-[#7e70eb]"
+                      }`}
+                    >
                       <i className={`${notif.icon} text-lg`}></i>
                     </div>
                     <div className="flex-1 min-w-0">
@@ -222,14 +308,16 @@ const AdminNotifications = () => {
                         {notif.description}
                       </p>
                       <div className="flex gap-3 mt-3">
-                        <button
-                          onClick={() => navigate(notif.link, { state: notif.state })}
+                        {/* <button
+                          onClick={() =>
+                            navigate(notif.link, { state: notif.state })
+                          }
                           className="text-xs font-bold text-[#6366f1] hover:underline cursor-pointer"
                         >
                           View Details
-                        </button>
+                        </button> */}
                         <button
-                          onClick={() => handleToggleRead(notif.id)}
+                          onClick={() => handleToggleRead(notif.id, notif.read)}
                           className="text-xs font-semibold text-gray-400 hover:text-gray-600 transition cursor-pointer"
                         >
                           {notif.read ? "Mark as unread" : "Mark as read"}
@@ -253,13 +341,13 @@ const AdminNotifications = () => {
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
           <div className="bg-white w-full max-w-lg rounded-2xl shadow-2xl border border-gray-100 overflow-hidden transform transition-all animate-in fade-in zoom-in duration-200">
-            <div className="flex justify-between items-center px-6 py-4 bg-[#6366f1] text-white">
+            <div className="flex justify-between items-center px-6 py-4 bg-linear-to-br from-[#5A50A6] to-[#7E70EB] text-white">
               <h3 className="font-bold text-lg flex items-center gap-2">
                 <i className="ri-send-plane-2-line"></i>
                 Create Notification Broadcast
               </h3>
-              <button 
-                onClick={() => setIsModalOpen(false)} 
+              <button
+                onClick={() => setIsModalOpen(false)}
                 className="text-white/80 hover:text-white transition cursor-pointer"
               >
                 <i className="ri-close-line text-2xl"></i>
@@ -268,8 +356,36 @@ const AdminNotifications = () => {
 
             <form onSubmit={handleSendNotification} className="p-6 space-y-4">
               {/* Title Input */}
+              <div>
+                <label className="pb-1 text-xs font-bold text-gray-600 block">
+                  Target Audience
+                </label>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  {[
+                    { id: "all", label: "Broadcast" },
+                    { id: "role", label: "By Role" },
+                    { id: "individual", label: "Single User" },
+                    { id: "custom", label: "Custom" },
+                  ].map((target) => (
+                    <button
+                      key={target.id}
+                      type="button"
+                      onClick={() => setRecipientType(target.id)}
+                      className={`py-2 px-2 border rounded-xl text-xs font-bold transition cursor-pointer truncate ${
+                        recipientType === target.id
+                          ? "bg-[#6366f1]/10 border-[#6366f1] text-[#6366f1]"
+                          : "border-gray-200 text-gray-600 hover:bg-gray-50"
+                      }`}
+                    >
+                      {target.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
               <div className="space-y-1">
-                <label className="text-xs font-bold text-gray-600 block">Notification Title</label>
+                <label className="text-xs font-bold text-gray-600 block">
+                  Notification Title
+                </label>
                 <input
                   type="text"
                   placeholder="e.g. Server Maintenance Notice"
@@ -282,7 +398,9 @@ const AdminNotifications = () => {
 
               {/* Message Input */}
               <div className="space-y-1">
-                <label className="text-xs font-bold text-gray-600 block">Message Body</label>
+                <label className="text-xs font-bold text-gray-600 block">
+                  Message Body
+                </label>
                 <textarea
                   placeholder="Enter details of your message here..."
                   value={modalMessage}
@@ -295,47 +413,31 @@ const AdminNotifications = () => {
 
               {/* Recipient Selection */}
               <div className="space-y-2">
-                <label className="text-xs font-bold text-gray-600 block">Target Audience</label>
-                <div className="grid grid-cols-3 gap-2">
-                  {[
-                    { id: "all", label: "All Users" },
-                    { id: "role", label: "By Role" },
-                    { id: "individual", label: "Single User" }
-                  ].map((target) => (
-                    <button
-                      key={target.id}
-                      type="button"
-                      onClick={() => setRecipientType(target.id)}
-                      className={`py-2 px-3 border rounded-xl text-xs font-bold transition cursor-pointer ${
-                        recipientType === target.id
-                          ? "bg-[#6366f1]/10 border-[#6366f1] text-[#6366f1]"
-                          : "border-gray-200 text-gray-600 hover:bg-gray-50"
-                      }`}
-                    >
-                      {target.label}
-                    </button>
-                  ))}
-                </div>
-
                 {recipientType === "role" && (
-                  <div className="mt-2 space-y-1">
-                    <label className="text-[10px] font-bold text-gray-500 block">Select Role</label>
-                    <select
-                      value={recipientRole}
-                      onChange={(e) => setRecipientRole(e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-[#6366f1]/25 focus:border-[#6366f1]"
-                    >
-                      <option value="citizen">Student (Citizen)</option>
-                      <option value="official">Staff (Official)</option>
-                      <option value="admin">Administrator</option>
-                      <option value="developer">Developer</option>
-                    </select>
+                  <div className="mt-3 space-y-3 p-3 bg-indigo-50/50 rounded-xl border border-indigo-100">
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold text-gray-600 block">
+                        Recipient Group
+                      </label>
+                      <select
+                        value={recipientRole}
+                        onChange={(e) => setRecipientRole(e.target.value)}
+                        className="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-[#6366f1]/25 focus:border-[#6366f1]"
+                      >
+                        <option value="all">All Users</option>
+                        <option value="citizen">Citizens (Students)</option>
+                        <option value="official">Officials (Staff)</option>
+                        <option value="admin">Administrators</option>
+                      </select>
+                    </div>
                   </div>
                 )}
 
                 {recipientType === "individual" && (
                   <div className="mt-2 space-y-1">
-                    <label className="text-[10px] font-bold text-gray-500 block">Target User ID (UUID)</label>
+                    <label className="text-[10px] font-bold text-gray-500 block">
+                      Target User ID (UUID)
+                    </label>
                     <input
                       type="text"
                       placeholder="e.g. 71ecdac0-c479-4ab7-9ce6-4f117bbed2f5"
@@ -345,24 +447,119 @@ const AdminNotifications = () => {
                     />
                   </div>
                 )}
+
+                {recipientType === "custom" && (
+                  <div className="mt-3 space-y-3 p-3 bg-indigo-50/50 rounded-xl border border-indigo-100">
+                    {/* Recipient Type */}
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold text-gray-600 block">
+                        Recipient Type
+                      </label>
+                      <select
+                        value={customRecipientType}
+                        onChange={(e) => setCustomRecipientType(e.target.value)}
+                        className="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-[#6366f1]/25 focus:border-[#6366f1]"
+                      >
+                        <option value="all">All Users</option>
+                        <option value="role">By Role</option>
+                        <option value="individual">Single Individual</option>
+                        <option value="custom">Custom Criteria</option>
+                      </select>
+                    </div>
+
+                    {/* Filter Option for Role */}
+                    {customRecipientType === "role" && (
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-gray-600 block">
+                          Select Target Roles
+                        </label>
+                        <div className="grid grid-cols-2 gap-1.5">
+                          {[
+                            { id: "all", label: "All Users" },
+                            { id: "citizen", label: "Citizens" },
+                            { id: "official", label: "Officials" },
+                            { id: "admin", label: "Admins" },
+                          ].map((r) => (
+                            <button
+                              key={r.id}
+                              type="button"
+                              onClick={() => handleCustomRoleToggle(r.id)}
+                              className={`py-1.5 px-2 rounded-lg text-[10px] font-bold capitalize border transition cursor-pointer truncate ${
+                                customRoles.includes(r.id)
+                                  ? "bg-[#6366f1] border-[#6366f1] text-white shadow-sm shadow-indigo-500/20"
+                                  : "bg-white border-gray-200 text-gray-600 hover:bg-gray-50"
+                              }`}
+                            >
+                              {r.label}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Filter Option for Individual */}
+                    {customRecipientType === "individual" && (
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-gray-600 block">
+                          Target User ID (UUID)
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="e.g. 71ecdac0-c479-4ab7-9ce6-4f117bbed2f5"
+                          value={customUserId}
+                          onChange={(e) => setCustomUserId(e.target.value)}
+                          className="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-[#6366f1]/25 focus:border-[#6366f1]"
+                        />
+                      </div>
+                    )}
+
+                    {/* Priority */}
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold text-gray-600 block">
+                        Priority Level
+                      </label>
+                      <div className="grid grid-cols-4 gap-1.5">
+                        {["normal", "low", "high", "urgent"].map((p) => (
+                          <button
+                            key={p}
+                            type="button"
+                            onClick={() => setCustomPriority(p)}
+                            className={`py-1.5 px-2 rounded-lg text-[10px] font-bold capitalize border transition cursor-pointer truncate ${
+                              customPriority === p
+                                ? "bg-[#6366f1] border-[#6366f1] text-white shadow-sm shadow-indigo-500/20"
+                                : "bg-white border-gray-200 text-gray-600 hover:bg-gray-50"
+                            }`}
+                          >
+                            {p}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Delivery Channels */}
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-gray-600 block">Communication Channels</label>
-                <div className="grid grid-cols-2 gap-2">
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-gray-600 block">
+                  Delivery Channels
+                </label>
+                <div className="grid grid-cols-3 gap-2">
                   {[
-                    { id: "in_app", label: "In-App Notification", icon: "ri-notification-badge-line" },
-                    { id: "push", label: "Push Notification (FCM)", icon: "ri-smartphone-line" },
-                    { id: "email", label: "Email (SMTP)", icon: "ri-mail-line" },
-                    { id: "websocket", label: "Live WebSocket alert", icon: "ri-flashlight-line" }
+                    {
+                      id: "in_app",
+                      label: "In-App",
+                      icon: "ri-notification-badge-line",
+                    },
+                    { id: "email", label: "Email", icon: "ri-mail-line" },
+                    { id: "push", label: "Push", icon: "ri-smartphone-line" },
                   ].map((ch) => (
                     <button
                       key={ch.id}
                       type="button"
-                      onClick={() => handleChannelChange(ch.id)}
-                      className={`flex items-center gap-2 py-2 px-3 border rounded-xl text-xs font-bold transition cursor-pointer text-left ${
-                        channels.includes(ch.id)
+                      onClick={() => handleChannelToggle(ch.id)}
+                      className={`flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold border transition cursor-pointer ${
+                        selectedChannels.includes(ch.id)
                           ? "bg-[#6366f1]/10 border-[#6366f1] text-[#6366f1]"
                           : "border-gray-200 text-gray-600 hover:bg-gray-50"
                       }`}

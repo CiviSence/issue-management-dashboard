@@ -5,6 +5,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 import { useEffect, useState } from "react";
 import defaultPfpFemale from "../../../assets/default-pfp/default-pfp-female.svg";
 import defaultPfpMale from "../../../assets/default-pfp/default-pfp-male.svg";
+import {toast, ToastContainer } from "react-toastify";
 
 const getDefaultAvatar = (gender) => {
   const g = gender?.toLowerCase();
