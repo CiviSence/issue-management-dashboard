@@ -42,7 +42,7 @@ const InfoCard = ({ title, children, icon, className = "" }) => (
 const Info = ({ label, value }) => (
   <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-sm gap-1 sm:gap-4 py-3 border-b border-gray-50 last:border-0">
     <span className="text-gray-500 font-medium">{label}</span>
-    <span className="font-semibold text-gray-800 break-words text-right">
+    <span className="font-semibold text-gray-800 wrap-break-word text-right">
       {value || "—"}
     </span>
   </div>
@@ -88,7 +88,7 @@ const SessionsCard = () => {
       );
       fetchSessions();
     } catch (error) {
-      alert("Failed to revoke session");
+      alert("Failed to revoke session",error);
     } finally {
       setRevokingId(null);
     }
@@ -197,7 +197,7 @@ const OrganizationCard = ({ orgData, loadingOrg }) => {
       </h2>
 
       {/* Org banner */}
-      <div className="bg-gradient-to-br from-violet-50 to-purple-50 rounded-xl p-4 mb-5 border border-violet-100">
+      <div className="bg-linear-to-br from-violet-50 to-purple-50 rounded-xl p-4 mb-5 border border-violet-100">
         <div className="flex items-start gap-3">
           <div className="p-2.5 bg-violet-600 text-white rounded-xl shadow-lg shadow-violet-200 shrink-0">
             <i className="ri-building-2-line text-xl"></i>
@@ -566,7 +566,7 @@ const Profile = () => {
                         checked={profileData?.available_to_work || false}
                         onChange={handleToggleAvailable}
                       />
-                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-violet-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-violet-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
                     </label>
                   </div>
                   <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-sm gap-1 sm:gap-4 py-3 border-b border-gray-50 last:border-0">
@@ -707,7 +707,7 @@ const Profile = () => {
                       className="sr-only peer"
                       defaultChecked
                     />
-                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-violet-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-violet-600"></div>
+                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-violet-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-violet-600"></div>
                   </label>
                 </div>
                 <div className="flex items-center justify-between py-2">
@@ -716,7 +716,7 @@ const Profile = () => {
                   </span>
                   <label className="relative inline-flex items-center cursor-pointer">
                     <input type="checkbox" className="sr-only peer" />
-                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-violet-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-violet-600"></div>
+                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-violet-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-violet-600"></div>
                   </label>
                 </div>
               </InfoCard>
@@ -782,7 +782,7 @@ const Profile = () => {
 
       {/* ── Logout Confirmation Modal ─────────────────────────────── */}
       {showLogoutConfirm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-[1002]">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-1002">
           <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-sm">
             <h3 className="text-xl font-bold mb-4 text-gray-800 text-center">
               Confirm Logout
