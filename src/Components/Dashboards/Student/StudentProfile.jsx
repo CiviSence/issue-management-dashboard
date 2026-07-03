@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import TopBar from "../../Templates/TopBar";
 import { useUser } from "../../../Context/ProfileContext";
 import StudentSideNav from "./StudentSideNav";
 import StudentBottomNav from "./StudentBottomNav";
@@ -261,12 +262,14 @@ const StudentProfile = () => {
             <StudentSideNav />
             <StudentBottomNav />
 
-            {profileData ? (
-                <div className="mx-auto w-full overflow-y-auto bg-[#F8F9FF] min-h-screen">
-                    {/* PROFILE HEADER */}
-                    <div className="bg-white border-b border-gray-100 shadow-sm px-6 py-10 lg:px-20 lg:py-16 relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-violet-50 rounded-full blur-3xl opacity-60 -mr-20 -mt-20"></div>
-                        <div className="absolute bottom-0 left-0 w-48 h-48 bg-purple-50 rounded-full blur-3xl opacity-40 -ml-10 -mb-10"></div>
+            <div className="mx-auto w-full overflow-y-auto bg-[#F8F9FF] min-h-screen">
+                <TopBar title="Profile" />
+                {profileData ? (
+                    <>
+                        {/* PROFILE HEADER */}
+                        <div className="bg-white border-b border-gray-100 shadow-sm px-6 py-10 lg:px-20 lg:py-16 relative overflow-hidden">
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-violet-50 rounded-full blur-3xl opacity-60 -mr-20 -mt-20"></div>
+                            <div className="absolute bottom-0 left-0 w-48 h-48 bg-purple-50 rounded-full blur-3xl opacity-40 -ml-10 -mb-10"></div>
 
                         <div className="relative z-10 flex flex-col md:flex-row items-center gap-8 lg:gap-12">
                             <div className="relative group">
@@ -301,6 +304,13 @@ const StudentProfile = () => {
                                     <i className="ri-edit-circle-line text-lg"></i>
                                     Edit Profile
                                 </button>
+                                <Link
+                                    to="/settings"
+                                    className="bg-white text-violet-600 border border-violet-200 font-bold px-6 py-3 rounded-2xl hover:bg-violet-50 transition shadow-lg shadow-violet-100 active:scale-95 flex items-center gap-2"
+                                >
+                                    <i className="ri-settings-2-line text-lg"></i>
+                                    Setting
+                                </Link>
                                 <button
                                     onClick={() => setShowLogoutConfirm(true)}
                                     className="hidden md:flex bg-white border border-gray-200 text-gray-700 font-bold px-4 py-3 rounded-2xl hover:bg-red-50 hover:text-red-600 hover:border-red-100 transition active:scale-95 flex items-center gap-2"
@@ -522,10 +532,11 @@ const StudentProfile = () => {
                         <span>&bull;</span>
                         <Link to="/terms" className="hover:text-violet-600 transition-colors">Terms of Use</Link>
                     </div>
-                </div>
+                </>
             ) : (
                 <LoadingSkeleton />
             )}
+            </div>
 
             {showLogoutConfirm && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-[1002]">

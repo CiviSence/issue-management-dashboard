@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import TopBar from "./Templates/TopBar";
 import { useUser } from "../Context/ProfileContext";
 import AdminSideNav from "./Dashboards/Admin/AdminSideNav";
 import StudentSideNav from "./Dashboards/Student/StudentSideNav";
@@ -392,47 +393,48 @@ const Profile = () => {
       {renderSideNav()}
       <BottomNav />
 
-      {profileData ? (
-        <div className="mx-auto w-full overflow-y-auto bg-[#F8F9FF] min-h-screen">
-          {/* ── PROFILE HEADER ────────────────────────────────────── */}
-          <div className="bg-white border-b border-gray-100 shadow-sm px-6 py-10 lg:px-20 lg:py-16 relative overflow-hidden">
-            {/* Decorative blurs */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-violet-50 rounded-full blur-3xl opacity-60 -mr-20 -mt-20"></div>
-            <div className="absolute bottom-0 left-0 w-48 h-48 bg-purple-50 rounded-full blur-3xl opacity-40 -ml-10 -mb-10"></div>
+      <div className="mx-auto w-full overflow-y-auto bg-[#F8F9FF] min-h-screen">
+        <TopBar title="Profile and Setting" />
+        {profileData ? (
+          <>
+            
 
+          {/* ── BODY ──────────────────────────────────────────────── */}
+          <div className="p-4 lg:p-8 space-y-6 pb-32">
+            {/* ── PROFILE HEADER ────────────────────────────────────── */}
+            <div className="bg-[#7E70EB]  border-b rounded-3xl border-gray-100 shadow-sm px-6 py-10 lg:px-20 lg:py-16 relative overflow-hidden">
+             
             <div className="relative z-10 flex flex-col md:flex-row items-center gap-8 lg:gap-12">
               {/* Avatar */}
               <div className="relative group">
                 <img
                   src={profileData?.avatar_url || getDefaultAvatar(profileData?.gender)}
                   alt="Profile"
-                  className="w-32 h-32 md:w-36 md:h-36 rounded-3xl border-4 border-white object-cover shadow-xl ring-1 ring-violet-100 transition-transform group-hover:scale-[1.02]"
+                  className="w-32 h-32 md:w-36 md:h-36 rounded-full border-4 border-white object-cover shadow-xl ring-1 ring-white transition-transform group-hover:scale-[1.02]"
                 />
-                <div className="absolute -bottom-2 -right-2 bg-violet-600 text-white p-2 rounded-xl shadow-lg border-2 border-white">
-                  <i className="ri-checkbox-circle-fill"></i>
-                </div>
+                
               </div>
 
               {/* Name / Email / Role */}
               <div className="text-center md:text-left flex-1 space-y-2">
                 <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 justify-center md:justify-start">
-                  <h1 className="text-3xl lg:text-4xl font-black text-gray-900 tracking-tight">
+                  <h1 className="text-3xl lg:text-4xl font-black text-white tracking-tight">
                     {profileData.name}
                   </h1>
                   <StatusBadge
                     type="profile"
                     value={profileData.role}
-                    className="mx-auto md:mx-0"
+                    className="mx-auto md:mx-0 bg-white"
                     showDot={false}
                   />
                 </div>
-                <p className="text-gray-500 font-medium text-lg flex items-center justify-center md:justify-start gap-2">
-                  <i className="ri-mail-line text-violet-400"></i>
+                <p className="text-white/70 font-medium text-lg flex items-center justify-center md:justify-start gap-2">
+                  <i className="ri-mail-line text-white/70"></i>
                   {profileData.email}
                 </p>
                 {profileData.created_at && (
-                  <p className="text-gray-400 text-sm flex items-center justify-center md:justify-start gap-1.5">
-                    <i className="ri-calendar-line text-gray-300"></i>
+                  <p className="text-white/70 text-sm flex items-center justify-center md:justify-start gap-1.5">
+                    <i className="ri-calendar-line text-white/70"></i>
                     Member since {formatDate(profileData.created_at)}
                   </p>
                 )}
@@ -442,11 +444,18 @@ const Profile = () => {
               <div className="flex gap-3 mt-4 md:mt-0">
                 <button
                   onClick={() => setIsEditing(true)}
-                  className="bg-violet-600 text-white font-bold px-6 py-3 rounded-2xl hover:bg-violet-700 transition shadow-lg shadow-violet-200 active:scale-95 flex items-center gap-2"
+                  className="bg-white text-[#7E70EB] font-bold px-6 py-3 rounded-2xl hover:bg-[#eaeaea] transition shadow-lg active:scale-95 flex items-center gap-2"
                 >
                   <i className="ri-edit-circle-line text-lg"></i>
                   Edit Profile
                 </button>
+                <Link
+                  to="/settings"
+                  className="bg-white text-[#7E70EB] font-bold px-6 py-3 rounded-2xl hover:bg-[#eaeaea] transition shadow-lg active:scale-95 flex items-center gap-2"
+                >
+                  <i className="ri-settings-2-line text-lg"></i>
+                  Setting
+                </Link>
                 <button
                   onClick={() => setShowLogoutConfirm(true)}
                   className="hidden md:flex bg-white border border-gray-200 text-gray-700 font-bold px-4 py-3 rounded-2xl hover:bg-red-50 hover:text-red-600 hover:border-red-100 transition active:scale-95 items-center gap-2"
@@ -457,9 +466,6 @@ const Profile = () => {
               </div>
             </div>
           </div>
-
-          {/* ── BODY ──────────────────────────────────────────────── */}
-          <div className="p-4 lg:p-8 space-y-6 pb-32">
             {/* ── Quick Stats ─────────────────────────────────────── */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">
@@ -778,10 +784,11 @@ const Profile = () => {
             <span>&bull;</span>
             <Link to="/terms" className="hover:text-violet-600 transition-colors">Terms of Use</Link>
           </div>
-        </div>
+        </>
       ) : (
         <LoadingSkeleton />
       )}
+      </div>
 
       {/* ── Logout Confirmation Modal ─────────────────────────────── */}
       {showLogoutConfirm && (

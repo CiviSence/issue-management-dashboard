@@ -77,7 +77,7 @@ const TopBar = ({ title }) => {
             )}
 
             <div className="relative flex-1 sm:w-64 lg:w-80">
-              <i className="ri-search-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+              <i className="sm:hidden ri-search-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
               <input
                 type="text"
                 placeholder="Search issues..."
@@ -86,7 +86,7 @@ const TopBar = ({ title }) => {
                   setQuery(e.target.value);
                   setShowResults(true);
                 }}
-                className="w-full bg-gray-100 hover:bg-gray-200/70 focus:bg-white pl-9 pr-4 py-2 rounded-lg text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200 transition-all"
+                className=" sm:hidden w-full bg-gray-100 hover:bg-gray-200/70 focus:bg-white pl-9 pr-4 py-2 rounded-lg text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200 transition-all"
               />
 
               {/* Results Dropdown */}
