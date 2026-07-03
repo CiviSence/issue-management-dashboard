@@ -210,9 +210,11 @@ export const revokeSession = async (sessionId) => {
  * Deletes the user account
  * @returns {Promise<object>}
  */
-export const deleteAccount = async () => {
+export const deleteAccount = async ({ password }) => {
   try {
-    const { data } = await axios.delete("/auth/account");
+    const { data } = await axios.delete("/auth/account", {
+      data: { password },
+    });
     return data;
   } catch (error) {
     throw new Error(error.response?.data?.detail || "Failed to delete account");

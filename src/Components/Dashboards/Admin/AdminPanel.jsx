@@ -14,7 +14,6 @@ const getDefaultAvatar = (gender) => {
   const g = gender?.toLowerCase();
   return g === "female" || g === "f" || g === "woman" ? defaultPfpFemale : defaultPfpMale;
 };
-const noProfile = defaultPfpMale;
 import {
   adminGetAllRequests,
   adminGetUnverifiedUsers,
@@ -2869,7 +2868,7 @@ const DashboardTab = ({
       <SideNav />
       <BottomNav />
 
-      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#FDFDFF] overflow-x-hidden overflow-y-auto h-screen pb-20" id="adminPanelScroll">
+      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#F8F9FF] overflow-x-hidden overflow-y-auto h-screen pb-20" id="adminPanelScroll">
         <TopBar title="Admin Control Panel" />
         <PullToRefresh scrollContainerId="adminPanelScroll" onRefresh={handleRefresh}>
           <div className="p-2 lg:p-4 w-full min-h-screen">
@@ -2925,7 +2924,7 @@ const DashboardTab = ({
         </div>
 
         {/* Content Area */}
-        <div className="animate-fade-in md:bg-[#F3F1FF] p-2 sm:p-2 md:p-4 rounded-2xl min-h-[500px]">
+        <div className="animate-fade-in md:bg-[#F3F1FF] p-2 sm:p-2 md:p-4 rounded-2xl min-h-125">
           {activeTab === "dashboard" && (
             <DashboardTab
               loadingUsers={loadingUsers}

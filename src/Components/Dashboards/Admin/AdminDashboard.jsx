@@ -191,7 +191,7 @@ const AdminDashboard = () => {
       <SideNav />
       <BottomNav />
 
-      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#FDFDFF] overflow-x-hidden overflow-y-auto h-screen pb-20" id="adminDashboardScroll">
+      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#F8F9FF] overflow-x-hidden overflow-y-auto h-screen pb-20" id="adminDashboardScroll">
         <TopBar title="Main Dashboard" />
         <PullToRefresh scrollContainerId="adminDashboardScroll" onRefresh={handleRefresh}>
           <div className="p-2 lg:p-4 w-full">
@@ -361,7 +361,7 @@ const AdminDashboard = () => {
                   </span>
                 </div>
                 <div className="p-3 bg-muted/30 rounded-xl border border-border/50 text-center">
-                  <span className="text-xs text-muted-foreground block font-medium text-amber-600">
+                  <span className="text-xs text-muted-foreground block font-medium">
                     Pending
                   </span>
                   <span className="text-xl font-bold text-card-foreground mt-1 block">
@@ -369,7 +369,7 @@ const AdminDashboard = () => {
                   </span>
                 </div>
                 <div className="p-3 bg-muted/30 rounded-xl border border-border/50 text-center">
-                  <span className="text-xs text-muted-foreground block font-medium text-blue-600">
+                  <span className="text-xs text-muted-foreground block font-medium">
                     Accepted
                   </span>
                   <span className="text-xl font-bold text-card-foreground mt-1 block">
@@ -377,7 +377,7 @@ const AdminDashboard = () => {
                   </span>
                 </div>
                 <div className="p-3 bg-muted/30 rounded-xl border border-border/50 text-center">
-                  <span className="text-xs text-muted-foreground block font-medium text-red-600">
+                  <span className="text-xs text-muted-foreground block font-medium">
                     Rejected
                   </span>
                   <span className="text-xl font-bold text-card-foreground mt-1 block">
@@ -385,7 +385,7 @@ const AdminDashboard = () => {
                   </span>
                 </div>
                 <div className="p-3 bg-muted/30 rounded-xl border border-border/50 text-center">
-                  <span className="text-xs text-muted-foreground block font-medium text-emerald-600">
+                  <span className="text-xs text-muted-foreground block font-medium">
                     Completed
                   </span>
                   <span className="text-xl font-bold text-card-foreground mt-1 block">
@@ -481,7 +481,7 @@ const AdminDashboard = () => {
           <div className="flex justify-end mt-3">
             <Link
               to="/leaderboard"
-              className="text-xs lg:text-sm font-bold text-[#6366f1] hover:text-[#5445c9] hover:underline transition-all"
+              className="text-xs lg:text-sm font-bold text-[#7E70EB] hover:text-[#5A50A6] hover:underline transition-all"
             >
               View Full Leaderboard →
             </Link>

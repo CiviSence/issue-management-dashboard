@@ -18,15 +18,15 @@ const getDefaultAvatar = (gender) => {
 
 // sidebar links  config
 const NAV_ITEMS = [
-    { to: "/feed", icon: "ri-rss-fill", label: "Issue Feed" },
-    { to: "/dashboard", icon: "ri-dashboard-fill", label: "My Dashboard" },
-    { to: "/my-issues", icon: "ri-file-list-3-fill", label: "My Issues" },
-    { to: "/trust-center", icon: "ri-shield-check-fill", label: "Trust Center" },
-    { to: "/help-support", icon: "ri-customer-service-2-fill", label: "Help & Support" },
+    { to: "/feed", icon: "ri-rss-line", iconActive: "ri-rss-fill", label: "Issue Feed" },
+    { to: "/dashboard", icon: "ri-dashboard-line", iconActive: "ri-dashboard-fill", label: "My Dashboard" },
+    { to: "/my-issues", icon: "ri-file-list-3-line", iconActive: "ri-file-list-3-fill", label: "My Issues" },
+    { to: "/trust-center", icon: "ri-shield-check-line", iconActive: "ri-shield-check-fill", label: "Trust Center" },
+    { to: "/help-support", icon: "ri-customer-service-2-line", iconActive: "ri-customer-service-2-fill", label: "Help & Support" },
 ];
 
 // Individual menu link
-const NavItem = ({ to, icon, label }) => (
+const NavItem = ({ to, icon, iconActive, label }) => (
     <NavLink
         to={to}
         className={({ isActive }) =>
@@ -43,7 +43,7 @@ const NavItem = ({ to, icon, label }) => (
                     className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-all
             ${isActive ? "bg-violet-100" : "bg-violet-400/30 group-hover:bg-violet-400/50"}`}
                 >
-                    <i className={`${icon} text-lg`} />
+                    <i className={`${isActive ? (iconActive || icon) : icon} text-lg`} />
                 </span>
                 <span className="hidden lg:block text-sm font-medium truncate">{label}</span>
             </>

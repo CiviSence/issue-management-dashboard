@@ -5,6 +5,7 @@ import ReportedIssues from "./Components/Dashboards/Admin/ReportedIssues";
 import ResolvedIssues from "./Components/Dashboards/Admin/ResolvedIssues";
 import Leaderboard from "./Components/Dashboards/Admin/Leaderboard";
 import Profile from "./Components/Profile";
+import Settings from "./Components/Settings";
 import AssignedIssues from "./Components/Dashboards/Staff/AssignedIssues";
 import IssuePool from "./Components/Dashboards/Staff/IssuePool";
 
@@ -134,6 +135,14 @@ const App = () => {
             element={
               <PrivateRoute>
                 <Profile />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <PrivateRoute>
+                <Settings />
               </PrivateRoute>
             }
           />

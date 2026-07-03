@@ -7,9 +7,10 @@ const BottomNav = () => {
 
   const navClass = ({ isActive }) =>
     `flex flex-col items-center justify-center gap-1 flex-1 py-2 transition-colors
-     ${isActive 
-        ? "text-indigo-600" 
-        : "text-gray-500 hover:text-indigo-500 hover:bg-indigo-50"
+     ${
+       isActive
+         ? "text-indigo-600  bg-[#F3F1FF] rounded-xl"
+         : "text-gray-500 hover:text-indigo-500 hover:bg-indigo-50"
      }`;
 
   return (
@@ -19,7 +20,9 @@ const BottomNav = () => {
         <NavLink to="/dashboard" className={navClass}>
           {({ isActive }) => (
             <>
-              <i className={`ri-dashboard-${isActive ? 'fill' : 'line'} text-xl`}></i>
+              <i
+                className={`ri-dashboard-${isActive ? "fill" : "line"} text-xl`}
+              ></i>
               <span className="text-[10px] font-medium">Home</span>
             </>
           )}
@@ -31,7 +34,9 @@ const BottomNav = () => {
             <NavLink to="/reported-issues" className={navClass}>
               {({ isActive }) => (
                 <>
-                  <i className={`ri-alarm-warning-${isActive ? 'fill' : 'line'} text-xl`}></i>
+                  <i
+                    className={`ri-alarm-warning-${isActive ? "fill" : "line"} text-xl`}
+                  ></i>
                   <span className="text-[10px] font-medium">Issues</span>
                 </>
               )}
@@ -39,7 +44,9 @@ const BottomNav = () => {
             <NavLink to="/admin-panel" className={navClass}>
               {({ isActive }) => (
                 <>
-                  <i className={`ri-terminal-window-${isActive ? 'fill' : 'line'} text-xl`}></i>
+                  <i
+                    className={`ri-terminal-window-${isActive ? "fill" : "line"} text-xl`}
+                  ></i>
                   <span className="text-[10px] font-medium">Panel</span>
                 </>
               )}
@@ -47,7 +54,9 @@ const BottomNav = () => {
             <NavLink to="/notifications" className={navClass}>
               {({ isActive }) => (
                 <>
-                  <i className={`ri-notification-3-${isActive ? 'fill' : 'line'} text-xl`}></i>
+                  <i
+                    className={`ri-notification-3-${isActive ? "fill" : "line"} text-xl`}
+                  ></i>
                   <span className="text-[10px] font-medium">Alerts</span>
                 </>
               )}
@@ -61,7 +70,9 @@ const BottomNav = () => {
             <NavLink to="/issue-pool" className={navClass}>
               {({ isActive }) => (
                 <>
-                  <i className={`ri-inbox-archive-${isActive ? 'fill' : 'line'} text-xl`}></i>
+                  <i
+                    className={`ri-inbox-archive-${isActive ? "fill" : "line"} text-xl`}
+                  ></i>
                   <span className="text-[10px] font-medium">Pool</span>
                 </>
               )}
@@ -69,7 +80,9 @@ const BottomNav = () => {
             <NavLink to="/assigned-issues" className={navClass}>
               {({ isActive }) => (
                 <>
-                  <i className={`ri-task-${isActive ? 'fill' : 'line'} text-xl`}></i>
+                  <i
+                    className={`ri-task-${isActive ? "fill" : "line"} text-xl`}
+                  ></i>
                   <span className="text-[10px] font-medium">Tasks</span>
                 </>
               )}
@@ -77,7 +90,9 @@ const BottomNav = () => {
             <NavLink to="/notifications" className={navClass}>
               {({ isActive }) => (
                 <>
-                  <i className={`ri-notification-3-${isActive ? 'fill' : 'line'} text-xl`}></i>
+                  <i
+                    className={`ri-notification-3-${isActive ? "fill" : "line"} text-xl`}
+                  ></i>
                   <span className="text-[10px] font-medium">Alerts</span>
                 </>
               )}
@@ -91,7 +106,9 @@ const BottomNav = () => {
             <NavLink to="/feed" className={navClass}>
               {({ isActive }) => (
                 <>
-                  <i className={`ri-rss-${isActive ? 'fill' : 'line'} text-xl`}></i>
+                  <i
+                    className={`ri-rss-${isActive ? "fill" : "line"} text-xl`}
+                  ></i>
                   <span className="text-[10px] font-medium">Feed</span>
                 </>
               )}
@@ -99,7 +116,9 @@ const BottomNav = () => {
             <NavLink to="/help-support" className={navClass}>
               {({ isActive }) => (
                 <>
-                  <i className={`ri-customer-service-2-${isActive ? 'fill' : 'line'} text-xl`}></i>
+                  <i
+                    className={`ri-customer-service-2-${isActive ? "fill" : "line"} text-xl`}
+                  ></i>
                   <span className="text-[10px] font-medium">Help</span>
                 </>
               )}
@@ -111,7 +130,9 @@ const BottomNav = () => {
         <NavLink to="/profile" className={navClass}>
           {({ isActive }) => (
             <>
-              <i className={`ri-user-${isActive ? 'fill' : 'line'} text-xl`}></i>
+              <i
+                className={`ri-user-${isActive ? "fill" : "line"} text-xl`}
+              ></i>
               <span className="text-[10px] font-medium">Profile</span>
             </>
           )}

@@ -323,7 +323,7 @@ const IssueDetails = () => {
       <SideNav />
       <BottomNav />
 
-      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#FDFDFF] overflow-x-hidden overflow-y-auto h-screen pb-20">
+      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#F8F9FF] overflow-x-hidden overflow-y-auto h-screen pb-20">
         <TopBar title="Issue Details" />
         <div className="w-full pb-20 md:pb-2 p-2 lg:p-4">
           {issue ? (
