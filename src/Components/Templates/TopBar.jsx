@@ -243,106 +243,12 @@ const TopBar = ({ title }) => {
         {/* Refresh Icon */}
         <button
           onClick={() => window.location.reload()}
-          className="p-2 hover:bg-white/10 rounded-full transition-colors flex items-center justify-center text-white"
+          className="hidden lg:inline p-2 hover:bg-white/10 rounded-full transition-colors flex items-center justify-center text-white"
           title="Refresh Page"
           aria-label="Refresh"
         >
           <i className="ri-refresh-line text-xl"></i>
         </button>
-
-        {/* Notification Icon */}
-        <div className="relative" ref={notificationRef}>
-          <button
-            onClick={toggleNotifications}
-            className="relative p-2 hover:bg-white/10 rounded-full transition-colors flex items-center justify-center"
-            aria-label="Notifications"
-          >
-            <i className="ri-notification-3-line text-xl text-white"></i>
-            {unreadCount > 0 && (
-              <span className="absolute top-0 right-0 bg-red-500 text-white text-[10px] font-bold min-w-[16px] h-4 px-1 rounded-full flex items-center justify-center border border-white">
-                {unreadCount > 99 ? "99+" : unreadCount}
-              </span>
-            )}
-          </button>
-
-          {/* Notification Dropdown */}
-          {showNotifications && (
-            <div className="absolute right-0 top-12 w-80 sm:w-96 bg-white rounded-xl shadow-xl border border-gray-100 z-50 overflow-hidden">
-              <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 bg-gray-50/50">
-                <h3 className="font-semibold text-gray-800">Notifications</h3>
-                {unreadCount > 0 && (
-                  <button
-                    onClick={markAllAsRead}
-                    className="text-xs text-violet-600 hover:text-violet-700 font-medium"
-                  >
-                    Mark all read
-                  </button>
-                )}
-              </div>
-
-              <div className="max-h-96 overflow-y-auto">
-                {loadingNotifications ? (
-                  <div className="flex items-center justify-center py-8">
-                    <div className="w-6 h-6 border-2 border-violet-500 border-t-transparent rounded-full animate-spin"></div>
-                  </div>
-                ) : notifications.length === 0 ? (
-                  <div className="text-center py-8 text-gray-500">
-                    <i className="ri-notification-off-line text-3xl mb-2 block text-gray-300"></i>
-                    <p className="text-sm">No notifications</p>
-                  </div>
-                ) : (
-                  notifications.map((notification) => (
-                    <div
-                      key={notification.id}
-                      onClick={() => handleNotificationClick(notification)}
-                      className={`group flex items-start gap-3 px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-50 last:border-b-0 transition-colors ${
-                        notification.is_unread
-                          ? "bg-violet-50/50 border-l-4 border-l-violet-500"
-                          : ""
-                      }`}
-                    >
-                      <div className="shrink-0 mt-1.5">
-                        {notification.is_unread && (
-                          <div className="w-2 h-2 bg-violet-500 rounded-full"></div>
-                        )}
-                      </div>
-
-                      <div className="flex-1 min-w-0">
-                        <p
-                          className={`text-sm ${
-                            notification.is_unread
-                              ? "font-semibold text-gray-900"
-                              : "text-gray-700"
-                          }`}
-                        >
-                          {notification.title}
-                        </p>
-                        <p
-                          className={`text-xs mt-0.5 line-clamp-2 ${
-                            notification.is_unread
-                              ? "text-gray-600"
-                              : "text-gray-500"
-                          }`}
-                        >
-                          {notification.message}
-                        </p>
-                        <p
-                          className={`text-[10px] mt-1 ${
-                            notification.is_unread
-                              ? "text-violet-500 font-medium"
-                              : "text-gray-400"
-                          }`}
-                        >
-                          {getRelativeTime(notification.sent_at)}
-                        </p>
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
-            </div>
-          )}
-        </div>
 
         {/* Profile Avatar */}
         <Link

@@ -4,6 +4,7 @@ import TopBar from "../../Templates/TopBar";
 import IssueCard from "../../Templates/IssueCard";
 import BottomNav from "../../Templates/BottomNav";
 import UserCard from "../../Templates/UserCard";
+import PullToRefresh from "../../Templates/PullToRefresh";
 import { useIssues } from "../../../Context/IssueContext";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
@@ -37,23 +38,36 @@ const UserSectionSkeleton = () => (
 );
 
 const AdminDashboard = () => {
-  const { allstats, issues = [], loadingIssues, loadingStats } = useIssues();
+  const { allstats, issues = [], loadingIssues, loadingStats, fetchIssues, fetchStats } = useIssues();
   const [statsData, setStatsData] = useState({});
   const [loadingStatsData, setLoadingStatsData] = useState(true);
 
+  const fetchAssignmentStats = async () => {
+    try {
+      const data = await getAssignmentStats();
+      setStatsData(data);
+    } catch (err) {
+      console.error("Failed to fetch assignment stats:", err);
+    } finally {
+      setLoadingStatsData(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchAssignmentStats = async () => {
-      try {
-        const data = await getAssignmentStats();
-        setStatsData(data);
-      } catch (err) {
-        console.error("Failed to fetch assignment stats:", err);
-      } finally {
-        setLoadingStatsData(false);
-      }
-    };
     fetchAssignmentStats();
   }, []);
+
+  const handleRefresh = async () => {
+    try {
+      await Promise.all([
+        fetchIssues ? fetchIssues() : Promise.resolve(),
+        fetchStats ? fetchStats() : Promise.resolve(),
+        fetchAssignmentStats(),
+      ]);
+    } catch (err) {
+      console.error("Dashboard refresh failed:", err);
+    }
+  };
 
   const initialStats = {
     category: {
@@ -177,10 +191,10 @@ const AdminDashboard = () => {
       <SideNav />
       <BottomNav />
 
-      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#FDFDFF] overflow-x-hidden overflow-y-auto h-screen pb-20">
+      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#FDFDFF] overflow-x-hidden overflow-y-auto h-screen pb-20" id="adminDashboardScroll">
         <TopBar title="Main Dashboard" />
-        
-        <div className="p-2 lg:p-4 w-full">
+        <PullToRefresh scrollContainerId="adminDashboardScroll" onRefresh={handleRefresh}>
+          <div className="p-2 lg:p-4 w-full">
         {/* ========== 1. STATUS CARDS — Instant overview ========== */}
         <div className="w-full md:mt-4 gap-1.5 sm:gap-2 md:gap-3 flex flex-wrap justify-center md:bg-[#F3F1FF] p-2 sm:p-2 md:p-3 lg:p-4 rounded-2xl ">
           {loadingStats ? (
@@ -474,6 +488,7 @@ const AdminDashboard = () => {
           </div>
         </div>
         </div>
+        </PullToRefresh>
       </div>
     </>
   );

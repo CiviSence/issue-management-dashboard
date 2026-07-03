@@ -6,6 +6,7 @@ import Loader from "../../Templates/Loader";
 import { useNavigate } from "react-router-dom";
 import axios from "../../../Utils/axios";
 import TopBar from "../../Templates/TopBar";
+import PullToRefresh from "../../Templates/PullToRefresh";
 
 const StaffNotifications = () => {
   const { profileData } = useUser();
@@ -112,9 +113,10 @@ const StaffNotifications = () => {
     <>
       <StaffSideNav />
       <BottomNav />
-      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#FDFDFF] overflow-x-hidden overflow-y-auto h-screen pb-20">
+      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#FDFDFF] overflow-x-hidden overflow-y-auto h-screen pb-20" id="staffNotifsScroll">
         <TopBar title="Notifications" />
-        <div className="w-full mx-auto p-2 lg:p-4">
+        <PullToRefresh scrollContainerId="staffNotifsScroll" onRefresh={fetchNotifications}>
+          <div className="w-full mx-auto p-2 lg:p-4">
         <div className="p-2 md:p-0">
           <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
             {/* Filters */}
@@ -200,8 +202,9 @@ const StaffNotifications = () => {
               </div>
             )}
           </div>
+          </div>
         </div>
-        </div>
+        </PullToRefresh>
       </div>
     </>
   );

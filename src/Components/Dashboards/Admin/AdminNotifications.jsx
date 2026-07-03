@@ -3,8 +3,8 @@ import AdminSideNav from "./AdminSideNav";
 import BottomNav from "../../Templates/BottomNav";
 import { useUser } from "../../../Context/ProfileContext";
 import Loader from "../../Templates/Loader";
-import { useNavigate } from "react-router-dom";
 import TopBar from "../../Templates/TopBar";
+import PullToRefresh from "../../Templates/PullToRefresh";
 import axios from "../../../Utils/axios";
 import {
   fetchNotifications,
@@ -17,7 +17,6 @@ import {
 import { toast, ToastContainer } from "react-toastify";
 
 const AdminNotifications = () => {
-  const navigate = useNavigate();
   const { profileData } = useUser();
   const [loadingNotifications, setLoadingNotifications] = useState(true);
   const [notifications, setNotifications] = useState([]);
@@ -227,10 +226,11 @@ const AdminNotifications = () => {
       <AdminSideNav />
       <BottomNav />
       <ToastContainer />
-      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#FDFDFF] overflow-x-hidden overflow-y-auto h-screen pb-20">
+      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#FDFDFF] overflow-x-hidden overflow-y-auto h-screen pb-20" id="adminNotifsScroll">
         <TopBar title="Notifications" />
-        <div className="p-2 lg:p-4 w-full min-h-screen">
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+        <PullToRefresh scrollContainerId="adminNotifsScroll" onRefresh={loadNotifications}>
+          <div className="p-2 lg:p-4 w-full min-h-screen">
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
             {/* Filters and Actions */}
             <div className="flex flex-wrap items-center justify-between border-b border-gray-150 px-4 py-3 gap-3 bg-gray-50/50">
               <div className="flex items-center gap-2">
@@ -335,6 +335,7 @@ const AdminNotifications = () => {
             )}
           </div>
         </div>
+        </PullToRefresh>
       </div>
 
       {/* Modern Send Notification Modal */}
