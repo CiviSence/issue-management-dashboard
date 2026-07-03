@@ -2924,7 +2924,7 @@ const DashboardTab = ({
         </div>
 
         {/* Content Area */}
-        <div className="animate-fade-in md:bg-[#F3F1FF] p-2 sm:p-2 md:p-4 rounded-2xl min-h-[500px]">
+        <div className="animate-fade-in md:bg-[#F3F1FF] p-2 sm:p-2 md:p-4 rounded-2xl min-h-125">
           {activeTab === "dashboard" && (
             <DashboardTab
               loadingUsers={loadingUsers}

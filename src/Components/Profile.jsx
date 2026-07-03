@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useUser } from "../Context/ProfileContext";
 import AdminSideNav from "./Dashboards/Admin/AdminSideNav";
 import StudentSideNav from "./Dashboards/Student/StudentSideNav";
@@ -755,7 +756,7 @@ const Profile = () => {
           </div>
 
           {/* ── Mobile Logout / Help ──────────────────────────────── */}
-          <div className="md:hidden px-6 pb-24 space-y-3">
+          <div className="md:hidden px-6 pb-6 space-y-3">
             <a
               href="/help-support"
               className="w-full bg-white border border-gray-200 text-gray-700 py-4 rounded-2xl font-bold shadow-sm active:scale-[0.98] transition-all flex items-center justify-center gap-2"
@@ -769,11 +770,13 @@ const Profile = () => {
             >
               Log Out
             </button>
-            <div className="flex justify-center space-x-3 pt-4 text-xs font-medium text-gray-400">
-              <a href="/privacy-policy" className="hover:text-gray-600 transition-colors">Privacy Policy</a>
-              <span>&bull;</span>
-              <a href="/terms" className="hover:text-gray-600 transition-colors">Terms of Use</a>
-            </div>
+          </div>
+
+          {/* ── Legal Links (Universal: Desktop & Mobile) ─────────── */}
+          <div className="flex justify-center items-center space-x-3 py-6 pb-28 md:pb-12 text-xs font-medium text-gray-400 border-t border-gray-200/60 mt-6 mx-6 md:mx-auto max-w-6xl">
+            <Link to="/privacy-policy" className="hover:text-violet-600 transition-colors">Privacy Policy</Link>
+            <span>&bull;</span>
+            <Link to="/terms" className="hover:text-violet-600 transition-colors">Terms of Use</Link>
           </div>
         </div>
       ) : (

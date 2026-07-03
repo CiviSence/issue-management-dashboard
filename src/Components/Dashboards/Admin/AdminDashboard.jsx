@@ -361,7 +361,7 @@ const AdminDashboard = () => {
                   </span>
                 </div>
                 <div className="p-3 bg-muted/30 rounded-xl border border-border/50 text-center">
-                  <span className="text-xs text-muted-foreground block font-medium text-amber-600">
+                  <span className="text-xs text-muted-foreground block font-medium">
                     Pending
                   </span>
                   <span className="text-xl font-bold text-card-foreground mt-1 block">
@@ -369,7 +369,7 @@ const AdminDashboard = () => {
                   </span>
                 </div>
                 <div className="p-3 bg-muted/30 rounded-xl border border-border/50 text-center">
-                  <span className="text-xs text-muted-foreground block font-medium text-blue-600">
+                  <span className="text-xs text-muted-foreground block font-medium">
                     Accepted
                   </span>
                   <span className="text-xl font-bold text-card-foreground mt-1 block">
@@ -377,7 +377,7 @@ const AdminDashboard = () => {
                   </span>
                 </div>
                 <div className="p-3 bg-muted/30 rounded-xl border border-border/50 text-center">
-                  <span className="text-xs text-muted-foreground block font-medium text-red-600">
+                  <span className="text-xs text-muted-foreground block font-medium">
                     Rejected
                   </span>
                   <span className="text-xl font-bold text-card-foreground mt-1 block">
@@ -385,7 +385,7 @@ const AdminDashboard = () => {
                   </span>
                 </div>
                 <div className="p-3 bg-muted/30 rounded-xl border border-border/50 text-center">
-                  <span className="text-xs text-muted-foreground block font-medium text-emerald-600">
+                  <span className="text-xs text-muted-foreground block font-medium">
                     Completed
                   </span>
                   <span className="text-xl font-bold text-card-foreground mt-1 block">

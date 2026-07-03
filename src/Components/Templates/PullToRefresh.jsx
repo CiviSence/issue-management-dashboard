@@ -202,7 +202,7 @@ const PullToRefresh = ({
     <div ref={containerRef} className="relative w-full min-h-full flex flex-col">
       {/* Floating Pill Indicator */}
       <div 
-        className="absolute left-0 right-0 flex items-center justify-center pointer-events-none z-[9999]"
+        className="absolute left-0 right-0 flex items-center justify-center pointer-events-none z-9999"
         style={{ 
           top: '12px',
           opacity: pullDistance > 6 || refreshState !== 'idle' ? Math.min(1, pullDistance / 20) : 0,

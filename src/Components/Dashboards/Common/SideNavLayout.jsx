@@ -10,20 +10,24 @@ const getDefaultAvatar = (gender) => {
   return g === "female" || g === "f" || g === "woman" ? defaultPfpFemale : defaultPfpMale;
 };
 
-export const NavItem = ({ to, icon, label }) => {
-  const navLinkClass = ({ isActive }) =>
-    `flex items-center justify-center lg:justify-start
-     rounded-lg px-4 py-3 transition
-     ${
-       isActive
-         ? "bg-white/95 text-[#6366f1] shadow-lg font-bold"
-         : "text-white/80 hover:text-white hover:bg-white/10 backdrop-blur-sm"
-     }`;
-
+export const NavItem = ({ to, icon, iconActive, label }) => {
   return (
-    <NavLink to={to} className={navLinkClass}>
-      <i className={`${icon} text-xl`}></i>
-      <span className="hidden lg:inline ml-3">{label}</span>
+    <NavLink
+      to={to}
+      className={({ isActive }) =>
+        `flex items-center justify-center lg:justify-start rounded-lg px-4 py-3 transition ${
+          isActive
+            ? "bg-white/95 text-[#6366f1] shadow-lg font-bold"
+            : "text-white/80 hover:text-white hover:bg-white/10 backdrop-blur-sm"
+        }`
+      }
+    >
+      {({ isActive }) => (
+        <>
+          <i className={`${isActive ? (iconActive || icon) : icon} text-xl`}></i>
+          <span className="hidden lg:inline ml-3">{label}</span>
+        </>
+      )}
     </NavLink>
   );
 };
@@ -88,12 +92,7 @@ const SideNavLayout = ({ children }) => {
       </div>
 
       <div className="relative mt-auto">
-        {/* Legal Links Footer */}
-        <div className="hidden lg:flex px-2 mb-4 space-x-3 text-[10px] font-medium text-indigo-200">
-          <Link to="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link>
-          <span>&bull;</span>
-          <Link to="/terms" className="hover:text-white transition-colors">Terms of Use</Link>
-        </div>
+        
         {/* Profile button */}
         <div
           onMouseEnter={() => setShowProfileMenu((prev) => !prev)}
