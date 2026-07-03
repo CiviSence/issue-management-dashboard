@@ -13,7 +13,6 @@ import Loader from "../../Templates/Loader";
 import IssueCard from "../../Templates/IssueCard";
 import { useNavigate } from "react-router-dom";
 import StatusBadge from "../../Templates/StatusBadge";
-import defaultProfile from "../../../assets/default-avatar.jpg";
 import axios from "../../../Utils/axios";
 import {
   CheckCircle,

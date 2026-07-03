@@ -16,7 +16,13 @@ import {
 } from "../../../Utils/issues";
 import Loader from "../../Templates/Loader";
 import AdCard from "../../Templates/AdCard";
-import defaultAvatar from "../../../assets/default-avatar.jpg";
+import defaultPfpFemale from "../../../assets/default-pfp/default-pfp-female.svg";
+import defaultPfpMale from "../../../assets/default-pfp/default-pfp-male.svg";
+
+const getDefaultAvatar = (gender) => {
+  const g = gender?.toLowerCase();
+  return g === "female" || g === "f" || g === "woman" ? defaultPfpFemale : defaultPfpMale;
+};
 import ReportIssueModal from "../../Templates/ReportIssueModal";
 import { motion, AnimatePresence } from "framer-motion";
 import StatusBadge from "../../Templates/StatusBadge";
@@ -170,18 +176,12 @@ const IssueCard = ({ issue, onOpenComments }) => {
       {/* Profile info */}
       <div className="flex items-start justify-between px-5 pt-5 pb-3">
         <div className="flex items-center gap-3">
-          {issue.user?.avatar_url ? (
-            <img
-              src={issue.user.avatar_url}
-              alt={issue.user?.name}
-              onError={(e) => { e.target.src = defaultAvatar; }}
-              className="w-10 h-10 rounded-full object-cover border-2 border-violet-100 shrink-0"
-            />
-          ) : (
-            <span className="w-10 h-10 rounded-full bg-violet-100 text-violet-600 flex items-center justify-center text-sm font-bold border-2 border-violet-100 shrink-0">
-              {(issue.user?.name || "U").split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase()}
-            </span>
-          )}
+          <img
+            src={issue.user?.avatar_url || getDefaultAvatar(issue.user?.gender)}
+            alt={issue.user?.name}
+            onError={(e) => { e.target.src = getDefaultAvatar(issue.user?.gender); }}
+            className="w-10 h-10 rounded-full object-cover border-2 border-violet-100 shrink-0"
+          />
           <div>
             <p className="font-semibold text-gray-900 text-sm leading-tight">
               {issue.user?.name || "Unknown User"}
@@ -494,18 +494,12 @@ const CommentsModal = ({ issueId, onClose, onCommentAdded }) => {
           ) : (
             comments.map((c, i) => (
               <div key={c.id ?? i} className="flex gap-3">
-                {c.user?.avatar_url ? (
-                  <img
-                    src={c.user.avatar_url}
-                    alt={c.user?.name}
-                    onError={(e) => { e.target.src = defaultAvatar; }}
-                    className="w-8 h-8 rounded-full object-cover shrink-0"
-                  />
-                ) : (
-                  <span className="w-8 h-8 rounded-full bg-violet-100 text-violet-600 flex items-center justify-center text-xs font-bold shrink-0">
-                    {(c.user?.name || "U").split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase()}
-                  </span>
-                )}
+                <img
+                  src={c.user?.avatar_url || getDefaultAvatar(c.user?.gender)}
+                  alt={c.user?.name}
+                  onError={(e) => { e.target.src = getDefaultAvatar(c.user?.gender); }}
+                  className="w-8 h-8 rounded-full object-cover shrink-0"
+                />
                 <div className="flex-1">
                   <div className="flex items-baseline gap-2">
                     <span className="text-sm font-semibold text-gray-800">{c.user?.name || "User"}</span>

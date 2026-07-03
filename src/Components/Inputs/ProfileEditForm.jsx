@@ -1,7 +1,13 @@
 import { useState } from "react";
 import { changePassword } from "../../Utils/auth-api";
 import { uploadAvatar } from "../../Utils/profile-api";
-import defaultProfile from "../../assets/default-avatar.jpg";
+import defaultPfpFemale from "../../assets/default-pfp/default-pfp-female.svg";
+import defaultPfpMale from "../../assets/default-pfp/default-pfp-male.svg";
+
+const getDefaultAvatar = (gender) => {
+  const g = gender?.toLowerCase();
+  return g === "female" || g === "f" || g === "woman" ? defaultPfpFemale : defaultPfpMale;
+};
 
 // ─── Reusable Field Components ───────────────────────────────────────────────
 
@@ -262,10 +268,10 @@ const ProfileEditForm = ({ profile, onSave, onCancel }) => {
               <div className="flex items-center gap-5 p-4 bg-gray-50 rounded-2xl border border-gray-100">
                 <div className="relative shrink-0">
                   <img
-                    src={formData.avatar_url || "/default-avatar.png"}
+                    src={formData.avatar_url || getDefaultAvatar(formData.gender)}
                     alt="Preview"
                     className="w-20 h-20 rounded-2xl object-cover border-2 border-white shadow-md"
-                    onError={(e) => (e.target.src = defaultProfile)}
+                    onError={(e) => (e.target.src = getDefaultAvatar(formData.gender))}
                   />
                   {uploading && (
                     <div className="absolute inset-0 bg-white/80 rounded-2xl flex items-center justify-center">

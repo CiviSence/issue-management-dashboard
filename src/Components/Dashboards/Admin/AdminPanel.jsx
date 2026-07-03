@@ -6,7 +6,14 @@ import TopBar from "../../Templates/TopBar";
 import "react-loading-skeleton/dist/skeleton.css";
 import { toast, ToastContainer } from "react-toastify";
 import axios from "../../../Utils/axios";
-import noProfile from "../../../assets/default-avatar.jpg";
+import defaultPfpFemale from "../../../assets/default-pfp/default-pfp-female.svg";
+import defaultPfpMale from "../../../assets/default-pfp/default-pfp-male.svg";
+
+const getDefaultAvatar = (gender) => {
+  const g = gender?.toLowerCase();
+  return g === "female" || g === "f" || g === "woman" ? defaultPfpFemale : defaultPfpMale;
+};
+const noProfile = defaultPfpMale;
 import {
   adminGetAllRequests,
   adminGetUnverifiedUsers,
@@ -1121,7 +1128,7 @@ const DashboardTab = ({
                   >
                     <div className="flex items-center gap-3">
                       <img
-                        src={user.avatar_url || noProfile}
+                        src={user.avatar_url || getDefaultAvatar(user.gender)}
                         alt={user.name}
                         className="w-12 h-12 rounded-full object-cover border-2 border-gray-100"
                       />{" "}
@@ -1401,7 +1408,7 @@ const DashboardTab = ({
             <div className="flex items-center gap-3">
               <div className="relative">
                 <img
-                  src={user.avatar_url || noProfile}
+                  src={user.avatar_url || getDefaultAvatar(user.gender)}
                   alt={user.name}
                   className="w-12 h-12 rounded-full object-cover border-2 border-gray-100"
                 />
@@ -1513,7 +1520,7 @@ const DashboardTab = ({
 
           <div className="relative shrink-0">
             <img
-              src={user.avatar_url || noProfile}
+              src={user.avatar_url || getDefaultAvatar(user.gender)}
               alt={user.name}
               className="w-10 h-10 rounded-full object-cover"
             />
@@ -1819,7 +1826,7 @@ const DashboardTab = ({
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-3">
                           <img
-                            src={user.avatar_url || noProfile}
+                            src={user.avatar_url || getDefaultAvatar(user.gender)}
                             alt={user.name}
                             className="w-9 h-9 rounded-full object-cover"
                           />
@@ -2011,7 +2018,7 @@ const DashboardTab = ({
             <div className="flex items-center gap-3">
               <div className="relative">
                 <img
-                  src={user.avatar_url || noProfile}
+                  src={user.avatar_url || getDefaultAvatar(user.gender)}
                   alt={user.name}
                   className="w-12 h-12 rounded-full object-cover border-2 border-gray-100"
                 />
@@ -2254,7 +2261,7 @@ const DashboardTab = ({
                       />
                       <div className="relative shrink-0">
                         <img
-                          src={user.avatar_url || noProfile}
+                          src={user.avatar_url || getDefaultAvatar(user.gender)}
                           alt={user.name}
                           className="w-10 h-10 rounded-full object-cover border-2 border-gray-100"
                         />
@@ -2921,7 +2928,7 @@ const DashboardTab = ({
                   <div className="relative">
                     <div className="w-24 h-24 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-4xl font-bold ring-4 ring-white/30">
                       <img
-                        src={userDetails.user.avatar_url || noProfile}
+                        src={userDetails.user.avatar_url || getDefaultAvatar(userDetails.user.gender)}
                         alt={userDetails.user?.name}
                         className="w-full h-full rounded-2xl object-cover"
                       />

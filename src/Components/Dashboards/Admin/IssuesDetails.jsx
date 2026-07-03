@@ -3,8 +3,13 @@ import BottomNav from "../../Templates/BottomNav";
 import TopBar from "../../Templates/TopBar";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useEffect, useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
-import profileSvg from "../../../assets/default-avatar.jpg";
+import defaultPfpFemale from "../../../assets/default-pfp/default-pfp-female.svg";
+import defaultPfpMale from "../../../assets/default-pfp/default-pfp-male.svg";
+
+const getDefaultAvatar = (gender) => {
+  const g = gender?.toLowerCase();
+  return g === "female" || g === "f" || g === "woman" ? defaultPfpFemale : defaultPfpMale;
+};
 import {
   assignIssue,
   deleteIssue,
@@ -873,7 +878,7 @@ const IssueDetails = () => {
                     {/* Reporter Info Card */}
                     <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-gray-50 rounded-xl border border-gray-100 mb-4 sm:mb-6">
                       <img
-                        src={issue.user_avatar || profileSvg}
+                        src={issue.user_avatar || getDefaultAvatar(issue.user_gender)}
                         className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover ring-2 ring-white shadow-sm shrink-0"
                       />
                       <div className="flex-1 min-w-0">

@@ -3,6 +3,13 @@ import StaffSideNav from "./StaffSideNav";
 import BottomNav from "../../Templates/BottomNav";
 import { useUser } from "../../../Context/ProfileContext";
 import TopBar from "../../Templates/TopBar";
+import defaultPfpFemale from "../../../assets/default-pfp/default-pfp-female.svg";
+import defaultPfpMale from "../../../assets/default-pfp/default-pfp-male.svg";
+
+const getDefaultAvatar = (gender) => {
+  const g = gender?.toLowerCase();
+  return g === "female" || g === "f" || g === "woman" ? defaultPfpFemale : defaultPfpMale;
+};
 import {
   acceptAssignment,
   rejectAssignment,
@@ -442,7 +449,7 @@ const TaskDetails = () => {
                 <div className="flex items-center gap-4">
                   <div className="relative">
                     <img
-                      src={task.user_avatar || "/default-avatar.png"}
+                      src={task.user_avatar || getDefaultAvatar(task.user_gender)}
                       alt={task.user_name}
                       className="w-16 h-16 rounded-full object-cover border-2 border-[#7E70EB]/20"
                     />

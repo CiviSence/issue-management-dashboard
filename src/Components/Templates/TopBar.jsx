@@ -3,11 +3,14 @@ import { useIssues } from "../../Context/IssueContext.js";
 import { useUser } from "../../Context/ProfileContext";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "../../Utils/axios";
+import defaultPfpFemale from "../../assets/default-pfp/default-pfp-female.svg";
+import defaultPfpMale from "../../assets/default-pfp/default-pfp-male.svg";
 
 const TopBar = ({ title }) => {
   const { profileData } = useUser();
   const { issues } = useIssues();
   const navigate = useNavigate();
+  console.log(profileData);
 
   const [query, setQuery] = useState("");
   const [showResults, setShowResults] = useState(false);
@@ -182,7 +185,10 @@ const TopBar = ({ title }) => {
         </button>
 
         {/* Search Input Container */}
-        <div ref={searchRef} className={`w-full max-w-sm ${isMobileSearchOpen ? 'absolute inset-0 z-50 flex items-center bg-gradient-to-r from-[#7E70EB] to-[#5A50A6] px-4' : 'hidden sm:block relative'}`}>
+        <div
+          ref={searchRef}
+          className={`w-full max-w-sm ${isMobileSearchOpen ? "absolute inset-0 z-50 flex items-center bg-gradient-to-r from-[#7E70EB] to-[#5A50A6] px-4" : "hidden sm:block relative"}`}
+        >
           {isMobileSearchOpen && (
             <button
               onClick={() => {
@@ -289,10 +295,11 @@ const TopBar = ({ title }) => {
                     <div
                       key={notification.id}
                       onClick={() => handleNotificationClick(notification)}
-                      className={`group flex items-start gap-3 px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-50 last:border-b-0 transition-colors ${notification.is_unread
-                        ? "bg-violet-50/50 border-l-4 border-l-violet-500"
-                        : ""
-                        }`}
+                      className={`group flex items-start gap-3 px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-50 last:border-b-0 transition-colors ${
+                        notification.is_unread
+                          ? "bg-violet-50/50 border-l-4 border-l-violet-500"
+                          : ""
+                      }`}
                     >
                       <div className="shrink-0 mt-1.5">
                         {notification.is_unread && (
@@ -302,26 +309,29 @@ const TopBar = ({ title }) => {
 
                       <div className="flex-1 min-w-0">
                         <p
-                          className={`text-sm ${notification.is_unread
-                            ? "font-semibold text-gray-900"
-                            : "text-gray-700"
-                            }`}
+                          className={`text-sm ${
+                            notification.is_unread
+                              ? "font-semibold text-gray-900"
+                              : "text-gray-700"
+                          }`}
                         >
                           {notification.title}
                         </p>
                         <p
-                          className={`text-xs mt-0.5 line-clamp-2 ${notification.is_unread
-                            ? "text-gray-600"
-                            : "text-gray-500"
-                            }`}
+                          className={`text-xs mt-0.5 line-clamp-2 ${
+                            notification.is_unread
+                              ? "text-gray-600"
+                              : "text-gray-500"
+                          }`}
                         >
                           {notification.message}
                         </p>
                         <p
-                          className={`text-[10px] mt-1 ${notification.is_unread
-                            ? "text-violet-500 font-medium"
-                            : "text-gray-400"
-                            }`}
+                          className={`text-[10px] mt-1 ${
+                            notification.is_unread
+                              ? "text-violet-500 font-medium"
+                              : "text-gray-400"
+                          }`}
                         >
                           {getRelativeTime(notification.sent_at)}
                         </p>
@@ -337,10 +347,17 @@ const TopBar = ({ title }) => {
         {/* Profile Avatar */}
         <Link
           to="/profile"
-          className="shrink-0 rounded-full bg-white/20 h-9 w-9 text-center overflow-hidden hover:ring-2 hover:ring-white/50 transition-all ml-1"
+          className="shrink-0 rounded-full bg-white/20 h-9 w-9 text-center overflow-hidden hover:ring-2 hover:ring-white/50 transition-all ml-1 flex items-center justify-center"
         >
           <img
-            src={profileData?.avatar_url}
+            src={
+              profileData?.avatar_url ||
+              (profileData?.gender?.toLowerCase() === "female" ||
+              profileData?.gender?.toLowerCase() === "f" ||
+              profileData?.gender?.toLowerCase() === "woman"
+                ? defaultPfpFemale
+                : defaultPfpMale)
+            }
             alt="Profile"
             className="w-full h-full rounded-full border border-violet-600 object-cover"
           />

@@ -1,7 +1,13 @@
 import { NavLink, useLocation } from "react-router-dom";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useUser } from "../../../Context/ProfileContext";
-import defaultAvatar from "../../../assets/default-avatar.jpg";
+import defaultPfpFemale from "../../../assets/default-pfp/default-pfp-female.svg";
+import defaultPfpMale from "../../../assets/default-pfp/default-pfp-male.svg";
+
+const getDefaultAvatar = (gender) => {
+    const g = gender?.toLowerCase();
+    return g === "female" || g === "f" || g === "woman" ? defaultPfpFemale : defaultPfpMale;
+};
 
 const tabs = [
     {
@@ -72,7 +78,7 @@ const StudentBottomNav = () => {
         return () => document.removeEventListener("scroll", handleScroll, { capture: true });
     }, [handleScroll]);
 
-    const avatarUrl = profileData?.avatar_url || defaultAvatar;
+    const avatarUrl = profileData?.avatar_url || getDefaultAvatar(profileData?.gender);
 
     return (
         <nav
@@ -107,30 +113,18 @@ const StudentBottomNav = () => {
                             )}
 
                             {tab.isAvatar ? (
-                                profileData?.avatar_url ? (
-                                    <img
-                                        src={profileData.avatar_url}
-                                        alt="Profile"
-                                        onError={(e) => { e.target.src = defaultAvatar; }}
-                                        className={`
+                                <img
+                                    src={avatarUrl}
+                                    alt="Profile"
+                                    onError={(e) => { e.target.src = getDefaultAvatar(profileData?.gender); }}
+                                    className={`
                         w-5.5 h-5.5 rounded-full object-cover transition-all duration-300
-                        ${isActive
-                                                ? "ring-2 ring-violet-500 ring-offset-1"
-                                                : "ring-1 ring-gray-200 group-hover:ring-gray-300"
-                                            }
-                      `}
-                                    />
-                                ) : (
-                                    <span className={`
-                        w-5.5 h-5.5 rounded-full flex items-center justify-center text-[9px] font-bold bg-violet-100 text-violet-600 transition-all duration-300
                         ${isActive
                                             ? "ring-2 ring-violet-500 ring-offset-1"
                                             : "ring-1 ring-gray-200 group-hover:ring-gray-300"
                                         }
-                      `}>
-                                        {(profileData?.name || "U").split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase()}
-                                    </span>
-                                )
+                      `}
+                                />
                             ) : (
                                 <i
                                     className={`
