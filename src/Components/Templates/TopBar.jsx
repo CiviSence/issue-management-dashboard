@@ -50,8 +50,8 @@ const TopBar = ({ title }) => {
       : defaultPfpMale);
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-white border-b border-gray-200/80 px-4 sm:px-6 py-3">
-      <div className="flex items-center justify-between max-w-7xl mx-auto gap-4">
+    <header className="sticky top-0 z-50 w-full bg-[#ffffff] border-b border-gray-200/80 px-4 sm:px-6 py-3">
+      <div className="flex items-center justify-between gap-4">
         {/* Title */}
         <h1 className="text-gray-900 font-semibold text-lg sm:text-xl truncate shrink-0">
           {title}

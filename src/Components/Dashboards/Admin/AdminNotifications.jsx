@@ -226,7 +226,7 @@ const AdminNotifications = () => {
       <AdminSideNav />
       <BottomNav />
       <ToastContainer />
-      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#FDFDFF] overflow-x-hidden overflow-y-auto h-screen pb-20" id="adminNotifsScroll">
+      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#F8F9FF] overflow-x-hidden overflow-y-auto h-screen pb-20" id="adminNotifsScroll">
         <TopBar title="Notifications" />
         <PullToRefresh scrollContainerId="adminNotifsScroll" onRefresh={loadNotifications}>
           <div className="p-2 lg:p-4 w-full min-h-screen">

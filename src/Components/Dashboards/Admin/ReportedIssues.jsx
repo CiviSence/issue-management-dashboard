@@ -226,7 +226,7 @@ const ReportedIssues = () => {
       <SideNav />
       <BottomNav />
 
-      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#FDFDFF] overflow-x-hidden overflow-y-auto h-screen pb-20" id="reportedIssuesScroll">
+      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#F8F9FF] overflow-x-hidden overflow-y-auto h-screen pb-20" id="reportedIssuesScroll">
         <TopBar title="Reported Issues" />
         <PullToRefresh scrollContainerId="reportedIssuesScroll" onRefresh={handleRefresh}>
           <div className="p-2 lg:p-4 w-full">
