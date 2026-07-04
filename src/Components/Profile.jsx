@@ -31,20 +31,20 @@ const getDefaultAvatar = (gender) => {
 
 const InfoCard = ({ title, children, icon, className = "" }) => (
   <div
-    className={`bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow ${className}`}
+    className={`bg-white border border-gray-100 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow ${className}`}
   >
-    <h2 className="text-sm font-bold text-gray-900 mb-5 flex items-center gap-2 uppercase tracking-wider">
+    <h2 className="text-sm font-bold text-gray-900 mb-4 sm:mb-5 flex items-center gap-2 uppercase tracking-wider">
       {icon && <i className={`${icon} text-violet-600 text-lg`}></i>}
       {title}
     </h2>
-    <div className="space-y-4">{children}</div>
+    <div className="space-y-3 sm:space-y-4">{children}</div>
   </div>
 );
 
 const Info = ({ label, value }) => (
-  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-sm gap-1 sm:gap-4 py-3 border-b border-gray-50 last:border-0">
+  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-sm gap-1 sm:gap-4 py-2.5 sm:py-3 border-b border-gray-50 last:border-0">
     <span className="text-gray-500 font-medium">{label}</span>
-    <span className="font-semibold text-gray-800 wrap-break-word text-right">
+    <span className="font-semibold text-gray-800 wrap-break-word sm:text-right break-words">
       {value || "—"}
     </span>
   </div>
@@ -97,8 +97,8 @@ const SessionsCard = () => {
   };
 
   return (
-    <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm transition-shadow">
-      <div className="flex justify-between items-center mb-5">
+    <div className="bg-white border border-gray-100 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-sm transition-shadow">
+      <div className="flex justify-between items-center mb-4 sm:mb-5">
         <h2 className="text-sm font-bold text-gray-900 flex items-center gap-2 uppercase tracking-wider">
           <i className="ri-shield-user-line text-violet-600 text-lg"></i>
           Active Sessions
@@ -133,7 +133,7 @@ const SessionsCard = () => {
             return (
               <div
                 key={id || index}
-                className="flex items-center justify-between p-4 bg-gray-50/50 rounded-xl border border-gray-100 hover:border-violet-200 hover:bg-white transition-all group"
+                className="flex items-center justify-between p-3 sm:p-4 bg-gray-50/50 rounded-lg sm:rounded-xl border border-gray-100 hover:border-violet-200 hover:bg-white transition-all group"
               >
                 <div className="flex items-center gap-3">
                   <div className="p-2.5 bg-white shadow-sm border border-gray-100 text-violet-600 rounded-xl group-hover:bg-violet-600 group-hover:text-white transition-all">
@@ -192,8 +192,8 @@ const OrganizationCard = ({ orgData, loadingOrg }) => {
   const org = orgItem.organization || orgItem;
 
   return (
-    <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
-      <h2 className="text-sm font-bold text-gray-900 mb-5 flex items-center gap-2 uppercase tracking-wider">
+    <div className="bg-white border border-gray-100 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow">
+      <h2 className="text-sm font-bold text-gray-900 mb-4 sm:mb-5 flex items-center gap-2 uppercase tracking-wider">
         <i className="ri-community-line text-violet-600 text-lg"></i>
         Organization
       </h2>
@@ -400,7 +400,7 @@ const Profile = () => {
             
 
           {/* ── BODY ──────────────────────────────────────────────── */}
-          <div className="p-4 lg:p-8 space-y-6 pb-32">
+          <div className="px-3 py-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-6 pb-28 md:pb-32">
             {/* ── PROFILE HEADER ────────────────────────────────────── */}
             <div className="bg-[#7E70EB]  border-b rounded-3xl border-gray-100 shadow-sm px-6 py-10 lg:px-20 lg:py-16 relative overflow-hidden">
              
@@ -441,19 +441,19 @@ const Profile = () => {
               </div>
 
               {/* Action buttons */}
-              <div className="flex gap-3 mt-4 md:mt-0">
+              <div className="w-full sm:w-auto flex flex-wrap justify-center gap-2 sm:gap-3 mt-2 md:mt-0">
                 <button
                   onClick={() => setIsEditing(true)}
-                  className="bg-white text-[#7E70EB] font-bold px-6 py-3 rounded-2xl hover:bg-[#eaeaea] transition shadow-lg active:scale-95 flex items-center gap-2"
+                  className="flex-1 sm:flex-none justify-center bg-white text-[#7E70EB] font-bold px-4 py-2.5 sm:px-6 sm:py-3 text-sm sm:text-base rounded-xl sm:rounded-2xl hover:bg-[#eaeaea] transition shadow-lg active:scale-95 flex items-center gap-1.5 sm:gap-2"
                 >
-                  <i className="ri-edit-circle-line text-lg"></i>
+                  <i className="ri-edit-circle-line text-base sm:text-lg"></i>
                   Edit Profile
                 </button>
                 <Link
                   to="/settings"
-                  className="bg-white text-[#7E70EB] font-bold px-6 py-3 rounded-2xl hover:bg-[#eaeaea] transition shadow-lg active:scale-95 flex items-center gap-2"
+                  className="flex-1 sm:flex-none justify-center bg-white text-[#7E70EB] font-bold px-4 py-2.5 sm:px-6 sm:py-3 text-sm sm:text-base rounded-xl sm:rounded-2xl hover:bg-[#eaeaea] transition shadow-lg active:scale-95 flex items-center gap-1.5 sm:gap-2"
                 >
-                  <i className="ri-settings-2-line text-lg"></i>
+                  <i className="ri-settings-2-line text-base sm:text-lg"></i>
                   Setting
                 </Link>
                 <button
@@ -467,55 +467,55 @@ const Profile = () => {
             </div>
           </div>
             {/* ── Quick Stats ─────────────────────────────────────── */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">
-                <div className="p-3 bg-violet-50 text-violet-600 rounded-xl">
-                  <i className="ri-shield-check-line text-xl"></i>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
+              <div className="bg-white p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-gray-100 shadow-sm flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
+                <div className="p-2 sm:p-3 bg-violet-50 text-violet-600 rounded-lg sm:rounded-xl">
+                  <i className="ri-shield-check-line text-lg sm:text-xl"></i>
                 </div>
-                <div>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+                <div className="min-w-0 w-full">
+                  <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-gray-400 truncate">
                     Verification
                   </p>
-                  <p className="text-base font-black text-gray-900 capitalize">
+                  <p className="text-sm sm:text-base font-black text-gray-900 capitalize truncate">
                     {profileData.verification_status || "Pending"}
                   </p>
                 </div>
               </div>
-              <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">
-                <div className="p-3 bg-emerald-50 text-emerald-600 rounded-xl">
-                  <i className="ri-checkbox-circle-line text-xl"></i>
+              <div className="bg-white p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-gray-100 shadow-sm flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
+                <div className="p-2 sm:p-3 bg-emerald-50 text-emerald-600 rounded-lg sm:rounded-xl">
+                  <i className="ri-checkbox-circle-line text-lg sm:text-xl"></i>
                 </div>
-                <div>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+                <div className="min-w-0 w-full">
+                  <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-gray-400 truncate">
                     Role Verified
                   </p>
-                  <p className="text-base font-black text-gray-900">
+                  <p className="text-sm sm:text-base font-black text-gray-900 truncate">
                     {profileData.role_verified ? "✓ Yes" : "✗ No"}
                   </p>
                 </div>
               </div>
-              <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">
-                <div className="p-3 bg-amber-50 text-amber-600 rounded-xl">
-                  <i className="ri-copper-coin-line text-xl"></i>
+              <div className="bg-white p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-gray-100 shadow-sm flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
+                <div className="p-2 sm:p-3 bg-amber-50 text-amber-600 rounded-lg sm:rounded-xl">
+                  <i className="ri-copper-coin-line text-lg sm:text-xl"></i>
                 </div>
-                <div>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+                <div className="min-w-0 w-full">
+                  <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-gray-400 truncate">
                     Reputation
                   </p>
-                  <p className="text-xl font-black text-gray-900">
+                  <p className="text-base sm:text-xl font-black text-gray-900 truncate">
                     {profileData.reputation_points || 0}
                   </p>
                 </div>
               </div>
-              <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">
-                <div className="p-3 bg-blue-50 text-blue-600 rounded-xl">
-                  <i className="ri-mail-check-line text-xl"></i>
+              <div className="bg-white p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-gray-100 shadow-sm flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
+                <div className="p-2 sm:p-3 bg-blue-50 text-blue-600 rounded-lg sm:rounded-xl">
+                  <i className="ri-mail-check-line text-lg sm:text-xl"></i>
                 </div>
-                <div>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+                <div className="min-w-0 w-full">
+                  <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-gray-400 truncate">
                     Email
                   </p>
-                  <p className="text-base font-black text-gray-900">
+                  <p className="text-sm sm:text-base font-black text-gray-900 truncate">
                     {profileData.email_verified ? "✓ Verified" : "✗ Unverified"}
                   </p>
                 </div>
@@ -523,7 +523,7 @@ const Profile = () => {
             </div>
 
             {/* ── Info Cards Grid ─────────────────────────────────── */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {/* Personal Information */}
               <InfoCard title="Personal Information" icon="ri-user-3-line">
                 <Info label="Name" value={profileData.name} />
@@ -762,17 +762,17 @@ const Profile = () => {
           </div>
 
           {/* ── Mobile Logout / Help ──────────────────────────────── */}
-          <div className="md:hidden px-6 pb-6 space-y-3">
-            <a
-              href="/help-support"
-              className="w-full bg-white border border-gray-200 text-gray-700 py-4 rounded-2xl font-bold shadow-sm active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+          <div className="md:hidden px-3 sm:px-6 pb-6 space-y-2.5 sm:space-y-3">
+            <Link
+              to="/help-support"
+              className="w-full bg-white border border-gray-200 text-gray-700 py-3 sm:py-4 rounded-xl sm:rounded-2xl text-sm sm:text-base font-bold shadow-sm active:scale-[0.98] transition-all flex items-center justify-center gap-2"
             >
-              <i className="ri-customer-service-2-line text-lg text-violet-600"></i>
+              <i className="ri-customer-service-2-line text-base sm:text-lg text-violet-600"></i>
               Help & Support
-            </a>
+            </Link>
             <button
               onClick={() => setShowLogoutConfirm(true)}
-              className="w-full bg-red-500 hover:bg-red-600 text-white py-4 rounded-2xl font-bold shadow-xl active:scale-[0.98] transition-all"
+              className="w-full bg-red-500 hover:bg-red-600 text-white py-3 sm:py-4 rounded-xl sm:rounded-2xl text-sm sm:text-base font-bold shadow-xl active:scale-[0.98] transition-all"
             >
               Log Out
             </button>

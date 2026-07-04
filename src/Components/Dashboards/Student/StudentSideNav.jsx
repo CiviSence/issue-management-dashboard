@@ -78,7 +78,12 @@ const ProfilePopup = ({ profileData, onLogout, onClose }) => {
         {
             icon: "ri-settings-3-line",
             label: "Settings",
-            action: () => { navigate("/profile"); onClose(); },
+            action: () => { navigate("/settings"); onClose(); },
+        },
+        {
+            icon: "ri-customer-service-2-line",
+            label: "Help & Support",
+            action: () => { navigate("/help-support"); onClose(); },
         },
     ];
 

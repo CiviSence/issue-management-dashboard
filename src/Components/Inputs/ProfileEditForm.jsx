@@ -215,7 +215,7 @@ const ProfileEditForm = ({ profile, onSave, onCancel }) => {
         {/* ── Tabs ──────────────────────────────────────────────── */}
         <div className="flex border-b border-gray-100 px-6 gap-1">
           {[
-            { key: "profile", label: "Edit Profile", icon: "ri-user-3-line" },
+            { key: "profile", label: "Edit Public Details", icon: "ri-user-3-line" },
             { key: "security", label: "Security & Password", icon: "ri-shield-keyhole-line" },
           ].map((tab) => (
             <button
