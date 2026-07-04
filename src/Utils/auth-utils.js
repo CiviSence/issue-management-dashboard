@@ -98,6 +98,7 @@ export const getUserData = () => {
  * Clears the session data (token and user info)
  */
 export const clearSession = () => {
+  localStorage.removeItem("registered_fcm_token");
   Cookies.remove(AUTH_TOKEN_KEY);
   Cookies.remove(REFRESH_TOKEN_KEY);
   Cookies.remove(USER_PREVIEW_KEY);
