@@ -23,7 +23,6 @@ const StaffSideNav = () => {
         iconActive="ri-notification-3-fill"
         label="Notifications"
       />
-      <NavItem to="/profile" icon="ri-user-line" iconActive="ri-user-fill" label="My Profile" />
     </SideNavLayout>
   );
 };
