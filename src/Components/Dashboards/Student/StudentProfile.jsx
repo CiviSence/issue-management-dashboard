@@ -26,19 +26,19 @@ import { clearSession } from "../../../Utils/auth-utils";
 import StatusBadge from "../../Templates/StatusBadge";
 
 const InfoCard = ({ title, children, icon }) => (
-    <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
-        <h2 className="text-sm font-bold text-gray-900 mb-5 flex items-center gap-2 uppercase tracking-wider">
+    <div className="bg-white border border-gray-100 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow">
+        <h2 className="text-sm font-bold text-gray-900 mb-4 sm:mb-5 flex items-center gap-2 uppercase tracking-wider">
             {icon && <i className={`${icon} text-violet-600 text-lg`}></i>}
             {title}
         </h2>
-        <div className="space-y-4">{children}</div>
+        <div className="space-y-3 sm:space-y-4">{children}</div>
     </div>
 );
 
 const Info = ({ label, value }) => (
-    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-sm gap-1 sm:gap-4 py-3 border-b border-gray-50 last:border-0">
+    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-sm gap-1 sm:gap-4 py-2.5 sm:py-3 border-b border-gray-50 last:border-0">
         <span className="text-gray-500 font-medium">{label}</span>
-        <span className="font-semibold text-gray-800 break-words">{value || "—"}</span>
+        <span className="font-semibold text-gray-800 break-words sm:text-right">{value || "—"}</span>
     </div>
 );
 
@@ -87,8 +87,8 @@ const SessionsCard = () => {
     };
 
     return (
-        <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm transition-shadow">
-            <div className="flex justify-between items-center mb-5">
+        <div className="bg-white border border-gray-100 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-sm transition-shadow">
+            <div className="flex justify-between items-center mb-4 sm:mb-5">
                 <h2 className="text-sm font-bold text-gray-900 flex items-center gap-2 uppercase tracking-wider">
                     <i className="ri-shield-user-line text-violet-600 text-lg"></i>
                     Active Sessions
@@ -123,7 +123,7 @@ const SessionsCard = () => {
                         return (
                             <div
                                 key={id || index}
-                                className="flex items-center justify-between p-4 bg-gray-50/50 rounded-xl border border-gray-100 hover:border-violet-200 hover:bg-white transition-all group"
+                                className="flex items-center justify-between p-3 sm:p-4 bg-gray-50/50 rounded-lg sm:rounded-xl border border-gray-100 hover:border-violet-200 hover:bg-white transition-all group"
                             >
                                 <div className="flex items-center gap-3">
                                     <div className="p-2.5 bg-white shadow-sm border border-gray-100 text-violet-600 rounded-xl group-hover:bg-violet-600 group-hover:text-white transition-all">
@@ -267,53 +267,53 @@ const StudentProfile = () => {
                 {profileData ? (
                     <>
                         {/* PROFILE HEADER */}
-                        <div className="bg-white border-b border-gray-100 shadow-sm px-6 py-10 lg:px-20 lg:py-16 relative overflow-hidden">
+                        <div className="bg-white border-b border-gray-100 shadow-sm px-4 py-6 sm:px-8 sm:py-10 lg:px-20 lg:py-16 relative overflow-hidden">
                             <div className="absolute top-0 right-0 w-64 h-64 bg-violet-50 rounded-full blur-3xl opacity-60 -mr-20 -mt-20"></div>
                             <div className="absolute bottom-0 left-0 w-48 h-48 bg-purple-50 rounded-full blur-3xl opacity-40 -ml-10 -mb-10"></div>
 
-                        <div className="relative z-10 flex flex-col md:flex-row items-center gap-8 lg:gap-12">
-                            <div className="relative group">
+                        <div className="relative z-10 flex flex-col md:flex-row items-center gap-5 md:gap-8 lg:gap-12">
+                            <div className="relative group shrink-0">
                                 <img
                                     src={profileData?.avatar_url || getDefaultAvatar(profileData?.gender)}
                                     alt="Profile"
-                                    className="w-32 h-32 md:w-36 md:h-36 rounded-3xl border-4 border-white object-cover shadow-xl ring-1 ring-violet-100 transition-transform group-hover:scale-[1.02]"
+                                    className="w-24 h-24 sm:w-28 sm:h-28 md:w-36 md:h-36 rounded-2xl sm:rounded-3xl border-4 border-white object-cover shadow-xl ring-1 ring-violet-100 transition-transform group-hover:scale-[1.02]"
                                 />
-                                <div className="absolute -bottom-2 -right-2 bg-violet-600 text-white p-2 rounded-xl shadow-lg border-2 border-white">
-                                    <i className="ri-checkbox-circle-fill"></i>
+                                <div className="absolute -bottom-2 -right-2 bg-violet-600 text-white p-1.5 sm:p-2 rounded-lg sm:rounded-xl shadow-lg border-2 border-white">
+                                    <i className="ri-checkbox-circle-fill text-sm sm:text-base"></i>
                                 </div>
                             </div>
 
-                            <div className="text-center md:text-left flex-1 space-y-2">
+                            <div className="text-center md:text-left flex-1 space-y-1.5 sm:space-y-2 min-w-0 w-full">
                                 <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 justify-center md:justify-start">
-                                    <h1 className="text-3xl lg:text-4xl font-black text-gray-900 tracking-tight">
+                                    <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-900 tracking-tight break-words">
                                         {profileData.name}
                                     </h1>
                                     <StatusBadge type="profile" value={profileData.role} className="mx-auto md:mx-0" showDot={false} />
                                 </div>
-                                <p className="text-gray-500 font-medium text-lg flex items-center justify-center md:justify-start gap-2">
-                                    <i className="ri-mail-line text-violet-400"></i>
-                                    {profileData.email}
+                                <p className="text-gray-500 font-medium text-sm sm:text-base lg:text-lg flex items-center justify-center md:justify-start gap-1.5 sm:gap-2 break-all sm:break-normal">
+                                    <i className="ri-mail-line text-violet-400 shrink-0"></i>
+                                    <span>{profileData.email}</span>
                                 </p>
                             </div>
 
-                            <div className="flex gap-3 mt-4 md:mt-0">
+                            <div className="w-full sm:w-auto flex flex-wrap justify-center gap-2 sm:gap-3 mt-2 md:mt-0">
                                 <button
                                     onClick={() => setIsEditing(true)}
-                                    className="bg-violet-600 text-white font-bold px-6 py-3 rounded-2xl hover:bg-violet-700 transition shadow-lg shadow-violet-200 active:scale-95 flex items-center gap-2"
+                                    className="flex-1 sm:flex-none justify-center bg-violet-600 text-white font-bold px-4 py-2.5 sm:px-6 sm:py-3 text-sm sm:text-base rounded-xl sm:rounded-2xl hover:bg-violet-700 transition shadow-lg shadow-violet-200 active:scale-95 flex items-center gap-1.5 sm:gap-2"
                                 >
-                                    <i className="ri-edit-circle-line text-lg"></i>
+                                    <i className="ri-edit-circle-line text-base sm:text-lg"></i>
                                     Edit Profile
                                 </button>
                                 <Link
                                     to="/settings"
-                                    className="bg-white text-violet-600 border border-violet-200 font-bold px-6 py-3 rounded-2xl hover:bg-violet-50 transition shadow-lg shadow-violet-100 active:scale-95 flex items-center gap-2"
+                                    className="flex-1 sm:flex-none justify-center bg-white text-violet-600 border border-violet-200 font-bold px-4 py-2.5 sm:px-6 sm:py-3 text-sm sm:text-base rounded-xl sm:rounded-2xl hover:bg-violet-50 transition shadow-lg shadow-violet-100 active:scale-95 flex items-center gap-1.5 sm:gap-2"
                                 >
-                                    <i className="ri-settings-2-line text-lg"></i>
+                                    <i className="ri-settings-2-line text-base sm:text-lg"></i>
                                     Setting
                                 </Link>
                                 <button
                                     onClick={() => setShowLogoutConfirm(true)}
-                                    className="hidden md:flex bg-white border border-gray-200 text-gray-700 font-bold px-4 py-3 rounded-2xl hover:bg-red-50 hover:text-red-600 hover:border-red-100 transition active:scale-95 flex items-center gap-2"
+                                    className="hidden md:flex bg-white border border-gray-200 text-gray-700 font-bold px-4 py-3 rounded-2xl hover:bg-red-50 hover:text-red-600 hover:border-red-100 transition active:scale-95 items-center gap-2"
                                     title="Log Out"
                                 >
                                     <i className="ri-logout-box-line text-lg"></i>
@@ -322,50 +322,50 @@ const StudentProfile = () => {
                         </div>
                     </div>
 
-                    <div className="p-4 lg:p-8 space-y-6 pb-32">
+                    <div className="px-3 py-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-6 pb-28 md:pb-32">
                         {/* Stats Overview */}
-                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                            <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">
-                                <div className="p-3 bg-violet-50 text-violet-600 rounded-xl">
-                                    <i className="ri-file-list-3-line text-xl"></i>
+                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
+                            <div className="bg-white p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-gray-100 shadow-sm flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
+                                <div className="p-2 sm:p-3 bg-violet-50 text-violet-600 rounded-lg sm:rounded-xl">
+                                    <i className="ri-file-list-3-line text-lg sm:text-xl"></i>
                                 </div>
-                                <div>
-                                    <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">Reports</p>
-                                    <p className="text-xl font-black text-gray-900">{myIssues.length}</p>
-                                </div>
-                            </div>
-                            <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">
-                                <div className="p-3 bg-emerald-50 text-emerald-600 rounded-xl">
-                                    <i className="ri-checkbox-circle-line text-xl"></i>
-                                </div>
-                                <div>
-                                    <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">Resolved</p>
-                                    <p className="text-xl font-black text-gray-900">{myIssues.filter(i => i.status === 'resolved').length}</p>
+                                <div className="min-w-0 w-full">
+                                    <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-gray-400 truncate">Reports</p>
+                                    <p className="text-base sm:text-xl font-black text-gray-900 truncate">{myIssues.length}</p>
                                 </div>
                             </div>
-                            <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">
-                                <div className="p-3 bg-amber-50 text-amber-600 rounded-xl">
-                                    <i className="ri-copper-coin-line text-xl"></i>
+                            <div className="bg-white p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-gray-100 shadow-sm flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
+                                <div className="p-2 sm:p-3 bg-emerald-50 text-emerald-600 rounded-lg sm:rounded-xl">
+                                    <i className="ri-checkbox-circle-line text-lg sm:text-xl"></i>
                                 </div>
-                                <div>
-                                    <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">Reputation</p>
-                                    <p className="text-xl font-black text-gray-900">{profileData.reputation_points || 0}</p>
+                                <div className="min-w-0 w-full">
+                                    <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-gray-400 truncate">Resolved</p>
+                                    <p className="text-base sm:text-xl font-black text-gray-900 truncate">{myIssues.filter(i => i.status === 'resolved').length}</p>
                                 </div>
                             </div>
-                            <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">
-                                <div className="p-3 bg-blue-50 text-blue-600 rounded-xl">
-                                    <i className="ri-chat-smile-3-line text-xl"></i>
+                            <div className="bg-white p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-gray-100 shadow-sm flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
+                                <div className="p-2 sm:p-3 bg-amber-50 text-amber-600 rounded-lg sm:rounded-xl">
+                                    <i className="ri-copper-coin-line text-lg sm:text-xl"></i>
                                 </div>
-                                <div>
-                                    <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">Impact</p>
-                                    <p className="text-xl font-black text-gray-900">
+                                <div className="min-w-0 w-full">
+                                    <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-gray-400 truncate">Reputation</p>
+                                    <p className="text-base sm:text-xl font-black text-gray-900 truncate">{profileData.reputation_points || 0}</p>
+                                </div>
+                            </div>
+                            <div className="bg-white p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-gray-100 shadow-sm flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
+                                <div className="p-2 sm:p-3 bg-blue-50 text-blue-600 rounded-lg sm:rounded-xl">
+                                    <i className="ri-chat-smile-3-line text-lg sm:text-xl"></i>
+                                </div>
+                                <div className="min-w-0 w-full">
+                                    <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-gray-400 truncate">Impact</p>
+                                    <p className="text-sm sm:text-xl font-black text-gray-900 truncate">
                                         {(profileData.reputation_points || 0) >= 100 ? "🔥 Legend" : (profileData.reputation_points || 0) >= 50 ? "⭐ Great" : (profileData.reputation_points || 0) >= 20 ? "👍 Good" : "🌱 Rising"}
                                     </p>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                             <InfoCard title="Personal Information" icon="ri-user-3-line">
                                 <Info label="Gender" value={profileData.gender} />
                                 <Info
@@ -510,17 +510,17 @@ const StudentProfile = () => {
                         </div>
                     </div>
 
-                    <div className="md:hidden px-6 pb-6 space-y-3">
-                        <a
-                            href="/help-support"
-                            className="w-full bg-white border border-gray-200 text-gray-700 py-4 rounded-2xl font-bold shadow-sm active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+                    <div className="md:hidden px-3 sm:px-6 pb-6 space-y-2.5 sm:space-y-3">
+                        <Link
+                            to="/help-support"
+                            className="w-full bg-white border border-gray-200 text-gray-700 py-3 sm:py-4 rounded-xl sm:rounded-2xl text-sm sm:text-base font-bold shadow-sm active:scale-[0.98] transition-all flex items-center justify-center gap-2"
                         >
-                            <i className="ri-customer-service-2-line text-lg text-violet-600"></i>
+                            <i className="ri-customer-service-2-line text-base sm:text-lg text-violet-600"></i>
                             Help & Support
-                        </a>
+                        </Link>
                         <button
                             onClick={() => setShowLogoutConfirm(true)}
-                            className="w-full bg-red-500 hover:bg-red-600 text-white py-4 rounded-2xl font-bold shadow-xl active:scale-[0.98] transition-all"
+                            className="w-full bg-red-500 hover:bg-red-600 text-white py-3 sm:py-4 rounded-xl sm:rounded-2xl text-sm sm:text-base font-bold shadow-xl active:scale-[0.98] transition-all"
                         >
                             Log Out
                         </button>
