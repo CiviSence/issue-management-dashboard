@@ -171,34 +171,21 @@ export const NotificationProvider = ({ children }) => {
     }
   };
 
-  // Automatically request/setup when provider boots or user login state changes
+  // Automatically watch and trigger when a token becomes available in localStorage or cookies
   useEffect(() => {
-    const jwtToken = getAccessToken() || localStorage.getItem("auth_token") || localStorage.getItem("token");
-    console.log("[NotificationProvider] Checking login state change. Has token:", !!jwtToken);
-    if (jwtToken) {
-      requestPermissionAndRegister();
-    } else {
-      console.log("[NotificationProvider] User not authenticated yet, waiting for login...");
-    }
-  }, [setPermission]); // Run on mount or when token updates
-
-  // Also hook into window event for session/login synchronization if they login in other parts of the app
-  useEffect(() => {
-    const checkAuthAndRegister = () => {
+    console.log("[NotificationProvider] Launching auth token monitor. Current registered token status:", !!token);
+    
+    const checkTokenInterval = setInterval(() => {
       const jwtToken = getAccessToken() || localStorage.getItem("auth_token") || localStorage.getItem("token");
-      if (jwtToken) {
-        console.log("[NotificationProvider] Session detected on check, registering...");
+      if (jwtToken && !token) {
+        console.log("[NotificationProvider] Auth token detected by monitor, triggering registration...");
         requestPermissionAndRegister();
+        clearInterval(checkTokenInterval);
       }
-    };
-    
-    // Check auth on mount
-    checkAuthAndRegister();
-    
-    // Also listen to storage events (in case token is written after login redirect)
-    window.addEventListener('storage', checkAuthAndRegister);
-    return () => window.removeEventListener('storage', checkAuthAndRegister);
-  }, []);
+    }, 1000); // Check every 1 second until registered
+
+    return () => clearInterval(checkTokenInterval);
+  }, [token]);
 
   return (
     <NotificationContext.Provider value={{ token, permission, requestPermissionAndRegister }}>
