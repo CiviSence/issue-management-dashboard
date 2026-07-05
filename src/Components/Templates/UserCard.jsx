@@ -78,7 +78,7 @@ const UserCard = ({ limit }) => {
               className={`px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 text-xs font-medium rounded-lg transition-all duration-200 whitespace-nowrap
                 ${
                   timePeriod === item.value
-                    ? "bg-violet-500 text-white shadow-sm"
+                    ? "bg-[#7E70EB] text-white shadow-sm"
                     : "text-gray-500 hover:bg-gray-300"
                 }`}
             >
