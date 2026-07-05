@@ -10,12 +10,12 @@ const getDefaultAvatar = (gender) => {
   return g === "female" || g === "f" || g === "woman" ? defaultPfpFemale : defaultPfpMale;
 };
 
-export const NavItem = ({ to, icon, iconActive, label }) => {
+export const NavItem = ({ to, icon, iconActive, label, showBadge }) => {
   return (
     <NavLink
       to={to}
       className={({ isActive }) =>
-        `flex items-center justify-center lg:justify-start rounded-lg px-4 py-3 transition ${
+        `flex items-center justify-center lg:justify-start rounded-lg px-4 py-3 transition relative ${
           isActive
             ? "bg-white/95 text-[#6366f1] shadow-lg font-bold"
             : "text-white/80 hover:text-white hover:bg-white/10 backdrop-blur-sm"
@@ -24,7 +24,12 @@ export const NavItem = ({ to, icon, iconActive, label }) => {
     >
       {({ isActive }) => (
         <>
-          <i className={`${isActive ? (iconActive || icon) : icon} text-xl`}></i>
+          <div className="relative flex items-center justify-center">
+            <i className={`${isActive ? (iconActive || icon) : icon} text-xl`}></i>
+            {showBadge && (
+              <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-rose-500 rounded-full border border-white" />
+            )}
+          </div>
           <span className="hidden lg:inline ml-3">{label}</span>
         </>
       )}

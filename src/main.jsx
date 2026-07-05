@@ -12,6 +12,7 @@ import { UserProvider } from "./Context/UserContext.jsx";
 import { IssuesProvider } from "./Context/IssuesContext.jsx";
 import { NotificationProvider } from "./Components/NotificationProvider.jsx";
 import "./assets/remixicon-custom.css";
+import "react-toastify/dist/ReactToastify.css";
 
 registerSW({
   immediate: true,

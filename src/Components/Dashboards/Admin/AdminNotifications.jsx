@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import AdminSideNav from "./AdminSideNav";
 import BottomNav from "../../Templates/BottomNav";
 import { useUser } from "../../../Context/ProfileContext";
+import { useNavigate } from "react-router-dom";
+import { useNotifications } from "../../NotificationProvider";
 import Loader from "../../Templates/Loader";
 import TopBar from "../../Templates/TopBar";
 import PullToRefresh from "../../Templates/PullToRefresh";
@@ -18,10 +20,11 @@ import { toast, ToastContainer } from "react-toastify";
 
 const AdminNotifications = () => {
   const { profileData } = useUser();
+  const navigate = useNavigate();
+  const { fetchUnreadCount } = useNotifications();
   const [loadingNotifications, setLoadingNotifications] = useState(true);
   const [notifications, setNotifications] = useState([]);
   const [filter, setFilter] = useState("all");
-  console.log(notifications);
 
   // Modal and Form States
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -61,8 +64,10 @@ const AdminNotifications = () => {
   }, [profileData?.id]);
 
   //mark all as read - src/utils/notifications.js
-  const handleMarkAllRead = () =>
-    markAllReadUtils(notifications, setNotifications, toast);
+  const handleMarkAllRead = async () => {
+    await markAllReadUtils(notifications, setNotifications, toast);
+    fetchUnreadCount();
+  };
 
   const handleToggleRead = async (id, currentRead) => {
     if (!currentRead) {
@@ -70,8 +75,11 @@ const AdminNotifications = () => {
         await axios.patch("/notifications/mark-as-read", {
           notification_ids: [id],
         });
+        toast.success("Notification marked as read");
+        fetchUnreadCount();
       } catch (error) {
         console.error("Error marking notification as read:", error);
+        toast.error("Failed to mark notification as read");
       }
     }
     setNotifications((prev) =>
@@ -218,6 +226,7 @@ const AdminNotifications = () => {
 
   const filteredNotifications = notifications.filter((n) => {
     if (filter === "unread") return !n.read;
+    if (filter === "read") return n.read;
     return true;
   });
 
@@ -234,7 +243,7 @@ const AdminNotifications = () => {
             {/* Filters and Actions */}
             <div className="flex flex-wrap items-center justify-between border-b border-gray-150 px-4 py-3 gap-3 bg-gray-50/50">
               <div className="flex items-center gap-2">
-                {["all", "unread"].map((type) => (
+                {["all", "unread", "read"].map((type) => (
                   <button
                     key={type}
                     onClick={() => setFilter(type)}
@@ -308,14 +317,16 @@ const AdminNotifications = () => {
                         {notif.description}
                       </p>
                       <div className="flex gap-3 mt-3">
-                        {/* <button
-                          onClick={() =>
-                            navigate(notif.link, { state: notif.state })
-                          }
-                          className="text-xs font-bold text-[#6366f1] hover:underline cursor-pointer"
-                        >
-                          View Details
-                        </button> */}
+                        {notif.link && (
+                          <button
+                            onClick={() =>
+                              navigate(notif.link, { state: notif.state })
+                            }
+                            className="text-xs font-bold text-[#6366f1] hover:underline cursor-pointer"
+                          >
+                            View Details
+                          </button>
+                        )}
                         <button
                           onClick={() => handleToggleRead(notif.id, notif.read)}
                           className="text-xs font-semibold text-gray-400 hover:text-gray-600 transition cursor-pointer"
