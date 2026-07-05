@@ -394,7 +394,7 @@ const Profile = () => {
       <BottomNav />
 
       <div className="mx-auto w-full overflow-y-auto bg-[#F8F9FF] min-h-screen">
-        <TopBar title="Profile and Setting" />
+        <TopBar title="Profile" />
         {profileData ? (
           <>
             
@@ -875,7 +875,7 @@ const Profile = () => {
       )}
 
       {isEditing && profileData && (
-        <ProfileEditForm
+        <ProfileEditFFForm
           profile={profileData}
           onSave={handleSaveProfile}
           onCancel={() => setIsEditing(false)}
