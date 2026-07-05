@@ -141,8 +141,8 @@ export const NotificationProvider = ({ children }) => {
     try {
       let registration;
       if ('serviceWorker' in navigator) {
-        registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
-        // Wait until service worker is active
+        // Get the active PWA service worker registration which imports firebase-messaging-sw.js
+        registration = await navigator.serviceWorker.getRegistration() || await navigator.serviceWorker.register('/sw.js');
         await navigator.serviceWorker.ready;
       }
 

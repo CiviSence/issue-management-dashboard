@@ -10,6 +10,9 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: "autoUpdate",
+      workbox: {
+        importScripts: ["/firebase-messaging-sw.js"]
+      },
       includeAssets: [
         "favicon.ico",
         "pwa-192x192.png",
