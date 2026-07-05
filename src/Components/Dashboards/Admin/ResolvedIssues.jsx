@@ -103,7 +103,7 @@ const ResolvedIssues = () => {
 
   const filteredIssues = resolvedIssues.filter((issue) => {
     const locationMatch =
-      selectedLocation === "all" || issue.location_address === selectedLocation;
+      selectedLocation === "all" || issue.location_building === selectedLocation;
 
     const priorityMatch =
       priority === "all" ||
@@ -113,7 +113,7 @@ const ResolvedIssues = () => {
   });
 
   const uniqueLocations = [
-    ...new Set(resolvedIssues.map((i) => i.location_address).filter(Boolean)),
+    ...new Set(resolvedIssues.map((i) => i.location_building).filter(Boolean)),
   ];
 
   return (
@@ -227,7 +227,6 @@ const ResolvedIssues = () => {
                         <th className="text-left p-3">Issue Title</th>
                         <th className="text-left p-3">Category</th>
                         <th className="text-left p-3">Location</th>
-                        <th className="text-left p-3">Priority</th>
                         <th className="text-left p-3">Status</th>
                         <th className="text-left p-3">Resolution Notes</th>
                         <th className="text-left p-3">Reported</th>
@@ -249,9 +248,7 @@ const ResolvedIssues = () => {
 
                           <td className="p-3">{issue.location_address}</td>
 
-                          <td className="p-3">
-                            <StatusBadge type="priority" value={issue.priority} />
-                          </td>
+                          
 
                           <td className="p-3">
                             <StatusBadge type="status" value={issue.status} />

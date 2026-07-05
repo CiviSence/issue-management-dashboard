@@ -15,11 +15,19 @@ const PieChartCard = lazy(() => import("../../Templates/PieChartCard"));
 const BarChartCard = lazy(() => import("../../Templates/BarChartCard"));
 const LineChartCard = lazy(() => import("../../Templates/LineChartCard"));
 const StatusChart = lazy(() => import("../../Templates/StatusChart"));
-const ResolutionRateCard = lazy(() => import("../../Templates/ResolutionRateCard"));
-const WeeklyComparisonCard = lazy(() => import("../../Templates/WeeklyComparisonCard"));
+const ResolutionRateCard = lazy(
+  () => import("../../Templates/ResolutionRateCard"),
+);
+const WeeklyComparisonCard = lazy(
+  () => import("../../Templates/WeeklyComparisonCard"),
+);
 const IssueAgingCard = lazy(() => import("../../Templates/IssueAgingCard"));
-const CategoryPriorityHeatmap = lazy(() => import("../../Templates/CategoryPriorityHeatmap"));
-const RecentActivityCard = lazy(() => import("../../Templates/RecentActivityCard"));
+const CategoryPriorityHeatmap = lazy(
+  () => import("../../Templates/CategoryPriorityHeatmap"),
+);
+const RecentActivityCard = lazy(
+  () => import("../../Templates/RecentActivityCard"),
+);
 
 const CardSkeleton = () => (
   <div className="w-full sm:w-[48%] lg:w-[35%] xl:w-[24%]">
@@ -38,7 +46,14 @@ const UserSectionSkeleton = () => (
 );
 
 const AdminDashboard = () => {
-  const { allstats, issues = [], loadingIssues, loadingStats, fetchIssues, fetchStats } = useIssues();
+  const {
+    allstats,
+    issues = [],
+    loadingIssues,
+    loadingStats,
+    fetchIssues,
+    fetchStats,
+  } = useIssues();
   const [statsData, setStatsData] = useState({});
   const [loadingStatsData, setLoadingStatsData] = useState(true);
 
@@ -188,303 +203,309 @@ const AdminDashboard = () => {
       <SideNav />
       <BottomNav />
 
-      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#F8F9FF] overflow-x-hidden overflow-y-auto h-screen pb-20" id="adminDashboardScroll">
+      <div
+        className="w-full lg:w-[calc(100vw-15vw)] bg-[#F8F9FF] overflow-x-hidden overflow-y-auto h-screen pb-20"
+        id="adminDashboardScroll"
+      >
         <TopBar title="Main Dashboard" />
-        <PullToRefresh scrollContainerId="adminDashboardScroll" onRefresh={handleRefresh}>
+        <PullToRefresh
+          scrollContainerId="adminDashboardScroll"
+          onRefresh={handleRefresh}
+        >
           <div className="p-2 lg:p-4 w-full">
-        {/* ========== 1. STATUS CARDS — Instant overview ========== */}
-        <div className="w-full md:mt-4 gap-1.5 sm:gap-2 md:gap-3 flex flex-wrap justify-center md:bg-[#F3F1FF] p-2 sm:p-2 md:p-3 lg:p-4 rounded-2xl ">
-          {loadingStats ? (
-            <>
-              <CardSkeleton />
-              <CardSkeleton />
-              <CardSkeleton />
-              <CardSkeleton />
-            </>
-          ) : (
-            <>
-              {statusCards.map((item, index) => (
-                <IssueCard key={index} issue={item} />
-              ))}
-            </>
-          )}
-        </div>
+            {/* ========== 1. STATUS CARDS — Instant overview ========== */}
+            <div className="w-full md:mt-4 gap-1.5 sm:gap-2 md:gap-3 flex flex-wrap justify-center md:bg-[#F3F1FF] p-2 sm:p-2 md:p-3 lg:p-4 rounded-2xl ">
+              {loadingStats ? (
+                <>
+                  <CardSkeleton />
+                  <CardSkeleton />
+                  <CardSkeleton />
+                  <CardSkeleton />
+                </>
+              ) : (
+                <>
+                  {statusCards.map((item, index) => (
+                    <IssueCard key={index} issue={item} />
+                  ))}
+                </>
+              )}
+            </div>
 
-          {/* ========== 5. DETAILED BREAKDOWN — Priority + Category + Location ========== */}
-        <h1 className="md:pt-4 pl-2 text-lg sm:text-xl md:text-2xl font-semibold text-[#363434]">
+            {/* ========== 5. DETAILED BREAKDOWN — Priority + Category + Location ========== */}
+            {/* <h1 className="md:pt-4 pl-2 text-lg sm:text-xl md:text-2xl font-semibold text-[#363434]">
           Issue Breakdown
-        </h1>
+        </h1> */}
 
-        <div className="md:bg-[#F3F1FF] p-2 sm:p-2 md:p-3 lg:p-4 rounded-2xl">
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
-            {loadingIssues ? (
-              <>
-                <ChartSkeleton />
-                <ChartSkeleton />
-                <ChartSkeleton />
-              </>
-            ) : (
-              <>
-                <Suspense fallback={<ChartSkeleton />}>
-                  <BarChartCard data={barChartData} />
-                </Suspense>
+            <div className="md:bg-[#F3F1FF] p-2 sm:p-2 md:p-3 lg:p-4 rounded-2xl">
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+                {loadingIssues ? (
+                  <>
+                    <ChartSkeleton />
+                    <ChartSkeleton />
+                    <ChartSkeleton />
+                  </>
+                ) : (
+                  <>
+                    <Suspense fallback={<ChartSkeleton />}>
+                      <BarChartCard data={barChartData} />
+                    </Suspense>
 
-                <Suspense fallback={<ChartSkeleton />}>
-                  <PieChartCard data={pieChartData} />
-                </Suspense>
+                    <Suspense fallback={<ChartSkeleton />}>
+                      <PieChartCard data={pieChartData} />
+                    </Suspense>
 
-                <Suspense fallback={<ChartSkeleton />}>
-                  <StatusChart data={locationData} />
-                </Suspense>
-              </>
-            )}
-          </div>
+                    <Suspense fallback={<ChartSkeleton />}>
+                      <StatusChart data={locationData} />
+                    </Suspense>
+                  </>
+                )}
+              </div>
 
-          {/* Heatmap — full-width below breakdowns */}
-          <div className="mt-3">
-            {loadingIssues ? (
-              <ChartSkeleton height={280} />
-            ) : (
-              <Suspense fallback={<ChartSkeleton height={280} />}>
-                <CategoryPriorityHeatmap issues={issues} />
-              </Suspense>
-            )}
-          </div>
-        </div>
+              {/* Heatmap — full-width below breakdowns */}
+              <div className="mt-3">
+                {loadingIssues ? (
+                  <ChartSkeleton height={280} />
+                ) : (
+                  <Suspense fallback={<ChartSkeleton height={280} />}>
+                    <CategoryPriorityHeatmap issues={issues} />
+                  </Suspense>
+                )}
+              </div>
+            </div>
 
-        {/* ========== 2. HEALTH PULSE — Resolution rate + Weekly comparison ========== */}
-        <h1 className="md:pt-4 pl-2 text-lg sm:text-xl md:text-2xl font-semibold text-[#363434]">
+            {/* ========== 2. HEALTH PULSE — Resolution rate + Weekly comparison ========== */}
+            {/* <h1 className="md:pt-4 pl-2 text-lg sm:text-xl md:text-2xl font-semibold text-[#363434]">
           Health Pulse
-        </h1>
+        </h1> */}
 
-        <div className="md:bg-[#F3F1FF] p-2 sm:p-2 md:p-3 lg:p-4 rounded-2xl">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {loadingIssues || loadingStats ? (
-              <>
-                <ChartSkeleton height={280} />
-                <ChartSkeleton height={280} />
-              </>
-            ) : (
-              <>
-                <Suspense fallback={<ChartSkeleton height={280} />}>
-                  <ResolutionRateCard
-                    resolved={allstats?.issues?.by_status?.resolved || 0}
-                    total={allstats?.issues?.total || 0}
-                  />
-                </Suspense>
+            <div className="md:bg-[#F3F1FF] p-2 sm:p-2 md:p-3 lg:p-4 rounded-2xl">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {loadingIssues || loadingStats ? (
+                  <>
+                    <ChartSkeleton height={280} />
+                    <ChartSkeleton height={280} />
+                  </>
+                ) : (
+                  <>
+                    <Suspense fallback={<ChartSkeleton height={280} />}>
+                      <ResolutionRateCard
+                        resolved={allstats?.issues?.by_status?.resolved || 0}
+                        total={allstats?.issues?.total || 0}
+                      />
+                    </Suspense>
 
-                <Suspense fallback={<ChartSkeleton height={280} />}>
-                  <WeeklyComparisonCard issues={issues} />
-                </Suspense>
-              </>
-            )}
-          </div>
-        </div>
+                    <Suspense fallback={<ChartSkeleton height={280} />}>
+                      <WeeklyComparisonCard issues={issues} />
+                    </Suspense>
+                  </>
+                )}
+              </div>
+            </div>
 
-        {/* ========== 3. URGENT ACTIONS — Aging + Recent activity ========== */}
-        <h1 className="md:pt-4 pl-2 text-lg sm:text-xl md:text-2xl font-semibold text-[#363434]">
+            {/* ========== 3. URGENT ACTIONS — Aging + Recent activity ========== */}
+            {/* <h1 className="md:pt-4 pl-2 text-lg sm:text-xl md:text-2xl font-semibold text-[#363434]">
           Needs Attention
-        </h1>
+        </h1> */}
 
-        <div className="md:bg-[#F3F1FF] p-2 sm:p-2 md:p-3 lg:p-4 rounded-2xl">
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-3">
-            {loadingIssues ? (
-              <>
-                <div className="lg:col-span-2">
-                  <ChartSkeleton height={340} />
-                </div>
-                <div className="lg:col-span-3">
-                  <ChartSkeleton height={340} />
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="lg:col-span-2">
-                  <Suspense fallback={<ChartSkeleton height={340} />}>
-                    <IssueAgingCard issues={issues} />
-                  </Suspense>
-                </div>
+            <div className="md:bg-[#F3F1FF] p-2 sm:p-2 md:p-3 lg:p-4 rounded-2xl">
+              <div className="grid grid-cols-1 lg:grid-cols-5 gap-3">
+                {loadingIssues ? (
+                  <>
+                    <div className="lg:col-span-2">
+                      <ChartSkeleton height={340} />
+                    </div>
+                    <div className="lg:col-span-3">
+                      <ChartSkeleton height={340} />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="lg:col-span-2">
+                      <Suspense fallback={<ChartSkeleton height={340} />}>
+                        <IssueAgingCard issues={issues} />
+                      </Suspense>
+                    </div>
 
-                <div className="lg:col-span-3">
-                  <Suspense fallback={<ChartSkeleton height={340} />}>
-                    <RecentActivityCard issues={issues} />
-                  </Suspense>
-                </div>
-              </>
-            )}
-          </div>
-        </div>
+                    <div className="lg:col-span-3">
+                      <Suspense fallback={<ChartSkeleton height={340} />}>
+                        <RecentActivityCard issues={issues} />
+                      </Suspense>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
 
-        {/* ========== 4. TRENDS — Full-width line chart ========== */}
-        <h1 className="md:pt-4 pl-2 text-lg sm:text-xl md:text-2xl font-semibold text-[#363434]">
+            {/* ========== 4. TRENDS — Full-width line chart ========== */}
+            {/* <h1 className="md:pt-4 pl-2 text-lg sm:text-xl md:text-2xl font-semibold text-[#363434]">
           Issue Trends
-        </h1>
+        </h1> */}
 
-        <div className="md:bg-[#F3F1FF] p-2 sm:p-2 md:p-3 lg:p-4 rounded-2xl">
-          {loadingIssues ? (
-            <ChartSkeleton height={280} />
-          ) : (
-            <Suspense fallback={<ChartSkeleton height={280} />}>
-              <LineChartCard />
-            </Suspense>
-          )}
-        </div>
+            <div className="md:bg-[#F3F1FF] p-2 sm:p-2 md:p-3 lg:p-4 rounded-2xl">
+              {loadingIssues ? (
+                <ChartSkeleton height={280} />
+              ) : (
+                <Suspense fallback={<ChartSkeleton height={280} />}>
+                  <LineChartCard />
+                </Suspense>
+              )}
+            </div>
 
-        {/* ========== 6. OPERATIONS — Assignment stats + Performance metrics ========== */}
-        <h1 className="md:pt-4 pl-2 text-lg sm:text-xl md:text-2xl font-semibold text-[#363434]">
+            {/* ========== 6. OPERATIONS — Assignment stats + Performance metrics ========== */}
+            {/* <h1 className="md:pt-4 pl-2 text-lg sm:text-xl md:text-2xl font-semibold text-[#363434]">
           Operations & Performance
-        </h1>
+        </h1> */}
 
-        {loadingStatsData ? (
-          <div className="w-full p-2 sm:p-2 md:p-3 lg:p-6 grid grid-cols-1 lg:grid-cols-2 gap-1 sm:gap-2 md:gap-3 lg:gap-6 md:bg-[#F3F1FF] rounded-2xl ">
-            <Skeleton height={200} borderRadius={16} />
-            <Skeleton height={200} borderRadius={16} />
-          </div>
-        ) : (
-          <div className="w-full p-2 sm:p-2 md:p-3 lg:p-4 grid grid-cols-1 lg:grid-cols-2 gap-1 sm:gap-2 md:gap-3 lg:gap-6 md:bg-[#F3F1FF] rounded-2xl ">
-            {/* Left: Overall Assignment Counts */}
-            <div className="bg-card border border-border p-5 rounded-2xl shadow-xs">
-              <h3 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
-                <i className="ri-bar-chart-box-line text-[#7E70EB] text-lg"></i>{" "}
-                Overall Assignment Counts
-              </h3>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                <div className="p-3 bg-muted/30 rounded-xl border border-border/50 text-center">
-                  <span className="text-xs text-muted-foreground block font-medium">
-                    Total Assignments
-                  </span>
-                  <span className="text-xl font-bold text-card-foreground mt-1 block">
-                    {statsData.total_assignments ?? 0}
-                  </span>
+            {loadingStatsData ? (
+              <div className="w-full p-2 sm:p-2 md:p-3 lg:p-6 grid grid-cols-1 lg:grid-cols-2 gap-1 sm:gap-2 md:gap-3 lg:gap-6 md:bg-[#F3F1FF] rounded-2xl ">
+                <Skeleton height={200} borderRadius={16} />
+                <Skeleton height={200} borderRadius={16} />
+              </div>
+            ) : (
+              <div className="w-full p-2 sm:p-2 md:p-3 lg:p-4 grid grid-cols-1 lg:grid-cols-2 gap-1 sm:gap-2 md:gap-3 lg:gap-6 md:bg-[#F3F1FF] rounded-2xl ">
+                {/* Left: Overall Assignment Counts */}
+                <div className="bg-card border border-border p-5 rounded-2xl shadow-xs">
+                  <h3 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
+                    <i className="ri-bar-chart-box-line text-[#7E70EB] text-lg"></i>{" "}
+                    Overall Assignment Counts
+                  </h3>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    <div className="p-3 bg-muted/30 rounded-xl border border-border/50 text-center">
+                      <span className="text-xs text-muted-foreground block font-medium">
+                        Total Assignments
+                      </span>
+                      <span className="text-xl font-bold text-card-foreground mt-1 block">
+                        {statsData.total_assignments ?? 0}
+                      </span>
+                    </div>
+                    <div className="p-3 bg-muted/30 rounded-xl border border-border/50 text-center">
+                      <span className="text-xs text-muted-foreground block font-medium">
+                        Pending
+                      </span>
+                      <span className="text-xl font-bold text-card-foreground mt-1 block">
+                        {statsData.pending_assignments ?? 0}
+                      </span>
+                    </div>
+                    <div className="p-3 bg-muted/30 rounded-xl border border-border/50 text-center">
+                      <span className="text-xs text-muted-foreground block font-medium">
+                        Accepted
+                      </span>
+                      <span className="text-xl font-bold text-card-foreground mt-1 block">
+                        {statsData.accepted_assignments ?? 0}
+                      </span>
+                    </div>
+                    <div className="p-3 bg-muted/30 rounded-xl border border-border/50 text-center">
+                      <span className="text-xs text-muted-foreground block font-medium">
+                        Rejected
+                      </span>
+                      <span className="text-xl font-bold text-card-foreground mt-1 block">
+                        {statsData.rejected_assignments ?? 0}
+                      </span>
+                    </div>
+                    <div className="p-3 bg-muted/30 rounded-xl border border-border/50 text-center">
+                      <span className="text-xs text-muted-foreground block font-medium">
+                        Completed
+                      </span>
+                      <span className="text-xl font-bold text-card-foreground mt-1 block">
+                        {statsData.completed_assignments ?? 0}
+                      </span>
+                    </div>
+                  </div>
                 </div>
-                <div className="p-3 bg-muted/30 rounded-xl border border-border/50 text-center">
-                  <span className="text-xs text-muted-foreground block font-medium">
-                    Pending
-                  </span>
-                  <span className="text-xl font-bold text-card-foreground mt-1 block">
-                    {statsData.pending_assignments ?? 0}
-                  </span>
-                </div>
-                <div className="p-3 bg-muted/30 rounded-xl border border-border/50 text-center">
-                  <span className="text-xs text-muted-foreground block font-medium">
-                    Accepted
-                  </span>
-                  <span className="text-xl font-bold text-card-foreground mt-1 block">
-                    {statsData.accepted_assignments ?? 0}
-                  </span>
-                </div>
-                <div className="p-3 bg-muted/30 rounded-xl border border-border/50 text-center">
-                  <span className="text-xs text-muted-foreground block font-medium">
-                    Rejected
-                  </span>
-                  <span className="text-xl font-bold text-card-foreground mt-1 block">
-                    {statsData.rejected_assignments ?? 0}
-                  </span>
-                </div>
-                <div className="p-3 bg-muted/30 rounded-xl border border-border/50 text-center">
-                  <span className="text-xs text-muted-foreground block font-medium">
-                    Completed
-                  </span>
-                  <span className="text-xl font-bold text-card-foreground mt-1 block">
-                    {statsData.completed_assignments ?? 0}
-                  </span>
+
+                {/* Right: Performance & Efficiency Metrics */}
+                <div className="bg-card border border-border p-5 rounded-2xl shadow-xs">
+                  <h3 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
+                    <i className="ri-pulse-line text-emerald-500 text-lg"></i>{" "}
+                    Performance & Efficiency Metrics
+                  </h3>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="p-3 bg-emerald-500/5 rounded-xl border border-emerald-500/10 flex items-center gap-3">
+                      <div className="h-9 w-9 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-600 shrink-0">
+                        <i className="ri-percent-line text-lg"></i>
+                      </div>
+                      <div>
+                        <span className="text-xs text-muted-foreground block font-medium">
+                          Acceptance Rate
+                        </span>
+                        <span className="text-lg font-bold text-card-foreground mt-0.5 block">
+                          {statsData.acceptance_rate !== undefined
+                            ? `${Number(statsData.acceptance_rate).toFixed(1)}%`
+                            : "N/A"}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="p-3 bg-[#6366f1]/5 rounded-xl border border-[#6366f1]/10 flex items-center gap-3">
+                      <div className="h-9 w-9 rounded-lg bg-[#6366f1]/10 flex items-center justify-center text-[#6366f1] shrink-0">
+                        <i className="ri-check-double-line text-lg"></i>
+                      </div>
+                      <div>
+                        <span className="text-xs text-muted-foreground block font-medium">
+                          Completion Rate
+                        </span>
+                        <span className="text-lg font-bold text-card-foreground mt-0.5 block">
+                          {statsData.completion_rate !== undefined
+                            ? `${Number(statsData.completion_rate).toFixed(1)}%`
+                            : "N/A"}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="p-3 bg-amber-500/5 rounded-xl border border-amber-500/10 flex items-center gap-3">
+                      <div className="h-9 w-9 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-600 shrink-0">
+                        <i className="ri-speed-up-line text-lg"></i>
+                      </div>
+                      <div>
+                        <span className="text-xs text-muted-foreground block font-medium">
+                          Avg Response
+                        </span>
+                        <span className="text-lg font-bold text-card-foreground mt-0.5 block">
+                          {statsData.avg_response_time_hours !== undefined
+                            ? `${Number(statsData.avg_response_time_hours).toFixed(1)} hrs`
+                            : "N/A"}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="p-3 bg-rose-500/5 rounded-xl border border-rose-500/10 flex items-center gap-3">
+                      <div className="h-9 w-9 rounded-lg bg-rose-500/10 flex items-center justify-center text-rose-600 shrink-0">
+                        <i className="ri-time-line text-lg"></i>
+                      </div>
+                      <div>
+                        <span className="text-xs text-muted-foreground block font-medium">
+                          Avg Completion
+                        </span>
+                        <span className="text-lg font-bold text-card-foreground mt-0.5 block">
+                          {statsData.avg_completion_time_hours !== undefined
+                            ? `${Number(statsData.avg_completion_time_hours).toFixed(1)} hrs`
+                            : "N/A"}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
 
-            {/* Right: Performance & Efficiency Metrics */}
-            <div className="bg-card border border-border p-5 rounded-2xl shadow-xs">
-              <h3 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
-                <i className="ri-pulse-line text-emerald-500 text-lg"></i>{" "}
-                Performance & Efficiency Metrics
-              </h3>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="p-3 bg-emerald-500/5 rounded-xl border border-emerald-500/10 flex items-center gap-3">
-                  <div className="h-9 w-9 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-600 shrink-0">
-                    <i className="ri-percent-line text-lg"></i>
-                  </div>
-                  <div>
-                    <span className="text-xs text-muted-foreground block font-medium">
-                      Acceptance Rate
-                    </span>
-                    <span className="text-lg font-bold text-card-foreground mt-0.5 block">
-                      {statsData.acceptance_rate !== undefined
-                        ? `${Number(statsData.acceptance_rate).toFixed(1)}%`
-                        : "N/A"}
-                    </span>
-                  </div>
-                </div>
+            {/* ========== 7. TOP REPORTERS — Community ========== */}
+            <h1 className="md:pt-4 pl-2 text-lg sm:text-xl md:text-2xl font-semibold text-[#363434]">
+              Top Reporters
+            </h1>
 
-                <div className="p-3 bg-[#6366f1]/5 rounded-xl border border-[#6366f1]/10 flex items-center gap-3">
-                  <div className="h-9 w-9 rounded-lg bg-[#6366f1]/10 flex items-center justify-center text-[#6366f1] shrink-0">
-                    <i className="ri-check-double-line text-lg"></i>
-                  </div>
-                  <div>
-                    <span className="text-xs text-muted-foreground block font-medium">
-                      Completion Rate
-                    </span>
-                    <span className="text-lg font-bold text-card-foreground mt-0.5 block">
-                      {statsData.completion_rate !== undefined
-                        ? `${Number(statsData.completion_rate).toFixed(1)}%`
-                        : "N/A"}
-                    </span>
-                  </div>
-                </div>
+            <div className="w-full md:mt-2 gap-1 sm:gap-2 md:gap-3 flex flex-wrap  md:bg-[#F3F1FF] p-2 sm:p-2 md:p-3 lg:p-4 rounded-2xl">
+              {loadingStats ? <UserSectionSkeleton /> : <UserCard limit={3} />}
 
-                <div className="p-3 bg-amber-500/5 rounded-xl border border-amber-500/10 flex items-center gap-3">
-                  <div className="h-9 w-9 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-600 shrink-0">
-                    <i className="ri-speed-up-line text-lg"></i>
-                  </div>
-                  <div>
-                    <span className="text-xs text-muted-foreground block font-medium">
-                      Avg Response
-                    </span>
-                    <span className="text-lg font-bold text-card-foreground mt-0.5 block">
-                      {statsData.avg_response_time_hours !== undefined
-                        ? `${Number(statsData.avg_response_time_hours).toFixed(1)} hrs`
-                        : "N/A"}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="p-3 bg-rose-500/5 rounded-xl border border-rose-500/10 flex items-center gap-3">
-                  <div className="h-9 w-9 rounded-lg bg-rose-500/10 flex items-center justify-center text-rose-600 shrink-0">
-                    <i className="ri-time-line text-lg"></i>
-                  </div>
-                  <div>
-                    <span className="text-xs text-muted-foreground block font-medium">
-                      Avg Completion
-                    </span>
-                    <span className="text-lg font-bold text-card-foreground mt-0.5 block">
-                      {statsData.avg_completion_time_hours !== undefined
-                        ? `${Number(statsData.avg_completion_time_hours).toFixed(1)} hrs`
-                        : "N/A"}
-                    </span>
-                  </div>
-                </div>
+              <div className="flex justify-end mt-3">
+                <Link
+                  to="/leaderboard"
+                  className="text-xs lg:text-sm font-bold text-[#7E70EB] hover:text-[#5A50A6] hover:underline transition-all"
+                >
+                  View Full Leaderboard →
+                </Link>
               </div>
             </div>
           </div>
-        )}
-
-        {/* ========== 7. TOP REPORTERS — Community ========== */}
-        <h1 className="md:pt-4 pl-2 text-lg sm:text-xl md:text-2xl font-semibold text-[#363434]">
-          Top Reporters
-        </h1>
-
-        <div className="w-full md:mt-2 gap-1 sm:gap-2 md:gap-3 flex flex-wrap  md:bg-[#F3F1FF] p-2 sm:p-2 md:p-3 lg:p-4 rounded-2xl">
-          {loadingStats ? <UserSectionSkeleton /> : <UserCard limit={3} />}
-
-          <div className="flex justify-end mt-3">
-            <Link
-              to="/leaderboard"
-              className="text-xs lg:text-sm font-bold text-[#7E70EB] hover:text-[#5A50A6] hover:underline transition-all"
-            >
-              View Full Leaderboard →
-            </Link>
-          </div>
-        </div>
-        </div>
         </PullToRefresh>
       </div>
     </>
