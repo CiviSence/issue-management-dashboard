@@ -27,13 +27,34 @@ export const NotificationProvider = ({ children }) => {
   const [permission, setPermission] = useState(
     Capacitor.isNativePlatform() ? 'granted' : Notification.permission
   );
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  const fetchUnreadCount = async () => {
+    const jwtToken = getAccessToken() || localStorage.getItem("auth_token") || localStorage.getItem("token");
+    if (!jwtToken) return;
+    try {
+      const backendUrl = import.meta.env.VITE_API_BASE_URL 
+        ? import.meta.env.VITE_API_BASE_URL.replace("/api", "") 
+        : "https://csm-backend-aws.duckdns.org";
+      const response = await fetch(`${backendUrl}/api/notifications/my-notifications`, {
+        headers: {
+          "Authorization": `Bearer ${jwtToken}`
+        }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        const count = (data || []).filter(n => n.is_unread).length;
+        setUnreadCount(count);
+      }
+    } catch (err) {
+      // Quietly swallow error to keep clean console logs
+    }
+  };
 
   useEffect(() => {
-    console.log("[NotificationProvider] Initializing listeners. Platform is native:", Capacitor.isNativePlatform());
     if (Capacitor.isNativePlatform()) {
       // Setup native notification listeners
       const regListener = PushNotifications.addListener('registration', (registeredToken) => {
-        console.log('[NotificationProvider] Native FCM Token received:', registeredToken.value);
         setToken(registeredToken.value);
       });
 
@@ -42,22 +63,20 @@ export const NotificationProvider = ({ children }) => {
       });
 
       const msgListener = PushNotifications.addListener('pushNotificationReceived', (notification) => {
-        console.log('[NotificationProvider] Native Message received in foreground:', notification);
         const title = notification.title || 'New notification';
         const body = notification.body || '';
         toast.info(`${title}\n${body}`);
         alert(`${title}\n${body}`);
+        fetchUnreadCount();
       });
 
       // Request permissions and register for push notifications on native devices
       PushNotifications.checkPermissions().then((status) => {
-        console.log('[NotificationProvider] Native checkPermissions status:', status);
         if (status.receive === 'prompt') {
           return PushNotifications.requestPermissions();
         }
         return status;
       }).then((status) => {
-        console.log('[NotificationProvider] Native requestPermissions status:', status);
         if (status.receive === 'granted') {
           PushNotifications.register();
           setPermission('granted');
@@ -76,7 +95,6 @@ export const NotificationProvider = ({ children }) => {
       // 2. Initialize Firebase inside the provider
       let app, messaging;
       try {
-        console.log("[NotificationProvider] Initializing Firebase app with config:", firebaseConfig);
         app = initializeApp(firebaseConfig);
         messaging = getMessaging(app);
       } catch (err) {
@@ -86,18 +104,16 @@ export const NotificationProvider = ({ children }) => {
 
       // 3. Setup foreground notification listener
       const unsubscribe = onMessage(messaging, (payload) => {
-        console.log("[NotificationProvider] Foreground notification received:", payload);
         const title = payload.notification?.title || 'New notification';
         const body = payload.notification?.body || '';
         toast.info(`${title}\n${body}`);
         alert(`${title}\n${body}`);
+        fetchUnreadCount();
       });
 
       // 4. Request token if permission is already granted or when user logs in
       const jwtToken = getAccessToken() || localStorage.getItem("auth_token") || localStorage.getItem("token");
-      console.log("[NotificationProvider] Auth Token presence check:", !!jwtToken, "Permission state:", permission);
       if (jwtToken && permission === "granted") {
-        console.log("[NotificationProvider] Permission already granted, fetching token...");
         registerFCMToken(messaging);
       }
 
@@ -109,9 +125,7 @@ export const NotificationProvider = ({ children }) => {
   const requestPermissionAndRegister = async () => {
     if (Capacitor.isNativePlatform()) return;
     try {
-      console.log("[NotificationProvider] Requesting permission...");
       const result = await Notification.requestPermission();
-      console.log("[NotificationProvider] Permission request result:", result);
       setPermission(result);
       if (result === 'granted') {
         const app = initializeApp(firebaseConfig);
@@ -125,13 +139,19 @@ export const NotificationProvider = ({ children }) => {
 
   const registerFCMToken = async (messagingInstance) => {
     try {
-      console.log("[NotificationProvider] Getting token from Firebase using VAPID key:", VAPID_PUBLIC_KEY);
+      let registration;
+      if ('serviceWorker' in navigator) {
+        registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+        // Wait until service worker is active
+        await navigator.serviceWorker.ready;
+      }
+
       const fcmToken = await getToken(messagingInstance, {
-        vapidKey: VAPID_PUBLIC_KEY
+        vapidKey: VAPID_PUBLIC_KEY,
+        serviceWorkerRegistration: registration
       });
       if (fcmToken) {
         setToken(fcmToken);
-        console.log("[NotificationProvider] Generated FCM Token successfully:", fcmToken);
         
         // Send token to backend API
         const backendUrl = import.meta.env.VITE_API_BASE_URL 
@@ -139,7 +159,6 @@ export const NotificationProvider = ({ children }) => {
           : "https://csm-backend-aws.duckdns.org";
           
         const jwtToken = getAccessToken() || localStorage.getItem("auth_token") || localStorage.getItem("token");
-        console.log("[NotificationProvider] Registering token with backend:", `${backendUrl}/api/devices/register`);
         
         const response = await fetch(`${backendUrl}/api/devices/register`, {
           method: "POST",
@@ -151,13 +170,12 @@ export const NotificationProvider = ({ children }) => {
             fcm_token: fcmToken,
             device_type: "web",
             device_name: `Dashboard (${navigator.userAgent.substring(0, 50)})`,
-            app_name: "webapp2" // CRUCIAL: Tells backend to route via FIREBASE_CREDENTIALS_JSON_2
+            app_name: "civisence-admin" // CRUCIAL: Tells backend to route via FIREBASE_CREDENTIALS_JSON_2
           })
         });
         
         if (response.ok) {
           const resData = await response.json();
-          console.log("[NotificationProvider] FCM device token registered with backend successfully. Response:", resData);
           localStorage.setItem("registered_fcm_token", fcmToken);
         } else {
           const errText = await response.text();
@@ -173,12 +191,9 @@ export const NotificationProvider = ({ children }) => {
 
   // Automatically watch and trigger when a token becomes available in localStorage or cookies
   useEffect(() => {
-    console.log("[NotificationProvider] Launching auth token monitor. Current registered token status:", !!token);
-    
     const checkTokenInterval = setInterval(() => {
       const jwtToken = getAccessToken() || localStorage.getItem("auth_token") || localStorage.getItem("token");
       if (jwtToken && !token) {
-        console.log("[NotificationProvider] Auth token detected by monitor, triggering registration...");
         requestPermissionAndRegister();
         clearInterval(checkTokenInterval);
       }
@@ -187,8 +202,20 @@ export const NotificationProvider = ({ children }) => {
     return () => clearInterval(checkTokenInterval);
   }, [token]);
 
+  useEffect(() => {
+    fetchUnreadCount();
+    const interval = setInterval(fetchUnreadCount, 15000); // Check every 15 seconds
+    return () => clearInterval(interval);
+  }, [token]);
+
   return (
-    <NotificationContext.Provider value={{ token, permission, requestPermissionAndRegister }}>
+    <NotificationContext.Provider value={{ 
+      token, 
+      permission, 
+      requestPermissionAndRegister, 
+      unreadCount, 
+      fetchUnreadCount 
+    }}>
       {children}
     </NotificationContext.Provider>
   );
