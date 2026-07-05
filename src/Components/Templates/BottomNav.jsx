@@ -1,8 +1,10 @@
 import { NavLink } from "react-router-dom";
 import { useUser } from "../../Context/ProfileContext";
+import { useNotifications } from "../NotificationProvider";
 
 const BottomNav = () => {
   const { profileData } = useUser();
+  const { unreadCount } = useNotifications();
   const role = profileData?.role?.toLowerCase();
 
   const navClass = ({ isActive }) =>
@@ -54,9 +56,14 @@ const BottomNav = () => {
             <NavLink to="/notifications" className={navClass}>
               {({ isActive }) => (
                 <>
-                  <i
-                    className={`ri-notification-3-${isActive ? "fill" : "line"} text-xl`}
-                  ></i>
+                  <div className="relative">
+                    <i
+                      className={`ri-notification-3-${isActive ? "fill" : "line"} text-xl`}
+                    ></i>
+                    {unreadCount > 0 && (
+                      <span className="absolute -top-1 -right-1 w-2 h-2 bg-rose-500 rounded-full border border-white" />
+                    )}
+                  </div>
                   <span className="text-[10px] font-medium">Alerts</span>
                 </>
               )}
@@ -90,9 +97,14 @@ const BottomNav = () => {
             <NavLink to="/notifications" className={navClass}>
               {({ isActive }) => (
                 <>
-                  <i
-                    className={`ri-notification-3-${isActive ? "fill" : "line"} text-xl`}
-                  ></i>
+                  <div className="relative">
+                    <i
+                      className={`ri-notification-3-${isActive ? "fill" : "line"} text-xl`}
+                    ></i>
+                    {unreadCount > 0 && (
+                      <span className="absolute -top-1 -right-1 w-2 h-2 bg-rose-500 rounded-full border border-white" />
+                    )}
+                  </div>
                   <span className="text-[10px] font-medium">Alerts</span>
                 </>
               )}

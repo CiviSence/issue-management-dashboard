@@ -562,16 +562,17 @@ const Profile = () => {
                       value={profileData.department}
                     />
                   )}
-                  <div className="flex items-center justify-between py-3 border-b border-gray-50 last:border-0">
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-sm gap-1 sm:gap-4 py-3 border-b border-gray-50 last:border-0">
                     <span className="text-gray-500 font-medium">
                       Available to Work
                     </span>
-                    <label className="relative inline-flex items-center cursor-pointer">
+                    <label className="relative inline-flex items-center cursor-not-allowed opacity-60">
                       <input
                         type="checkbox"
                         className="sr-only peer"
                         checked={profileData?.available_to_work || false}
                         onChange={handleToggleAvailable}
+                        disabled
                       />
                       <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-violet-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
                     </label>

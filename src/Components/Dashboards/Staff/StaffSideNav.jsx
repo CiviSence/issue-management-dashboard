@@ -1,6 +1,8 @@
 import SideNavLayout, { NavItem } from "../Common/SideNavLayout";
+import { useNotifications } from "../../NotificationProvider";
 
 const StaffSideNav = () => {
+  const { unreadCount } = useNotifications();
 
   return (
     <SideNavLayout>
@@ -22,6 +24,13 @@ const StaffSideNav = () => {
         icon="ri-notification-3-line"
         iconActive="ri-notification-3-fill"
         label="Notifications"
+        showBadge={unreadCount > 0}
+      />
+      <NavItem
+        to="/leaderboard"
+        icon="ri-award-line"
+        iconActive="ri-award-fill"
+        label="Leaderboard"
       />
     </SideNavLayout>
   );

@@ -20,8 +20,33 @@ messaging.onBackgroundMessage((payload) => {
   const notificationOptions = {
     body: payload.notification?.body || '',
     icon: '/pwa-192x192.png',
-    badge: '/favicon.ico'
+    badge: '/favicon.ico',
+    data: payload.data || {}
   };
 
   self.registration.showNotification(notificationTitle, notificationOptions);
+});
+
+// Handle notification click to focus or open a tab relative to the current site origin
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  
+  // Retrieve relative path from notification payload data or fallback
+  const relativePath = event.notification.data?.path || '/notifications';
+  const targetUrl = new URL(relativePath, self.location.origin).href;
+
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((windowClients) => {
+      // Focus tab if already open
+      for (let client of windowClients) {
+        if (client.url === targetUrl && 'focus' in client) {
+          return client.focus();
+        }
+      }
+      // Open new window/tab if not already open
+      if (clients.openWindow) {
+        return clients.openWindow(targetUrl);
+      }
+    })
+  );
 });

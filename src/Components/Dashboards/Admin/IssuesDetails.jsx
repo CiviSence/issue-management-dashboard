@@ -52,7 +52,6 @@ const IssueDetails = () => {
   const fetchIssue = async (issueId) => {
     try {
       const data = await getIssueById(issueId);
-      console.log("Issue data:", data);
       setIssue(data);
     } catch (error) {
       console.error("Get Issue by Id", error)
@@ -177,7 +176,6 @@ const IssueDetails = () => {
     setIsAssigning(true);
     try {
       const data = await assignIssue(issue.id, selectedStaff, internalNote);
-      console.log("Assignment successful:", data);
 
       // Update local state
       setIssue((prev) => ({
@@ -278,8 +276,7 @@ const IssueDetails = () => {
   const getUserDetails = async (userId) => {
     try {
       const data = await adminGetUserDetailed(userId);
-      console.log("User audit details:", data);
-      toast.info(`User audit details logged to console for user ID: ${userId}`);
+      toast.info(`Fetched user details for: ${data.name || data.email || userId}`);
     } catch (error) {
       console.error("Error fetching user details:", error);
       toast.error("Failed to fetch user details");

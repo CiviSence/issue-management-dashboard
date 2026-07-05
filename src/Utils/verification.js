@@ -25,7 +25,6 @@ export const requestVouch = async (targetUserId) => {
             verification_type: "peer",
             target_user_id: targetUserId // Removing String() coercion
         });
-        console.log("Vouch request response:", data);
         return data;
     } catch (error) {
         console.error("Vouch Request Error:", error.response?.data);
@@ -115,7 +114,6 @@ export const getReceivedRequests = async () => {
 export const getSentRequests = async () => {
     try {
         const { data } = await instance.get("/verification/requests/sent");
-        console.log("Sent requests raw data:", data);
         return data;
     } catch (error) {
         throw new Error(error.response?.data?.detail || error.response?.data?.message || "Failed to fetch sent requests");

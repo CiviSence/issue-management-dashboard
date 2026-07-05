@@ -1,4 +1,5 @@
 import axios from "./axios";
+import { unregisterDevice } from "./device-api";
 
 /**
  * Logs in the user with email and password
@@ -51,10 +52,8 @@ export const registerUser = async (userData) => {
     if (payload.intended_role?.toLowerCase() === 'staff') payload.intended_role = 'official';
     
     const { data } = await axios.post("/auth/register", payload);
-    console.log("data",data)
     return data;
   } catch (error) {
-    console.log("reg error",error.response)
     throw new Error(error.response?.data?.detail || "Registration failed");
   }
 };
@@ -99,6 +98,16 @@ export const resendOtp = async (data) => {
  * Logs out the user on the server side
  */
 export const logoutUser = async () => {
+  try {
+    const token = localStorage.getItem("registered_fcm_token");
+    if (token) {
+      await unregisterDevice(token);
+      localStorage.removeItem("registered_fcm_token");
+    }
+  } catch (error) {
+    console.error("Failed to unregister device token on logout", error);
+  }
+
   try {
     await axios.post("/auth/logout");
   } catch (error) {
@@ -167,6 +176,16 @@ export const resetPassword = async (data) => {
  * @returns {Promise<object>}
  */
 export const logoutAllSessions = async () => {
+  try {
+    const token = localStorage.getItem("registered_fcm_token");
+    if (token) {
+      await unregisterDevice(token);
+      localStorage.removeItem("registered_fcm_token");
+    }
+  } catch (error) {
+    console.error("Failed to unregister device token on logout all", error);
+  }
+
   try {
     const { data } = await axios.post("/auth/logout-all");
     return data;

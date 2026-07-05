@@ -2,15 +2,19 @@ import { useEffect, useState } from "react";
 import StaffSideNav from "./StaffSideNav";
 import BottomNav from "../../Templates/BottomNav";
 import { useUser } from "../../../Context/ProfileContext";
+import { useNotifications } from "../../../Components/NotificationProvider";
 import Loader from "../../Templates/Loader";
 import { useNavigate } from "react-router-dom";
 import axios from "../../../Utils/axios";
 import TopBar from "../../Templates/TopBar";
 import PullToRefresh from "../../Templates/PullToRefresh";
+import { toast, ToastContainer } from "react-toastify";
+import { handleMarkAllRead as markAllReadUtils } from "../../../Utils/Notifications/notifications";
 
 const StaffNotifications = () => {
   const { profileData } = useUser();
   const navigate = useNavigate();
+  const { fetchUnreadCount } = useNotifications();
   const [loading, setLoading] = useState(true);
   const [notifications, setNotifications] = useState([]);
   const [filter, setFilter] = useState("all");
@@ -72,16 +76,8 @@ const StaffNotifications = () => {
   }, [profileData?.id]);
 
   const handleMarkAllRead = async () => {
-    const unreadIds = notifications.filter((n) => !n.read).map((n) => n.id);
-    if (unreadIds.length === 0) return;
-    try {
-      await axios.patch("/notifications/mark-as-read", {
-        notification_ids: unreadIds,
-      });
-      setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
-    } catch (error) {
-      console.error("Error marking all notifications as read:", error);
-    }
+    await markAllReadUtils(notifications, setNotifications, toast);
+    fetchUnreadCount();
   };
 
   const handleToggleRead = async (id, currentRead) => {
@@ -93,8 +89,11 @@ const StaffNotifications = () => {
         setNotifications((prev) =>
           prev.map((n) => (n.id === id ? { ...n, read: true } : n)),
         );
+        toast.success("Notification marked as read");
+        fetchUnreadCount();
       } catch (error) {
         console.error("Error marking notification as read:", error);
+        toast.error("Failed to mark notification as read");
       }
     } else {
       setNotifications((prev) =>
@@ -113,27 +112,39 @@ const StaffNotifications = () => {
     <>
       <StaffSideNav />
       <BottomNav />
+      <ToastContainer />
       <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#FDFDFF] overflow-x-hidden overflow-y-auto h-screen pb-20" id="staffNotifsScroll">
         <TopBar title="Notifications" />
         <PullToRefresh scrollContainerId="staffNotifsScroll" onRefresh={fetchNotifications}>
           <div className="w-full mx-auto p-2 lg:p-4">
         <div className="p-2 md:p-0">
           <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-            {/* Filters */}
-            <div className="flex border-b border-gray-150 px-4 py-3 gap-2 bg-gray-50/50">
-              {["all", "unread", "read"].map((type) => (
+            {/* Filters and Actions */}
+            <div className="flex flex-wrap items-center justify-between border-b border-gray-150 px-4 py-3 gap-3 bg-gray-50/50">
+              <div className="flex items-center gap-2">
+                {["all", "unread", "read"].map((type) => (
+                  <button
+                    key={type}
+                    onClick={() => setFilter(type)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold capitalize transition cursor-pointer ${
+                      filter === type
+                        ? "bg-[#6366f1] text-white shadow-md shadow-indigo-500/20"
+                        : "text-gray-600 hover:bg-gray-100"
+                    }`}
+                  >
+                    {type}
+                  </button>
+                ))}
+              </div>
+
+              {notifications.some((n) => !n.read) && (
                 <button
-                  key={type}
-                  onClick={() => setFilter(type)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold capitalize transition cursor-pointer ${
-                    filter === type
-                      ? "bg-[#6366f1] text-white shadow-md shadow-indigo-500/20"
-                      : "text-gray-600 hover:bg-gray-100"
-                  }`}
+                  onClick={handleMarkAllRead}
+                  className="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-lg text-xs font-bold transition-all cursor-pointer"
                 >
-                  {type}
+                  Mark all read
                 </button>
-              ))}
+              )}
             </div>
 
             {loading ? (

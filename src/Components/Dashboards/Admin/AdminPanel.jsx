@@ -90,6 +90,7 @@ const NotificationsTab = ({
   loading,
   notificationStats,
   sentNotifications,
+  users,
 }) => {
   const handleCustomRoleToggle = (roleId) => {
     const currentRoles = notificationForm.customRoles || ["citizen"];
@@ -203,24 +204,20 @@ const NotificationsTab = ({
               </div>
             )}
 
-            {/* Target User Section */}
             {notificationType === "user" && (
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Target User ID (UUID)
+                  Target User
                 </label>
-                <input
-                  type="text"
-                  value={notificationForm.userId || ""}
-                  onChange={(e) =>
+                <UserSelector
+                  selectedId={notificationForm.userId}
+                  onChange={(id) =>
                     setNotificationForm({
                       ...notificationForm,
-                      userId: e.target.value,
+                      userId: id,
                     })
                   }
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-violet-500 focus:ring-2 focus:ring-violet-200 outline-none"
-                  placeholder="e.g. 71ecdac0-c479-4ab7-9ce6-4f117bbed2f5"
-                  required
+                  users={users}
                 />
               </div>
             )}
@@ -281,19 +278,17 @@ const NotificationsTab = ({
                 {notificationForm.customRecipientType === "individual" && (
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Target User ID (UUID)
+                      Target User
                     </label>
-                    <input
-                      type="text"
-                      placeholder="e.g. 71ecdac0-c479-4ab7-9ce6-4f117bbed2f5"
-                      value={notificationForm.customUserId || ""}
-                      onChange={(e) =>
+                    <UserSelector
+                      selectedId={notificationForm.customUserId}
+                      onChange={(id) =>
                         setNotificationForm({
                           ...notificationForm,
-                          customUserId: e.target.value,
+                          customUserId: id,
                         })
                       }
-                      className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-violet-200 focus:border-violet-500"
+                      users={users}
                     />
                   </div>
                 )}
@@ -652,7 +647,146 @@ const BannedSkeleton = () => (
   </div>
 );
 
+const userNameCache = {};
 
+const UserDisplayName = ({ userId, defaultName }) => {
+  const [displayName, setDisplayName] = useState(() => {
+    const isUuid = (str) => {
+      if (!str) return false;
+      return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
+    };
+    if (defaultName && !isUuid(defaultName) && defaultName !== userId) {
+      return defaultName;
+    }
+    return userNameCache[userId] || defaultName || "Loading name...";
+  });
+
+  useEffect(() => {
+    const isUuid = (str) => {
+      if (!str) return false;
+      return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
+    };
+
+    if (defaultName && !isUuid(defaultName) && defaultName !== userId) {
+      setDisplayName(defaultName);
+      return;
+    }
+
+    if (!userId) {
+      setDisplayName("Unknown User");
+      return;
+    }
+
+    if (userNameCache[userId]) {
+      setDisplayName(userNameCache[userId]);
+      return;
+    }
+
+    let isMounted = true;
+    const fetchBgName = async () => {
+      try {
+        const data = await adminGetUserDetailed(userId);
+        const name = data?.user?.name || userId;
+        userNameCache[userId] = name;
+        if (isMounted) {
+          setDisplayName(name);
+        }
+      } catch (error) {
+        if (isMounted) {
+          setDisplayName(userId);
+        }
+      }
+    };
+
+    fetchBgName();
+    return () => {
+      isMounted = false;
+    };
+  }, [userId, defaultName]);
+
+  return <span>{displayName}</span>;
+};
+
+const UserSelector = ({ selectedId, onChange, users }) => {
+  const [search, setSearch] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
+  
+  const selectedUser = (users || []).find((u) => u.id === selectedId);
+
+  const filtered = (users || []).filter((u) => 
+    u.name?.toLowerCase().includes(search.toLowerCase()) ||
+    u.email?.toLowerCase().includes(search.toLowerCase())
+  );
+
+  return (
+    <div className="relative">
+      <div 
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white flex items-center justify-between cursor-pointer hover:border-gray-300 focus-within:ring-2 focus-within:ring-violet-200 text-sm"
+      >
+        <span className={selectedUser ? "text-gray-800 font-medium" : "text-gray-400"}>
+          {selectedUser ? `${selectedUser.name} (${selectedUser.email})` : "Select a recipient user..."}
+        </span>
+        <div className="flex items-center gap-1.5">
+          {selectedUser && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onChange("");
+              }}
+              className="text-xs text-gray-400 hover:text-red-500 font-bold px-1 py-0.5 rounded hover:bg-gray-100"
+            >
+              Clear
+            </button>
+          )}
+          <i className={`ri-arrow-down-s-line transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
+        </div>
+      </div>
+
+      {isOpen && (
+        <>
+          <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
+          <div className="absolute z-50 w-full mt-2 bg-white border border-gray-200 rounded-xl shadow-xl max-h-60 overflow-y-auto p-2 space-y-1">
+            <input
+              type="text"
+              placeholder="Type name or email to search..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full px-3 py-2 text-sm border border-gray-250 rounded-lg outline-none focus:border-violet-500 mb-2"
+              autoFocus
+            />
+            {filtered.length > 0 ? (
+              filtered.map((u) => (
+                <div
+                  key={u.id}
+                  onClick={() => {
+                    onChange(u.id);
+                    setIsOpen(false);
+                    setSearch("");
+                  }}
+                  className={`px-3 py-2 text-sm rounded-lg cursor-pointer transition-colors text-left ${
+                    selectedId === u.id 
+                      ? "bg-[#7E70EB] text-white font-semibold" 
+                      : "text-gray-700 hover:bg-violet-50"
+                  }`}
+                >
+                  <p className="font-semibold">{u.name}</p>
+                  <p className={`text-xs ${selectedId === u.id ? "text-violet-100" : "text-gray-400"}`}>
+                    {u.email} • {u.role}
+                  </p>
+                </div>
+              ))
+            ) : (
+              <p className="text-xs text-gray-400 text-center py-4">No users found</p>
+            )}
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
 
 const AdminPanel = () => {
   const navigate = useNavigate();
@@ -750,10 +884,8 @@ const AdminPanel = () => {
   const fetchDashboardStats = async () => {
     try {
       const response = await axios.get("/admin/all-users");
-      console.log("all users : ", response);
       const data = response.data;
       const usersList = data.users || [];
-      console.log("all users data", usersList);
       setUsers(usersList);
       setStats((prev) => ({
         ...prev,
@@ -773,7 +905,6 @@ const AdminPanel = () => {
   const fetchUnverifiedUsers = async () => {
     try {
       const data = await adminGetUnverifiedUsers();
-      console.log("unverified users : ", data);
       setUnverifiedUsers(data);
       setStats((prev) => ({ ...prev, unverifiedUsers: data.length }));
     } catch (error) {
@@ -786,9 +917,7 @@ const AdminPanel = () => {
   const fetchVerificationRequests = async () => {
     try {
       const data = await adminGetAllRequests();
-      console.log("verification requests : ", data);
       const requests = Array.isArray(data) ? data : data?.requests || data?.data || [];
-      console.log("Request statuses:", [...new Set(requests.map(r => r.status))]);
       setVerificationRequests(requests);
     } catch (error) {
       console.error("Error fetching verification requests:", error);
@@ -801,7 +930,6 @@ const AdminPanel = () => {
     try {
       const response = await axios.get("/admin/banned-users");
       const data = response.data.banned_users || [];
-      console.log("Banned Users : ", data);
       setBannedUsers(data);
       setStats((prev) => ({ ...prev, bannedUsers: data.length }));
     } catch (error) {
@@ -815,7 +943,6 @@ const AdminPanel = () => {
     setLoading(true);
     try {
       const data = await adminGetUserDetailed(userId);
-      console.log("user details", data);
       setUserDetails(data);
       setShowUserModal(true);
     } catch (error) {
@@ -830,7 +957,6 @@ const AdminPanel = () => {
   const fetchSentNotifications = async () => {
     try {
       const response = await axios.get("/notifications/admin/sent");
-      console.log("Sent Notification", response);
       setSentNotifications(response.data);
     } catch (error) {
       console.error("Error fetching notifications:", error);
@@ -841,7 +967,6 @@ const AdminPanel = () => {
   const fetchNotificationStats = async () => {
     try {
       const response = await axios.get("/notifications/admin/stats");
-      console.log("notification stats : ", response);
       setNotificationStats(response.data);
     } catch (error) {
       console.error("Error fetching notification stats:", error);
@@ -956,7 +1081,6 @@ const AdminPanel = () => {
   const handlePromoteToTrusted = async (userId) => {
     try {
       const response = await axios.post(`/admin/promote-to-trusted/${userId}`);
-      console.log("Promote to trusted : ", response);
       if (response.status === 200) {
         toast.success("User promoted to trusted");
         fetchDashboardStats();
@@ -2725,14 +2849,16 @@ const DashboardTab = ({
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="bg-gray-50/50 p-3 rounded-xl border border-gray-100">
                       <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Reporter</p>
-                      <p className="font-semibold text-gray-800 text-sm">{report.reporter_name}</p>
-                      <p className="text-[10px] text-gray-400 font-mono mt-0.5 truncate">{report.reporter_user_id}</p>
+                      <p className="font-semibold text-gray-800 text-sm">
+                        <UserDisplayName userId={report.reporter_user_id} defaultName={report.reporter_name} />
+                      </p>
                     </div>
 
                     <div className="bg-gray-50/50 p-3 rounded-xl border border-gray-100">
                       <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Reported User</p>
-                      <p className="font-semibold text-gray-800 text-sm">{report.reported_user_name}</p>
-                      <p className="text-[10px] text-gray-400 font-mono mt-0.5 truncate">{report.reported_user_id}</p>
+                      <p className="font-semibold text-gray-800 text-sm">
+                        <UserDisplayName userId={report.reported_user_id} defaultName={report.reported_user_name} />
+                      </p>
                     </div>
 
                     <div className="bg-gray-50/50 p-3 rounded-xl border border-gray-100">
@@ -2952,10 +3078,13 @@ const DashboardTab = ({
               loading={loading}
               notificationStats={notificationStats}
               sentNotifications={sentNotifications}
+              users={users}
             />
           )}
           {activeTab === "reports" && <ReportsTab />}
         </div>
+        </div>
+      </PullToRefresh>
 
         {showReviewModal && selectedReport && (
           <div className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-50 animate-in fade-in duration-200">
@@ -2967,10 +3096,10 @@ const DashboardTab = ({
               
               <div className="mb-4 bg-gray-50 p-3 rounded-xl border border-gray-100 text-xs text-gray-600 space-y-1">
                 <div>
-                  <span className="font-bold text-gray-700">Reporter:</span> {selectedReport.reporter_name}
+                  <span className="font-bold text-gray-700">Reporter:</span> <UserDisplayName userId={selectedReport.reporter_user_id} defaultName={selectedReport.reporter_name} />
                 </div>
                 <div>
-                  <span className="font-bold text-gray-700">Reported User:</span> {selectedReport.reported_user_name}
+                  <span className="font-bold text-gray-700">Reported User:</span> <UserDisplayName userId={selectedReport.reported_user_id} defaultName={selectedReport.reported_user_name} />
                 </div>
                 <div>
                   <span className="font-bold text-gray-700">Reason:</span> <span className="capitalize">{selectedReport.reason?.replace(/_/g, " ")}</span>
@@ -3558,8 +3687,6 @@ const DashboardTab = ({
             </div>
           </div>
         )}
-        </div>
-        </PullToRefresh>
       </div>
     </>
   );

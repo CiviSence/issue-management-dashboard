@@ -74,15 +74,11 @@ const SignUp = () => {
         intended_role: formData.userType, // This differentiates user types
       };
 
-      console.log("signup payload", payload);
-
       const res = await registerUser(payload);
-      console.log(res);
 
       localStorage.setItem("pendingVerificationEmail", formData.email);
       navigate("/verify-otp");
     } catch (err) {
-      console.log(err);
       setError(
         err.response?.data?.message || "Registration failed. Please try again.",
       );

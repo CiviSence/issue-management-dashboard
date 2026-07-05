@@ -119,7 +119,6 @@ const StaffDashboard = () => {
       try {
         const data = await getAssignedIssues(profileData.id);
         setAssignedIssues(data);
-        console.log("Issue Assigned to me : ", data);
       } catch (error) {
         console.error("Error fetching assigned issues:", error);
       } finally {
@@ -133,7 +132,6 @@ const StaffDashboard = () => {
       try {
         const data = await mySummary(profileData.id);
         setSummary(data);
-        console.log(data);
       } catch (error) {
         console.error("Error fetching summary:", error);
       }

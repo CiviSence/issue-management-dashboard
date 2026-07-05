@@ -21,7 +21,6 @@ export const formatSmartTime = (dateString) => {
 export const fetchNotifications = async (defaultLink = "/admin/issues") => {
   try {
     const response = await axios.get("/notifications/my-notifications");
-    console.log("Notificatons", response);
     const items = (response.data || []).map((notif) => {
       let icon = "ri-notification-3-line";
       if (notif.title?.toLowerCase().includes("assign")) {
