@@ -27,9 +27,9 @@ const PieChartCard = ({data}) => {
                 data={data}
                 cx="50%"
                 cy="50%"
-                innerRadius={65}
+                innerRadius={60}
                 outerRadius={95}
-                paddingAngle={6}
+                paddingAngle={0}
                 dataKey="value"
                 stroke="none"
                 animationDuration={1500}

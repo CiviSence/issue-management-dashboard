@@ -12,10 +12,9 @@ import {
 
 const AGING_COLORS = ["#10b981", "#f59e0b", "#f97316", "#ef4444"];
 const AGING_LABELS = ["< 24 hrs", "1–3 days", "3–7 days", "> 7 days"];
-
+const now = Date.now();
 const IssueAgingCard = ({ issues = [] }) => {
   const agingData = useMemo(() => {
-    const now = Date.now();
     const buckets = [0, 0, 0, 0]; // <24h, 1-3d, 3-7d, >7d
 
     issues.forEach((issue) => {
@@ -42,7 +41,7 @@ const IssueAgingCard = ({ issues = [] }) => {
   const overdue = agingData[2].count + agingData[3].count;
 
   return (
-    <div className="bg-white border border-border p-5 rounded-2xl shadow-xs">
+    <div className="bg-white h-full border border-border p-5 rounded-2xl shadow-xs">
       <div className="flex items-center justify-between mb-1">
         <h3 className="text-base font-bold text-foreground flex items-center gap-2">
           <i className="ri-hourglass-line text-amber-500 text-lg"></i>
@@ -60,13 +59,17 @@ const IssueAgingCard = ({ issues = [] }) => {
         {totalOpen} open issues by age
       </p>
 
-      <ResponsiveContainer width="100%" height={190}>
+      <ResponsiveContainer width="100%" height={290}>
         <BarChart
           data={agingData}
           layout="vertical"
           margin={{ left: 0, right: 16, top: 0, bottom: 0 }}
         >
-          <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" horizontal={false} />
+          <CartesianGrid
+            strokeDasharray="3 3"
+            stroke="#f0f0f0"
+            horizontal={false}
+          />
           <XAxis type="number" tick={{ fontSize: 11 }} allowDecimals={false} />
           <YAxis
             dataKey="name"
@@ -84,7 +87,12 @@ const IssueAgingCard = ({ issues = [] }) => {
             }}
             formatter={(value) => [`${value} issues`, "Count"]}
           />
-          <Bar dataKey="count" radius={[0, 6, 6, 0]} maxBarSize={28} animationDuration={900}>
+          <Bar
+            dataKey="count"
+            radius={[0, 6, 6, 0]}
+            maxBarSize={35}
+            animationDuration={900}
+          >
             {agingData.map((entry, index) => (
               <Cell key={index} fill={entry.color} />
             ))}
