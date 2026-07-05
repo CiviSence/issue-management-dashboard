@@ -35,7 +35,6 @@ const Login = () => {
 
     try {
       const data = await loginUser({ email, password });
-      console.log(data);
 
       // Store tokens and user data
       setSession(data.access_token, data.user, data.refresh_token);

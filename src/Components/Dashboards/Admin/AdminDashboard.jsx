@@ -106,9 +106,6 @@ const AdminDashboard = () => {
     return acc;
   }, initialStats);
 
-  console.log("All Issues", issues);
-  console.log("All Stats", stats);
-
   const { category, priority, location } = stats;
 
   // Status cards data

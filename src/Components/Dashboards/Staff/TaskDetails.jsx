@@ -68,9 +68,7 @@ const TaskDetails = () => {
     setLoading(true);
 
     try {
-      console.log("Fetching issue with ID:", id, "Type:", typeof id);
       const data = await getIssueById(id);
-      console.log("Successfully fetched issue data:", data);
 
       let assignmentInfo = {};
       try {
@@ -84,7 +82,6 @@ const TaskDetails = () => {
             assignment_status: matchingAssignment.assignment_status,
             assigned_at: matchingAssignment.assigned_at,
           };
-          console.log("Found matching assignment info:", assignmentInfo);
         }
       } catch (err) {
         console.error("Failed to fetch matching assignment:", err);
@@ -92,7 +89,6 @@ const TaskDetails = () => {
 
       setTask((prev) => {
         const merged = { ...prev, ...data, ...assignmentInfo };
-        console.log("Merged Task Data:", merged);
         return merged;
       });
     } catch (error) {

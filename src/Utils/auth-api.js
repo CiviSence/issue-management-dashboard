@@ -52,10 +52,8 @@ export const registerUser = async (userData) => {
     if (payload.intended_role?.toLowerCase() === 'staff') payload.intended_role = 'official';
     
     const { data } = await axios.post("/auth/register", payload);
-    console.log("data",data)
     return data;
   } catch (error) {
-    console.log("reg error",error.response)
     throw new Error(error.response?.data?.detail || "Registration failed");
   }
 };

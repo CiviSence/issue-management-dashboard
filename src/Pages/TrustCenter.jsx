@@ -82,7 +82,6 @@ const TrustCenter = () => {
 
     const handleRequestVouch = async (userId) => {
         setRequestingVouch(userId);
-        console.log("Requesting vouch for user ID:", userId, "Type:", typeof userId);
         try {
             await requestVouch(userId);
             toast.success("Vouch request sent successfully!");
@@ -104,7 +103,6 @@ const TrustCenter = () => {
         try {
             const uploadRes = await uploadVerificationDocument(selectedFile);
             const savedUrl = uploadRes.url;
-            console.log("Document uploaded, received URL:", savedUrl);
             await submitVerificationRequest([savedUrl], message);
             toast.success("Identity verification request submitted!");
             setSelectedFile(null);
