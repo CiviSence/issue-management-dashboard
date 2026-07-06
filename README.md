@@ -70,7 +70,7 @@ The Staff Panel is tailored for ground-level staff members who are assigned to r
 3. **Configure Environment Variables:**
    Create a `.env` file in the root directory and add the following based on the `.env.example`:
    ```env
-   VITE_API_BASE_URL=https://csm-backend-aws.duckdns.org/api
+   VITE_API_BASE_URL=https://civisence-api.duckdns.org/api
    ```
 
 4. **Start the Development Server:**

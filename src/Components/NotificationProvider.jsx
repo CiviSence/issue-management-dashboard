@@ -35,7 +35,7 @@ export const NotificationProvider = ({ children }) => {
     try {
       const backendUrl = import.meta.env.VITE_API_BASE_URL 
         ? import.meta.env.VITE_API_BASE_URL.replace("/api", "") 
-        : "https://csm-backend-aws.duckdns.org";
+        : "https://civisence-api.duckdns.org";
       const response = await fetch(`${backendUrl}/api/notifications/my-notifications`, {
         headers: {
           "Authorization": `Bearer ${jwtToken}`
@@ -141,8 +141,8 @@ export const NotificationProvider = ({ children }) => {
     try {
       let registration;
       if ('serviceWorker' in navigator) {
-        registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
-        // Wait until service worker is active
+        // Get the active PWA service worker registration which imports firebase-messaging-sw.js
+        registration = await navigator.serviceWorker.getRegistration() || await navigator.serviceWorker.register('/sw.js');
         await navigator.serviceWorker.ready;
       }
 
@@ -156,7 +156,7 @@ export const NotificationProvider = ({ children }) => {
         // Send token to backend API
         const backendUrl = import.meta.env.VITE_API_BASE_URL 
           ? import.meta.env.VITE_API_BASE_URL.replace("/api", "") 
-          : "https://csm-backend-aws.duckdns.org";
+          : "https://civisence-api.duckdns.org";
           
         const jwtToken = getAccessToken() || localStorage.getItem("auth_token") || localStorage.getItem("token");
         
