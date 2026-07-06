@@ -1,5 +1,6 @@
 import React from "react";
 import { Shield, FileText, Lock, Eye, Users, Database, Image as ImageIcon, UserCheck, RefreshCw, Mail, ChevronRight } from "lucide-react";
+import SEO from "../common/SEO";
 
 const PrivacyPolicy = () => {
   const sections = [
@@ -23,39 +24,37 @@ const PrivacyPolicy = () => {
       icon: Eye,
       items: [
         "To provide and maintain the platform",
-        "To verify users and prevent fake accounts",
-        "To improve user experience and system performance",
-        "To enable issue tracking, communication, and moderation",
-        "To enforce policies and prevent misuse"
+        "To verify college identity and prevent unauthorized access",
+        "To track and resolve reported campus issues",
+        "To communicate status updates and important notifications"
       ]
     },
     {
-      title: "User Verification & Reputation",
-      icon: UserCheck,
-      content: "Civisence uses a peer verification system and reputation mechanism to ensure authenticity. Your activity, including verification approvals and contributions, may be tracked to maintain trust within the community."
-    },
-    {
-      title: "Data Sharing and Disclosure",
-      icon: Users,
-      content: "We do not sell or rent your personal data. Your data may only be shared with administrators for moderation purposes, when required by law, or to protect platform integrity and user safety."
-    },
-    {
-      title: "Data Storage and Security",
+      title: "Data Protection & Security",
       icon: Lock,
-      content: "We implement appropriate security measures to protect your data. However, no system is completely secure, and we cannot guarantee absolute protection against breaches."
-    },
-    {
-      title: "Media and Content",
-      icon: ImageIcon,
-      content: "Uploaded media is stored securely and may be reviewed by administrators if flagged. Users are responsible for ensuring that uploaded content does not violate privacy or institutional guidelines."
-    },
-    {
-      title: "Your Rights",
-      icon: Shield,
       items: [
-        "Access and update your account information",
-        "Request deletion of your account (subject to policies)",
-        "Report misuse or privacy violations"
+        "We implement industry-standard encryption and security measures",
+        "Your data is stored securely and access is strictly controlled",
+        "We do not sell or rent your personal information to third parties"
+      ]
+    },
+    {
+      title: "Data Sharing",
+      icon: Users,
+      content: "Your issue reports and public comments are visible to authorized campus staff and administrators for resolution purposes. Your college email address is used strictly for internal identification and notifications."
+    },
+    {
+      title: "Media Uploads",
+      icon: ImageIcon,
+      content: "Images uploaded as issue attachments are stored securely and used solely to assist staff in identifying and resolving campus infrastructure problems."
+    },
+    {
+      title: "User Rights",
+      icon: UserCheck,
+      items: [
+        "You have the right to access and review your personal data",
+        "You may request correction of inaccurate information",
+        "You may request account deletion by contacting campus administration"
       ]
     },
     {
@@ -67,6 +66,11 @@ const PrivacyPolicy = () => {
 
   return (
     <div className="min-h-screen w-full overflow-auto bg-linear-to-br from-slate-50 via-white to-violet-50/30 font-sans text-slate-800">
+      <SEO
+        title="Privacy Policy"
+        description="Review how CiviSence collects, protects, and uses personal data within our smart campus infrastructure platform."
+        keywords="CiviSence privacy policy, campus data security, student privacy, university data protection"
+      />
       {/* Header */}
       <div className="max-w-7xl mx-auto px-6 pt-16 pb-12">
         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-violet-100 text-violet-700 text-xs font-semibold tracking-wider uppercase mb-6">

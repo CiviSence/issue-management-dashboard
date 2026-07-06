@@ -2,6 +2,7 @@ import StudentSideNav from "./StudentSideNav";
 import StudentBottomNav from "./StudentBottomNav";
 import UserCard from "../../Templates/UserCard";
 import PullToRefresh from "../../Templates/PullToRefresh";
+import SEO from "../../common/SEO";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { toast } from "react-toastify";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -23,6 +24,7 @@ const getDefaultAvatar = (gender) => {
   const g = gender?.toLowerCase();
   return g === "female" || g === "f" || g === "woman" ? defaultPfpFemale : defaultPfpMale;
 };
+
 import ReportIssueModal from "../../Templates/ReportIssueModal";
 import { motion, AnimatePresence } from "framer-motion";
 import StatusBadge from "../../Templates/StatusBadge";
@@ -643,6 +645,11 @@ const IssueFeed = () => {
 
   return (
     <>
+      <SEO
+        title="Live Campus Issue Feed"
+        description="Explore real-time infrastructure problem reports, vote on campus priorities, and collaborate with peers and staff on solutions."
+        keywords="campus issue feed, student problem reporting, civic maintenance feed, university priority voting"
+      />
       <StudentSideNav />
       <StudentBottomNav />
       <div className="w-full p-2 lg:p-4 lg:w-[calc(100vw-15vw)] bg-[#F0EEFF] overflow-y-auto h-screen" id="mainScroll">

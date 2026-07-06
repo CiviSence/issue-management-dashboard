@@ -1,5 +1,6 @@
 import React from "react";
 import { FileText, CheckCircle, Users, Shield, AlertTriangle, Image as ImageIcon, Gavel, Copyright, Scale, Power, Mail, ChevronRight } from "lucide-react";
+import SEO from "../common/SEO";
 
 const TermsOfUse = () => {
   const sections = [
@@ -18,14 +19,6 @@ const TermsOfUse = () => {
       icon: Users,
       items: [
         "Account Security: Users must use a valid college email and are responsible for safeguarding their login credentials",
-        "Peer Verification: Certain features are restricted to verified users, requiring approval from three trusted users",
-        "Reputation System: User contributions are tracked, and misuse may lead to penalties or loss of privileges"
-      ]
-    },
-    {
-      title: "User Conduct",
-      icon: Shield,
-      items: [
         "No false reporting, spam, or duplicate issues",
         "No harassment or abusive content",
         "No manipulation of votes or verification system",
@@ -61,6 +54,11 @@ const TermsOfUse = () => {
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-purple-50 via-white to-violet-50/30 font-sans text-slate-800">
+      <SEO
+        title="Terms of Use"
+        description="Read the Terms of Use, institutional guidelines, and user rules for CiviSence smart campus platform."
+        keywords="CiviSence terms of use, campus rules, student code of conduct, university facility terms"
+      />
       {/* Header */}
       <div className="max-w-7xl mx-auto px-6 pt-16 pb-12">
         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-violet-100 text-violet-700 text-xs font-semibold tracking-wider uppercase mb-6">

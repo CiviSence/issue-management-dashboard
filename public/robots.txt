@@ -1,0 +1,16 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+Allow: /login
+Allow: /signup
+Allow: /privacy-policy
+Allow: /terms
+Allow: /csae-policy
+Allow: /trust-center
+
+# Disallow private user/admin dashboard endpoints from indexing if crawled directly without auth
+Disallow: /admin/*
+Disallow: /settings/*
+Disallow: /profile/*
+
+Sitemap: https://civisence-admin.web.app/sitemap.xml
