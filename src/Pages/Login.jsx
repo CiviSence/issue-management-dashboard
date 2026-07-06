@@ -6,6 +6,7 @@ import { loginUser } from "../Utils/auth-api";
 import { setSession } from "../Utils/auth-utils";
 
 import { useUser } from "../Context/ProfileContext";
+import SEO from "../Components/common/SEO";
 
 
 
@@ -40,22 +41,18 @@ const Login = () => {
       setSession(data.access_token, data.user, data.refresh_token);
       setProfileData(data.user);
 
-      navigate("/dashboard");
-    } catch (err) {
-      console.error("Login Error:", err);
-
-      // Specifically handle unverified email case (403)
-      if (
-        err.message.includes("verify your email") ||
-        err.message.includes("verification")
-      ) {
-        localStorage.setItem("pendingVerificationEmail", email);
-        navigate("/verify-otp");
-        return;
+      // Navigate based on user role
+      if (data.user.role === "admin") {
+        navigate("/");
+      } else if (data.user.role === "staff") {
+        navigate("/assigned-issues");
+      } else {
+        navigate("/issue-feed");
       }
-
+    } catch (err) {
+      console.error("Login Failed:", err);
       if (err.status === 429) {
-        const retry = parseInt(err.retryAfter, 10) || 60;
+        const retry = err.retryAfter || 60;
         setCooldown(retry);
         setError(`Too many attempts. Please try again in ${retry} seconds`);
         return;
@@ -69,6 +66,11 @@ const Login = () => {
 
   return (
     <div className="min-h-screen w-full flex flex-col">
+      <SEO
+        title="Campus Portal Login"
+        description="Sign in to CiviSence to report campus infrastructure issues, track maintenance status, and participate in collaborative campus governance."
+        keywords="campus login, CiviSence sign in, university issue tracker login, student portal, facility reporting login"
+      />
       {/* Main Content */}
       <div className="flex-1 flex">
         <motion.div

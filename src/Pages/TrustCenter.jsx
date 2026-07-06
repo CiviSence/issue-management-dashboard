@@ -13,6 +13,7 @@ import {
 } from "../Utils/verification";
 import StudentSideNav from "../Components/Dashboards/Student/StudentSideNav";
 import StudentBottomNav from "../Components/Dashboards/Student/StudentBottomNav";
+import SEO from "../Components/common/SEO";
 
 const TrustCenter = () => {
     const [activeTab, setActiveTab] = useState("apply"); // 'apply' or 'requests'
@@ -130,6 +131,11 @@ const TrustCenter = () => {
 
     return (
         <>
+            <SEO
+                title="Trust Center & Verification"
+                description="Manage campus reputation, verify user identity, request peer vouches, and inspect CiviSence security compliance."
+                keywords="CiviSence trust center, campus verification, peer vouches, security compliance"
+            />
             <StudentSideNav />
             <StudentBottomNav />
             <div className="w-full p-4 lg:p-8 lg:w-[calc(100vw-15vw)] bg-[#F0EEFF] overflow-y-auto h-screen">

@@ -10,6 +10,7 @@ import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import ProfileEditForm from "../Components/Inputs/ProfileEditForm";
 import { updateMyProfile, getMyOrganization } from "../Utils/profile-api";
+import SEO from "./common/SEO";
 
 import StatusBadge from "./Templates/StatusBadge";
 import defaultPfpFemale from "../assets/default-pfp/default-pfp-female.svg";
@@ -171,7 +172,16 @@ const Profile = () => {
 
   // Students use their own specialized profile
   if (role === "student") {
-    return <StudentProfile />;
+    return (
+      <>
+        <SEO
+          title="Student Campus Profile"
+          description="View your student campus profile, check reputation scores, track submitted maintenance issues, and manage notification preferences."
+          keywords="student profile, campus reputation, CiviSence account, student issue tracking"
+        />
+        <StudentProfile />
+      </>
+    );
   }
 
   const renderSideNav = () => {
@@ -253,6 +263,11 @@ const Profile = () => {
 
   return (
     <>
+      <SEO
+        title={`${profileData?.name || "Campus"} Profile`}
+        description="View and manage your CiviSence campus profile, check reputation scores, track submitted and assigned issues, and customize preferences."
+        keywords="user profile, campus account, CiviSence profile, reputation score, campus activity"
+      />
       {renderSideNav()}
       <BottomNav />
 

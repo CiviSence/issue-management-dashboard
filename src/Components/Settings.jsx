@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useUser } from "../Context/ProfileContext";
 import TopBar from "./Templates/TopBar";
+import SEO from "./common/SEO";
 import AdminSideNav from "./Dashboards/Admin/AdminSideNav";
 import StudentSideNav from "./Dashboards/Student/StudentSideNav";
 import StaffSideNav from "./Dashboards/Staff/StaffSideNav";
@@ -555,6 +556,11 @@ const Settings = () => {
 
   return (
     <>
+      <SEO
+        title="Account & System Settings"
+        description="Customize CiviSence notification alerts, appearance themes, campus privacy settings, session security, and workflow preferences."
+        keywords="campus settings, user preferences, account security, notification alerts"
+      />
       {renderSideNav()}
       {renderBottomNav()}
 

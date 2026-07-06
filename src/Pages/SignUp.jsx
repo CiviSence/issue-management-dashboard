@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import csmlogo from "../assets/logo/CSM-logo.png";
 import { registerUser } from "../Utils/auth-api";
+import SEO from "../Components/common/SEO";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -89,6 +90,11 @@ const SignUp = () => {
 
   return (
     <div className="min-h-screen w-full flex flex-col">
+      <SEO
+        title="Create Campus Account"
+        description="Register for CiviSence as a student, faculty member, or facility staff to report infrastructure issues and track maintenance workflows."
+        keywords="campus registration, CiviSence sign up, student account creation, university maintenance reporting signup"
+      />
       {/* Main Content */}
       <div className="flex-1 flex">
         <motion.div
