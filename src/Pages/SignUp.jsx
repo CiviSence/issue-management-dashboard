@@ -14,8 +14,7 @@ const SignUp = () => {
 
   const [formData, setFormData] = useState({
     userType: "staff", // 'staff' | 'admin' (default to staff)
-    firstName: "",
-    lastName: "",
+    name: "",
     email: "",
     password: "",
     phone_number: "",
@@ -69,7 +68,7 @@ const SignUp = () => {
 
       const payload = {
         email: formData.email,
-        name: `${formData.firstName} ${formData.lastName}`.trim(),
+        name: formData.name,
         password: formData.password,
         phone_number: formData.phone_number,
         intended_role: formData.userType, // This differentiates user types
@@ -89,7 +88,7 @@ const SignUp = () => {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col">
+    <div className="min-h-screen w-full bg-[#FAFAFC] flex flex-col">
       <SEO
         title="Create Campus Account"
         description="Register for CiviSence as a student, faculty member, or facility staff to report infrastructure issues and track maintenance workflows."
@@ -164,24 +163,24 @@ const SignUp = () => {
           </div>
 
           {/* Right Side - Form */}
-          <div className="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center bg-white relative">
+          <div className="w-full p-5 md:w-1/2 md:p-12 flex flex-col justify-center relative">
             <div className="max-w-md mx-auto w-full">
               {/* Mobile Logo */}
-              <div className="md:hidden flex flex-col items-center mb-8">
-                <div className="w-16 h-16 p-3 bg-violet-50 rounded-2xl mb-3">
+              <div className="md:hidden flex flex-col items-center mb-3">
+                <div className="w-16 h-16 p-2 bg-white rounded-2xl mb-3 shadow-xs">
                   <img
                     src={csmlogo}
                     alt="CSM"
                     className="w-full h-full object-contain"
                   />
                 </div>
-                <h2 className="text-2xl font-bold text-gray-900">Civisence-Admin</h2>
+                <h2 className="text-2xl font-bold text-gray-900"></h2>
               </div>
 
               <h1 className="text-3xl font-bold text-[#6366f1] mb-2 text-center md:text-left">
                 Sign up
               </h1>
-              <p className="text-gray-500 mb-8 text-center md:text-left text-sm">
+              <p className="text-gray-400 mb-8 text-center md:text-left text-xs font-medium">
                 Create your account to start managing issues.
               </p>
 
@@ -205,10 +204,11 @@ const SignUp = () => {
                         onClick={() =>
                           setFormData((prev) => ({ ...prev, userType: type }))
                         }
-                        className={`py-2 px-3 rounded-lg border text-sm font-medium capitalize transition-all ${formData.userType === type
+                        className={`py-2 px-3 outline-none rounded-lg border text-sm font-medium capitalize transition-all ${
+                          formData.userType === type
                             ? "bg-[#7E70EB] text-white border-[#7E70EB]"
                             : "bg-white text-gray-600 border-gray-200 hover:border-[#7E70EB] hover:text-[#7E70EB]"
-                          }`}
+                        }`}
                       >
                         {type}
                       </button>
@@ -217,53 +217,40 @@ const SignUp = () => {
                 </div>
 
                 {/* Name Row */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <label className="text-xs font-medium text-gray-500 ml-1">
-                      First Name
-                    </label>
-                    <input
-                      type="text"
-                      name="firstName"
-                      value={formData.firstName}
-                      onChange={handleChange}
-                      required
-                      className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-[#6366f1] focus:ring-2 focus:ring-[#6366f1]/20 outline-none transition-all text-sm"
-                    />
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-xs font-medium text-gray-500 ml-1">
-                      Last Name
-                    </label>
-                    <input
-                      type="text"
-                      name="lastName"
-                      value={formData.lastName}
-                      onChange={handleChange}
-                      required
-                      className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-[#6366f1] focus:ring-2 focus:ring-[#6366f1]/20 outline-none transition-all text-sm"
-                    />
-                  </div>
+                <div className=" gap-4">
+                  <label className="text-xs font-bold text-gray-400 ml-1">
+                    Full Name
+                  </label>
+                  <input
+                    type="text"
+                    name="name"
+                    placeholder="Your Full Name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                    className="w-full bg-white placeholder:text-gray-300 px-4 py-2.5 rounded-lg border border-gray-200  focus:ring-2 focus:ring-[#6366f1]/20 outline-none transition-all text-sm"
+                  />
                 </div>
 
                 {/* Email */}
                 <div className="space-y-1">
-                  <label className="text-xs font-medium text-gray-500 ml-1">
+                  <label className="text-xs font-bold text-gray-400 ml-1">
                     Email address
                   </label>
                   <input
                     type="email"
                     name="email"
+                    placeholder="you@gmail.com"
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-[#6366f1] focus:ring-2 focus:ring-[#6366f1]/20 outline-none transition-all text-sm"
+                    className="w-full px-4 py-2.5 bg-white placeholder:text-gray-300 rounded-lg border border-gray-200  focus:ring-2 focus:ring-[#6366f1]/20 outline-none transition-all text-sm"
                   />
                 </div>
 
                 {/* Mobile Number */}
                 <div className="space-y-1">
-                  <label className="text-xs font-medium text-gray-500 ml-1">
+                  <label className="text-xs font-bold text-gray-400 ml-1">
                     Phone Number
                   </label>
                   <input
@@ -273,37 +260,39 @@ const SignUp = () => {
                     value={formData.phone_number}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-[#6366f1] focus:ring-2 focus:ring-[#6366f1]/20 outline-none transition-all text-sm"
+                    className="w-full px-4 py-2.5 rounded-lg border bg-white placeholder:text-gray-300 border-gray-200  focus:ring-2 focus:ring-[#6366f1]/20 outline-none transition-all text-sm"
                   />
                 </div>
 
                 {/* Password Row */}
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1">
-                    <label className="text-xs font-medium text-gray-500 ml-1">
+                    <label className="text-xs font-bold text-gray-400 ml-1">
                       Password
                     </label>
                     <input
                       type={showPassword ? "text" : "password"}
                       name="password"
                       value={formData.password}
+                      placeholder="min. 8 character"
                       onChange={handleChange}
                       required
                       minLength={6}
-                      className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-[#6366f1] focus:ring-2 focus:ring-[#6366f1]/20 outline-none transition-all text-sm"
+                      className="w-full px-4 py-2.5 rounded-lg border bg-white placeholder:text-gray-300 border-gray-200  focus:ring-2 focus:ring-[#6366f1]/20 outline-none transition-all text-sm"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-xs font-medium text-gray-500 ml-1">
+                    <label className="text-xs font-bold text-gray-400 ml-1">
                       Confirm password
                     </label>
                     <input
                       type={showPassword ? "text" : "password"}
                       name="confirmPassword"
                       value={formData.confirmPassword}
+                      placeholder="min. 8 character"
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-[#6366f1] focus:ring-2 focus:ring-[#6366f1]/20 outline-none transition-all text-sm"
+                      className="w-full px-4 py-2.5 rounded-lg border bg-white placeholder:text-gray-300 border-gray-200 focus:ring-2 focus:ring-[#6366f1]/20 outline-none transition-all text-sm"
                     />
                   </div>
                 </div>
@@ -313,26 +302,26 @@ const SignUp = () => {
                   <input
                     id="show-password"
                     type="checkbox"
-                    className="w-4 h-4 text-[#6366f1] border-gray-300 rounded focus:ring-[#6366f1]"
+                    className="w-4 h-4 bg-white "
                     checked={showPassword}
                     onChange={(e) => setShowPassword(e.target.checked)}
                   />
                   <label
                     htmlFor="show-password"
-                    className="ml-2 text-xs text-gray-500"
+                    className="ml-2 text-xs font-bold text-gray-400"
                   >
                     Show password
                   </label>
                 </div>
 
                 {/* Terms Text */}
-                <p className="text-[10px] text-gray-500 text-center px-4">
+                <p className="text-xs text-gray-500 text-center px-4">
                   by continuing, you agree to the{" "}
-                  <Link to="/terms" className="underline hover:text-[#6e5fdb]">
+                  <Link to="/terms" className="text-[#6e5fdb]">
                     Terms of use
                   </Link>{" "}
                   and{" "}
-                  <Link to="/privacy-policy" className="underline hover:text-[#6e5fdb]">
+                  <Link to="/privacy-policy" className=" text-[#6e5fdb]">
                     Privacy Policy
                   </Link>
                 </p>
