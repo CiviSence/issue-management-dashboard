@@ -7,6 +7,7 @@ import {
 } from "../../Utils/issuesStudent";
 import { Capacitor } from "@capacitor/core";
 import { Camera, CameraResultType } from "@capacitor/camera";
+import { motion } from "framer-motion";
 
 const CATEGORIES = ["security", "cleanliness", "maintenance", "infrastructure", "facilities", "other"];
 const BUILDINGS = [
@@ -26,6 +27,8 @@ const EMPTY_FORM = {
     location_address: "",
     location_building: "",
     location_ward: "",
+    latitude: null,
+    longitude: null,
 };
 
 const MediaUploadZone = ({ newFiles, setNewFiles, existingUrls, setExistingUrls }) => {
@@ -232,6 +235,8 @@ const ReportIssueModal = ({ initial, onClose, onSaved }) => {
                 location_address: initial.location_address || "",
                 location_building: initial.location_building || "",
                 location_ward: initial.location_ward || "",
+                latitude: initial.latitude !== undefined ? initial.latitude : null,
+                longitude: initial.longitude !== undefined ? initial.longitude : null,
             }
             : EMPTY_FORM
     );
@@ -243,7 +248,21 @@ const ReportIssueModal = ({ initial, onClose, onSaved }) => {
     const [uploading, setUploading] = useState(false);
     const [submitting, setSubmitting] = useState(false);
 
+    const [fetchingLocation, setFetchingLocation] = useState(false);
+
     const set = (field) => (e) => setForm((f) => ({ ...f, [field]: e.target.value }));
+
+    const handleGetLocation = () => {
+        // Disabled on the frontend for now
+        toast.info("GPS coordinates sharing is temporarily disabled.");
+        return;
+    };
+
+    const handleRemoveLocation = () => {
+        // Disabled on the frontend for now
+        toast.info("GPS coordinates sharing is temporarily disabled.");
+        return;
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -309,7 +328,12 @@ const ReportIssueModal = ({ initial, onClose, onSaved }) => {
             className="fixed inset-0 bg-gray-900/40 backdrop-blur-[2px] flex items-center justify-center p-0 sm:p-4 z-[9999]"
             onClick={(e) => e.target === e.currentTarget && onClose()}
         >
-            <div className="bg-white rounded-none sm:rounded-2xl shadow-xl w-full max-w-xl flex flex-col h-full sm:h-auto sm:max-h-[85vh] overflow-hidden">
+            <motion.div
+                initial={{ opacity: 0, scale: 0.95, y: 15 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
+                className="bg-white rounded-none sm:rounded-2xl shadow-xl w-full max-w-xl flex flex-col h-full sm:h-auto sm:max-h-[85vh] overflow-hidden"
+            >
                 {/* Header */}
                 <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-white shrink-0">
                     <div className="flex items-center gap-3">
@@ -412,6 +436,60 @@ const ReportIssueModal = ({ initial, onClose, onSaved }) => {
                             </Field>
                         </div>
 
+                        {/* GPS Geo-tagging Section (Disabled on Frontend) */}
+                        <div className="sm:col-span-2">
+                            <div className="bg-gray-50/80 rounded-xl p-4 border border-gray-200/60 space-y-3">
+                                <div className="flex items-center justify-between">
+                                    <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                        <i className="ri-map-pin-2-fill text-violet-500" />
+                                        Pinpoint GPS Location
+                                    </label>
+                                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider bg-gray-200/50 px-2 py-0.5 rounded-full">
+                                        Disabled
+                                    </span>
+                                </div>
+                                <p className="text-xs text-gray-400 leading-relaxed">
+                                    GPS sharing is currently disabled. In the future, this option will allow maintenance crews to find the exact location instantly.
+                                </p>
+                                <div className="flex flex-wrap items-center gap-3">
+                                    {!form.latitude ? (
+                                        <button
+                                            type="button"
+                                            onClick={handleGetLocation}
+                                            disabled={true}
+                                            className="flex items-center gap-2 px-4 py-2.5 bg-gray-200 text-gray-400 rounded-xl text-xs font-bold transition-all cursor-not-allowed border border-gray-300/40"
+                                        >
+                                            <i className="ri-gps-line text-sm" />
+                                            <span>Share GPS Coordinates</span>
+                                        </button>
+                                    ) : (
+                                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between w-full p-3 bg-gray-100/50 border border-gray-200 rounded-xl gap-2">
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-8 h-8 rounded-lg bg-gray-200 flex items-center justify-center text-gray-400">
+                                                    <i className="ri-map-pin-check-fill text-base" />
+                                                </div>
+                                                <div>
+                                                    <p className="text-xs font-bold text-gray-500">GPS Location Attached</p>
+                                                    <p className="text-[10px] text-gray-400 font-medium">
+                                                        {Number(form.latitude).toFixed(6)}, {Number(form.longitude).toFixed(6)}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <button
+                                                type="button"
+                                                onClick={handleRemoveLocation}
+                                                disabled={true}
+                                                className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-400 rounded-lg text-[11px] font-bold cursor-not-allowed border border-gray-200"
+                                            >
+                                                <i className="ri-delete-bin-line" />
+                                                <span>Remove GPS</span>
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+
                         <div className="sm:col-span-2">
                             <Field
                                 label="Description"
@@ -465,7 +543,7 @@ const ReportIssueModal = ({ initial, onClose, onSaved }) => {
                         )}
                     </button>
                 </div>
-            </div>
+            </motion.div>
         </div>
     );
 };
