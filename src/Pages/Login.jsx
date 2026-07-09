@@ -8,8 +8,6 @@ import { setSession } from "../Utils/auth-utils";
 import { useUser } from "../Context/ProfileContext";
 import SEO from "../Components/common/SEO";
 
-
-
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -65,7 +63,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col">
+    <div className="min-h-screen bg-[#FAFAFC] w-full flex flex-col">
       <SEO
         title="Campus Portal Login"
         description="Sign in to CiviSence to report campus infrastructure issues, track maintenance status, and participate in collaborative campus governance."
@@ -140,24 +138,22 @@ const Login = () => {
           </div>
 
           {/* Right Side - Login Form */}
-          <div className="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center bg-white relative">
+          <div className="w-full md:w-1/2 p-5 md:p-12 flex flex-col justify-center relative">
             <div className="max-w-md mx-auto w-full">
               {/* Mobile Logo */}
               <div className="md:hidden flex flex-col items-center mb-8">
-                <div className="w-16 h-16 p-3 bg-violet-50 rounded-2xl mb-3">
+                <div className="w-16 h-16 p-2  shadow-xs rounded-2xl mb-3">
                   <img
                     src={csmlogo}
                     alt="CSM"
                     className="w-full h-full object-contain"
                   />
                 </div>
-                <h2 className="text-2xl font-bold text-gray-900">Civisence-Admin</h2>
               </div>
-
               <h1 className="text-3xl font-bold text-[#6366f1] mb-2 text-center md:text-left">
                 Sign in
               </h1>
-              <p className="text-gray-500 mb-8 text-center md:text-left text-sm">
+              <p className="text-gray-400 mb-8 text-center md:text-left text-xs font-medium">
                 Welcome back! Please enter your details.
               </p>
 
@@ -171,11 +167,11 @@ const Login = () => {
               <form className="space-y-5" onSubmit={handleLogin}>
                 {/* Email/Username Input */}
                 <div className="space-y-1.5">
-                  <label className="block text-xs font-medium text-gray-500 ml-1">
+                  <label className="text-xs font-bold text-gray-400 ml-1">
                     Email
                   </label>
                   <input
-                    className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6366f1] focus:ring-opacity-20 focus:border-[#6366f1] transition-all text-sm shadow-sm"
+                    className="w-full bg-white placeholder:text-gray-300 px-4 py-2.5 rounded-lg border border-gray-200  focus:ring-2 focus:ring-[#6366f1]/20 outline-none transition-all text-sm"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Enter your email"
@@ -186,7 +182,7 @@ const Login = () => {
                 {/* Password Input */}
                 <div className="space-y-1.5">
                   <div className="flex justify-between items-center px-1">
-                    <label className="text-xs font-medium text-gray-500">
+                    <label className="text-xs font-bold text-gray-400 ml-1">
                       Your Password
                     </label>
                     <button
@@ -199,7 +195,7 @@ const Login = () => {
                   </div>
                   <input
                     type={showPassword ? "text" : "password"}
-                    className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6366f1] focus:ring-opacity-20 focus:border-[#6366f1] transition-all text-sm shadow-sm"
+                    className="w-full bg-white placeholder:text-gray-300 px-4 py-2.5 rounded-lg border border-gray-200  focus:ring-2 focus:ring-[#6366f1]/20 outline-none transition-all text-sm"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
@@ -213,7 +209,7 @@ const Login = () => {
                       type="checkbox"
                       checked={rememberMe}
                       onChange={(e) => setRememberMe(e.target.checked)}
-                      className="mr-2 w-4 h-4 border-gray-300 rounded text-[#6366f1] focus:ring-[#6366f1]"
+                      className="mr-2 w-4 h-4 bg-white"
                     />
                     <span className="group-hover:text-gray-700 transition-colors font-medium">
                       Remember me
@@ -243,17 +239,6 @@ const Login = () => {
                 </button>
 
                 <div className="space-y-4 pt-4">
-                  {/* Terms Text */}
-                  <p className="text-[10px] text-gray-500 text-center px-4">
-                    by continuing, you agree to the{" "}
-                    <Link to="/terms" className="underline hover:text-[#6e5fdb]">
-                      Terms of use
-                    </Link>{" "}
-                    and{" "}
-                    <Link to="/privacy-policy" className="underline hover:text-[#6e5fdb]">
-                      Privacy Policy
-                    </Link>
-                  </p>
                   <p className="text-sm text-gray-500 text-center mt-2">
                     Don't have an account?{" "}
                     <Link
