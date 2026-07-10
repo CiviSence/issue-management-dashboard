@@ -90,12 +90,12 @@ const SignUp = () => {
   return (
     <div className="min-h-screen w-full bg-[#FAFAFC] flex flex-col">
       <SEO
-        title="Create Campus Account"
-        description="Register for CiviSence as a student, faculty member, or facility staff to report infrastructure issues and track maintenance workflows."
-        keywords="campus registration, CiviSence sign up, student account creation, university maintenance reporting signup"
+        title="Create Account"
+        description="Register for CiviSence as a staff or admin to manage infrastructure issues and track maintenance workflows."
+        keywords="admin registration, staff registration, civisence admin sign up, civisence staff sign up, civisence admin portal, civisence staff portal, university maintenance reporting signup"
       />
       {/* Main Content */}
-      <div className="flex-1 flex">
+      <div className="flex-1 flex overflow-hidden">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -103,7 +103,7 @@ const SignUp = () => {
           className="w-full flex min-h-screen"
         >
           {/* Left Side - Branding */}
-          <div className="hidden md:flex w-1/2 rounded-r-4xl bg-linear-to-br from-[#7E70EB] to-[#5A50A6] p-16 flex-col justify-center text-white relative overflow-hidden">
+          <div className="hidden  md:flex rounded-r-4xl w-1/2 bg-linear-to-br from-[#7E70EB] to-[#5A50A6] p-16 flex-col justify-center text-white relative overflow-hidden">
             {/* Abstract Background Elements */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-32 -mt-32" />
             <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full blur-3xl -ml-24 -mb-24" />
@@ -114,12 +114,8 @@ const SignUp = () => {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="relative z-10"
             >
-              <div className="bg-white p-4 rounded-2xl w-20 h-20 mb-10 shadow-2xl flex items-center justify-center">
-                <img
-                  src={csmlogo}
-                  alt="CSM Logo"
-                  className="w-12 h-12 object-contain"
-                />
+              <div className="bg-white p-2 rounded-2xl w-15 h-15 mb-10 shadow-2xl flex items-center justify-center">
+                <img src={csmlogo} alt="CSM Logo" className="object-contain" />
               </div>
 
               <h1 className="text-4xl lg:text-5xl font-bold mb-6 leading-tight">
@@ -128,22 +124,22 @@ const SignUp = () => {
               </h1>
 
               <p className="text-lg text-indigo-50/80 mb-12 max-w-md leading-relaxed">
-                Join our unified platform to streamline campus issue management.
-                We empower staff and administrators to build a more responsive
-                community together.
+                Empower administrators and staff to manage, prioritize, assign,
+                and resolve campus issues through a centralized dashboard with
+                real-time updates and collaboration.
               </p>
 
               <div className="space-y-6">
                 {[
                   {
                     icon: "ri-checkbox-circle-line",
-                    text: "Seamless Issue Reporting",
+                    text: "Transparent Progress",
                   },
                   {
                     icon: "ri-bar-chart-box-line",
-                    text: "Real-time Status Tracking",
+                    text: "Live Monitoring & Analytics",
                   },
-                  { icon: "ri-team-line", text: "Collaborative Resolution" },
+                  { icon: "ri-team-line", text: "Faster Issue Resolution" },
                 ].map((item, i) => (
                   <motion.div
                     key={i}
@@ -163,7 +159,15 @@ const SignUp = () => {
           </div>
 
           {/* Right Side - Form */}
-          <div className="w-full p-5 md:w-1/2 md:p-12 flex flex-col justify-center relative">
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 0.8,
+              ease: "easeOut",
+            }}
+            className="w-full p-5 md:w-1/2 md:p-12 flex flex-col justify-center relative"
+          >
             <div className="max-w-md mx-auto w-full">
               {/* Mobile Logo */}
               <div className="md:hidden flex flex-col items-center mb-3">
@@ -177,7 +181,7 @@ const SignUp = () => {
                 <h2 className="text-2xl font-bold text-gray-900"></h2>
               </div>
 
-              <h1 className="text-3xl font-bold text-[#6366f1] mb-2 text-center md:text-left">
+              <h1 className="mb-2 text-center md:text-left text-3xl md:text-4xl font-bold text-gray-800 tracking-tight">
                 Sign up
               </h1>
               <p className="text-gray-400 mb-8 text-center md:text-left text-xs font-medium">
@@ -185,10 +189,16 @@ const SignUp = () => {
               </p>
 
               {error && (
-                <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-r-lg text-red-700 text-sm flex items-center gap-3">
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-r-lg text-red-700 text-sm flex items-center gap-3 text-center md:text-left"
+                >
                   <i className="ri-error-warning-line text-lg"></i>
                   {error}
-                </div>
+                </motion.div>
               )}
 
               <form onSubmit={handleSubmit} className="space-y-4">
@@ -228,7 +238,7 @@ const SignUp = () => {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full bg-white placeholder:text-gray-300 px-4 py-2.5 rounded-lg border border-gray-200  focus:ring-2 focus:ring-[#6366f1]/20 outline-none transition-all text-sm"
+                    className="w-full bg-white placeholder:text-gray-300 text-sm font-medium text-gray-500 px-4 py-2.5 rounded-lg border border-gray-200 focus:ring-2 focus:ring-[#6366f1]/20 outline-none transition-all"
                   />
                 </div>
 
@@ -244,7 +254,7 @@ const SignUp = () => {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-2.5 bg-white placeholder:text-gray-300 rounded-lg border border-gray-200  focus:ring-2 focus:ring-[#6366f1]/20 outline-none transition-all text-sm"
+                    className="w-full bg-white placeholder:text-gray-300 text-sm font-medium text-gray-500 px-4 py-2.5 rounded-lg border border-gray-200 focus:ring-2 focus:ring-[#6366f1]/20 outline-none transition-all"
                   />
                 </div>
 
@@ -260,7 +270,7 @@ const SignUp = () => {
                     value={formData.phone_number}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-2.5 rounded-lg border bg-white placeholder:text-gray-300 border-gray-200  focus:ring-2 focus:ring-[#6366f1]/20 outline-none transition-all text-sm"
+                    className="w-full bg-white placeholder:text-gray-300 text-sm font-medium text-gray-500 px-4 py-2.5 rounded-lg border border-gray-200 focus:ring-2 focus:ring-[#6366f1]/20 outline-none transition-all"
                   />
                 </div>
 
@@ -278,7 +288,7 @@ const SignUp = () => {
                       onChange={handleChange}
                       required
                       minLength={6}
-                      className="w-full px-4 py-2.5 rounded-lg border bg-white placeholder:text-gray-300 border-gray-200  focus:ring-2 focus:ring-[#6366f1]/20 outline-none transition-all text-sm"
+                      className="w-full bg-white placeholder:text-gray-300 text-sm font-medium text-gray-500 px-4 py-2.5 rounded-lg border border-gray-200 focus:ring-2 focus:ring-[#6366f1]/20 outline-none transition-all"
                     />
                   </div>
                   <div className="space-y-1">
@@ -292,7 +302,7 @@ const SignUp = () => {
                       placeholder="min. 8 character"
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-2.5 rounded-lg border bg-white placeholder:text-gray-300 border-gray-200 focus:ring-2 focus:ring-[#6366f1]/20 outline-none transition-all text-sm"
+                      className="w-full bg-white placeholder:text-gray-300 text-sm font-medium text-gray-500 px-4 py-2.5 rounded-lg border border-gray-200 focus:ring-2 focus:ring-[#6366f1]/20 outline-none transition-all"
                     />
                   </div>
                 </div>
@@ -330,7 +340,7 @@ const SignUp = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-[#7E70EB] hover:bg-[#5A50A6] disabled:bg-gray-400 text-white font-medium py-3 rounded-full shadow-lg shadow-indigo-500/30 transition-all transform hover:scale-[1.02] active:scale-[0.98] disabled:transform-none flex items-center justify-center"
+                  className="w-full bg-[#7E70EB] hover:bg-[#5A50A6] disabled:bg-gray-400 text-white font-bold py-3 rounded-full shadow-lg shadow-indigo-500/30 transition-all transform hover:scale-[1.02] active:scale-[0.98] disabled:transform-none flex items-center justify-center"
                 >
                   {loading ? (
                     <svg
@@ -370,7 +380,7 @@ const SignUp = () => {
                 </p>
               </form>
             </div>
-          </div>
+          </motion.div>
         </motion.div>
       </div>
     </div>

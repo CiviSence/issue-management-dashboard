@@ -65,12 +65,12 @@ const Login = () => {
   return (
     <div className="min-h-screen bg-[#FAFAFC] w-full flex flex-col">
       <SEO
-        title="Campus Portal Login"
-        description="Sign in to CiviSence to report campus infrastructure issues, track maintenance status, and participate in collaborative campus governance."
-        keywords="campus login, CiviSence sign in, university issue tracker login, student portal, facility reporting login"
+        title="Admin and Staff Login"
+        description="Sign in to civisence admin and staff portal to manage civic issues, track maintenance status, and participate in collaborative campus governance."
+        keywords="admin login, staff login, civisence sign in, university issue tracker login, admin portal, staff portal, facility reporting login"
       />
       {/* Main Content */}
-      <div className="flex-1 flex">
+      <div className="flex-1 flex overflow-hidden">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -89,12 +89,8 @@ const Login = () => {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="relative z-10"
             >
-              <div className="bg-white p-4 rounded-2xl w-20 h-20 mb-10 shadow-2xl flex items-center justify-center">
-                <img
-                  src={csmlogo}
-                  alt="CSM Logo"
-                  className="w-12 h-12 object-contain"
-                />
+              <div className="bg-white p-2 rounded-2xl w-15 h-15 mb-10 shadow-2xl flex items-center justify-center">
+                <img src={csmlogo} alt="CSM Logo" className="object-contain" />
               </div>
 
               <h1 className="text-4xl lg:text-5xl font-bold mb-6 leading-tight">
@@ -103,22 +99,22 @@ const Login = () => {
               </h1>
 
               <p className="text-lg text-indigo-50/80 mb-12 max-w-md leading-relaxed">
-                Join our unified platform to streamline campus issue management.
-                We empower staff and administrators to build a more responsive
-                community together.
+                Empower administrators and staff to manage, prioritize, assign,
+                and resolve campus issues through a centralized dashboard with
+                real-time updates and collaboration.
               </p>
 
               <div className="space-y-6">
                 {[
                   {
                     icon: "ri-checkbox-circle-line",
-                    text: "Seamless Issue Reporting",
+                    text: "Transparent Progress",
                   },
                   {
                     icon: "ri-bar-chart-box-line",
-                    text: "Real-time Status Tracking",
+                    text: "Live Monitoring & Analytics",
                   },
-                  { icon: "ri-team-line", text: "Collaborative Resolution" },
+                  { icon: "ri-team-line", text: "Faster Issue Resolution" },
                 ].map((item, i) => (
                   <motion.div
                     key={i}
@@ -138,11 +134,19 @@ const Login = () => {
           </div>
 
           {/* Right Side - Login Form */}
-          <div className="w-full md:w-1/2 p-5 md:p-12 flex flex-col justify-center relative">
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 0.8,
+              ease: "easeOut",
+            }}
+            className="w-full md:w-1/2 p-5 md:p-12 flex flex-col justify-center relative"
+          >
             <div className="max-w-md mx-auto w-full">
               {/* Mobile Logo */}
               <div className="md:hidden flex flex-col items-center mb-8">
-                <div className="w-16 h-16 p-2  shadow-xs rounded-2xl mb-3">
+                <div className="w-16 h-16 p-2 bg-white shadow-xs rounded-2xl mb-3">
                   <img
                     src={csmlogo}
                     alt="CSM"
@@ -150,7 +154,7 @@ const Login = () => {
                   />
                 </div>
               </div>
-              <h1 className="text-3xl font-bold text-[#6366f1] mb-2 text-center md:text-left">
+              <h1 className="mb-2 text-center md:text-left text-3xl md:text-4xl font-bold text-gray-800 tracking-tight">
                 Sign in
               </h1>
               <p className="text-gray-400 mb-8 text-center md:text-left text-xs font-medium">
@@ -158,10 +162,16 @@ const Login = () => {
               </p>
 
               {error && (
-                <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-r-lg text-red-700 text-sm flex items-center gap-3 text-center md:text-left">
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-r-lg text-red-700 text-sm flex items-center gap-3 text-center md:text-left"
+                >
                   <i className="ri-error-warning-line text-lg"></i>
                   {error}
-                </div>
+                </motion.div>
               )}
 
               <form className="space-y-5" onSubmit={handleLogin}>
@@ -171,7 +181,7 @@ const Login = () => {
                     Email
                   </label>
                   <input
-                    className="w-full bg-white placeholder:text-gray-300 px-4 py-2.5 rounded-lg border border-gray-200  focus:ring-2 focus:ring-[#6366f1]/20 outline-none transition-all text-sm"
+                    className="w-full bg-white placeholder:text-gray-300 text-sm font-medium text-gray-500 px-4 py-2.5 rounded-lg border border-gray-200 focus:ring-2 focus:ring-[#6366f1]/20 outline-none transition-all"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Enter your email"
@@ -188,14 +198,14 @@ const Login = () => {
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="text-xs text-[#6366f1] font-semibold flex items-center hover:text-[#5445c9] transition-colors"
+                      className="text-xs text-[#7274f1] font-semibold flex items-center "
                     >
                       {showPassword ? "Hide" : "Show"}
                     </button>
                   </div>
                   <input
                     type={showPassword ? "text" : "password"}
-                    className="w-full bg-white placeholder:text-gray-300 px-4 py-2.5 rounded-lg border border-gray-200  focus:ring-2 focus:ring-[#6366f1]/20 outline-none transition-all text-sm"
+                    className="w-full bg-white placeholder:text-gray-300 font-medium text-gray-500 px-4 py-2.5 rounded-lg border border-gray-200  focus:ring-2 focus:ring-[#6366f1]/20 outline-none transition-all text-sm"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
@@ -217,7 +227,7 @@ const Login = () => {
                   </label>
                   <Link
                     to={"/forgot-password"}
-                    className="text-[#6366f1] font-semibold hover:text-[#5445c9] hover:underline transition-colors"
+                    className="text-[#7274f1] font-semibold hover:underline"
                   >
                     Forget password?
                   </Link>
@@ -251,7 +261,7 @@ const Login = () => {
                 </div>
               </form>
             </div>
-          </div>
+          </motion.div>
         </motion.div>
       </div>
     </div>
