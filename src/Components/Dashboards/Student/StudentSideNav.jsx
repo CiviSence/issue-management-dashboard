@@ -321,10 +321,10 @@ const StudentSideNav = () => {
                 <div className="mb-6 px-1 w-full">
                     <Link to="/" className="flex items-center gap-2.5 group">
                         <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center shrink-0 overflow-hidden p-1">
-                            <img src={logoImg} alt="CSM Logo" className="w-full h-full object-contain" />
+                            <img src={logoImg} alt="CiviSence Logo" className="w-full h-full object-contain" />
                         </div>
                         <div className="hidden lg:block">
-                            <p className="text-sm font-bold text-white leading-tight">CSM</p>
+                            <p className="text-sm font-bold text-white leading-tight">CiviSence</p>
                             <p className="text-[10px] text-violet-200 leading-tight">Issue Dashboard</p>
                         </div>
                     </Link>

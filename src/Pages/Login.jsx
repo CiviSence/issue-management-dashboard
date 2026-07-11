@@ -90,7 +90,7 @@ const Login = () => {
               className="relative z-10"
             >
               <div className="bg-white p-2 rounded-2xl w-15 h-15 mb-10 shadow-2xl flex items-center justify-center">
-                <img src={csmlogo} alt="CSM Logo" className="object-contain" />
+                <img src={csmlogo} alt="CiviSence Logo" className="object-contain" />
               </div>
 
               <h1 className="text-4xl lg:text-5xl font-bold mb-6 leading-tight">
@@ -149,7 +149,7 @@ const Login = () => {
                 <div className="w-16 h-16 p-2 bg-white shadow-xs rounded-2xl mb-3">
                   <img
                     src={csmlogo}
-                    alt="CSM"
+                    alt="CiviSence"
                     className="w-full h-full object-contain"
                   />
                 </div>
