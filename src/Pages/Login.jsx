@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
 import csmlogo from "../assets/logo/CSM-logo.png";
 import { loginUser } from "../Utils/auth-api";
 import { setSession } from "../Utils/auth-utils";
-
+import { motion } from "framer-motion";
 import { useUser } from "../Context/ProfileContext";
 import SEO from "../Components/common/SEO";
 
