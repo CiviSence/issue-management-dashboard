@@ -71,7 +71,7 @@ const ChatBot = ({ isOpen, onClose }) => {
                                     <i className="ri-robot-line"></i>
                                 </div>
                                 <div>
-                                    <h4 className="font-bold">CSM Assistant</h4>
+                                    <h4 className="font-bold">CiviSence Assistant</h4>
                                     <div className="flex items-center gap-1.5">
                                         <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
                                         <span className="text-xs text-violet-100">Always online</span>

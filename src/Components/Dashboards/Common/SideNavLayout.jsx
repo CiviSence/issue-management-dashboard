@@ -87,7 +87,7 @@ const SideNavLayout = ({ children }) => {
       <div className="w-full flex flex-col items-center lg:items-start mt-3">
         {/* Logo */}
           <Link to="/" className="flex items-center gap-1">
-            <img src={csmLogo} alt="CSM Logo" className="h-10 lg:h-12 w-auto object-contain" />
+            <img src={csmLogo} alt="CiviSence Logo" className="h-10 lg:h-12 w-auto object-contain" />
             <span className="hidden lg:inline text-sm  lg:text-xl xl:text-2xl font-semibold">
               CiviSence
             </span>
