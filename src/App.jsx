@@ -1,4 +1,5 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useNavigate, useLocation } from "react-router-dom";
+import { App as CapApp } from "@capacitor/app";
 
 import Dashboard from "./Components/Dashboard";
 import ReportedIssues from "./Components/Dashboards/Admin/ReportedIssues";
@@ -35,6 +36,27 @@ import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 
 const App = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const handleBackButton = async (data) => {
+      // ponytail: exit app on root/home routes, otherwise navigate back
+      const rootRoutes = ["/", "/login", "/dashboard", "/feed", "/assigned-issues", "/reported-issues"];
+      if (rootRoutes.includes(location.pathname) || !data.canGoBack) {
+        CapApp.exitApp();
+      } else {
+        navigate(-1);
+      }
+    };
+
+    const listenerPromise = CapApp.addListener("backButton", handleBackButton);
+
+    return () => {
+      listenerPromise.then((listener) => listener.remove());
+    };
+  }, [location.pathname, navigate]);
+
   useEffect(() => {
     const handleVerificationRequired = () => {
       toast.error("Identity Verification Required to participate.", {
