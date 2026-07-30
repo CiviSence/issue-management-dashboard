@@ -16,6 +16,9 @@ import {
   revokeSession,
 } from "../Utils/auth-api";
 import { clearSession } from "../Utils/auth-utils";
+import { getMyOrganization, updateOrgSettings } from "../Utils/organization-api";
+import OrgChangeRequestModal from "./common/OrgChangeRequestModal";
+
 
 // ─── Sessions Card (API-driven) ─────────────────────────────────────────────
 
@@ -295,6 +298,57 @@ const ToggleRow = ({ label, description, checked, onChange, valueText }) => {
 const Settings = () => {
   const { profileData } = useUser();
   const role = profileData?.role?.toLowerCase();
+
+  const [orgDetails, setOrgDetails] = useState(null);
+  const [isOrgModalOpen, setIsOrgModalOpen] = useState(false);
+  const [updatingFeedSetting, setUpdatingFeedSetting] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+    const fetchOrg = async () => {
+      try {
+        const data = await getMyOrganization();
+        if (isMounted) setOrgDetails(data);
+      } catch (e) {
+        console.error("Failed to fetch org details for settings", e);
+      }
+    };
+    fetchOrg();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const activeOrgItem = Array.isArray(orgDetails)
+    ? orgDetails.find((item) => item.status === "approved" || item.is_active || item.organization?.is_active) || orgDetails[0]
+    : orgDetails;
+  const activeOrg = activeOrgItem?.organization || activeOrgItem;
+
+  const handleToggleFeedRequirement = async () => {
+    if (!activeOrg?.id) return;
+    const nextVal = !activeOrg.require_verified_feed;
+    setUpdatingFeedSetting(true);
+    try {
+      const updated = await updateOrgSettings(activeOrg.id, { require_verified_feed: nextVal });
+      setOrgDetails((prev) => {
+        if (!prev) return updated;
+        if (Array.isArray(prev)) {
+          return prev.map((item) =>
+            (item.id === activeOrg.id || item.organization?.id === activeOrg.id)
+              ? { ...item, require_verified_feed: nextVal, organization: item.organization ? { ...item.organization, require_verified_feed: nextVal } : undefined }
+              : item
+          );
+        }
+        return { ...prev, require_verified_feed: nextVal, organization: prev.organization ? { ...prev.organization, require_verified_feed: nextVal } : undefined };
+      });
+      triggerToast(`Feed verification set to ${nextVal ? "Required" : "Optional"}`);
+    } catch (err) {
+      alert(err.message || "Failed to update feed verification setting");
+    } finally {
+      setUpdatingFeedSetting(false);
+    }
+  };
+
 
   // Navigation render helpers based on role
   const renderSideNav = () => {
@@ -666,20 +720,30 @@ const Settings = () => {
                     />
                     <ExpandableRow
                       label="Organization & campus verification"
-                      sublabel="Global Tech Institute of Sciences"
-                      value="Verified Member"
+                      sublabel={activeOrg?.name || "Campus Organization"}
+                      value={activeOrgItem?.status ? (activeOrgItem.status.charAt(0).toUpperCase() + activeOrgItem.status.slice(1)) : "Member"}
                       icon="ri-building-2-line"
                     >
                       <div className="space-y-3 text-sm max-w-lg">
-                        <div className="flex justify-between py-2 border-b border-gray-200/60">
+                        <div className="flex justify-between items-center py-2 border-b border-gray-200/60">
                           <span className="text-gray-500 font-medium">
                             Organization
                           </span>
                           <span className="font-bold text-gray-800">
-                            Global Tech Institute of Sciences
+                            {activeOrg?.name || "Global Tech Institute of Sciences"}
                           </span>
                         </div>
-                        <div className="flex justify-between py-2 border-b border-gray-200/60">
+                        {activeOrg?.code && (
+                          <div className="flex justify-between items-center py-2 border-b border-gray-200/60">
+                            <span className="text-gray-500 font-medium">
+                              Organization Code
+                            </span>
+                            <span className="font-bold text-violet-600 uppercase">
+                              {activeOrg.code}
+                            </span>
+                          </div>
+                        )}
+                        <div className="flex justify-between items-center py-2 border-b border-gray-200/60">
                           <span className="text-gray-500 font-medium">
                             Verification Status
                           </span>
@@ -688,7 +752,39 @@ const Settings = () => {
                             Campus Member
                           </span>
                         </div>
-                        <div className="flex justify-between py-2">
+                        <div className="flex justify-between items-center py-2 border-b border-gray-200/60">
+                          <span className="text-gray-500 font-medium">
+                            Feed Verification Requirement
+                          </span>
+                          {(role === "admin" || role === "official" || activeOrgItem?.role === "admin" || activeOrgItem?.role === "owner") ? (
+                            <button
+                              type="button"
+                              onClick={handleToggleFeedRequirement}
+                              disabled={updatingFeedSetting || !activeOrg?.id}
+                              className={`px-3 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 border ${
+                                activeOrg?.require_verified_feed
+                                  ? "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100"
+                                  : "bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100"
+                              }`}
+                            >
+                              {updatingFeedSetting && (
+                                <i className="ri-loader-4-line animate-spin"></i>
+                              )}
+                              {activeOrg?.require_verified_feed ? "Verified Only" : "Open Feed"}
+                            </button>
+                          ) : (
+                            <span
+                              className={`px-2.5 py-1 rounded text-xs font-bold border ${
+                                activeOrg?.require_verified_feed
+                                  ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                                  : "bg-gray-50 text-gray-600 border-gray-200"
+                              }`}
+                            >
+                              {activeOrg?.require_verified_feed ? "Required" : "Optional"}
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex justify-between items-center py-2 border-b border-gray-200/60">
                           <span className="text-gray-500 font-medium">
                             Official Email
                           </span>
@@ -696,8 +792,19 @@ const Settings = () => {
                             {profileData?.email || "user@organization.edu"}
                           </span>
                         </div>
+                        <div className="pt-2 flex justify-end">
+                          <button
+                            type="button"
+                            onClick={() => setIsOrgModalOpen(true)}
+                            className="px-3.5 py-1.5 text-xs font-bold text-violet-600 bg-violet-50 hover:bg-violet-100 rounded-lg transition-colors flex items-center gap-1.5 border border-violet-100"
+                          >
+                            <i className="ri-arrow-left-right-line"></i>
+                            Request Organization Change
+                          </button>
+                        </div>
                       </div>
                     </ExpandableRow>
+
                     <ExpandableRow
                       label="Account status & standing"
                       sublabel="Active & in good standing"
@@ -1603,7 +1710,7 @@ const Settings = () => {
                     <ActionRow
                       label="Issue Management Dashboard"
                       sublabel="Pro Edition Campus Suite • Built with React & Vite"
-                      value="v2.4.0 (Build 2026.07)"
+                      value="v0.0.11 (Build 2026.07)"
                       icon="ri-code-s-slash-line"
                     />
                   </SettingsGroupCard>
@@ -1633,6 +1740,11 @@ const Settings = () => {
             Trust Center
           </Link>
         </div>
+
+        <OrgChangeRequestModal
+          isOpen={isOrgModalOpen}
+          onClose={() => setIsOrgModalOpen(false)}
+        />
       </div>
     </>
   );

@@ -9,8 +9,10 @@ import BottomNav from "./Templates/BottomNav";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import ProfileEditForm from "../Components/Inputs/ProfileEditForm";
-import { updateMyProfile, getMyOrganization } from "../Utils/profile-api";
+import { updateMyProfile, getMyOrganization, updateOrgSettings } from "../Utils/profile-api";
 import SEO from "./common/SEO";
+import OrgChangeRequestModal from "./common/OrgChangeRequestModal";
+
 
 import StatusBadge from "./Templates/StatusBadge";
 import defaultPfpFemale from "../assets/default-pfp/default-pfp-female.svg";
@@ -57,6 +59,22 @@ const formatDate = (date) =>
 // ─── Organization Card ──────────────────────────────────────────────────────
 
 const OrganizationCard = ({ orgData, loadingOrg }) => {
+  const [isChangeModalOpen, setIsChangeModalOpen] = useState(false);
+  const [updatingFeedSetting, setUpdatingFeedSetting] = useState(false);
+  const [requireVerifiedFeed, setRequireVerifiedFeed] = useState(false);
+
+  const orgItem = Array.isArray(orgData) 
+    ? (orgData.find(item => item.status === 'approved' || item.is_active || (item.organization && item.organization.is_active)) || orgData[0]) 
+    : orgData;
+
+  const org = orgItem?.organization || orgItem;
+
+  useEffect(() => {
+    if (org && org.require_verified_feed !== undefined) {
+      setRequireVerifiedFeed(!!org.require_verified_feed);
+    }
+  }, [org]);
+
   if (loadingOrg) {
     return (
       <InfoCard title="Organization" icon="ri-community-line">
@@ -69,75 +87,141 @@ const OrganizationCard = ({ orgData, loadingOrg }) => {
     );
   }
 
-  const orgItem = Array.isArray(orgData) 
-    ? (orgData.find(item => item.status === 'approved' || item.is_active || (item.organization && item.organization.is_active)) || orgData[0]) 
-    : orgData;
-  if (!orgItem) return null;
-  const org = orgItem.organization || orgItem;
+  if (!orgItem || !org) return null;
+
+  const isOrgAdmin =
+    orgItem.role === "admin" ||
+    orgItem.role === "owner" ||
+    orgItem.role === "official" ||
+    org.role === "admin";
+
+  const handleToggleVerifiedFeed = async () => {
+    if (!org.id) return;
+    const newValue = !requireVerifiedFeed;
+    setUpdatingFeedSetting(true);
+    try {
+      await updateOrgSettings(org.id, { require_verified_feed: newValue });
+      setRequireVerifiedFeed(newValue);
+      if (org) org.require_verified_feed = newValue;
+    } catch (err) {
+      alert(err.message || "Failed to update organization settings");
+    } finally {
+      setUpdatingFeedSetting(false);
+    }
+  };
 
   return (
-    <div className="bg-white border border-gray-100 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow">
-      <h2 className="text-sm font-bold text-gray-900 mb-4 sm:mb-5 flex items-center gap-2 uppercase tracking-wider">
-        <i className="ri-community-line text-violet-600 text-lg"></i>
-        Organization
-      </h2>
+    <>
+      <div className="bg-white border border-gray-100 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow">
+        <div className="flex items-center justify-between mb-4 sm:mb-5">
+          <h2 className="text-sm font-bold text-gray-900 flex items-center gap-2 uppercase tracking-wider">
+            <i className="ri-community-line text-violet-600 text-lg"></i>
+            Organization
+          </h2>
+          <button
+            onClick={() => setIsChangeModalOpen(true)}
+            className="text-xs font-bold text-violet-600 hover:text-violet-700 bg-violet-50 hover:bg-violet-100 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5"
+          >
+            <i className="ri-arrow-left-right-line"></i>
+            Switch / Join Org
+          </button>
+        </div>
 
-      {/* Org banner */}
-      <div className="bg-linear-to-br from-violet-50 to-purple-50 rounded-xl p-4 mb-5 border border-violet-100">
-        <div className="flex items-start gap-3">
-          <div className="p-2.5 bg-violet-600 text-white rounded-xl shadow-lg shadow-violet-200 shrink-0">
-            <i className="ri-building-2-line text-xl"></i>
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-base font-black text-gray-900 truncate">
-              {org.name}
-            </p>
-            {org.code && (
-              <p className="text-xs font-bold text-violet-600 mt-0.5 uppercase tracking-wider">
-                {org.code}
+        {/* Org banner */}
+        <div className="bg-linear-to-br from-violet-50 to-purple-50 rounded-xl p-4 mb-5 border border-violet-100">
+          <div className="flex items-start gap-3">
+            <div className="p-2.5 bg-violet-600 text-white rounded-xl shadow-lg shadow-violet-200 shrink-0">
+              <i className="ri-building-2-line text-xl"></i>
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-base font-black text-gray-900 truncate">
+                {org.name}
               </p>
-            )}
-            {org.description && (
-              <p className="text-xs text-gray-500 mt-1.5 leading-relaxed line-clamp-2">
-                {org.description}
-              </p>
+              {org.code && (
+                <p className="text-xs font-bold text-violet-600 mt-0.5 uppercase tracking-wider">
+                  {org.code}
+                </p>
+              )}
+              {org.description && (
+                <p className="text-xs text-gray-500 mt-1.5 leading-relaxed line-clamp-2">
+                  {org.description}
+                </p>
+              )}
+            </div>
+            {org.status && (
+              <span
+                className={`shrink-0 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${
+                  org.is_active
+                    ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                    : "bg-gray-100 text-gray-500 border-gray-200"
+                }`}
+              >
+                {org.status}
+              </span>
             )}
           </div>
-          {org.status && (
-            <span
-              className={`shrink-0 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${
-                org.is_active
-                  ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                  : "bg-gray-100 text-gray-500 border-gray-200"
-              }`}
-            >
-              {org.status}
+        </div>
+
+        <div className="space-y-4">
+          {org.official_email && (
+            <Info label="Official Email" value={org.official_email} />
+          )}
+          {org.phone && <Info label="Phone" value={org.phone} />}
+          {org.address && <Info label="Address" value={org.address} />}
+          {orgItem.role && (
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-sm gap-1 sm:gap-4 py-3 border-b border-gray-50 last:border-0">
+              <span className="text-gray-500 font-medium">Your Role</span>
+              <StatusBadge
+                type="profile"
+                value={orgItem.role}
+                showDot={false}
+              />
+            </div>
+          )}
+          {/* Feed Verification Policy */}
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-sm gap-2 py-3 border-b border-gray-50">
+            <span className="text-gray-500 font-medium flex items-center gap-1.5">
+              <i className="ri-shield-check-line text-violet-600"></i>
+              Feed Verification Policy
             </span>
+            {isOrgAdmin ? (
+              <button
+                onClick={handleToggleVerifiedFeed}
+                disabled={updatingFeedSetting}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-2 border ${
+                  requireVerifiedFeed
+                    ? "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100"
+                    : "bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100"
+                }`}
+              >
+                {updatingFeedSetting && (
+                  <i className="ri-loader-4-line animate-spin"></i>
+                )}
+                {requireVerifiedFeed ? "Verified Only" : "Open Feed"}
+              </button>
+            ) : (
+              <span
+                className={`px-2.5 py-1 rounded-md text-xs font-bold border ${
+                  requireVerifiedFeed
+                    ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                    : "bg-gray-50 text-gray-600 border-gray-200"
+                }`}
+              >
+                {requireVerifiedFeed ? "Required" : "Optional"}
+              </span>
+            )}
+          </div>
+          {orgItem.joined_at && (
+            <Info label="Joined At" value={formatDate(orgItem.joined_at)} />
           )}
         </div>
       </div>
 
-      <div className="space-y-4">
-        {org.official_email && (
-          <Info label="Official Email" value={org.official_email} />
-        )}
-        {org.phone && <Info label="Phone" value={org.phone} />}
-        {org.address && <Info label="Address" value={org.address} />}
-        {orgItem.role && (
-          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-sm gap-1 sm:gap-4 py-3 border-b border-gray-50 last:border-0">
-            <span className="text-gray-500 font-medium">Your Role</span>
-            <StatusBadge
-              type="profile"
-              value={orgItem.role}
-              showDot={false}
-            />
-          </div>
-        )}
-        {orgItem.joined_at && (
-          <Info label="Joined At" value={formatDate(orgItem.joined_at)} />
-        )}
-      </div>
-    </div>
+      <OrgChangeRequestModal
+        isOpen={isChangeModalOpen}
+        onClose={() => setIsChangeModalOpen(false)}
+      />
+    </>
   );
 };
 

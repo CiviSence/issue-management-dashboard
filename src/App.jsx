@@ -77,10 +77,11 @@ const App = () => {
 
   return (
     <ThemeProvider>
-      <div className="w-full h-screen bg-white flex ">
+      <div className="w-full min-h-screen bg-[#FAFAFC] flex flex-col">
         <Analytics />
         <SpeedInsights />
         <Routes>
+
           {/* public routes */}
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<TermsOfUse />} />
