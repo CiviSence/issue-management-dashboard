@@ -6,54 +6,58 @@ const IssueCard = ({ issue }) => {
       to={issue.link}
       key={issue.id}
       className={`
-        w-full
-        sm:w-[calc(50%-6px)]
+        relative overflow-hidden
+        w-[calc(50%-3px)]
+        sm:w-[calc(50%-4px)]
+        md:w-[calc(50%-6px)]
         lg:w-[calc(33.333%-11px)]
         xl:w-[calc(25%-12px)]
         2xl:w-[calc(25%-12px)]
-        bg-linear-to-r ${issue.color} 
-        opacity-90 hover:opacity-100
-        py-4 sm:py-4 lg:py-6 
-        px-4 sm:px-4 lg:px-6 
+        p-3 sm:p-4 lg:p-5
         rounded-xl
-        flex items-center gap-3
         transition-all duration-300
         hover:shadow-lg hover:scale-[1.02]
         group
       `}
     >
-      {issue.icon && (
-        <div className="h-9 w-9 sm:h-10 sm:w-10 rounded-xl bg-white/15 flex items-center justify-center shrink-0 text-white">
-          <i className={`${issue.icon} text-base sm:text-lg`}></i>
+      <div 
+        className={`absolute inset-0 bg-linear-to-r ${issue.color} opacity-90 group-hover:opacity-100 dark:opacity-70 dark:group-hover:opacity-100 transition-opacity duration-300`}
+      />
+      
+      <div className="relative z-10 flex flex-col gap-4 sm:gap-2 h-full justify-between">
+        <div className="flex justify-between items-center w-full">
+          <div className="flex items-center gap-2">
+            {issue.icon && (
+              <i
+                className={`${issue.icon} text-white/90 text-sm sm:text-base`}
+              ></i>
+            )}
+            <span className="text-white/90 text-sm sm:text-base font-medium">
+              {issue.name}
+            </span>
+          </div>
         </div>
-      )}
-
-      <div className="flex-1 min-w-0 pr-1 sm:pr-2">
-        <h2 className="text-base sm:text-base lg:text-lg font-bold text-white truncate dark:text-dark-text">
-          {issue.name}
-        </h2>
-        <p className="text-white/95 text-[10px] sm:text-xs md:text-sm mt-0.5 line-clamp-1 sm:line-clamp-2">
-          {issue.description}
-        </p>
-      </div>
-
-      <div className="flex items-center shrink-0">
-        <span
-          className={`
-            ${issue.color2} 
-            text-white 
-            text-sm sm:text-base lg:text-lg 
-            font-bold 
-            px-2 sm:px-3 
-            py-1 
-            rounded-lg
-            shadow-sm
-            group-hover:scale-110
-            transition-transform
-          `}
-        >
-          {issue.count}
-        </span>
+        <div className="flex items-center gap-3">
+          <h3 className="text-white text-2xl sm:text-3xl lg:text-4xl font-bold">
+            {issue.count}
+          </h3>
+          {issue.trend && (
+            <span 
+              className={`flex items-center gap-0.5 text-[10px] sm:text-xs font-medium px-1.5 py-0.5 rounded ${
+                issue.trend.isPositive 
+                  ? 'bg-green-500/30 text-green-100' 
+                  : 'bg-red-500/30 text-red-100'
+              }`}
+            >
+              {issue.trend.value}% 
+              {issue.trend.isPositive ? (
+                <i className="ri-arrow-right-up-line text-xs sm:text-sm"></i>
+              ) : (
+                <i className="ri-arrow-right-down-line text-xs sm:text-sm"></i>
+              )}
+            </span>
+          )}
+        </div>
       </div>
     </Link>
   );
