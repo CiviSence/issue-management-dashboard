@@ -41,7 +41,7 @@ const IssueAgingCard = ({ issues = [] }) => {
   const overdue = agingData[2].count + agingData[3].count;
 
   return (
-    <div className="bg-white dark:bg-dark-card h-full border border-border p-5 rounded-2xl shadow-xs">
+    <div className="bg-white dark:bg-dark-card h-full  p-5 rounded-2xl shadow-xs">
       <div className="flex items-center justify-between mb-1">
         <h3 className="text-base font-bold text-foreground flex items-center gap-2 dark:text-dark-text">
           <i className="ri-hourglass-line text-amber-500 text-lg"></i>

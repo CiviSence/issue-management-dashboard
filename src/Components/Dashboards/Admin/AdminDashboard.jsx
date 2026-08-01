@@ -359,13 +359,13 @@ const AdminDashboard = () => {
             ) : (
               <div className="w-full mt-3 grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-3 md:gap-3 lg:gap-3">
                 {/* Left: Overall Assignment Counts */}
-                <div className="bg-card border border-border p-5 rounded-2xl shadow-xs">
+                <div className="bg-card  p-5 rounded-2xl shadow-xs">
                   <h3 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
                     <i className="ri-bar-chart-box-line text-[#7E70EB] text-lg"></i>{" "}
                     Overall Assignment Counts
                   </h3>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                    <div className="p-3 bg-muted/30 rounded-xl border border-border/50 text-center">
+                    <div className="p-3 bg-muted/30 rounded-xl /50 text-center">
                       <span className="text-xs text-muted-foreground block font-medium">
                         Total Assignments
                       </span>
@@ -373,7 +373,7 @@ const AdminDashboard = () => {
                         {statsData.total_assignments ?? 0}
                       </span>
                     </div>
-                    <div className="p-3 bg-muted/30 rounded-xl border border-border/50 text-center">
+                    <div className="p-3 bg-muted/30 rounded-xl /50 text-center">
                       <span className="text-xs text-muted-foreground block font-medium">
                         Pending
                       </span>
@@ -381,7 +381,7 @@ const AdminDashboard = () => {
                         {statsData.pending_assignments ?? 0}
                       </span>
                     </div>
-                    <div className="p-3 bg-muted/30 rounded-xl border border-border/50 text-center">
+                    <div className="p-3 bg-muted/30 rounded-xl /50 text-center">
                       <span className="text-xs text-muted-foreground block font-medium">
                         Accepted
                       </span>
@@ -389,7 +389,7 @@ const AdminDashboard = () => {
                         {statsData.accepted_assignments ?? 0}
                       </span>
                     </div>
-                    <div className="p-3 bg-muted/30 rounded-xl border border-border/50 text-center">
+                    <div className="p-3 bg-muted/30 rounded-xl /50 text-center">
                       <span className="text-xs text-muted-foreground block font-medium">
                         Rejected
                       </span>
@@ -397,7 +397,7 @@ const AdminDashboard = () => {
                         {statsData.rejected_assignments ?? 0}
                       </span>
                     </div>
-                    <div className="p-3 bg-muted/30 rounded-xl border border-border/50 text-center">
+                    <div className="p-3 bg-muted/30 rounded-xl /50 text-center">
                       <span className="text-xs text-muted-foreground block font-medium">
                         Completed
                       </span>
@@ -409,13 +409,13 @@ const AdminDashboard = () => {
                 </div>
 
                 {/* Right: Performance & Efficiency Metrics */}
-                <div className="bg-card border border-border p-5 rounded-2xl shadow-xs">
+                <div className="bg-card  p-5 rounded-2xl shadow-xs">
                   <h3 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
                     <i className="ri-pulse-line text-emerald-500 text-lg"></i>{" "}
                     Performance & Efficiency Metrics
                   </h3>
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="p-3 bg-emerald-500/5 rounded-xl border border-emerald-500/10 flex items-center gap-3">
+                    <div className="p-3 bg-emerald-500/5 rounded-xl  flex items-center gap-3">
                       <div className="h-9 w-9 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-600 shrink-0">
                         <i className="ri-percent-line text-lg"></i>
                       </div>
@@ -431,7 +431,7 @@ const AdminDashboard = () => {
                       </div>
                     </div>
 
-                    <div className="p-3 bg-[#6366f1]/5 rounded-xl border border-[#6366f1]/10 flex items-center gap-3">
+                    <div className="p-3 bg-[#6366f1]/5 rounded-xl  flex items-center gap-3">
                       <div className="h-9 w-9 rounded-lg bg-[#6366f1]/10 flex items-center justify-center text-[#6366f1] dark:text-indigo-400 shrink-0">
                         <i className="ri-check-double-line text-lg"></i>
                       </div>
@@ -447,7 +447,7 @@ const AdminDashboard = () => {
                       </div>
                     </div>
 
-                    <div className="p-3 bg-amber-500/5 rounded-xl border border-amber-500/10 flex items-center gap-3">
+                    <div className="p-3 bg-amber-500/5 rounded-xl  flex items-center gap-3">
                       <div className="h-9 w-9 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-600 shrink-0">
                         <i className="ri-speed-up-line text-lg"></i>
                       </div>
@@ -463,7 +463,7 @@ const AdminDashboard = () => {
                       </div>
                     </div>
 
-                    <div className="p-3 bg-rose-500/5 rounded-xl border border-rose-500/10 flex items-center gap-3">
+                    <div className="p-3 bg-rose-500/5 rounded-xl  flex items-center gap-3">
                       <div className="h-9 w-9 rounded-lg bg-rose-500/10 flex items-center justify-center text-rose-600 shrink-0">
                         <i className="ri-time-line text-lg"></i>
                       </div>

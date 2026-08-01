@@ -9,7 +9,7 @@ const ResolutionRateCard = ({ resolved = 0, total = 0 }) => {
   ];
 
   return (
-    <div className="bg-white dark:bg-dark-card border border-border p-5 rounded-2xl shadow-xs flex flex-col items-center">
+    <div className="bg-white dark:bg-dark-card  p-5 rounded-2xl shadow-xs flex flex-col items-center">
       <h3 className="text-base font-bold text-foreground mb-2 flex items-center gap-2 self-start dark:text-dark-text">
         <i className="ri-donut-chart-line text-[#7E70EB] text-lg"></i>
         Resolution Rate

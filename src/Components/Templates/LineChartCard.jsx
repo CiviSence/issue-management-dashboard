@@ -44,7 +44,7 @@ const LineChartCard = () => {
   }, [period]);
 
   return (
-    <div className="bg-white dark:bg-dark-card w-full h-75 border border-border p-5 rounded-2xl shadow-xs">
+    <div className="bg-white dark:bg-dark-card w-full h-75  p-5 rounded-2xl shadow-xs">
       {/* Header */}
       <div className="flex justify-between items-center mb-2">
         <h2 className="text-lg font-semibold text-gray-700 dark:text-dark-text">Issues Trend</h2>

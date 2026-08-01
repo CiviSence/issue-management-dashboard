@@ -39,7 +39,7 @@ const RecentActivityCard = ({ issues = [] }) => {
 
   if (recentIssues.length === 0) {
     return (
-      <div className="bg-white dark:bg-dark-card border border-border p-5 rounded-2xl shadow-xs">
+      <div className="bg-white dark:bg-dark-card  p-5 rounded-2xl shadow-xs">
         <h3 className="text-base font-bold text-foreground flex items-center gap-2 dark:text-dark-text">
           <i className="ri-time-line text-[#7E70EB] text-lg"></i>
           Recent Activity
@@ -53,7 +53,7 @@ const RecentActivityCard = ({ issues = [] }) => {
   }
 
   return (
-    <div className="bg-white dark:bg-dark-card border border-border p-5 rounded-2xl shadow-xs">
+    <div className="bg-white dark:bg-dark-card  p-5 rounded-2xl shadow-xs">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-base font-bold text-foreground flex items-center gap-2 dark:text-dark-text">
           <i className="ri-time-line text-[#7E70EB] text-lg"></i>

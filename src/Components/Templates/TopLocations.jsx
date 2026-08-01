@@ -16,7 +16,7 @@ const getBadgeColor = (count) => {
 
 const TopLocations = () => {
   return (
-    <div className="bg-white dark:bg-dark-card border border-border p-5 rounded-2xl shadow-xsw-full lg:w-[48%] h-[300px] sm:h-[400px]  sm:p-6">
+    <div className="bg-white dark:bg-dark-card  p-5 rounded-2xl shadow-xsw-full lg:w-[48%] h-[300px] sm:h-[400px]  sm:p-6">
       {/* Title */}
       <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-dark-text">
         Top Locations

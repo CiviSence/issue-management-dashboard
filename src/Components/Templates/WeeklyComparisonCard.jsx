@@ -46,7 +46,7 @@ const WeeklyComparisonCard = ({ issues = [] }) => {
     const isPositive = isGoodWhenUp ? isUp : !isUp;
 
     return (
-      <div className="flex-1 p-4 bg-muted/20 rounded-xl border border-border/50">
+      <div className="flex-1 p-4 bg-muted/20 rounded-xl /50">
         <span className="text-xs text-muted-foreground font-medium block mb-2 dark:text-dark-text-secondary">
           {label}
         </span>
@@ -80,7 +80,7 @@ const WeeklyComparisonCard = ({ issues = [] }) => {
   };
 
   return (
-    <div className="bg-white dark:bg-dark-card border border-border p-5 rounded-2xl shadow-xs">
+    <div className="bg-white dark:bg-dark-card  p-5 rounded-2xl shadow-xs">
       <h3 className="text-base font-bold text-foreground mb-4 flex items-center gap-2 dark:text-dark-text">
         <i className="ri-arrow-left-right-line text-[#7E70EB] text-lg"></i>
         Weekly Comparison

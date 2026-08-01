@@ -54,7 +54,7 @@ const CategoryPriorityHeatmap = ({ issues = [] }) => {
   };
 
   return (
-    <div className="bg-white dark:bg-dark-card border border-border p-5 rounded-2xl shadow-xs">
+    <div className="bg-white dark:bg-dark-card  p-5 rounded-2xl shadow-xs">
       <h3 className="text-base font-bold text-foreground mb-4 flex items-center gap-2 dark:text-dark-text">
         <i className="ri-fire-line text-orange-500 text-lg"></i>
         Category × Priority Heatmap
