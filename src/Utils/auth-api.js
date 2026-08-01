@@ -1,5 +1,6 @@
 import axios from "./axios";
 import { unregisterDevice } from "./device-api";
+import Cookies from "js-cookie";
 
 /**
  * Logs in the user with email and password
@@ -108,6 +109,11 @@ export const logoutUser = async () => {
     console.error("Failed to unregister device token on logout", error);
   }
 
+  // Clear theme and force light mode
+  Cookies.remove("theme");
+  window.document.documentElement.classList.remove("dark");
+  window.document.documentElement.classList.add("light");
+
   try {
     await axios.post("/auth/logout");
   } catch (error) {
@@ -185,6 +191,11 @@ export const logoutAllSessions = async () => {
   } catch (error) {
     console.error("Failed to unregister device token on logout all", error);
   }
+
+  // Clear theme and force light mode
+  Cookies.remove("theme");
+  window.document.documentElement.classList.remove("dark");
+  window.document.documentElement.classList.add("light");
 
   try {
     const { data } = await axios.post("/auth/logout-all");
