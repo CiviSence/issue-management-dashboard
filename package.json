@@ -25,6 +25,7 @@
     "dotenv": "^16.4.5",
     "firebase": "^10.14.1",
     "framer-motion": "^12.34.0",
+    "glob": "^13.0.6",
     "js-cookie": "^3.0.5",
     "lucide-react": "^0.563.0",
     "react": "^19.2.0",

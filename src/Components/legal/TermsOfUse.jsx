@@ -53,7 +53,7 @@ const TermsOfUse = () => {
   ];
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-purple-50 via-white to-violet-50/30 font-sans text-slate-800">
+    <div className="min-h-screen w-full bg-gradient-to-br from-purple-50 via-white to-violet-50/30 dark:from-dark-bg dark:via-dark-bg dark:to-dark-bg font-sans text-slate-800 dark:text-dark-text">
       <SEO
         title="Terms of Use"
         description="Read the Terms of Use, institutional guidelines, and user rules for CiviSence smart campus platform."
@@ -67,7 +67,7 @@ const TermsOfUse = () => {
         </div>
         
         <h1 className="text-5xl md:text-5xl font-bold text-slate-900 mb-2">
-          Terms <span className="text-violet-600">of Use</span>
+          Terms <span className="text-violet-600 dark:text-violet-400">of Use</span>
         </h1>
         
         <p className="text-slate-500 mt-4">
@@ -94,7 +94,7 @@ const TermsOfUse = () => {
               return (
                 <div key={index} className="px-6 py-6">
                   <div className="flex items-start gap-4">
-                    <div className="p-2 rounded-lg bg-violet-50 text-violet-600 mt-0.5">
+                    <div className="p-2 rounded-lg bg-violet-50 dark:bg-violet-500/15 text-violet-600 dark:text-violet-400 mt-0.5">
                       <Icon className="w-4 h-4" />
                     </div>
                     <div className="flex-1">
@@ -127,7 +127,7 @@ const TermsOfUse = () => {
             {/* Contact Section */}
             <div className="px-6 py-6 bg-slate-50/50">
               <div className="flex items-start gap-4">
-                <div className="p-2 rounded-lg bg-violet-100 text-violet-600 mt-0.5">
+                <div className="p-2 rounded-lg bg-violet-100 text-violet-600 dark:text-violet-400 mt-0.5">
                   <Mail className="w-4 h-4" />
                 </div>
                 <div className="flex-1">
@@ -139,7 +139,7 @@ const TermsOfUse = () => {
                   </p>
                   <a 
                     href="mailto:civisence@gmail.com"
-                    className="inline-flex items-center gap-2 text-violet-600 font-medium hover:text-violet-700 transition-colors"
+                    className="inline-flex items-center gap-2 text-violet-600 dark:text-violet-400 font-medium hover:text-violet-700 transition-colors"
                   >
                     <Mail className="w-4 h-4" />
                     civisence@gmail.com

@@ -39,12 +39,12 @@ const RecentActivityCard = ({ issues = [] }) => {
 
   if (recentIssues.length === 0) {
     return (
-      <div className="bg-white border border-border p-5 rounded-2xl shadow-xs">
-        <h3 className="text-base font-bold text-foreground flex items-center gap-2">
+      <div className="bg-white dark:bg-dark-card border border-border p-5 rounded-2xl shadow-xs">
+        <h3 className="text-base font-bold text-foreground flex items-center gap-2 dark:text-dark-text">
           <i className="ri-time-line text-[#7E70EB] text-lg"></i>
           Recent Activity
         </h3>
-        <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
+        <div className="flex flex-col items-center justify-center py-12 text-muted-foreground dark:text-dark-text-secondary">
           <i className="ri-inbox-line text-3xl mb-2"></i>
           <span className="text-sm">No recent activity</span>
         </div>
@@ -53,15 +53,15 @@ const RecentActivityCard = ({ issues = [] }) => {
   }
 
   return (
-    <div className="bg-white border border-border p-5 rounded-2xl shadow-xs">
+    <div className="bg-white dark:bg-dark-card border border-border p-5 rounded-2xl shadow-xs">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-base font-bold text-foreground flex items-center gap-2">
+        <h3 className="text-base font-bold text-foreground flex items-center gap-2 dark:text-dark-text">
           <i className="ri-time-line text-[#7E70EB] text-lg"></i>
           Recent Activity
         </h3>
         <Link
           to="/reported-issues"
-          className="text-xs font-bold text-[#6366f1] hover:text-[#5445c9] hover:underline transition-all"
+          className="text-xs font-bold text-[#6366f1] dark:text-indigo-400 hover:text-[#5445c9] hover:underline transition-all"
         >
           View All →
         </Link>
@@ -99,13 +99,13 @@ const RecentActivityCard = ({ issues = [] }) => {
                   </span>
                 </div>
                 <div className="flex items-center gap-2 mt-0.5">
-                  <span className="text-xs text-muted-foreground capitalize">
+                  <span className="text-xs text-muted-foreground capitalize dark:text-dark-text-secondary">
                     {issue.main_category || "General"}
                   </span>
                   {issue.location_building && (
                     <>
                       <span className="text-xs text-border">·</span>
-                      <span className="text-xs text-muted-foreground capitalize">
+                      <span className="text-xs text-muted-foreground capitalize dark:text-dark-text-secondary">
                         {issue.location_building.replace(/-/g, " ")}
                       </span>
                     </>
@@ -120,7 +120,7 @@ const RecentActivityCard = ({ issues = [] }) => {
                 >
                   {priority}
                 </span>
-                <span className="text-[11px] text-muted-foreground">
+                <span className="text-[11px] text-muted-foreground dark:text-dark-text-secondary">
                   {timeAgo(issue.created_at)}
                 </span>
               </div>

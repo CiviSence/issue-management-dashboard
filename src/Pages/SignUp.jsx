@@ -88,7 +88,7 @@ const SignUp = () => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#FAFAFC] flex flex-col">
+    <div className="min-h-screen w-full bg-[#FAFAFC] dark:bg-dark-bg flex flex-col transition-colors">
       <SEO
         title="Create Account"
         description="Register for CiviSence as a staff or admin to manage infrastructure issues and track maintenance workflows."
@@ -103,7 +103,7 @@ const SignUp = () => {
           className="w-full flex min-h-screen"
         >
           {/* Left Side - Branding */}
-          <div className="hidden  md:flex rounded-r-4xl w-1/2 bg-linear-to-br from-[#7E70EB] to-[#5A50A6] p-16 flex-col justify-center text-white relative overflow-hidden">
+          <div className="hidden  md:flex rounded-r-4xl w-1/2 bg-linear-to-br from-[#7E70EB] to-[#5A50A6] dark:from-[#4338ca] dark:to-[#312e81] p-16 flex-col justify-center text-white relative overflow-hidden">
             {/* Abstract Background Elements */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-32 -mt-32" />
             <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full blur-3xl -ml-24 -mb-24" />
@@ -166,25 +166,25 @@ const SignUp = () => {
               duration: 0.8,
               ease: "easeOut",
             }}
-            className="w-full p-5 md:w-1/2 md:p-12 flex flex-col justify-center relative"
+            className="w-full p-5 md:w-1/2 md:p-12 flex flex-col justify-center relative dark:bg-dark-bg"
           >
             <div className="max-w-md mx-auto w-full">
               {/* Mobile Logo */}
               <div className="md:hidden flex flex-col items-center mb-3">
-                <div className="w-16 h-16 p-2 bg-white rounded-2xl mb-3 shadow-xs">
+                <div className="w-16 h-16 p-2 bg-white dark:bg-dark-card rounded-2xl mb-3 shadow-xs">
                   <img
                     src={csmlogo}
                     alt="CiviSence"
                     className="w-full h-full object-contain"
                   />
                 </div>
-                <h2 className="text-2xl font-bold text-gray-900"></h2>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-dark-text"></h2>
               </div>
 
-              <h1 className="mb-2 text-center md:text-left text-3xl md:text-4xl font-bold text-gray-800 tracking-tight">
+              <h1 className="mb-2 text-center md:text-left text-3xl md:text-4xl font-bold text-gray-800 dark:text-dark-text tracking-tight">
                 Sign up
               </h1>
-              <p className="text-gray-400 mb-8 text-center md:text-left text-xs font-medium">
+              <p className="text-gray-400 dark:text-dark-text-secondary mb-8 text-center md:text-left text-xs font-medium">
                 Create your account to start managing issues.
               </p>
 
@@ -194,7 +194,7 @@ const SignUp = () => {
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
                   transition={{ duration: 0.3 }}
-                  className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-r-lg text-red-700 text-sm flex items-center gap-3 text-center md:text-left"
+                  className="mb-6 p-4 bg-red-50 dark:bg-red-500/15 border-l-4 border-red-500 rounded-r-lg text-red-700 dark:text-red-400 text-sm flex items-center gap-3 text-center md:text-left"
                 >
                   <i className="ri-error-warning-line text-lg"></i>
                   {error}
@@ -217,7 +217,7 @@ const SignUp = () => {
                         className={`py-2 px-3 outline-none rounded-lg border text-sm font-medium capitalize transition-all ${
                           formData.userType === type
                             ? "bg-[#7E70EB] text-white border-[#7E70EB]"
-                            : "bg-white text-gray-600 border-gray-200 hover:border-[#7E70EB] hover:text-[#7E70EB]"
+                            : "bg-white dark:bg-dark-card text-gray-600 dark:text-dark-text-secondary border-gray-200 dark:border-dark-border hover:border-[#7E70EB] hover:text-[#7E70EB]"
                         }`}
                       >
                         {type}
@@ -228,7 +228,7 @@ const SignUp = () => {
 
                 {/* Name Row */}
                 <div className=" gap-4">
-                  <label className="text-xs font-bold text-gray-400 ml-1">
+                  <label className="text-xs font-bold text-gray-400 dark:text-dark-text-secondary ml-1">
                     Full Name
                   </label>
                   <input
@@ -238,7 +238,7 @@ const SignUp = () => {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full bg-white placeholder:text-gray-300 text-sm font-medium text-gray-500 px-4 py-2.5 rounded-lg border border-gray-200 focus:ring-2 focus:ring-[#6366f1]/20 outline-none transition-all"
+                    className="w-full bg-white dark:bg-dark-card placeholder:text-gray-300 dark:placeholder:text-dark-text-muted text-sm font-medium text-gray-500 dark:text-dark-text px-4 py-2.5 rounded-lg border border-gray-200 dark:border-dark-border focus:ring-2 focus:ring-[#6366f1]/20 dark:focus:ring-indigo-500/30 outline-none transition-all"
                   />
                 </div>
 
@@ -277,7 +277,7 @@ const SignUp = () => {
                 {/* Password Row */}
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-gray-400 ml-1">
+                    <label className="text-xs font-bold text-gray-400 dark:text-dark-text-secondary ml-1">
                       Password
                     </label>
                     <input
@@ -288,7 +288,7 @@ const SignUp = () => {
                       onChange={handleChange}
                       required
                       minLength={6}
-                      className="w-full bg-white placeholder:text-gray-300 text-sm font-medium text-gray-500 px-4 py-2.5 rounded-lg border border-gray-200 focus:ring-2 focus:ring-[#6366f1]/20 outline-none transition-all"
+                      className="w-full bg-white dark:bg-dark-card placeholder:text-gray-300 dark:placeholder:text-dark-text-muted text-sm font-medium text-gray-500 dark:text-dark-text px-4 py-2.5 rounded-lg border border-gray-200 dark:border-dark-border focus:ring-2 focus:ring-[#6366f1]/20 dark:focus:ring-indigo-500/30 outline-none transition-all"
                     />
                   </div>
                   <div className="space-y-1">
@@ -318,20 +318,20 @@ const SignUp = () => {
                   />
                   <label
                     htmlFor="show-password"
-                    className="ml-2 text-xs font-bold text-gray-400"
+                    className="ml-2 text-xs font-bold text-gray-400 dark:text-dark-text-secondary"
                   >
                     Show password
                   </label>
                 </div>
 
                 {/* Terms Text */}
-                <p className="text-xs text-gray-500 text-center px-4">
+                <p className="text-xs text-gray-500 dark:text-dark-text-secondary text-center px-4">
                   by continuing, you agree to the{" "}
-                  <Link to="/terms" className="text-[#6e5fdb]">
+                  <Link to="/terms" className="text-[#6e5fdb] dark:text-indigo-400">
                     Terms of use
                   </Link>{" "}
                   and{" "}
-                  <Link to="/privacy-policy" className=" text-[#6e5fdb]">
+                  <Link to="/privacy-policy" className=" text-[#6e5fdb] dark:text-indigo-400">
                     Privacy Policy
                   </Link>
                 </p>
@@ -340,7 +340,7 @@ const SignUp = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-[#7E70EB] hover:bg-[#5A50A6] disabled:bg-gray-400 text-white font-bold py-3 rounded-full shadow-lg shadow-indigo-500/30 transition-all transform hover:scale-[1.02] active:scale-[0.98] disabled:transform-none flex items-center justify-center"
+                  className="w-full bg-[#7E70EB] hover:bg-[#5A50A6] dark:bg-indigo-600 dark:hover:bg-indigo-500 disabled:bg-gray-400 dark:disabled:bg-gray-600 text-white font-bold py-3 rounded-full shadow-lg shadow-indigo-500/30 transition-all transform hover:scale-[1.02] active:scale-[0.98] disabled:transform-none flex items-center justify-center"
                 >
                   {loading ? (
                     <svg
@@ -369,11 +369,11 @@ const SignUp = () => {
                 </button>
 
                 {/* Sign In Link */}
-                <p className="text-center text-sm text-gray-500 mt-6">
+                <p className="text-center text-sm text-gray-500 dark:text-dark-text-secondary mt-6">
                   Already have an account?{" "}
                   <Link
                     to="/login"
-                    className="text-[#6366f1] font-semibold hover:underline"
+                    className="text-[#6366f1] dark:text-indigo-400 font-semibold hover:underline"
                   >
                     Sign in
                   </Link>

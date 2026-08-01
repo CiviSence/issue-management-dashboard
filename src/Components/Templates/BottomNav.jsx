@@ -11,12 +11,12 @@ const BottomNav = () => {
     `flex flex-col items-center justify-center gap-1 flex-1 py-2 transition-colors
      ${
        isActive
-         ? "text-indigo-600  bg-[#F3F1FF] rounded-xl"
-         : "text-gray-500 hover:text-indigo-500 hover:bg-indigo-50"
+         ? "text-indigo-600 dark:text-indigo-400 bg-[#F3F1FF] dark:bg-indigo-500/15 rounded-xl"
+         : "text-gray-500 dark:text-dark-text-secondary hover:text-indigo-500 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-dark-elevated"
      }`;
 
   return (
-    <div className="fixed z-50 bottom-0 left-0 right-0 md:hidden bg-white border-t border-gray-200 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
+    <div className="fixed z-50 bottom-0 left-0 right-0 md:hidden bg-white dark:bg-dark-card border-t border-gray-200 dark:border-dark-border shadow-[0_-2px_10px_rgba(0,0,0,0.05)] dark:shadow-[0_-2px_10px_rgba(0,0,0,0.3)] transition-colors">
       <div className="flex items-center justify-around h-16 max-w-md mx-auto">
         {/* Dashboard */}
         <NavLink to="/dashboard" className={navClass}>
@@ -61,7 +61,7 @@ const BottomNav = () => {
                       className={`ri-notification-3-${isActive ? "fill" : "line"} text-xl`}
                     ></i>
                     {unreadCount > 0 && (
-                      <span className="absolute -top-1 -right-1 w-2 h-2 bg-rose-500 rounded-full border border-white" />
+                      <span className="absolute -top-1 -right-1 w-2 h-2 bg-rose-500 rounded-full border border-white dark:border-dark-card" />
                     )}
                   </div>
                   <span className="text-[10px] font-medium">Alerts</span>
@@ -102,7 +102,7 @@ const BottomNav = () => {
                       className={`ri-notification-3-${isActive ? "fill" : "line"} text-xl`}
                     ></i>
                     {unreadCount > 0 && (
-                      <span className="absolute -top-1 -right-1 w-2 h-2 bg-rose-500 rounded-full border border-white" />
+                      <span className="absolute -top-1 -right-1 w-2 h-2 bg-rose-500 rounded-full border border-white dark:border-dark-card" />
                     )}
                   </div>
                   <span className="text-[10px] font-medium">Alerts</span>

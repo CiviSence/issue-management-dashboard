@@ -16,14 +16,14 @@ const getBadgeColor = (count) => {
 
 const TopLocations = () => {
   return (
-    <div className="bg-white border border-border p-5 rounded-2xl shadow-xsw-full lg:w-[48%] h-[300px] sm:h-[400px]  sm:p-6">
+    <div className="bg-white dark:bg-dark-card border border-border p-5 rounded-2xl shadow-xsw-full lg:w-[48%] h-[300px] sm:h-[400px]  sm:p-6">
       {/* Title */}
-      <h2 className="text-lg sm:text-xl font-semibold text-gray-900">
+      <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-dark-text">
         Top Locations
       </h2>
 
       {/* Header Row */}
-      <div className="flex justify-between text-m text-gray-400 mt-4 pb-2 border-b">
+      <div className="flex justify-between text-m text-gray-400 dark:text-dark-text-muted mt-4 pb-2 border-b">
         <span>Location</span>
         <span>Issues</span>
       </div>
@@ -35,7 +35,7 @@ const TopLocations = () => {
             key={index}
             className="flex items-center justify-between"
           >
-            <p className="text-sm sm:text-base font-medium text-gray-800">
+            <p className="text-sm sm:text-base font-medium text-gray-800 dark:text-dark-text">
               {item.name}
             </p>
 

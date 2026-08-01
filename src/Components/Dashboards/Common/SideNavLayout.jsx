@@ -17,8 +17,8 @@ export const NavItem = ({ to, icon, iconActive, label, showBadge }) => {
       className={({ isActive }) =>
         `flex items-center justify-center lg:justify-start rounded-lg px-4 py-3 transition relative ${
           isActive
-            ? "bg-white/95 text-[#6366f1] shadow-lg font-bold"
-            : "text-white/80 hover:text-white hover:bg-white/10 backdrop-blur-sm"
+            ? "bg-white/95 text-[#6366f1] dark:bg-indigo-500/15 dark:text-indigo-400 shadow-lg dark:shadow-none font-bold"
+            : "text-white/80 hover:text-white hover:bg-white/10 dark:text-dark-text-secondary dark:hover:text-dark-text dark:hover:bg-dark-elevated backdrop-blur-sm"
         }`
       }
     >
@@ -76,19 +76,19 @@ const SideNavLayout = ({ children }) => {
 
   return (
     <div
-      className="bg-linear-to-br from-[#7E70EB] to-[#5A50A6]
+      className="bg-linear-to-br from-[#7E70EB] to-[#5A50A6] dark:bg-none dark:bg-dark-card dark:border-r dark:border-dark-border
         hidden md:flex flex-col justify-between
         w-20 lg:w-[17vw]
         shrink-0
         h-screen overflow-x-visible relative z-40
         p-3 lg:p-3 xl:p-5
-        text-white"
+        text-white transition-colors"
     >
       <div className="w-full flex flex-col items-center lg:items-start mt-3">
         {/* Logo */}
           <Link to="/" className="flex items-center gap-1">
             <img src={csmLogo} alt="CiviSence Logo" className="h-10 lg:h-12 w-auto object-contain" />
-            <span className="hidden lg:inline text-sm  lg:text-xl xl:text-2xl font-semibold">
+            <span className="hidden lg:inline text-sm  lg:text-xl xl:text-2xl font-semibold dark:text-dark-text">
               CiviSence
             </span>
           </Link>
@@ -101,21 +101,21 @@ const SideNavLayout = ({ children }) => {
         {/* Profile button */}
         <div
           onMouseEnter={() => setShowProfileMenu((prev) => !prev)}
-          className="flex items-center justify-center lg:justify-start gap-3 px-2 py-2 rounded-lg cursor-pointer hover:bg-white/10 backdrop-blur-sm transition-all border border-transparent hover:border-white/20"
+          className="flex items-center justify-center lg:justify-start gap-3 px-2 py-2 rounded-lg cursor-pointer hover:bg-white/10 dark:hover:bg-dark-elevated backdrop-blur-sm transition-all border border-transparent hover:border-white/20 dark:hover:border-dark-border"
         >
           <div className="h-10 w-10 rounded-full  shrink-0 flex items-center justify-center">
             <img
               src={profileData?.avatar_url || getDefaultAvatar(profileData?.gender)}
               alt="Profile"
-              className="h-9 w-9 rounded-full border border-black object-cover"
+              className="h-9 w-9 rounded-full border border-black dark:border-dark-border object-cover"
             />
           </div>
 
           <div className="hidden lg:block">
-            <p className="text-s font-medium truncate max-w-35">
+            <p className="text-s font-medium truncate max-w-35 dark:text-dark-text">
               {profileData?.name}
             </p>
-            <p className="text-sm text-indigo-100/80 font-medium">
+            <p className="text-sm text-indigo-100/80 dark:text-dark-text-muted font-medium">
               {profileData?.role || "user"}
             </p>
           </div>
@@ -123,7 +123,7 @@ const SideNavLayout = ({ children }) => {
 
         {/* Dropdown */}
         {showProfileMenu && (
-          <div className="absolute bottom-14 left-0 w-64 bg-white text-[#2f2f2f] rounded-xl shadow-xl p-2 z-50">
+          <div className="absolute bottom-14 left-0 w-64 bg-white dark:bg-dark-card text-[#2f2f2f] dark:text-dark-text rounded-xl shadow-xl dark:shadow-2xl dark:shadow-black/40 p-2 z-50 border border-transparent dark:border-dark-border">
             {/* Header */}
             <div className="flex items-center gap-3 px-3 py-2">
               <div className="h-10 w-10 rounded-full shrink-0 flex items-center justify-center">
@@ -135,17 +135,17 @@ const SideNavLayout = ({ children }) => {
               </div>
               <div>
                 <p className="text-sm font-medium">{profileData?.name}</p>
-                <p className="text-xs text-gray-400">{profileData?.email}</p>
+                <p className="text-xs text-gray-400 dark:text-dark-text-muted">{profileData?.email}</p>
               </div>
             </div>
 
-            <hr className="my-2 border-gray-300" />
+            <hr className="my-2 border-gray-300 dark:border-dark-border" />
 
             <div className="py-1 space-y-1">
               <Link
                 to="/profile"
                 onClick={() => setShowProfileMenu(false)}
-                className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-violet-50 hover:text-violet-600 text-sm text-gray-700 transition-colors"
+                className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-violet-50 dark:hover:bg-violet-500/15 hover:text-violet-600 dark:hover:text-violet-400 text-sm text-gray-700 dark:text-dark-text-secondary transition-colors"
               >
                 <i className="ri-user-3-line text-lg w-5 text-center"></i> View Profile
               </Link>
@@ -179,13 +179,13 @@ const SideNavLayout = ({ children }) => {
 
       {showLogoutConfirm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm">
-            <h3 className="text-xl font-bold mb-4 text-gray-800 text-center">
+          <div className="bg-white dark:bg-dark-card rounded-lg shadow-xl p-6 w-full max-w-sm border border-transparent dark:border-dark-border">
+            <h3 className="text-xl font-bold mb-4 text-gray-800 dark:text-dark-text text-center">
               Confirm Logout
             </h3>
 
             <div className="space-y-3 mb-6">
-              <label className="flex items-center gap-3 p-3 rounded-lg border border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors has-checked:border-violet-600 has-checked:bg-violet-50">
+              <label className="flex items-center gap-3 p-3 rounded-lg border border-gray-100 dark:border-dark-border cursor-pointer hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated transition-colors has-checked:border-violet-600 has-checked:bg-violet-50 dark:has-checked:bg-violet-500/15">
                 <input
                   type="radio"
                   name="logoutType"
@@ -195,16 +195,16 @@ const SideNavLayout = ({ children }) => {
                   className="w-4 h-4 text-violet-600 focus:ring-violet-500"
                 />
                 <div className="flex-1">
-                  <p className="text-sm font-semibold text-gray-800 shadow-none">
+                  <p className="text-sm font-semibold text-gray-800 dark:text-dark-text shadow-none">
                     This device only
                   </p>
-                  <p className="text-xs text-gray-500 shadow-none">
+                  <p className="text-xs text-gray-500 dark:text-dark-text-secondary shadow-none">
                     Logout from your current session
                   </p>
                 </div>
               </label>
 
-              <label className="flex items-center gap-3 p-3 rounded-lg border border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors has-checked:border-red-600 has-checked:bg-red-50">
+              <label className="flex items-center gap-3 p-3 rounded-lg border border-gray-100 dark:border-dark-border cursor-pointer hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated transition-colors has-checked:border-red-600 has-checked:bg-red-50 dark:has-checked:bg-red-500/15">
                 <input
                   type="radio"
                   name="logoutType"
@@ -217,14 +217,14 @@ const SideNavLayout = ({ children }) => {
                   <p className="text-sm font-semibold  shadow-none text-red-600">
                     All devices
                   </p>
-                  <p className="text-xs text-gray-500 shadow-none">
+                  <p className="text-xs text-gray-500 dark:text-dark-text-secondary shadow-none">
                     Logout across all active sessions
                   </p>
                 </div>
               </label>
             </div>
 
-            <p className="mb-2 text-sm text-gray-600 text-center">
+            <p className="mb-2 text-sm text-gray-600 dark:text-dark-text-secondary text-center">
               Type <span className="font-bold text-red-500">logout</span> to
               confirm.
             </p>
@@ -232,7 +232,7 @@ const SideNavLayout = ({ children }) => {
               type="text"
               value={logoutInput}
               onChange={(e) => setLogoutInput(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2.5 mb-6 text-center outline-none focus:border-violet-600 transition-all font-medium text-red-500"
+              className="w-full border border-gray-300 dark:border-dark-border dark:bg-dark-elevated rounded-lg px-3 py-2.5 mb-6 text-center outline-none focus:border-violet-600 transition-all font-medium text-red-500"
               placeholder="Confirm logout"
             />
 
@@ -244,7 +244,7 @@ const SideNavLayout = ({ children }) => {
                   setLogoutType("current");
                 }}
                 disabled={isLoggingOut}
-                className="flex-1 px-4 py-2.5 text-gray-600 font-medium hover:bg-gray-100 rounded-lg transition-colors border border-gray-200"
+                className="flex-1 px-4 py-2.5 text-gray-600 dark:text-dark-text-secondary font-medium hover:bg-gray-100 dark:hover:bg-dark-elevated rounded-lg transition-colors border border-gray-200 dark:border-dark-border"
               >
                 Cancel
               </button>

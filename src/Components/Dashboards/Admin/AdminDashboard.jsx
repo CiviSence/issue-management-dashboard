@@ -40,7 +40,7 @@ const ChartSkeleton = ({ height = 260 }) => (
 );
 
 const UserSectionSkeleton = () => (
-  <div className="bg-[#F0EEFF] p-4 mt-1 rounded-2xl">
+  <div className="bg-[#F0EEFF] dark:bg-dark-card p-4 mt-1 rounded-2xl">
     <Skeleton height={200} borderRadius={12} />
   </div>
 );
@@ -204,7 +204,7 @@ const AdminDashboard = () => {
       <BottomNav />
 
       <div
-        className="w-full lg:w-[calc(100vw-15vw)] bg-[#F8F9FF] overflow-x-hidden overflow-y-auto h-screen pb-20"
+        className="w-full lg:w-[calc(100vw-15vw)] bg-[#F8F9FF] dark:bg-dark-bg overflow-x-hidden overflow-y-auto h-screen pb-20"
         id="adminDashboardScroll"
       >
         <TopBar title="Main Dashboard" />
@@ -214,7 +214,7 @@ const AdminDashboard = () => {
         >
           <div className="p-2 lg:p-4 w-full">
             {/* ========== 1. STATUS CARDS — Instant overview ========== */}
-            <div className="w-full md:mt-4 gap-1.5 sm:gap-2 md:gap-3 flex flex-wrap justify-center md:bg-[#F3F1FF] p-2 sm:p-2 md:p-3 lg:p-4 rounded-2xl ">
+            <div className="w-full md:mt-4 gap-1.5 sm:gap-2 md:gap-3 flex flex-wrap justify-center md:bg-[#F3F1FF] dark:md:bg-dark-card dark:bg-dark-card p-2 sm:p-2 md:p-3 lg:p-4 rounded-2xl ">
               {loadingStats ? (
                 <>
                   <CardSkeleton />
@@ -236,7 +236,7 @@ const AdminDashboard = () => {
           Issue Breakdown
         </h1> */}
 
-            <div className="md:bg-[#F3F1FF] p-2 sm:p-2 md:p-3 lg:p-4 rounded-2xl">
+            <div className="md:bg-[#F3F1FF] dark:md:bg-dark-card dark:bg-dark-card p-2 sm:p-2 md:p-3 lg:p-4 rounded-2xl">
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
                 {loadingIssues ? (
                   <>
@@ -278,7 +278,7 @@ const AdminDashboard = () => {
           Health Pulse
         </h1> */}
 
-            <div className="md:bg-[#F3F1FF] p-2 sm:p-2 md:p-3 lg:p-4 rounded-2xl">
+            <div className="md:bg-[#F3F1FF] dark:md:bg-dark-card dark:bg-dark-card p-2 sm:p-2 md:p-3 lg:p-4 rounded-2xl">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {loadingIssues || loadingStats ? (
                   <>
@@ -307,7 +307,7 @@ const AdminDashboard = () => {
           Needs Attention
         </h1> */}
 
-            <div className="md:bg-[#F3F1FF] p-2 sm:p-2 md:p-3 lg:p-4 rounded-2xl">
+            <div className="md:bg-[#F3F1FF] dark:md:bg-dark-card dark:bg-dark-card p-2 sm:p-2 md:p-3 lg:p-4 rounded-2xl">
               <div className="grid grid-cols-1 lg:grid-cols-5 gap-3">
                 {loadingIssues ? (
                   <>
@@ -341,7 +341,7 @@ const AdminDashboard = () => {
           Issue Trends
         </h1> */}
 
-            <div className="md:bg-[#F3F1FF] p-2 sm:p-2 md:p-3 lg:p-4 rounded-2xl">
+            <div className="md:bg-[#F3F1FF] dark:md:bg-dark-card dark:bg-dark-card p-2 sm:p-2 md:p-3 lg:p-4 rounded-2xl">
               {loadingIssues ? (
                 <ChartSkeleton height={280} />
               ) : (
@@ -357,12 +357,12 @@ const AdminDashboard = () => {
         </h1> */}
 
             {loadingStatsData ? (
-              <div className="w-full p-2 sm:p-2 md:p-3 lg:p-6 grid grid-cols-1 lg:grid-cols-2 gap-1 sm:gap-2 md:gap-3 lg:gap-6 md:bg-[#F3F1FF] rounded-2xl ">
+              <div className="w-full p-2 sm:p-2 md:p-3 lg:p-6 grid grid-cols-1 lg:grid-cols-2 gap-1 sm:gap-2 md:gap-3 lg:gap-6 md:bg-[#F3F1FF] dark:md:bg-dark-card dark:bg-dark-card rounded-2xl ">
                 <Skeleton height={200} borderRadius={16} />
                 <Skeleton height={200} borderRadius={16} />
               </div>
             ) : (
-              <div className="w-full p-2 sm:p-2 md:p-3 lg:p-4 grid grid-cols-1 lg:grid-cols-2 gap-1 sm:gap-2 md:gap-3 lg:gap-6 md:bg-[#F3F1FF] rounded-2xl ">
+              <div className="w-full p-2 sm:p-2 md:p-3 lg:p-4 grid grid-cols-1 lg:grid-cols-2 gap-1 sm:gap-2 md:gap-3 lg:gap-6 md:bg-[#F3F1FF] dark:md:bg-dark-card dark:bg-dark-card rounded-2xl ">
                 {/* Left: Overall Assignment Counts */}
                 <div className="bg-card border border-border p-5 rounded-2xl shadow-xs">
                   <h3 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
@@ -437,7 +437,7 @@ const AdminDashboard = () => {
                     </div>
 
                     <div className="p-3 bg-[#6366f1]/5 rounded-xl border border-[#6366f1]/10 flex items-center gap-3">
-                      <div className="h-9 w-9 rounded-lg bg-[#6366f1]/10 flex items-center justify-center text-[#6366f1] shrink-0">
+                      <div className="h-9 w-9 rounded-lg bg-[#6366f1]/10 flex items-center justify-center text-[#6366f1] dark:text-indigo-400 shrink-0">
                         <i className="ri-check-double-line text-lg"></i>
                       </div>
                       <div>
@@ -493,7 +493,7 @@ const AdminDashboard = () => {
               Top Reporters
             </h1>
 
-            <div className="w-full md:mt-2 gap-1 sm:gap-2 md:gap-3 flex flex-wrap  md:bg-[#F3F1FF] p-2 sm:p-2 md:p-3 lg:p-4 rounded-2xl">
+            <div className="w-full md:mt-2 gap-1 sm:gap-2 md:gap-3 flex flex-wrap  md:bg-[#F3F1FF] dark:md:bg-dark-card dark:bg-dark-card p-2 sm:p-2 md:p-3 lg:p-4 rounded-2xl">
               {loadingStats ? <UserSectionSkeleton /> : <UserCard limit={3} />}
 
               <div className="flex justify-end mt-3">

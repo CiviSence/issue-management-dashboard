@@ -54,8 +54,8 @@ const CategoryPriorityHeatmap = ({ issues = [] }) => {
   };
 
   return (
-    <div className="bg-white border border-border p-5 rounded-2xl shadow-xs">
-      <h3 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
+    <div className="bg-white dark:bg-dark-card border border-border p-5 rounded-2xl shadow-xs">
+      <h3 className="text-base font-bold text-foreground mb-4 flex items-center gap-2 dark:text-dark-text">
         <i className="ri-fire-line text-orange-500 text-lg"></i>
         Category × Priority Heatmap
       </h3>
@@ -64,7 +64,7 @@ const CategoryPriorityHeatmap = ({ issues = [] }) => {
         <table className="w-full border-separate" style={{ borderSpacing: "4px" }}>
           <thead>
             <tr>
-              <th className="text-xs text-muted-foreground font-medium text-left pr-3 pb-2"></th>
+              <th className="text-xs text-muted-foreground font-medium text-left pr-3 pb-2 dark:text-dark-text-secondary"></th>
               {PRIORITIES.map((pri) => (
                 <th
                   key={pri}
@@ -79,7 +79,7 @@ const CategoryPriorityHeatmap = ({ issues = [] }) => {
           <tbody>
             {CATEGORIES.map((cat) => (
               <tr key={cat}>
-                <td className="text-xs text-muted-foreground font-medium pr-3 py-0.5 whitespace-nowrap">
+                <td className="text-xs text-muted-foreground font-medium pr-3 py-0.5 whitespace-nowrap dark:text-dark-text-secondary">
                   {CATEGORY_LABELS[cat]}
                 </td>
                 {PRIORITIES.map((pri) => {
@@ -129,7 +129,7 @@ const CategoryPriorityHeatmap = ({ issues = [] }) => {
 
       {/* Legend */}
       <div className="flex items-center gap-1.5 mt-4 justify-center">
-        <span className="text-xs text-muted-foreground">Low</span>
+        <span className="text-xs text-muted-foreground dark:text-dark-text-secondary">Low</span>
         <div className="flex gap-0.5">
           {[0.1, 0.3, 0.5, 0.7, 0.9].map((opacity) => (
             <div
@@ -139,7 +139,7 @@ const CategoryPriorityHeatmap = ({ issues = [] }) => {
             />
           ))}
         </div>
-        <span className="text-xs text-muted-foreground">High</span>
+        <span className="text-xs text-muted-foreground dark:text-dark-text-secondary">High</span>
       </div>
     </div>
   );

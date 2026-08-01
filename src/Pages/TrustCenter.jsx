@@ -138,16 +138,16 @@ const TrustCenter = () => {
             />
             <StudentSideNav />
             <StudentBottomNav />
-            <div className="w-full p-4 lg:p-8 lg:w-[calc(100vw-15vw)] bg-[#F0EEFF] overflow-y-auto h-screen">
+            <div className="w-full p-4 lg:p-8 lg:w-[calc(100vw-15vw)] bg-[#F0EEFF] dark:bg-dark-card overflow-y-auto h-screen">
                 <div className="max-w-4xl mx-auto pb-24 lg:pb-8">
                     <header className="mb-8 font-primary">
                         <div className="flex justify-between items-start">
                             <div>
-                                <h1 className="text-3xl font-bold text-gray-900 mb-2">Trust Center</h1>
-                                <p className="text-gray-600">Secure your community status and manage identity proofs.</p>
+                                <h1 className="text-3xl font-bold text-gray-900 dark:text-dark-text mb-2">Trust Center</h1>
+                                <p className="text-gray-600 dark:text-dark-text-secondary">Secure your community status and manage identity proofs.</p>
                             </div>
                             <div className="bg-white px-4 py-2 rounded-2xl shadow-sm border border-violet-100 hidden sm:block">
-                                <p className="text-[10px] font-black uppercase tracking-widest text-violet-500">Reputation</p>
+                                <p className="text-[10px] font-black uppercase tracking-widest text-violet-500 dark:text-violet-400">Reputation</p>
                                 <p className="text-xl font-black text-violet-900">{stats?.vouch_count || 0} Vouches</p>
                             </div>
                         </div>
@@ -159,24 +159,24 @@ const TrustCenter = () => {
                         const trustPercent = Math.min((s.vouch_count || 0) * 33, 100);
                         return (
                             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                                <div className="bg-white p-4 rounded-3xl border border-gray-100 shadow-sm">
-                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Status</p>
+                                <div className="bg-white p-4 rounded-3xl border border-gray-100 dark:border-dark-border/50 shadow-sm">
+                                    <p className="text-[10px] font-black text-gray-400 dark:text-dark-text-muted uppercase tracking-widest mb-1">Status</p>
                                     <p className={`text-sm font-bold uppercase ${s.status === 'verified' ? 'text-emerald-600' : 'text-amber-500'}`}>
                                         {s.status || "Unverified"}
                                     </p>
                                 </div>
-                                <div className="bg-white p-4 rounded-3xl border border-gray-100 shadow-sm">
-                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Vouch Count</p>
-                                    <p className="text-sm font-bold text-gray-900">{s.vouch_count || 0} / 3</p>
+                                <div className="bg-white p-4 rounded-3xl border border-gray-100 dark:border-dark-border/50 shadow-sm">
+                                    <p className="text-[10px] font-black text-gray-400 dark:text-dark-text-muted uppercase tracking-widest mb-1">Vouch Count</p>
+                                    <p className="text-sm font-bold text-gray-900 dark:text-dark-text">{s.vouch_count || 0} / 3</p>
                                 </div>
-                                <div className="bg-white p-4 rounded-3xl border border-gray-100 shadow-sm">
-                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Daily Limit</p>
-                                    <p className="text-sm font-bold text-gray-900">{s.daily_vouch_limit || 0} left</p>
+                                <div className="bg-white p-4 rounded-3xl border border-gray-100 dark:border-dark-border/50 shadow-sm">
+                                    <p className="text-[10px] font-black text-gray-400 dark:text-dark-text-muted uppercase tracking-widest mb-1">Daily Limit</p>
+                                    <p className="text-sm font-bold text-gray-900 dark:text-dark-text">{s.daily_vouch_limit || 0} left</p>
                                 </div>
-                                <div className="bg-white p-4 rounded-3xl border border-gray-100 shadow-sm">
-                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Trust Score</p>
-                                    <p className="text-sm font-bold text-violet-600 mb-2">{trustPercent}%</p>
-                                    <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
+                                <div className="bg-white p-4 rounded-3xl border border-gray-100 dark:border-dark-border/50 shadow-sm">
+                                    <p className="text-[10px] font-black text-gray-400 dark:text-dark-text-muted uppercase tracking-widest mb-1">Trust Score</p>
+                                    <p className="text-sm font-bold text-violet-600 dark:text-violet-400 mb-2">{trustPercent}%</p>
+                                    <div className="w-full bg-gray-100 dark:bg-dark-elevated rounded-full h-2 overflow-hidden">
                                         <div
                                             className="h-full rounded-full transition-all duration-500 ease-out"
                                             style={{
@@ -196,15 +196,15 @@ const TrustCenter = () => {
                     <div className="flex gap-2 mb-8 bg-white/50 p-1.5 rounded-2xl w-fit border border-white/20 backdrop-blur-sm">
                         <button
                             onClick={() => setActiveTab("apply")}
-                            className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${activeTab === 'apply' ? 'bg-violet-600 text-white shadow-lg' : 'text-gray-500 hover:bg-white'}`}
+                            className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${activeTab === 'apply' ? 'bg-violet-600 text-white shadow-lg' : 'text-gray-500 dark:text-dark-text-secondary hover:bg-white'}`}
                         >
                             Apply for Verification
                         </button>
                         <button
                             onClick={() => setActiveTab("requests")}
-                            className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${activeTab === 'requests' ? 'bg-violet-600 text-white shadow-lg' : 'text-gray-500 hover:bg-white'}`}
+                            className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${activeTab === 'requests' ? 'bg-violet-600 text-white shadow-lg' : 'text-gray-500 dark:text-dark-text-secondary hover:bg-white'}`}
                         >
-                            Manage Requests {receivedRequests.length > 0 && <span className="ml-1 bg-white text-violet-600 px-1.5 rounded-md text-[10px]">{receivedRequests.length}</span>}
+                            Manage Requests {receivedRequests.length > 0 && <span className="ml-1 bg-white text-violet-600 dark:text-violet-400 px-1.5 rounded-md text-[10px]">{receivedRequests.length}</span>}
                         </button>
                     </div>
 
@@ -217,12 +217,12 @@ const TrustCenter = () => {
                                 exit={{ opacity: 0, y: -10 }}
                                 className="grid grid-cols-1 md:grid-cols-2 gap-6"
                             >
-                                <section className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+                                <section className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-dark-border/50">
                                     <div className="flex items-center gap-3 mb-4">
                                         <div className="p-3 bg-blue-50 text-blue-600 rounded-2xl">
                                             <i className="ri-group-line text-2xl" />
                                         </div>
-                                        <h2 className="text-xl font-bold text-gray-900">Peer Verification</h2>
+                                        <h2 className="text-xl font-bold text-gray-900 dark:text-dark-text">Peer Verification</h2>
                                     </div>
                                     <div className="flex gap-2 mb-6">
                                         <input
@@ -230,7 +230,7 @@ const TrustCenter = () => {
                                             placeholder="Search Neighbors by Reg. Number, Name or Email..."
                                             value={searchTerm}
                                             onChange={(e) => setSearchTerm(e.target.value)}
-                                            className="flex-1 bg-gray-50 border border-gray-100 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-blue-400"
+                                            className="flex-1 bg-gray-50 border border-gray-100 dark:border-dark-border/50 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-blue-400"
                                         />
                                         <button
                                             onClick={handleSearch}
@@ -242,14 +242,14 @@ const TrustCenter = () => {
                                     </div>
                                     <div className="space-y-3 max-h-84 overflow-y-auto pr-1">
                                         {neighbors.map(user => (
-                                            <div key={user.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-2xl border border-gray-100">
+                                            <div key={user.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-2xl border border-gray-100 dark:border-dark-border/50">
                                                 <div className="flex items-center gap-3">
                                                     <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold uppercase">
                                                         {user.name.charAt(0)}
                                                     </div>
                                                     <div>
-                                                        <p className="text-sm font-semibold text-gray-900">{user.name}</p>
-                                                        <p className="text-[10px] text-gray-400">{user.registration_number || user.email}</p>
+                                                        <p className="text-sm font-semibold text-gray-900 dark:text-dark-text">{user.name}</p>
+                                                        <p className="text-[10px] text-gray-400 dark:text-dark-text-muted">{user.registration_number || user.email}</p>
                                                     </div>
                                                 </div>
                                                 <button
@@ -262,30 +262,30 @@ const TrustCenter = () => {
                                             </div>
                                         ))}
                                         {neighbors.length === 0 && !loadingSearch && (
-                                            <p className="text-center text-gray-400 text-xs py-8">Search to find neighbors who can vouch for you</p>
+                                            <p className="text-center text-gray-400 dark:text-dark-text-muted text-xs py-8">Search to find neighbors who can vouch for you</p>
                                         )}
                                     </div>
                                 </section>
 
-                                <section className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+                                <section className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-dark-border/50">
                                     <div className="flex items-center gap-3 mb-4">
                                         <div className="p-3 bg-purple-50 text-purple-600 rounded-2xl">
                                             <i className="ri-fingerprint-line text-2xl" />
                                         </div>
-                                        <h2 className="text-xl font-bold text-gray-900">Official Verification</h2>
+                                        <h2 className="text-xl font-bold text-gray-900 dark:text-dark-text">Official Verification</h2>
                                     </div>
                                     <div className="space-y-4">
                                         <div>
-                                            <label className="block text-xs font-semibold text-gray-400 mb-1.5 uppercase tracking-wider">Motivation / Message</label>
+                                            <label className="block text-xs font-semibold text-gray-400 dark:text-dark-text-muted mb-1.5 uppercase tracking-wider">Motivation / Message</label>
                                             <textarea
                                                 value={message}
                                                 onChange={(e) => setMessage(e.target.value)}
                                                 placeholder="Briefly explain why you need verification..."
-                                                className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-purple-400 resize-none h-24"
+                                                className="w-full bg-gray-50 border border-gray-100 dark:border-dark-border/50 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-purple-400 resize-none h-24"
                                             />
                                         </div>
                                         <div>
-                                            <label className="block text-xs font-semibold text-gray-400 mb-1.5 uppercase tracking-wider">Upload Proof (ID/Document)</label>
+                                            <label className="block text-xs font-semibold text-gray-400 dark:text-dark-text-muted mb-1.5 uppercase tracking-wider">Upload Proof (ID/Document)</label>
                                             <div className="relative group">
                                                 <input
                                                     type="file"
@@ -293,9 +293,9 @@ const TrustCenter = () => {
                                                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                                                     accept="image/*,.pdf"
                                                 />
-                                                <div className={`w-full border-2 border-dashed rounded-2xl p-6 flex flex-col items-center justify-center transition-all ${selectedFile ? "border-purple-500 bg-purple-50" : "border-gray-200 group-hover:border-purple-300"}`}>
-                                                    <i className={`ri-upload-cloud-2-line text-3xl mb-2 ${selectedFile ? "text-purple-600" : "text-gray-400"}`} />
-                                                    <p className={`text-xs font-medium ${selectedFile ? "text-purple-700" : "text-gray-500 text-center"}`}>
+                                                <div className={`w-full border-2 border-dashed rounded-2xl p-6 flex flex-col items-center justify-center transition-all ${selectedFile ? "border-purple-500 bg-purple-50" : "border-gray-200 dark:border-dark-border group-hover:border-purple-300"}`}>
+                                                    <i className={`ri-upload-cloud-2-line text-3xl mb-2 ${selectedFile ? "text-purple-600" : "text-gray-400 dark:text-dark-text-muted"}`} />
+                                                    <p className={`text-xs font-medium ${selectedFile ? "text-purple-700" : "text-gray-500 dark:text-dark-text-secondary text-center"}`}>
                                                         {selectedFile ? selectedFile.name : "Click or drag to upload document"}
                                                     </p>
                                                     {selectedFile && (
@@ -321,20 +321,20 @@ const TrustCenter = () => {
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -10 }}
-                                className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 min-h-[400px]"
+                                className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-dark-border/50 min-h-[400px]"
                             >
                                 <div className="flex items-center justify-between mb-6">
                                     <div className="flex gap-4">
                                         <button
                                             onClick={() => setRequestTab("received")}
-                                            className={`text-sm font-bold relative pb-1 transition-colors ${requestTab === 'received' ? 'text-violet-600' : 'text-gray-400 hover:text-gray-600'}`}
+                                            className={`text-sm font-bold relative pb-1 transition-colors ${requestTab === 'received' ? 'text-violet-600 dark:text-violet-400' : 'text-gray-400 dark:text-dark-text-muted hover:text-gray-600 dark:text-dark-text-secondary'}`}
                                         >
                                             Received
                                             {requestTab === 'received' && <motion.div layoutId="reqUnderline" className="absolute bottom-0 left-0 right-0 h-0.5 bg-violet-600" />}
                                         </button>
                                         <button
                                             onClick={() => setRequestTab("sent")}
-                                            className={`text-sm font-bold relative pb-1 transition-colors ${requestTab === 'sent' ? 'text-violet-600' : 'text-gray-400 hover:text-gray-600'}`}
+                                            className={`text-sm font-bold relative pb-1 transition-colors ${requestTab === 'sent' ? 'text-violet-600 dark:text-violet-400' : 'text-gray-400 dark:text-dark-text-muted hover:text-gray-600 dark:text-dark-text-secondary'}`}
                                         >
                                             My Applications
                                             {requestTab === 'sent' && <motion.div layoutId="reqUnderline" className="absolute bottom-0 left-0 right-0 h-0.5 bg-violet-600" />}
@@ -342,7 +342,7 @@ const TrustCenter = () => {
                                     </div>
                                     <button
                                         onClick={fetchData}
-                                        className="p-2 hover:bg-gray-100 rounded-xl transition-colors text-gray-400"
+                                        className="p-2 hover:bg-gray-100 dark:hover:bg-dark-elevated dark:bg-dark-elevated rounded-xl transition-colors text-gray-400 dark:text-dark-text-muted"
                                     >
                                         <i className={`ri-refresh-line ${loadingData ? 'animate-spin' : ''}`} />
                                     </button>
@@ -356,16 +356,16 @@ const TrustCenter = () => {
                                         </div>
                                     ) : (requestTab === 'received' ? receivedRequests : sentRequests).length > 0 ? (
                                         (requestTab === 'received' ? receivedRequests : sentRequests).map(req => (
-                                            <div key={req.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-gray-50 rounded-2xl border border-gray-100 gap-4">
+                                            <div key={req.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-gray-50 rounded-2xl border border-gray-100 dark:border-dark-border/50 gap-4">
                                                 <div className="flex items-center gap-4">
-                                                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black text-lg uppercase shadow-sm ${requestTab === 'received' ? 'bg-gradient-to-br from-violet-100 to-indigo-100 text-violet-600' : 'bg-gradient-to-br from-blue-100 to-cyan-100 text-blue-600'}`}>
+                                                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black text-lg uppercase shadow-sm ${requestTab === 'received' ? 'bg-gradient-to-br from-violet-100 to-indigo-100 text-violet-600 dark:text-violet-400' : 'bg-gradient-to-br from-blue-100 to-cyan-100 text-blue-600'}`}>
                                                         {((requestTab === 'received' ? req.requester_name : req.target_user_name) || "U").charAt(0)}
                                                     </div>
                                                     <div>
-                                                        <h3 className="text-sm font-bold text-gray-900">{requestTab === 'received' ? req.requester_name : `Request to: ${req.target_user_name || "Admin Review"}`}</h3>
-                                                        <p className="text-[10px] text-gray-400 uppercase tracking-widest font-bold">{req.verification_type} Request</p>
+                                                        <h3 className="text-sm font-bold text-gray-900 dark:text-dark-text">{requestTab === 'received' ? req.requester_name : `Request to: ${req.target_user_name || "Admin Review"}`}</h3>
+                                                        <p className="text-[10px] text-gray-400 dark:text-dark-text-muted uppercase tracking-widest font-bold">{req.verification_type} Request</p>
                                                         {req.message && (
-                                                            <p className="text-xs text-gray-500 mt-1 italic truncate max-w-[200px]">"{req.message}"</p>
+                                                            <p className="text-xs text-gray-500 dark:text-dark-text-secondary mt-1 italic truncate max-w-[200px]">"{req.message}"</p>
                                                         )}
                                                     </div>
                                                 </div>
@@ -375,7 +375,7 @@ const TrustCenter = () => {
                                                         <button
                                                             onClick={() => handleRespond(req.id, "reject")}
                                                             disabled={respondingId === req.id}
-                                                            className="px-4 py-2 text-xs font-bold text-red-600 hover:bg-red-50 rounded-xl transition-colors border border-red-50"
+                                                            className="px-4 py-2 text-xs font-bold text-red-600 dark:text-red-400 hover:bg-red-50 dark:bg-red-500/15 rounded-xl transition-colors border border-red-50"
                                                         >
                                                             Reject
                                                         </button>
@@ -390,11 +390,11 @@ const TrustCenter = () => {
                                                     </div>
                                                 ) : (
                                                     <div className="text-right">
-                                                        <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-lg border ${req.status === 'approved' || req.status === 'verified' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : req.status === 'pending' ? 'bg-amber-50 text-amber-600 border-amber-100' : 'bg-red-50 text-red-600 border-red-100'
+                                                        <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-lg border ${req.status === 'approved' || req.status === 'verified' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : req.status === 'pending' ? 'bg-amber-50 text-amber-600 border-amber-100' : 'bg-red-50 dark:bg-red-500/15 text-red-600 dark:text-red-400 border-red-100'
                                                             }`}>
                                                             {req.status}
                                                         </span>
-                                                        <p className="text-[9px] text-gray-400 mt-2 uppercase font-bold tracking-tighter">
+                                                        <p className="text-[9px] text-gray-400 dark:text-dark-text-muted mt-2 uppercase font-bold tracking-tighter">
                                                             {new Date(req.created_at).toLocaleDateString()}
                                                         </p>
                                                     </div>
@@ -406,8 +406,8 @@ const TrustCenter = () => {
                                             <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-4">
                                                 <i className="ri-inbox-line text-4xl text-gray-200" />
                                             </div>
-                                            <h3 className="text-sm font-bold text-gray-900">No {requestTab} requests</h3>
-                                            <p className="text-xs text-gray-400 mt-1">Activities related to your verification will appear here.</p>
+                                            <h3 className="text-sm font-bold text-gray-900 dark:text-dark-text">No {requestTab} requests</h3>
+                                            <p className="text-xs text-gray-400 dark:text-dark-text-muted mt-1">Activities related to your verification will appear here.</p>
                                         </div>
                                     )}
                                 </div>

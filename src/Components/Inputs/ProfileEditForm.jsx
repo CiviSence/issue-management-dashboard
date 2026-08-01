@@ -33,7 +33,7 @@ const InputField = ({
       disabled={disabled}
       required={required}
       placeholder={placeholder}
-      className="border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none bg-gray-50 focus:bg-white focus:ring-2 focus:ring-violet-500 focus:border-transparent disabled:bg-gray-100 disabled:text-gray-400 transition-all"
+      className="border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none bg-gray-50 dark:bg-dark-elevated focus:bg-white focus:ring-2 focus:ring-violet-500 focus:border-transparent disabled:bg-gray-100 disabled:text-gray-400 transition-all"
     />
   </div>
 );
@@ -47,7 +47,7 @@ const SelectField = ({ label, name, value, onChange, children }) => (
       name={name}
       value={value || ""}
       onChange={onChange}
-      className="border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none bg-gray-50 focus:bg-white focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all appearance-none cursor-pointer"
+      className="border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none bg-gray-50 dark:bg-dark-elevated focus:bg-white focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all appearance-none cursor-pointer"
     >
       {children}
     </select>
@@ -265,7 +265,7 @@ const ProfileEditForm = ({ profile, onSave, onCancel }) => {
             <>
               {/* ── Avatar Section ──────────────────────────────── */}
               <SectionTitle icon="ri-image-line" title="Profile Picture" />
-              <div className="flex items-center gap-5 p-4 bg-gray-50 rounded-2xl border border-gray-100">
+              <div className="flex items-center gap-5 p-4 bg-gray-50 dark:bg-dark-elevated rounded-2xl border border-gray-100">
                 <div className="relative shrink-0">
                   <img
                     src={formData.avatar_url || getDefaultAvatar(formData.gender)}
@@ -448,7 +448,7 @@ const ProfileEditForm = ({ profile, onSave, onCancel }) => {
                   <SectionTitle icon="ri-hotel-line" title="Hostel Details" />
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="md:col-span-2">
-                      <label className="flex items-center gap-3 p-4 bg-gray-50 rounded-2xl border border-gray-100 cursor-pointer hover:bg-violet-50 hover:border-violet-200 transition-all">
+                      <label className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-dark-elevated rounded-2xl border border-gray-100 cursor-pointer hover:bg-violet-50 hover:border-violet-200 transition-all">
                         <div
                           className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${
                             formData.is_hosteler
@@ -527,7 +527,7 @@ const ProfileEditForm = ({ profile, onSave, onCancel }) => {
                       onChange={handlePasswordChange}
                       required
                       placeholder="Enter current password"
-                      className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none bg-gray-50 focus:bg-white focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all pr-12"
+                      className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none bg-gray-50 dark:bg-dark-elevated focus:bg-white focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all pr-12"
                     />
                     <button
                       type="button"
@@ -552,7 +552,7 @@ const ProfileEditForm = ({ profile, onSave, onCancel }) => {
                     onChange={handlePasswordChange}
                     required
                     placeholder="Enter new password"
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none bg-gray-50 focus:bg-white focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all pr-12"
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none bg-gray-50 dark:bg-dark-elevated focus:bg-white focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all pr-12"
                   />
                   <button
                     type="button"
@@ -581,7 +581,7 @@ const ProfileEditForm = ({ profile, onSave, onCancel }) => {
                                 : strength === 3
                                 ? "bg-blue-400"
                                 : "bg-emerald-500"
-                              : "bg-gray-200"
+                              : "bg-gray-200 dark:bg-dark-border"
                           }`}
                         />
                       );
@@ -601,7 +601,7 @@ const ProfileEditForm = ({ profile, onSave, onCancel }) => {
                   onChange={handlePasswordChange}
                   required
                   placeholder="Repeat new password"
-                  className={`border rounded-xl px-4 py-3 text-sm outline-none bg-gray-50 focus:bg-white focus:ring-2 focus:border-transparent transition-all ${
+                  className={`border rounded-xl px-4 py-3 text-sm outline-none bg-gray-50 dark:bg-dark-elevated focus:bg-white focus:ring-2 focus:border-transparent transition-all ${
                     passwordData.confirm_password &&
                     passwordData.new_password !== passwordData.confirm_password
                       ? "border-red-300 focus:ring-red-400"

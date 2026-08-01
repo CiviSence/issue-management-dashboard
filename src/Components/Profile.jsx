@@ -28,10 +28,10 @@ const getDefaultAvatar = (gender) => {
 
 const InfoCard = ({ title, children, icon, className = "" }) => (
   <div
-    className={`bg-white border border-gray-100 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow ${className}`}
+    className={`bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow ${className}`}
   >
-    <h2 className="text-sm font-bold text-gray-900 mb-4 sm:mb-5 flex items-center gap-2 uppercase tracking-wider">
-      {icon && <i className={`${icon} text-violet-600 text-lg`}></i>}
+    <h2 className="text-sm font-bold text-gray-900 dark:text-dark-text mb-4 sm:mb-5 flex items-center gap-2 uppercase tracking-wider">
+      {icon && <i className={`${icon} text-violet-600 dark:text-violet-400 text-lg`}></i>}
       {title}
     </h2>
     <div className="space-y-3 sm:space-y-4">{children}</div>
@@ -40,8 +40,8 @@ const InfoCard = ({ title, children, icon, className = "" }) => (
 
 const Info = ({ label, value }) => (
   <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-sm gap-1 sm:gap-4 py-2.5 sm:py-3 border-b border-gray-50 last:border-0">
-    <span className="text-gray-500 font-medium">{label}</span>
-    <span className="font-semibold text-gray-800 wrap-break-word sm:text-right break-words">
+    <span className="text-gray-500 dark:text-dark-text-secondary font-medium">{label}</span>
+    <span className="font-semibold text-gray-800 dark:text-dark-text wrap-break-word sm:text-right break-words">
       {value || "—"}
     </span>
   </div>
@@ -79,9 +79,9 @@ const OrganizationCard = ({ orgData, loadingOrg }) => {
     return (
       <InfoCard title="Organization" icon="ri-community-line">
         <div className="space-y-3 animate-pulse">
-          <div className="h-4 bg-gray-200 rounded w-2/3"></div>
-          <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-          <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+          <div className="h-4 bg-gray-200 dark:bg-dark-border rounded w-2/3"></div>
+          <div className="h-4 bg-gray-200 dark:bg-dark-border rounded w-1/2"></div>
+          <div className="h-4 bg-gray-200 dark:bg-dark-border rounded w-3/4"></div>
         </div>
       </InfoCard>
     );
@@ -112,15 +112,15 @@ const OrganizationCard = ({ orgData, loadingOrg }) => {
 
   return (
     <>
-      <div className="bg-white border border-gray-100 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow">
+      <div className="bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow">
         <div className="flex items-center justify-between mb-4 sm:mb-5">
-          <h2 className="text-sm font-bold text-gray-900 flex items-center gap-2 uppercase tracking-wider">
-            <i className="ri-community-line text-violet-600 text-lg"></i>
+          <h2 className="text-sm font-bold text-gray-900 dark:text-dark-text flex items-center gap-2 uppercase tracking-wider">
+            <i className="ri-community-line text-violet-600 dark:text-violet-400 text-lg"></i>
             Organization
           </h2>
           <button
             onClick={() => setIsChangeModalOpen(true)}
-            className="text-xs font-bold text-violet-600 hover:text-violet-700 bg-violet-50 hover:bg-violet-100 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5"
+            className="text-xs font-bold text-violet-600 dark:text-violet-400 hover:text-violet-700 bg-violet-50 dark:bg-violet-500/15 hover:bg-violet-100 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5"
           >
             <i className="ri-arrow-left-right-line"></i>
             Switch / Join Org
@@ -134,16 +134,16 @@ const OrganizationCard = ({ orgData, loadingOrg }) => {
               <i className="ri-building-2-line text-xl"></i>
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-base font-black text-gray-900 truncate">
+              <p className="text-base font-black text-gray-900 dark:text-dark-text truncate">
                 {org.name}
               </p>
               {org.code && (
-                <p className="text-xs font-bold text-violet-600 mt-0.5 uppercase tracking-wider">
+                <p className="text-xs font-bold text-violet-600 dark:text-violet-400 mt-0.5 uppercase tracking-wider">
                   {org.code}
                 </p>
               )}
               {org.description && (
-                <p className="text-xs text-gray-500 mt-1.5 leading-relaxed line-clamp-2">
+                <p className="text-xs text-gray-500 dark:text-dark-text-secondary mt-1.5 leading-relaxed line-clamp-2">
                   {org.description}
                 </p>
               )}
@@ -153,7 +153,7 @@ const OrganizationCard = ({ orgData, loadingOrg }) => {
                 className={`shrink-0 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${
                   org.is_active
                     ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                    : "bg-gray-100 text-gray-500 border-gray-200"
+                    : "bg-gray-100 dark:bg-dark-elevated text-gray-500 dark:text-dark-text-secondary border-gray-200 dark:border-dark-border"
                 }`}
               >
                 {org.status}
@@ -170,7 +170,7 @@ const OrganizationCard = ({ orgData, loadingOrg }) => {
           {org.address && <Info label="Address" value={org.address} />}
           {orgItem.role && (
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-sm gap-1 sm:gap-4 py-3 border-b border-gray-50 last:border-0">
-              <span className="text-gray-500 font-medium">Your Role</span>
+              <span className="text-gray-500 dark:text-dark-text-secondary font-medium">Your Role</span>
               <StatusBadge
                 type="profile"
                 value={orgItem.role}
@@ -180,8 +180,8 @@ const OrganizationCard = ({ orgData, loadingOrg }) => {
           )}
           {/* Feed Verification Policy */}
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-sm gap-2 py-3 border-b border-gray-50">
-            <span className="text-gray-500 font-medium flex items-center gap-1.5">
-              <i className="ri-shield-check-line text-violet-600"></i>
+            <span className="text-gray-500 dark:text-dark-text-secondary font-medium flex items-center gap-1.5">
+              <i className="ri-shield-check-line text-violet-600 dark:text-violet-400"></i>
               Feed Verification Policy
             </span>
             {isOrgAdmin ? (
@@ -204,7 +204,7 @@ const OrganizationCard = ({ orgData, loadingOrg }) => {
                 className={`px-2.5 py-1 rounded-md text-xs font-bold border ${
                   requireVerifiedFeed
                     ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                    : "bg-gray-50 text-gray-600 border-gray-200"
+                    : "bg-gray-50 dark:bg-dark-elevated text-gray-600 dark:text-dark-text-secondary border-gray-200 dark:border-dark-border"
                 }`}
               >
                 {requireVerifiedFeed ? "Required" : "Optional"}
@@ -305,8 +305,8 @@ const Profile = () => {
 
   const LoadingSkeleton = () => (
     <SkeletonTheme baseColor="#f3f4f6" highlightColor="#ffffff">
-      <div className="w-full h-full overflow-hidden bg-[#F8F9FF]">
-        <div className="bg-white border-b border-gray-100 px-6 py-10 lg:px-20 lg:py-16">
+      <div className="w-full h-full overflow-hidden bg-[#F8F9FF] dark:bg-dark-bg">
+        <div className="bg-white dark:bg-dark-card border-b border-gray-100 dark:border-dark-border/50 px-6 py-10 lg:px-20 lg:py-16">
           <div className="flex flex-col md:flex-row items-center gap-8">
             <Skeleton
               circle
@@ -325,7 +325,7 @@ const Profile = () => {
           {[1, 2, 3, 4, 5, 6].map((i) => (
             <div
               key={i}
-              className="bg-white border border-gray-100 rounded-2xl p-6"
+              className="bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border/50 rounded-2xl p-6"
             >
               <Skeleton width={160} height={20} className="mb-6" />
               <div className="space-y-4">
@@ -355,7 +355,7 @@ const Profile = () => {
       {renderSideNav()}
       <BottomNav />
 
-      <div className="mx-auto w-full overflow-y-auto bg-[#F8F9FF] min-h-screen">
+      <div className="mx-auto w-full overflow-y-auto bg-[#F8F9FF] dark:bg-dark-bg min-h-screen">
         <TopBar title="Profile" />
         {profileData ? (
           <>
@@ -364,7 +364,7 @@ const Profile = () => {
           {/* ── BODY ──────────────────────────────────────────────── */}
           <div className="px-3 py-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-6 pb-28 md:pb-32">
             {/* ── PROFILE HEADER ────────────────────────────────────── */}
-            <div className="bg-[#7E70EB]  border-b rounded-3xl border-gray-100 shadow-sm px-6 py-10 lg:px-20 lg:py-16 relative overflow-hidden">
+            <div className="bg-[#7E70EB]  border-b rounded-3xl border-gray-100 dark:border-dark-border/50 shadow-sm px-6 py-10 lg:px-20 lg:py-16 relative overflow-hidden">
              
             <div className="relative z-10 flex flex-col md:flex-row items-center gap-8 lg:gap-12">
               {/* Avatar */}
@@ -424,54 +424,54 @@ const Profile = () => {
           </div>
             {/* ── Quick Stats ─────────────────────────────────────── */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
-              <div className="bg-white p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-gray-100 shadow-sm flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
-                <div className="p-2 sm:p-3 bg-violet-50 text-violet-600 rounded-lg sm:rounded-xl">
+              <div className="bg-white p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-gray-100 dark:border-dark-border/50 shadow-sm flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
+                <div className="p-2 sm:p-3 bg-violet-50 dark:bg-violet-500/15 text-violet-600 dark:text-violet-400 rounded-lg sm:rounded-xl">
                   <i className="ri-shield-check-line text-lg sm:text-xl"></i>
                 </div>
                 <div className="min-w-0 w-full">
-                  <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-gray-400 truncate">
+                  <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-dark-text-muted truncate">
                     Verification
                   </p>
-                  <p className="text-sm sm:text-base font-black text-gray-900 capitalize truncate">
+                  <p className="text-sm sm:text-base font-black text-gray-900 dark:text-dark-text capitalize truncate">
                     {profileData.verification_status || "Pending"}
                   </p>
                 </div>
               </div>
-              <div className="bg-white p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-gray-100 shadow-sm flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
+              <div className="bg-white p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-gray-100 dark:border-dark-border/50 shadow-sm flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
                 <div className="p-2 sm:p-3 bg-emerald-50 text-emerald-600 rounded-lg sm:rounded-xl">
                   <i className="ri-checkbox-circle-line text-lg sm:text-xl"></i>
                 </div>
                 <div className="min-w-0 w-full">
-                  <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-gray-400 truncate">
+                  <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-dark-text-muted truncate">
                     Role Verified
                   </p>
-                  <p className="text-sm sm:text-base font-black text-gray-900 truncate">
+                  <p className="text-sm sm:text-base font-black text-gray-900 dark:text-dark-text truncate">
                     {profileData.role_verified ? "✓ Yes" : "✗ No"}
                   </p>
                 </div>
               </div>
-              <div className="bg-white p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-gray-100 shadow-sm flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
+              <div className="bg-white p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-gray-100 dark:border-dark-border/50 shadow-sm flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
                 <div className="p-2 sm:p-3 bg-amber-50 text-amber-600 rounded-lg sm:rounded-xl">
                   <i className="ri-copper-coin-line text-lg sm:text-xl"></i>
                 </div>
                 <div className="min-w-0 w-full">
-                  <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-gray-400 truncate">
+                  <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-dark-text-muted truncate">
                     Reputation
                   </p>
-                  <p className="text-base sm:text-xl font-black text-gray-900 truncate">
+                  <p className="text-base sm:text-xl font-black text-gray-900 dark:text-dark-text truncate">
                     {profileData.reputation_points || 0}
                   </p>
                 </div>
               </div>
-              <div className="bg-white p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-gray-100 shadow-sm flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
+              <div className="bg-white p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-gray-100 dark:border-dark-border/50 shadow-sm flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
                 <div className="p-2 sm:p-3 bg-blue-50 text-blue-600 rounded-lg sm:rounded-xl">
                   <i className="ri-mail-check-line text-lg sm:text-xl"></i>
                 </div>
                 <div className="min-w-0 w-full">
-                  <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-gray-400 truncate">
+                  <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-dark-text-muted truncate">
                     Email
                   </p>
-                  <p className="text-sm sm:text-base font-black text-gray-900 truncate">
+                  <p className="text-sm sm:text-base font-black text-gray-900 dark:text-dark-text truncate">
                     {profileData.email_verified ? "✓ Verified" : "✗ Unverified"}
                   </p>
                 </div>
@@ -519,7 +519,7 @@ const Profile = () => {
                     />
                   )}
                   <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-sm gap-1 sm:gap-4 py-3 border-b border-gray-50 last:border-0">
-                    <span className="text-gray-500 font-medium">
+                    <span className="text-gray-500 dark:text-dark-text-secondary font-medium">
                       Available to Work
                     </span>
                     <label className="relative inline-flex items-center cursor-not-allowed opacity-60">
@@ -530,11 +530,11 @@ const Profile = () => {
                         onChange={handleToggleAvailable}
                         disabled
                       />
-                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-violet-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
+                      <div className="w-11 h-6 bg-gray-200 dark:bg-dark-border peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-violet-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border-gray-300 dark:border-dark-border after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
                     </label>
                   </div>
                   <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-sm gap-1 sm:gap-4 py-3 border-b border-gray-50 last:border-0">
-                    <span className="text-gray-500 font-medium">
+                    <span className="text-gray-500 dark:text-dark-text-secondary font-medium">
                       Role Verified
                     </span>
                     <span
@@ -560,7 +560,7 @@ const Profile = () => {
               {role === "admin" && (
                 <InfoCard title="Admin Privileges" icon="ri-admin-line">
                   <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-sm gap-1 sm:gap-4 py-3 border-b border-gray-50">
-                    <span className="text-gray-500 font-medium">
+                    <span className="text-gray-500 dark:text-dark-text-secondary font-medium">
                       Role Verified
                     </span>
                     <span
@@ -581,14 +581,14 @@ const Profile = () => {
                     </span>
                   </div>
                   <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-sm gap-1 sm:gap-4 py-3 border-b border-gray-50">
-                    <span className="text-gray-500 font-medium">
+                    <span className="text-gray-500 dark:text-dark-text-secondary font-medium">
                       Can Verify Others
                     </span>
                     <span
                       className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border shadow-sm ${
                         profileData.can_verify_others
                           ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                          : "bg-gray-100 text-gray-600 border-gray-200"
+                          : "bg-gray-100 dark:bg-dark-elevated text-gray-600 dark:text-dark-text-secondary border-gray-200 dark:border-dark-border"
                       }`}
                     >
                       <span
@@ -619,7 +619,7 @@ const Profile = () => {
               {/* Account Status */}
               <InfoCard title="Account Status" icon="ri-verified-badge-line">
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-sm gap-1 sm:gap-4 py-3 border-b border-gray-50">
-                  <span className="text-gray-500 font-medium">
+                  <span className="text-gray-500 dark:text-dark-text-secondary font-medium">
                     Verification Status
                   </span>
                   <StatusBadge

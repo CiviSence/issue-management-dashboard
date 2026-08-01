@@ -8,15 +8,15 @@ import {
 
 const PieChartCard = ({data}) => {
   return (
-    <div className="bg-white border border-border p-5 rounded-2xl shadow-xs w-full min-h-[340px] shadow-gray-200/40 hover:-translate-y-1 transition-all duration-300 ease-in-out group relative overflow-hidden flex flex-col">
+    <div className="bg-white dark:bg-dark-card border border-border p-5 rounded-2xl shadow-xs w-full min-h-[340px] shadow-gray-200/40 hover:-translate-y-1 transition-all duration-300 ease-in-out group relative overflow-hidden flex flex-col">
       {/* Decorative background glow */}
       <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-secondary/10 rounded-full blur-3xl group-hover:bg-secondary/20 transition-colors duration-500"></div>
 
       <div className="mb-2 relative z-10">
-        <h2 className="text-xl font-bold text-gray-800 tracking-tight">
+        <h2 className="text-xl font-bold text-gray-800 tracking-tight dark:text-dark-text">
           Category Distribution
         </h2>
-        <p className="text-xs text-gray-500 mt-1">Issues spread by category</p>
+        <p className="text-xs text-gray-500 mt-1 dark:text-dark-text-secondary">Issues spread by category</p>
       </div>
       
       <div className="flex flex-col md:flex-row flex-1 items-center justify-center relative z-10 gap-4">
@@ -61,13 +61,13 @@ const PieChartCard = ({data}) => {
           {data?.map((item) => (
             <div 
               key={item.name} 
-              className="flex items-center gap-2 bg-gray-50/80 px-3 py-2 rounded-xl border border-gray-100 hover:bg-gray-100 hover:shadow-sm transition-all duration-200 cursor-default"
+              className="flex items-center gap-2 bg-gray-50 dark:bg-dark-elevated/80 dark:bg-dark-elevated/80 px-3 py-2 rounded-xl border border-gray-100 dark:border-dark-border/50 hover:bg-gray-100 dark:hover:bg-dark-elevated dark:bg-dark-elevated hover:shadow-sm transition-all duration-200 cursor-default"
             >
               <div
                 className="w-3 h-3 rounded-full shadow-inner"
                 style={{ backgroundColor: item.color }}
               />
-              <span className="text-sm font-medium text-gray-700">{item.name}</span>
+              <span className="text-sm font-medium text-gray-700 dark:text-dark-text-secondary">{item.name}</span>
             </div>
           ))}
         </div>

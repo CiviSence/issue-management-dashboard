@@ -89,7 +89,7 @@ const OrgChangeRequestModal = ({ isOpen, onClose, onSuccess }) => {
               value={targetOrgId}
               onChange={(e) => setTargetOrgId(e.target.value)}
               placeholder="e.g. 2 or ORG-102"
-              className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-600 transition-all"
+              className="w-full px-3.5 py-2.5 bg-gray-50 dark:bg-dark-elevated border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-600 transition-all"
             />
           </div>
 
@@ -102,7 +102,7 @@ const OrgChangeRequestModal = ({ isOpen, onClose, onSuccess }) => {
               value={reason}
               onChange={(e) => setReason(e.target.value)}
               placeholder="Explain why you wish to switch or join this organization..."
-              className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-600 transition-all resize-none"
+              className="w-full px-3.5 py-2.5 bg-gray-50 dark:bg-dark-elevated border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-600 transition-all resize-none"
             />
           </div>
 
@@ -110,7 +110,7 @@ const OrgChangeRequestModal = ({ isOpen, onClose, onSuccess }) => {
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-sm font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors"
+              className="px-4 py-2 text-sm font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 dark:bg-dark-border rounded-xl transition-colors"
             >
               Cancel
             </button>

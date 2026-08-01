@@ -62,7 +62,7 @@ const ChatBot = ({ isOpen, onClose }) => {
                         initial={{ opacity: 0, scale: 0.95, y: 20 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                        className="fixed bottom-6 right-6 w-[calc(100vw-48px)] md:w-[400px] h-[600px] bg-white rounded-3xl shadow-2xl border border-gray-100 flex flex-col z-[70] overflow-hidden"
+                        className="fixed bottom-6 right-6 w-[calc(100vw-48px)] md:w-[400px] h-[600px] bg-white rounded-3xl shadow-2xl border border-gray-100 dark:border-dark-border/50 flex flex-col z-[70] overflow-hidden"
                     >
                         {/* Header */}
                         <div className="bg-violet-600 p-6 text-white flex items-center justify-between">
@@ -96,7 +96,7 @@ const ChatBot = ({ isOpen, onClose }) => {
                                     <div
                                         className={`max-w-[80%] p-4 rounded-2xl text-sm font-medium ${msg.sender === "user"
                                             ? "bg-violet-600 text-white rounded-tr-none"
-                                            : "bg-gray-100 text-gray-800 rounded-tl-none"
+                                            : "bg-gray-100 dark:bg-dark-elevated text-gray-800 dark:text-dark-text rounded-tl-none"
                                             }`}
                                     >
                                         {msg.text}
@@ -107,14 +107,14 @@ const ChatBot = ({ isOpen, onClose }) => {
                         </div>
 
                         {/* Input */}
-                        <form onSubmit={handleSend} className="p-4 border-t border-gray-100 bg-gray-50/50">
+                        <form onSubmit={handleSend} className="p-4 border-t border-gray-100 dark:border-dark-border/50 bg-gray-50/50 dark:bg-dark-elevated/50">
                             <div className="relative">
                                 <input
                                     type="text"
                                     value={input}
                                     onChange={(e) => setInput(e.target.value)}
                                     placeholder="Type your message..."
-                                    className="w-full bg-white border border-gray-200 rounded-2xl px-5 py-4 pr-14 outline-none focus:ring-2 focus:ring-violet-200 transition-all font-medium"
+                                    className="w-full bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border rounded-2xl px-5 py-4 pr-14 outline-none focus:ring-2 focus:ring-violet-200 transition-all font-medium"
                                 />
                                 <button
                                     type="submit"

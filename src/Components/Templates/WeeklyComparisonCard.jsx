@@ -47,7 +47,7 @@ const WeeklyComparisonCard = ({ issues = [] }) => {
 
     return (
       <div className="flex-1 p-4 bg-muted/20 rounded-xl border border-border/50">
-        <span className="text-xs text-muted-foreground font-medium block mb-2">
+        <span className="text-xs text-muted-foreground font-medium block mb-2 dark:text-dark-text-secondary">
           {label}
         </span>
         <div className="flex items-end gap-2">
@@ -67,12 +67,12 @@ const WeeklyComparisonCard = ({ issues = [] }) => {
             </span>
           )}
           {isNeutral && (
-            <span className="text-xs font-bold px-1.5 py-0.5 rounded-md bg-gray-100 text-gray-500">
+            <span className="text-xs font-bold px-1.5 py-0.5 rounded-md bg-gray-100 dark:bg-dark-elevated text-gray-500 dark:text-dark-text-secondary">
               —
             </span>
           )}
         </div>
-        <span className="text-xs text-muted-foreground mt-2 block">
+        <span className="text-xs text-muted-foreground mt-2 block dark:text-dark-text-secondary">
           Last week: <span className="font-semibold text-card-foreground">{previous}</span>
         </span>
       </div>
@@ -80,8 +80,8 @@ const WeeklyComparisonCard = ({ issues = [] }) => {
   };
 
   return (
-    <div className="bg-white border border-border p-5 rounded-2xl shadow-xs">
-      <h3 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
+    <div className="bg-white dark:bg-dark-card border border-border p-5 rounded-2xl shadow-xs">
+      <h3 className="text-base font-bold text-foreground mb-4 flex items-center gap-2 dark:text-dark-text">
         <i className="ri-arrow-left-right-line text-[#7E70EB] text-lg"></i>
         Weekly Comparison
       </h3>
@@ -104,8 +104,8 @@ const WeeklyComparisonCard = ({ issues = [] }) => {
       </div>
 
       <div className="mt-3 flex items-center gap-2 px-1">
-        <i className="ri-calendar-line text-muted-foreground text-sm"></i>
-        <span className="text-xs text-muted-foreground">
+        <i className="ri-calendar-line text-muted-foreground text-sm dark:text-dark-text-secondary"></i>
+        <span className="text-xs text-muted-foreground dark:text-dark-text-secondary">
           Comparing Sun–Today vs previous 7 days
         </span>
       </div>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useUser } from "../Context/ProfileContext";
+import { useTheme } from "../Context/ThemeContext.js";
 import TopBar from "./Templates/TopBar";
 import SEO from "./common/SEO";
 import AdminSideNav from "./Dashboards/Admin/AdminSideNav";
@@ -62,10 +63,10 @@ const SessionsCard = () => {
   return (
     <div className="space-y-3">
       <div className="flex justify-between items-center">
-        <p className="text-sm font-bold text-gray-700">Your Active Devices</p>
+        <p className="text-sm font-bold text-gray-700 dark:text-dark-text-secondary">Your Active Devices</p>
         <button
           onClick={fetchSessions}
-          className="text-violet-600 hover:bg-violet-50 p-1.5 rounded-lg transition-colors"
+          className="text-violet-600 dark:text-violet-400 hover:bg-violet-50 dark:bg-violet-500/15 dark:hover:bg-violet-50 dark:bg-violet-500/150/15 p-1.5 rounded-lg transition-colors"
           title="Refresh"
         >
           <i className="ri-refresh-line"></i>
@@ -77,7 +78,7 @@ const SessionsCard = () => {
           {[1, 2].map((i) => (
             <div
               key={i}
-              className="h-14 bg-gray-50 animate-pulse rounded-xl"
+              className="h-14 bg-gray-50 dark:bg-dark-elevated animate-pulse rounded-xl"
             ></div>
           ))}
         </div>
@@ -93,17 +94,17 @@ const SessionsCard = () => {
             return (
               <div
                 key={id || index}
-                className="flex items-center justify-between p-3 sm:p-4 bg-gray-50/50 rounded-lg sm:rounded-xl border border-gray-100 hover:border-violet-200 hover:bg-white transition-all group"
+                className="flex items-center justify-between p-3 sm:p-4 bg-gray-50/50 dark:bg-dark-elevated/50 rounded-lg sm:rounded-xl border border-gray-100 dark:border-dark-border/50 hover:border-violet-200 hover:bg-white transition-all group"
               >
                 <div className="flex items-center gap-3">
-                  <div className="p-2.5 bg-white shadow-sm border border-gray-100 text-violet-600 rounded-xl group-hover:bg-violet-600 group-hover:text-white transition-all">
+                  <div className="p-2.5 bg-white dark:bg-dark-card shadow-sm border border-gray-100 dark:border-dark-border/50 text-violet-600 dark:text-violet-400 rounded-xl group-hover:bg-violet-600 group-hover:text-white transition-all">
                     <i className="ri-device-line text-lg"></i>
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-gray-800 transition-colors">
+                    <p className="text-sm font-bold text-gray-800 dark:text-dark-text transition-colors">
                       {label}
                     </p>
-                    <p className="text-[10px] font-bold text-violet-500 uppercase tracking-widest mt-0.5">
+                    <p className="text-[10px] font-bold text-violet-500 dark:text-violet-400 uppercase tracking-widest mt-0.5">
                       Active Now
                     </p>
                   </div>
@@ -111,7 +112,7 @@ const SessionsCard = () => {
                 <button
                   onClick={() => handleRevoke(id)}
                   disabled={revokingId === id}
-                  className="text-xs text-red-500 hover:bg-red-50 font-bold px-3 py-2 rounded-lg transition-all border border-transparent hover:border-red-100 disabled:opacity-50 uppercase tracking-wider"
+                  className="text-xs text-red-500 hover:bg-red-50 dark:bg-red-500/15 font-bold px-3 py-2 rounded-lg transition-all border border-transparent hover:border-red-100 disabled:opacity-50 uppercase tracking-wider"
                 >
                   {revokingId === id ? "Revoking..." : "Revoke"}
                 </button>
@@ -120,8 +121,8 @@ const SessionsCard = () => {
           })}
         </div>
       ) : (
-        <div className="bg-gray-50 rounded-xl py-8 text-center border border-dashed border-gray-200">
-          <p className="text-gray-400 text-sm font-medium">
+        <div className="bg-gray-50 dark:bg-dark-elevated rounded-xl py-8 text-center border border-dashed border-gray-200 dark:border-dark-border">
+          <p className="text-gray-400 dark:text-dark-text-muted text-sm font-medium">
             No other active sessions found.
           </p>
         </div>
@@ -133,13 +134,13 @@ const SessionsCard = () => {
 // ─── Reusable LinkedIn-Style Grouped Settings Components ────────────────────
 
 const SettingsGroupCard = ({ title, children }) => (
-  <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-200/80 shadow-xs mb-6 overflow-hidden">
+  <div className="bg-white dark:bg-dark-card rounded-xl sm:rounded-2xl border border-gray-200 dark:border-dark-border/80 dark:border-dark-border shadow-xs mb-6 overflow-hidden">
     {title && (
-      <div className="px-5 sm:px-6 pt-5 sm:pt-6 pb-2 text-lg sm:text-xl font-bold text-gray-900">
+      <div className="px-5 sm:px-6 pt-5 sm:pt-6 pb-2 text-lg sm:text-xl font-bold text-gray-900 dark:text-dark-text">
         {title}
       </div>
     )}
-    <div className="divide-y divide-gray-100">{children}</div>
+    <div className="divide-y divide-gray-100 dark:divide-dark-border/50">{children}</div>
   </div>
 );
 
@@ -148,16 +149,16 @@ const ActionRow = ({ label, sublabel, value, to, onClick, icon }) => {
     <div className="flex items-center justify-between w-full">
       <div className="flex items-start gap-3.5 pr-4 min-w-0">
         {icon && (
-          <div className="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center shrink-0 text-gray-600 mt-0.5 group-hover:bg-violet-50 group-hover:text-violet-600 transition-colors">
+          <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-dark-elevated flex items-center justify-center shrink-0 text-gray-600 dark:text-dark-text-secondary mt-0.5 group-hover:bg-violet-50 dark:bg-violet-500/15 dark:hover:bg-violet-50 dark:bg-violet-500/150/15 group-hover:text-violet-600 dark:text-violet-400 dark:hover:text-violet-400 transition-colors">
             <i className={`${icon} text-lg`}></i>
           </div>
         )}
         <div className="min-w-0">
-          <p className="text-sm sm:text-base font-semibold text-gray-800 group-hover:text-violet-600 transition-colors truncate">
+          <p className="text-sm sm:text-base font-semibold text-gray-800 dark:text-dark-text group-hover:text-violet-600 dark:text-violet-400 dark:hover:text-violet-400 transition-colors truncate">
             {label}
           </p>
           {sublabel && (
-            <p className="text-xs sm:text-sm text-gray-500 mt-0.5 leading-relaxed line-clamp-2">
+            <p className="text-xs sm:text-sm text-gray-500 dark:text-dark-text-secondary mt-0.5 leading-relaxed line-clamp-2">
               {sublabel}
             </p>
           )}
@@ -165,11 +166,11 @@ const ActionRow = ({ label, sublabel, value, to, onClick, icon }) => {
       </div>
       <div className="flex items-center gap-2 shrink-0 ml-4">
         {value && (
-          <span className="text-sm font-medium text-gray-500 text-right">
+          <span className="text-sm font-medium text-gray-500 dark:text-dark-text-secondary text-right">
             {value}
           </span>
         )}
-        <i className="ri-arrow-right-s-line text-xl text-gray-400 group-hover:text-gray-700 transition-colors"></i>
+        <i className="ri-arrow-right-s-line text-xl text-gray-400 dark:text-dark-text-muted group-hover:text-gray-700 dark:hover:text-dark-text dark:text-dark-text-secondary transition-colors"></i>
       </div>
     </div>
   );
@@ -178,7 +179,7 @@ const ActionRow = ({ label, sublabel, value, to, onClick, icon }) => {
     return (
       <Link
         to={to}
-        className="p-4 sm:px-6 sm:py-4.5 hover:bg-gray-50/80 transition-colors group select-none block w-full text-left"
+        className="p-4 sm:px-6 sm:py-4.5 hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated/80 dark:bg-dark-elevated/80 transition-colors group select-none block w-full text-left"
       >
         {content}
       </Link>
@@ -189,7 +190,7 @@ const ActionRow = ({ label, sublabel, value, to, onClick, icon }) => {
     <button
       type="button"
       onClick={onClick}
-      className="p-4 sm:px-6 sm:py-4.5 hover:bg-gray-50/80 transition-colors cursor-pointer group select-none block w-full text-left"
+      className="p-4 sm:px-6 sm:py-4.5 hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated/80 dark:bg-dark-elevated/80 transition-colors cursor-pointer group select-none block w-full text-left"
     >
       {content}
     </button>
@@ -202,20 +203,20 @@ const ExpandableRow = ({ label, sublabel, value, children, defaultExpanded = fal
     <div className="transition-colors">
       <div
         onClick={() => setExpanded(!expanded)}
-        className="flex items-center justify-between p-4 sm:px-6 sm:py-4.5 hover:bg-gray-50/80 transition-colors cursor-pointer group select-none"
+        className="flex items-center justify-between p-4 sm:px-6 sm:py-4.5 hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated/80 dark:bg-dark-elevated/80 transition-colors cursor-pointer group select-none"
       >
         <div className="flex items-start gap-3.5 pr-4 min-w-0">
           {icon && (
-            <div className="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center shrink-0 text-gray-600 mt-0.5 group-hover:bg-violet-50 group-hover:text-violet-600 transition-colors">
+            <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-dark-elevated flex items-center justify-center shrink-0 text-gray-600 dark:text-dark-text-secondary mt-0.5 group-hover:bg-violet-50 dark:bg-violet-500/15 dark:hover:bg-violet-50 dark:bg-violet-500/150/15 group-hover:text-violet-600 dark:text-violet-400 dark:hover:text-violet-400 transition-colors">
               <i className={`${icon} text-lg`}></i>
             </div>
           )}
           <div className="min-w-0">
-            <p className="text-sm sm:text-base font-semibold text-gray-800 group-hover:text-violet-600 transition-colors truncate">
+            <p className="text-sm sm:text-base font-semibold text-gray-800 dark:text-dark-text group-hover:text-violet-600 dark:text-violet-400 dark:hover:text-violet-400 transition-colors truncate">
               {label}
             </p>
             {sublabel && (
-              <p className="text-xs sm:text-sm text-gray-500 mt-0.5 leading-relaxed line-clamp-2">
+              <p className="text-xs sm:text-sm text-gray-500 dark:text-dark-text-secondary mt-0.5 leading-relaxed line-clamp-2">
                 {sublabel}
               </p>
             )}
@@ -223,17 +224,17 @@ const ExpandableRow = ({ label, sublabel, value, children, defaultExpanded = fal
         </div>
         <div className="flex items-center gap-2 shrink-0 ml-4">
           {value && (
-            <span className="text-sm font-medium text-gray-500 text-right">
+            <span className="text-sm font-medium text-gray-500 dark:text-dark-text-secondary text-right">
               {value}
             </span>
           )}
           <i
-            className={`ri-arrow-${expanded ? "down" : "right"}-s-line text-xl text-gray-400 group-hover:text-gray-700 transition-transform`}
+            className={`ri-arrow-${expanded ? "down" : "right"}-s-line text-xl text-gray-400 dark:text-dark-text-muted group-hover:text-gray-700 dark:hover:text-dark-text dark:text-dark-text-secondary transition-transform`}
           ></i>
         </div>
       </div>
       {expanded && (
-        <div className="p-4 sm:p-6 bg-gray-50/70 border-t border-gray-100 animate-fadeIn">
+        <div className="p-4 sm:p-6 bg-gray-50 dark:bg-dark-elevated/70 dark:bg-dark-elevated/70 border-t border-gray-100 dark:border-dark-border/50 animate-fadeIn">
           {children}
         </div>
       )}
@@ -247,29 +248,29 @@ const ToggleRow = ({ label, description, checked, onChange, valueText }) => {
     <div className="transition-colors">
       <div
         onClick={() => setExpanded(!expanded)}
-        className="flex items-center justify-between p-4 sm:px-6 sm:py-4.5 hover:bg-gray-50/80 transition-colors cursor-pointer group select-none"
+        className="flex items-center justify-between p-4 sm:px-6 sm:py-4.5 hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated/80 dark:bg-dark-elevated/80 transition-colors cursor-pointer group select-none"
       >
         <div className="pr-4 min-w-0">
-          <p className="text-sm sm:text-base font-semibold text-gray-800 group-hover:text-violet-600 transition-colors truncate">
+          <p className="text-sm sm:text-base font-semibold text-gray-800 dark:text-dark-text group-hover:text-violet-600 dark:text-violet-400 dark:hover:text-violet-400 transition-colors truncate">
             {label}
           </p>
         </div>
         <div className="flex items-center gap-2 shrink-0 ml-4">
-          <span className="text-sm font-medium text-gray-500">
+          <span className="text-sm font-medium text-gray-500 dark:text-dark-text-secondary">
             {valueText || (checked ? "On" : "Off")}
           </span>
           <i
-            className={`ri-arrow-${expanded ? "down" : "right"}-s-line text-xl text-gray-400 group-hover:text-gray-700 transition-transform`}
+            className={`ri-arrow-${expanded ? "down" : "right"}-s-line text-xl text-gray-400 dark:text-dark-text-muted group-hover:text-gray-700 dark:hover:text-dark-text dark:text-dark-text-secondary transition-transform`}
           ></i>
         </div>
       </div>
       {expanded && (
-        <div className="px-4 sm:px-6 py-4 sm:py-5 bg-gray-50/70 border-t border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-fadeIn">
-          <p className="text-xs sm:text-sm text-gray-600 leading-relaxed flex-1">
+        <div className="px-4 sm:px-6 py-4 sm:py-5 bg-gray-50 dark:bg-dark-elevated/70 dark:bg-dark-elevated/70 border-t border-gray-100 dark:border-dark-border/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-fadeIn">
+          <p className="text-xs sm:text-sm text-gray-600 dark:text-dark-text-secondary leading-relaxed flex-1">
             {description}
           </p>
           <div className="flex items-center gap-3 self-end sm:self-center">
-            <span className="text-xs font-bold uppercase tracking-wider text-gray-400">
+            <span className="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-dark-text-muted">
               {checked ? "Enabled" : "Disabled"}
             </span>
             <button
@@ -478,12 +479,18 @@ const Settings = () => {
   };
 
   // Update setting handler with auto-save feedback
+  const { setTheme: setContextTheme } = useTheme();
+
   const updateSetting = (key, value) => {
     setSettings((prev) => {
       const next = { ...prev, [key]: value };
       localStorage.setItem("app_user_settings", JSON.stringify(next));
       return next;
     });
+    // Sync theme changes with ThemeContext
+    if (key === "theme") {
+      setContextTheme(value);
+    }
     triggerToast("Setting updated & saved automatically");
   };
 
@@ -618,7 +625,7 @@ const Settings = () => {
       {renderSideNav()}
       {renderBottomNav()}
 
-      <div className="mx-auto w-full overflow-y-auto bg-[#F8F9FF] min-h-screen pb-28 md:pb-12">
+      <div className="mx-auto w-full overflow-y-auto bg-[#F8F9FF] dark:bg-dark-bg min-h-screen pb-28 md:pb-12">
         <TopBar title="Settings" />
 
         {/* Floating Toast Notification */}
@@ -672,8 +679,8 @@ const Settings = () => {
               </SettingsGroupCard>
 
               {/* Quick Info Footer Card */}
-              <div className="p-4 sm:p-5 rounded-2xl bg-gray-50/80 border border-gray-200/80 flex items-center gap-3 text-xs sm:text-sm text-gray-600 font-medium">
-                <i className="ri-information-line text-lg text-gray-700 shrink-0"></i>
+              <div className="p-4 sm:p-5 rounded-2xl bg-gray-50 dark:bg-dark-elevated/80 dark:bg-dark-elevated/80 border border-gray-200 dark:border-dark-border/80 flex items-center gap-3 text-xs sm:text-sm text-gray-600 dark:text-dark-text-secondary font-medium">
+                <i className="ri-information-line text-lg text-gray-700 dark:text-dark-text-secondary shrink-0"></i>
                 <p>
                   All preference changes are automatically saved to your local
                   session and synced with your account.
@@ -692,15 +699,15 @@ const Settings = () => {
                     <button
                       type="button"
                       onClick={navigateToList}
-                      className="p-2 sm:p-2.5 rounded-xl bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 transition shadow-xs shrink-0"
+                      className="p-2 sm:p-2.5 rounded-xl bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated text-gray-700 dark:text-dark-text-secondary transition shadow-xs shrink-0"
                     >
                       <i className="ri-arrow-left-line text-lg"></i>
                     </button>
                     <div>
-                      <h2 className="text-xl sm:text-2xl font-black text-gray-900">
+                      <h2 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-dark-text">
                         Account settings
                       </h2>
-                      <p className="text-xs sm:text-sm text-gray-500 font-medium">
+                      <p className="text-xs sm:text-sm text-gray-500 dark:text-dark-text-secondary font-medium">
                         Manage your profile details and account standing
                       </p>
                     </div>
@@ -725,26 +732,26 @@ const Settings = () => {
                       icon="ri-building-2-line"
                     >
                       <div className="space-y-3 text-sm max-w-lg">
-                        <div className="flex justify-between items-center py-2 border-b border-gray-200/60">
-                          <span className="text-gray-500 font-medium">
+                        <div className="flex justify-between items-center py-2 border-b border-gray-200 dark:border-dark-border/60">
+                          <span className="text-gray-500 dark:text-dark-text-secondary font-medium">
                             Organization
                           </span>
-                          <span className="font-bold text-gray-800">
+                          <span className="font-bold text-gray-800 dark:text-dark-text">
                             {activeOrg?.name || "Global Tech Institute of Sciences"}
                           </span>
                         </div>
                         {activeOrg?.code && (
-                          <div className="flex justify-between items-center py-2 border-b border-gray-200/60">
-                            <span className="text-gray-500 font-medium">
+                          <div className="flex justify-between items-center py-2 border-b border-gray-200 dark:border-dark-border/60">
+                            <span className="text-gray-500 dark:text-dark-text-secondary font-medium">
                               Organization Code
                             </span>
-                            <span className="font-bold text-violet-600 uppercase">
+                            <span className="font-bold text-violet-600 dark:text-violet-400 uppercase">
                               {activeOrg.code}
                             </span>
                           </div>
                         )}
-                        <div className="flex justify-between items-center py-2 border-b border-gray-200/60">
-                          <span className="text-gray-500 font-medium">
+                        <div className="flex justify-between items-center py-2 border-b border-gray-200 dark:border-dark-border/60">
+                          <span className="text-gray-500 dark:text-dark-text-secondary font-medium">
                             Verification Status
                           </span>
                           <span className="text-emerald-600 font-bold flex items-center gap-1">
@@ -752,8 +759,8 @@ const Settings = () => {
                             Campus Member
                           </span>
                         </div>
-                        <div className="flex justify-between items-center py-2 border-b border-gray-200/60">
-                          <span className="text-gray-500 font-medium">
+                        <div className="flex justify-between items-center py-2 border-b border-gray-200 dark:border-dark-border/60">
+                          <span className="text-gray-500 dark:text-dark-text-secondary font-medium">
                             Feed Verification Requirement
                           </span>
                           {(role === "admin" || role === "official" || activeOrgItem?.role === "admin" || activeOrgItem?.role === "owner") ? (
@@ -777,18 +784,18 @@ const Settings = () => {
                               className={`px-2.5 py-1 rounded text-xs font-bold border ${
                                 activeOrg?.require_verified_feed
                                   ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                                  : "bg-gray-50 text-gray-600 border-gray-200"
+                                  : "bg-gray-50 dark:bg-dark-elevated text-gray-600 dark:text-dark-text-secondary border-gray-200 dark:border-dark-border"
                               }`}
                             >
                               {activeOrg?.require_verified_feed ? "Required" : "Optional"}
                             </span>
                           )}
                         </div>
-                        <div className="flex justify-between items-center py-2 border-b border-gray-200/60">
-                          <span className="text-gray-500 font-medium">
+                        <div className="flex justify-between items-center py-2 border-b border-gray-200 dark:border-dark-border/60">
+                          <span className="text-gray-500 dark:text-dark-text-secondary font-medium">
                             Official Email
                           </span>
-                          <span className="font-semibold text-gray-800">
+                          <span className="font-semibold text-gray-800 dark:text-dark-text">
                             {profileData?.email || "user@organization.edu"}
                           </span>
                         </div>
@@ -796,7 +803,7 @@ const Settings = () => {
                           <button
                             type="button"
                             onClick={() => setIsOrgModalOpen(true)}
-                            className="px-3.5 py-1.5 text-xs font-bold text-violet-600 bg-violet-50 hover:bg-violet-100 rounded-lg transition-colors flex items-center gap-1.5 border border-violet-100"
+                            className="px-3.5 py-1.5 text-xs font-bold text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-500/15 hover:bg-violet-100 rounded-lg transition-colors flex items-center gap-1.5 border border-violet-100"
                           >
                             <i className="ri-arrow-left-right-line"></i>
                             Request Organization Change
@@ -812,10 +819,10 @@ const Settings = () => {
                       icon="ri-shield-check-line"
                     >
                       <div className="space-y-2 text-sm max-w-lg">
-                        <p className="text-gray-800 font-semibold">
+                        <p className="text-gray-800 dark:text-dark-text font-semibold">
                           Your account is currently active and in good standing.
                         </p>
-                        <p className="text-xs text-gray-500 leading-relaxed">
+                        <p className="text-xs text-gray-500 dark:text-dark-text-secondary leading-relaxed">
                           Member since January 2026. No restrictions or warnings
                           associated with your profile.
                         </p>
@@ -845,44 +852,44 @@ const Settings = () => {
                       icon="ri-logout-box-r-line"
                     >
                       <div className="space-y-5 py-2 max-w-md">
-                        <div className="flex items-center gap-2 text-gray-800 font-bold text-base">
-                          <i className="ri-logout-box-r-line text-xl text-gray-700"></i>
+                        <div className="flex items-center gap-2 text-gray-800 dark:text-dark-text font-bold text-base">
+                          <i className="ri-logout-box-r-line text-xl text-gray-700 dark:text-dark-text-secondary"></i>
                           <h4>Choose logout scope</h4>
                         </div>
                         <div className="space-y-3">
-                          <label className="flex items-center gap-3 p-3.5 rounded-xl border border-gray-200 bg-white cursor-pointer hover:bg-gray-50 transition-colors has-checked:border-violet-600 has-checked:bg-violet-50/50 shadow-xs">
+                          <label className="flex items-center gap-3 p-3.5 rounded-xl border border-gray-200 dark:border-dark-border bg-white cursor-pointer hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated transition-colors has-checked:border-violet-600 has-checked:bg-violet-50 dark:bg-violet-500/15/50 shadow-xs">
                             <input
                               type="radio"
                               name="logoutType"
                               value="current"
                               checked={logoutType === "current"}
                               onChange={(e) => setLogoutType(e.target.value)}
-                              className="w-4 h-4 text-violet-600 focus:ring-violet-500"
+                              className="w-4 h-4 text-violet-600 dark:text-violet-400 focus:ring-violet-500"
                             />
                             <div className="flex-1">
-                              <p className="text-sm font-semibold text-gray-800">
+                              <p className="text-sm font-semibold text-gray-800 dark:text-dark-text">
                                 This device only
                               </p>
-                              <p className="text-xs text-gray-500">
+                              <p className="text-xs text-gray-500 dark:text-dark-text-secondary">
                                 Logout from this session
                               </p>
                             </div>
                           </label>
 
-                          <label className="flex items-center gap-3 p-3.5 rounded-xl border border-gray-200 bg-white cursor-pointer hover:bg-gray-50 transition-colors has-checked:border-red-600 has-checked:bg-red-50/50 shadow-xs">
+                          <label className="flex items-center gap-3 p-3.5 rounded-xl border border-gray-200 dark:border-dark-border bg-white cursor-pointer hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated transition-colors has-checked:border-red-600 has-checked:bg-red-50/50 shadow-xs">
                             <input
                               type="radio"
                               name="logoutType"
                               value="all"
                               checked={logoutType === "all"}
                               onChange={(e) => setLogoutType(e.target.value)}
-                              className="w-4 h-4 text-red-600 focus:ring-red-500"
+                              className="w-4 h-4 text-red-600 dark:text-red-400 focus:ring-red-500"
                             />
                             <div className="flex-1">
-                              <p className="text-sm font-semibold text-gray-800">
+                              <p className="text-sm font-semibold text-gray-800 dark:text-dark-text">
                                 All devices
                               </p>
-                              <p className="text-xs text-gray-500">
+                              <p className="text-xs text-gray-500 dark:text-dark-text-secondary">
                                 Logout everywhere
                               </p>
                             </div>
@@ -890,7 +897,7 @@ const Settings = () => {
                         </div>
 
                         <div className="space-y-2 pt-1">
-                          <p className="text-xs text-gray-600 font-medium">
+                          <p className="text-xs text-gray-600 dark:text-dark-text-secondary font-medium">
                             Type{" "}
                             <span className="font-bold text-red-500">
                               logout
@@ -901,7 +908,7 @@ const Settings = () => {
                             type="text"
                             value={logoutInput}
                             onChange={(e) => setLogoutInput(e.target.value)}
-                            className="w-full bg-white border border-gray-300 rounded-xl px-3.5 py-2.5 outline-none focus:border-violet-600 transition-all text-sm font-medium text-red-500"
+                            className="w-full bg-white dark:bg-dark-card border border-gray-300 dark:border-dark-border rounded-xl px-3.5 py-2.5 outline-none focus:border-violet-600 transition-all text-sm font-medium text-red-500"
                             placeholder="Confirm logout"
                           />
                         </div>
@@ -925,14 +932,14 @@ const Settings = () => {
                       icon="ri-delete-bin-7-line"
                     >
                       <div className="space-y-4 py-2 max-w-md">
-                        <div className="p-3.5 rounded-xl bg-red-100/70 border border-red-200 text-red-900 text-xs sm:text-sm leading-relaxed">
+                        <div className="p-3.5 rounded-xl bg-red-100/70 border border-red-200 dark:border-red-500/30 text-red-900 text-xs sm:text-sm leading-relaxed">
                           <span className="font-bold">
                             Warning: This action cannot be undone!
                           </span>{" "}
                           All user data including issues, comments, and votes
                           will be preserved but attributed to a deleted user.
                         </div>
-                        <p className="text-xs sm:text-sm text-gray-700 font-medium">
+                        <p className="text-xs sm:text-sm text-gray-700 dark:text-dark-text-secondary font-medium">
                           Please enter your current password for verification.
                         </p>
                         <form
@@ -947,7 +954,7 @@ const Settings = () => {
                               if (deleteError) setDeleteError("");
                             }}
                             placeholder="Enter your current password"
-                            className="w-full bg-white border border-red-300 rounded-xl px-3.5 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 transition shadow-xs"
+                            className="w-full bg-white dark:bg-dark-card border border-red-300 rounded-xl px-3.5 py-2.5 text-sm text-gray-800 dark:text-dark-text placeholder-gray-400 dark:placeholder-dark-text-muted focus:outline-none focus:ring-2 focus:ring-red-500 transition shadow-xs"
                           />
                           {deleteError && (
                             <div className="p-3 rounded-xl bg-red-600 text-white text-xs font-bold flex items-center gap-2">
@@ -982,15 +989,15 @@ const Settings = () => {
                     <button
                       type="button"
                       onClick={navigateToList}
-                      className="p-2 sm:p-2.5 rounded-xl bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 transition shadow-xs shrink-0"
+                      className="p-2 sm:p-2.5 rounded-xl bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated text-gray-700 dark:text-dark-text-secondary transition shadow-xs shrink-0"
                     >
                       <i className="ri-arrow-left-line text-lg"></i>
                     </button>
                     <div>
-                      <h2 className="text-xl sm:text-2xl font-black text-gray-900">
+                      <h2 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-dark-text">
                         Appearance & display
                       </h2>
-                      <p className="text-xs sm:text-sm text-gray-500 font-medium">
+                      <p className="text-xs sm:text-sm text-gray-500 dark:text-dark-text-secondary font-medium">
                         Customize your visual experience and interface layout
                       </p>
                     </div>
@@ -1039,8 +1046,8 @@ const Settings = () => {
                               }
                               className={`p-4 rounded-xl border-2 text-left transition-all flex flex-col justify-between relative bg-white ${
                                 settings.theme === themeOpt.id
-                                  ? "border-violet-600 bg-violet-50/30 shadow-xs"
-                                  : "border-gray-200/80 hover:border-gray-300"
+                                  ? "border-violet-600 bg-violet-50 dark:bg-violet-500/15/30 shadow-xs"
+                                  : "border-gray-200 dark:border-dark-border/80 hover:border-gray-300 dark:border-dark-border"
                               }`}
                             >
                               {settings.theme === themeOpt.id && (
@@ -1048,22 +1055,22 @@ const Settings = () => {
                                   <i className="ri-check-line font-bold"></i>
                                 </span>
                               )}
-                              <div className="text-gray-700 mb-3">
+                              <div className="text-gray-700 dark:text-dark-text-secondary mb-3">
                                 <i className={`${themeOpt.icon} text-2xl`}></i>
                               </div>
                               <div>
-                                <p className="font-bold text-gray-900 text-sm">
+                                <p className="font-bold text-gray-900 dark:text-dark-text text-sm">
                                   {themeOpt.name}
                                 </p>
-                                <p className="text-xs text-gray-500 mt-0.5">
+                                <p className="text-xs text-gray-500 dark:text-dark-text-secondary mt-0.5">
                                   {themeOpt.desc}
                                 </p>
                               </div>
                             </button>
                           ))}
                         </div>
-                        <p className="text-xs text-gray-500 font-medium flex items-center gap-1.5 pt-1">
-                          <i className="ri-information-line text-gray-600"></i>
+                        <p className="text-xs text-gray-500 dark:text-dark-text-secondary font-medium flex items-center gap-1.5 pt-1">
+                          <i className="ri-information-line text-gray-600 dark:text-dark-text-secondary"></i>
                           Light mode is active by default as per your primary
                           workspace preference.
                         </p>
@@ -1100,12 +1107,12 @@ const Settings = () => {
                             className={`p-4 rounded-xl border text-left font-bold transition bg-white ${
                               settings.density === opt.id
                                 ? "border-violet-600 bg-violet-600 text-white shadow-xs"
-                                : "border-gray-200 text-gray-700 hover:bg-gray-50"
+                                : "border-gray-200 dark:border-dark-border text-gray-700 dark:text-dark-text-secondary hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated"
                             }`}
                           >
                             <p className="text-sm">{opt.label}</p>
                             <span
-                              className={`block text-xs font-normal mt-1 ${settings.density === opt.id ? "text-violet-200" : "text-gray-400"}`}
+                              className={`block text-xs font-normal mt-1 ${settings.density === opt.id ? "text-violet-200" : "text-gray-400 dark:text-dark-text-muted"}`}
                             >
                               {opt.desc}
                             </span>
@@ -1145,15 +1152,15 @@ const Settings = () => {
                     <button
                       type="button"
                       onClick={navigateToList}
-                      className="p-2 sm:p-2.5 rounded-xl bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 transition shadow-xs shrink-0"
+                      className="p-2 sm:p-2.5 rounded-xl bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated text-gray-700 dark:text-dark-text-secondary transition shadow-xs shrink-0"
                     >
                       <i className="ri-arrow-left-line text-lg"></i>
                     </button>
                     <div>
-                      <h2 className="text-xl sm:text-2xl font-black text-gray-900">
+                      <h2 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-dark-text">
                         Notifications & alerts
                       </h2>
-                      <p className="text-xs sm:text-sm text-gray-500 font-medium">
+                      <p className="text-xs sm:text-sm text-gray-500 dark:text-dark-text-secondary font-medium">
                         Manage how and when you receive dashboard updates
                       </p>
                     </div>
@@ -1198,7 +1205,7 @@ const Settings = () => {
                       icon="ri-time-line"
                     >
                       <div className="space-y-3 max-w-lg py-2">
-                        <label className="text-sm font-bold text-gray-800 block">
+                        <label className="text-sm font-bold text-gray-800 dark:text-dark-text block">
                           Select Digest Frequency
                         </label>
                         <select
@@ -1206,7 +1213,7 @@ const Settings = () => {
                           onChange={(e) =>
                             updateSetting("digestFrequency", e.target.value)
                           }
-                          className="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-sm font-semibold text-gray-800 focus:outline-none focus:ring-2 focus:ring-violet-500 transition"
+                          className="w-full bg-white dark:bg-dark-card border border-gray-300 dark:border-dark-border rounded-xl px-4 py-3 text-sm font-semibold text-gray-800 dark:text-dark-text focus:outline-none focus:ring-2 focus:ring-violet-500 transition"
                         >
                           <option value="realtime">
                             Instant (Real-time emails as events happen)
@@ -1241,15 +1248,15 @@ const Settings = () => {
                     <button
                       type="button"
                       onClick={navigateToList}
-                      className="p-2 sm:p-2.5 rounded-xl bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 transition shadow-xs shrink-0"
+                      className="p-2 sm:p-2.5 rounded-xl bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated text-gray-700 dark:text-dark-text-secondary transition shadow-xs shrink-0"
                     >
                       <i className="ri-arrow-left-line text-lg"></i>
                     </button>
                     <div>
-                      <h2 className="text-xl sm:text-2xl font-black text-gray-900">
+                      <h2 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-dark-text">
                         Security & privacy
                       </h2>
-                      <p className="text-xs sm:text-sm text-gray-500 font-medium">
+                      <p className="text-xs sm:text-sm text-gray-500 dark:text-dark-text-secondary font-medium">
                         Protect your account credentials and control public visibility
                       </p>
                     </div>
@@ -1276,10 +1283,10 @@ const Settings = () => {
                     >
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-2">
                         <div className="max-w-md">
-                          <p className="font-bold text-gray-900 text-sm">
+                          <p className="font-bold text-gray-900 dark:text-dark-text text-sm">
                             Reset your account password
                           </p>
-                          <p className="text-xs text-gray-500 mt-0.5">
+                          <p className="text-xs text-gray-500 dark:text-dark-text-secondary mt-0.5">
                             We will send a secure password reset link to your registered campus email address.
                           </p>
                         </div>
@@ -1290,7 +1297,7 @@ const Settings = () => {
                               "Password reset link sent to your registered email"
                             )
                           }
-                          className="px-5 py-2.5 bg-white border border-gray-300 hover:border-violet-500 hover:text-violet-600 font-bold text-xs rounded-xl transition shadow-xs shrink-0 self-start sm:self-center"
+                          className="px-5 py-2.5 bg-white dark:bg-dark-card border border-gray-300 dark:border-dark-border hover:border-violet-500 hover:text-violet-600 dark:text-violet-400 dark:hover:text-violet-400 font-bold text-xs rounded-xl transition shadow-xs shrink-0 self-start sm:self-center"
                         >
                           Send Reset Link
                         </button>
@@ -1335,15 +1342,15 @@ const Settings = () => {
                     <button
                       type="button"
                       onClick={navigateToList}
-                      className="p-2 sm:p-2.5 rounded-xl bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 transition shadow-xs shrink-0"
+                      className="p-2 sm:p-2.5 rounded-xl bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated text-gray-700 dark:text-dark-text-secondary transition shadow-xs shrink-0"
                     >
                       <i className="ri-arrow-left-line text-lg"></i>
                     </button>
                     <div>
-                      <h2 className="text-xl sm:text-2xl font-black text-gray-900">
+                      <h2 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-dark-text">
                         Workflow & preferences
                       </h2>
-                      <p className="text-xs sm:text-sm text-gray-500 font-medium">
+                      <p className="text-xs sm:text-sm text-gray-500 dark:text-dark-text-secondary font-medium">
                         Customize your startup screen, sorting rules, and language
                       </p>
                     </div>
@@ -1365,7 +1372,7 @@ const Settings = () => {
                       icon="ri-home-4-line"
                     >
                       <div className="space-y-3 max-w-lg py-2">
-                        <label className="text-sm font-bold text-gray-800 block">
+                        <label className="text-sm font-bold text-gray-800 dark:text-dark-text block">
                           Select Landing Screen
                         </label>
                         <select
@@ -1373,7 +1380,7 @@ const Settings = () => {
                           onChange={(e) =>
                             updateSetting("landingPage", e.target.value)
                           }
-                          className="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-sm font-semibold text-gray-800 focus:outline-none focus:ring-2 focus:ring-violet-500 transition"
+                          className="w-full bg-white dark:bg-dark-card border border-gray-300 dark:border-dark-border rounded-xl px-4 py-3 text-sm font-semibold text-gray-800 dark:text-dark-text focus:outline-none focus:ring-2 focus:ring-violet-500 transition"
                         >
                           <option value="dashboard">
                             My Dashboard (Analytics Overview)
@@ -1406,7 +1413,7 @@ const Settings = () => {
                       icon="ri-sort-desc"
                     >
                       <div className="space-y-3 max-w-lg py-2">
-                        <label className="text-sm font-bold text-gray-800 block">
+                        <label className="text-sm font-bold text-gray-800 dark:text-dark-text block">
                           Select Default Sorting Order
                         </label>
                         <select
@@ -1414,7 +1421,7 @@ const Settings = () => {
                           onChange={(e) =>
                             updateSetting("defaultSort", e.target.value)
                           }
-                          className="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-sm font-semibold text-gray-800 focus:outline-none focus:ring-2 focus:ring-violet-500 transition"
+                          className="w-full bg-white dark:bg-dark-card border border-gray-300 dark:border-dark-border rounded-xl px-4 py-3 text-sm font-semibold text-gray-800 dark:text-dark-text focus:outline-none focus:ring-2 focus:ring-violet-500 transition"
                         >
                           <option value="newest">
                             Newest First (Most recently reported)
@@ -1446,7 +1453,7 @@ const Settings = () => {
                       icon="ri-global-line"
                     >
                       <div className="space-y-3 max-w-lg py-2">
-                        <label className="text-sm font-bold text-gray-800 block">
+                        <label className="text-sm font-bold text-gray-800 dark:text-dark-text block">
                           Select Interface Language
                         </label>
                         <select
@@ -1454,7 +1461,7 @@ const Settings = () => {
                           onChange={(e) =>
                             updateSetting("language", e.target.value)
                           }
-                          className="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-sm font-semibold text-gray-800 focus:outline-none focus:ring-2 focus:ring-violet-500 transition"
+                          className="w-full bg-white dark:bg-dark-card border border-gray-300 dark:border-dark-border rounded-xl px-4 py-3 text-sm font-semibold text-gray-800 dark:text-dark-text focus:outline-none focus:ring-2 focus:ring-violet-500 transition"
                         >
                           <option value="en-US">
                             English (United States)
@@ -1477,7 +1484,7 @@ const Settings = () => {
                       icon="ri-time-zone-line"
                     >
                       <div className="space-y-3 max-w-lg py-2">
-                        <label className="text-sm font-bold text-gray-800 block">
+                        <label className="text-sm font-bold text-gray-800 dark:text-dark-text block">
                           Select Preferred Timezone
                         </label>
                         <select
@@ -1485,7 +1492,7 @@ const Settings = () => {
                           onChange={(e) =>
                             updateSetting("timezone", e.target.value)
                           }
-                          className="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-sm font-semibold text-gray-800 focus:outline-none focus:ring-2 focus:ring-violet-500 transition"
+                          className="w-full bg-white dark:bg-dark-card border border-gray-300 dark:border-dark-border rounded-xl px-4 py-3 text-sm font-semibold text-gray-800 dark:text-dark-text focus:outline-none focus:ring-2 focus:ring-violet-500 transition"
                         >
                           <option value="UTC-8">
                             UTC-8 (Pacific Time - US & Canada)
@@ -1516,15 +1523,15 @@ const Settings = () => {
                     <button
                       type="button"
                       onClick={navigateToList}
-                      className="p-2 sm:p-2.5 rounded-xl bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 transition shadow-xs shrink-0"
+                      className="p-2 sm:p-2.5 rounded-xl bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated text-gray-700 dark:text-dark-text-secondary transition shadow-xs shrink-0"
                     >
                       <i className="ri-arrow-left-line text-lg"></i>
                     </button>
                     <div>
-                      <h2 className="text-xl sm:text-2xl font-black text-gray-900">
+                      <h2 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-dark-text">
                         Data & storage
                       </h2>
-                      <p className="text-xs sm:text-sm text-gray-500 font-medium">
+                      <p className="text-xs sm:text-sm text-gray-500 dark:text-dark-text-secondary font-medium">
                         Manage local browser cache, export data, or restore defaults
                       </p>
                     </div>
@@ -1539,10 +1546,10 @@ const Settings = () => {
                     >
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-2">
                         <div className="max-w-md">
-                          <p className="font-bold text-gray-900 text-sm">
+                          <p className="font-bold text-gray-900 dark:text-dark-text text-sm">
                             Clear temporary browser storage
                           </p>
-                          <p className="text-xs text-gray-500 mt-0.5">
+                          <p className="text-xs text-gray-500 dark:text-dark-text-secondary mt-0.5">
                             Free up local space without affecting your cloud data or login session.
                           </p>
                         </div>
@@ -1553,7 +1560,7 @@ const Settings = () => {
                           className={`px-5 py-2.5 rounded-xl font-bold text-xs transition flex items-center gap-2 shrink-0 self-start sm:self-center ${
                             cacheCleared
                               ? "bg-emerald-600 text-white"
-                              : "bg-white border border-gray-300 text-gray-700 hover:bg-red-50 hover:text-red-600 hover:border-red-200 active:scale-95 shadow-xs"
+                              : "bg-white dark:bg-dark-card border border-gray-300 dark:border-dark-border text-gray-700 dark:text-dark-text-secondary hover:bg-red-50 dark:bg-red-500/15 hover:text-red-600 dark:text-red-400 hover:border-red-200 dark:border-red-500/30 active:scale-95 shadow-xs"
                           }`}
                         >
                           {isClearingCache ? (
@@ -1586,10 +1593,10 @@ const Settings = () => {
                     >
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-2">
                         <div className="max-w-md">
-                          <p className="font-bold text-gray-900 text-sm">
+                          <p className="font-bold text-gray-900 dark:text-dark-text text-sm">
                             Generate personal data archive
                           </p>
-                          <p className="text-xs text-gray-500 mt-0.5">
+                          <p className="text-xs text-gray-500 dark:text-dark-text-secondary mt-0.5">
                             Standard CSV export suitable for importing into spreadsheets or external analytics tools.
                           </p>
                         </div>
@@ -1661,15 +1668,15 @@ const Settings = () => {
                     <button
                       type="button"
                       onClick={navigateToList}
-                      className="p-2 sm:p-2.5 rounded-xl bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 transition shadow-xs shrink-0"
+                      className="p-2 sm:p-2.5 rounded-xl bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated text-gray-700 dark:text-dark-text-secondary transition shadow-xs shrink-0"
                     >
                       <i className="ri-arrow-left-line text-lg"></i>
                     </button>
                     <div>
-                      <h2 className="text-xl sm:text-2xl font-black text-gray-900">
+                      <h2 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-dark-text">
                         Help & legal
                       </h2>
-                      <p className="text-xs sm:text-sm text-gray-500 font-medium">
+                      <p className="text-xs sm:text-sm text-gray-500 dark:text-dark-text-secondary font-medium">
                         Documentation, user agreements, and version details
                       </p>
                     </div>
@@ -1721,21 +1728,21 @@ const Settings = () => {
         </div>
 
         {/* Universal Footer */}
-        <div className="flex justify-center items-center space-x-3 py-6 text-xs font-medium text-gray-400 border-t border-gray-200/60 mt-12 mx-6 md:mx-auto max-w-4xl">
+        <div className="flex justify-center items-center space-x-3 py-6 text-xs font-medium text-gray-400 dark:text-dark-text-muted border-t border-gray-200 dark:border-dark-border/60 mt-12 mx-6 md:mx-auto max-w-4xl">
           <Link
             to="/privacy-policy"
-            className="hover:text-violet-600 transition-colors"
+            className="hover:text-violet-600 dark:text-violet-400 dark:hover:text-violet-400 transition-colors"
           >
             Privacy Policy
           </Link>
           <span>&bull;</span>
-          <Link to="/terms" className="hover:text-violet-600 transition-colors">
+          <Link to="/terms" className="hover:text-violet-600 dark:text-violet-400 dark:hover:text-violet-400 transition-colors">
             Terms of Use
           </Link>
           <span>&bull;</span>
           <Link
             to="/trust-center"
-            className="hover:text-violet-600 transition-colors"
+            className="hover:text-violet-600 dark:text-violet-400 dark:hover:text-violet-400 transition-colors"
           >
             Trust Center
           </Link>

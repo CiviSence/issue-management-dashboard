@@ -11,13 +11,13 @@ const FAQItem = ({ question, answer, role }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="border-b border-gray-100 last:border-0">
+    <div className="border-b border-gray-100 dark:border-dark-border/50 last:border-0">
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="w-full py-5 flex items-center justify-between text-left group"
       >
         <div className="flex flex-col gap-1">
-          <span className="text-gray-900 font-bold group-hover:text-violet-600 transition-colors text-sm md:text-base">
+          <span className="text-gray-900 dark:text-dark-text font-bold group-hover:text-violet-600 dark:text-violet-400 dark:hover:text-violet-400 transition-colors text-sm md:text-base">
             {question}
           </span>
           {role && (
@@ -26,7 +26,7 @@ const FAQItem = ({ question, answer, role }) => {
             </span>
           )}
         </div>
-        <i className={`ri-arrow-down-s-line text-xl transition-transform duration-300 ${isOpen ? "rotate-180 text-violet-600" : "text-gray-400"}`}></i>
+        <i className={`ri-arrow-down-s-line text-xl transition-transform duration-300 ${isOpen ? "rotate-180 text-violet-600 dark:text-violet-400" : "text-gray-400 dark:text-dark-text-muted"}`}></i>
       </button>
       <AnimatePresence>
         {isOpen && (
@@ -37,7 +37,7 @@ const FAQItem = ({ question, answer, role }) => {
             transition={{ duration: 0.3, ease: "easeInOut" }}
             className="overflow-hidden"
           >
-            <p className="pb-5 text-gray-500 text-xs md:text-sm leading-relaxed">
+            <p className="pb-5 text-gray-500 dark:text-dark-text-secondary text-xs md:text-sm leading-relaxed">
               {answer}
             </p>
           </motion.div>
@@ -129,7 +129,7 @@ const HelpSupport = () => {
     <>
       {renderSideNav()}
       <BottomNav />
-      <div className="flex-1 bg-[#FBFBFF] min-h-screen overflow-y-auto">
+      <div className="flex-1 bg-[#FBFBFF] dark:bg-dark-bg min-h-screen overflow-y-auto">
         <div className="max-w-350 lg:pl-32 xl:pl-44">
           {/* HEADER */}
           <div className="relative pt-12 pb-24 md:pt-20 md:pb-32 px-6 overflow-hidden">
@@ -140,11 +140,11 @@ const HelpSupport = () => {
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-violet-50 border border-violet-100 text-violet-600 text-[10px] md:text-xs font-black uppercase tracking-widest mb-6"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-violet-50 dark:bg-violet-500/15 border border-violet-100 text-violet-600 dark:text-violet-400 text-[10px] md:text-xs font-black uppercase tracking-widest mb-6"
               >
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-violet-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-violet-500"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-violet-50 dark:bg-violet-500/150"></span>
                 </span>
                 Support Center
               </motion.div>
@@ -153,7 +153,7 @@ const HelpSupport = () => {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className="text-4xl md:text-5xl lg:text-7xl font-black text-gray-900 tracking-tight leading-[1.1] mb-6"
+                className="text-4xl md:text-5xl lg:text-7xl font-black text-gray-900 dark:text-dark-text tracking-tight leading-[1.1] mb-6"
               >
                 How can we <br className="hidden md:block" />
                 <span className="bg-clip-text text-transparent bg-linear-to-r from-violet-600 to-indigo-600">help you?</span>
@@ -170,13 +170,13 @@ const HelpSupport = () => {
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`relative px-6 md:px-8 py-3 rounded-xl text-xs md:text-sm font-black transition-all duration-300 ${activeTab === tab.id ? "text-violet-600" : "text-gray-500 hover:text-gray-900"
+                      className={`relative px-6 md:px-8 py-3 rounded-xl text-xs md:text-sm font-black transition-all duration-300 ${activeTab === tab.id ? "text-violet-600 dark:text-violet-400" : "text-gray-500 dark:text-dark-text-secondary hover:text-gray-900 dark:hover:text-dark-text dark:text-dark-text"
                         }`}
                     >
                       {activeTab === tab.id && (
                         <motion.div
                           layoutId="activeTab"
-                          className="absolute inset-0 bg-white rounded-xl shadow-lg shadow-violet-100 ring-1 ring-black/3"
+                          className="absolute inset-0 bg-white dark:bg-dark-card rounded-xl shadow-lg shadow-violet-100 ring-1 ring-black/3"
                           transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                         />
                       )}
@@ -200,13 +200,13 @@ const HelpSupport = () => {
                 >
                   <div className="bg-white/80 backdrop-blur-md rounded-4xl p-6 md:p-10 shadow-xl shadow-black/5 border border-white/60">
                     <div className="flex items-center justify-between mb-8">
-                      <h3 className="text-xl md:text-2xl font-black text-gray-900 flex items-center gap-3">
+                      <h3 className="text-xl md:text-2xl font-black text-gray-900 dark:text-dark-text flex items-center gap-3">
                         <div className="w-10 h-10 bg-violet-600 text-white rounded-xl flex items-center justify-center text-lg shadow-lg shadow-violet-200">
                           <i className="ri-question-line"></i>
                         </div>
                         FAQs
                       </h3>
-                      <button className="text-xs font-black text-violet-600 uppercase tracking-widest hover:underline md:block hidden">View All Guides</button>
+                      <button className="text-xs font-black text-violet-600 dark:text-violet-400 uppercase tracking-widest hover:underline md:block hidden">View All Guides</button>
                     </div>
                     <div className="divide-y divide-gray-50">
                       {faqs.map((faq, index) => (
@@ -231,13 +231,13 @@ const HelpSupport = () => {
                       <motion.div
                         initial={{ scale: 0.9, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
-                        className="bg-white p-8 rounded-4xl shadow-2xl shadow-black/10 border border-gray-100 text-center max-w-sm mx-auto"
+                        className="bg-white p-8 rounded-4xl shadow-2xl shadow-black/10 border border-gray-100 dark:border-dark-border/50 text-center max-w-sm mx-auto"
                       >
                         <div className="w-16 h-16 bg-amber-50 text-amber-500 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-6">
                           <i className="ri-error-warning-fill"></i>
                         </div>
-                        <h4 className="text-xl font-black text-gray-900 mb-2">Service Offline</h4>
-                        <p className="text-gray-500 text-sm leading-relaxed mb-8">The support form is temporarily unavailable. Please use the Live Chat for help.</p>
+                        <h4 className="text-xl font-black text-gray-900 dark:text-dark-text mb-2">Service Offline</h4>
+                        <p className="text-gray-500 dark:text-dark-text-secondary text-sm leading-relaxed mb-8">The support form is temporarily unavailable. Please use the Live Chat for help.</p>
                         <button
                           onClick={() => setIsChatOpen(true)}
                           className="w-full bg-violet-600 text-white font-black py-4 rounded-2xl shadow-xl shadow-violet-200 hover:scale-[1.02] active:scale-[0.98] transition-all"
@@ -247,19 +247,19 @@ const HelpSupport = () => {
                       </motion.div>
                     </div>
 
-                    <h3 className="text-2xl font-black text-gray-900 mb-10">Send a message</h3>
+                    <h3 className="text-2xl font-black text-gray-900 dark:text-dark-text mb-10">Send a message</h3>
                     <div className="space-y-6 opacity-40">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-2">
-                          <div className="h-14 bg-gray-100 rounded-2xl w-full"></div>
+                          <div className="h-14 bg-gray-100 dark:bg-dark-elevated rounded-2xl w-full"></div>
                         </div>
                         <div className="space-y-2">
-                          <div className="h-14 bg-gray-100 rounded-2xl w-full"></div>
+                          <div className="h-14 bg-gray-100 dark:bg-dark-elevated rounded-2xl w-full"></div>
                         </div>
                       </div>
-                      <div className="h-14 bg-gray-100 rounded-2xl w-full"></div>
-                      <div className="h-32 bg-gray-100 rounded-2xl w-full"></div>
-                      <div className="h-14 bg-gray-200 rounded-2xl w-full"></div>
+                      <div className="h-14 bg-gray-100 dark:bg-dark-elevated rounded-2xl w-full"></div>
+                      <div className="h-32 bg-gray-100 dark:bg-dark-elevated rounded-2xl w-full"></div>
+                      <div className="h-14 bg-gray-200 dark:bg-dark-border rounded-2xl w-full"></div>
                     </div>
                   </div>
 
@@ -273,20 +273,20 @@ const HelpSupport = () => {
                       <p className="text-violet-100/80 text-sm font-medium mb-8 leading-relaxed">Our support heroes are ready to help you in real-time. Average wait: &lt; 2 mins.</p>
                       <button
                         onClick={() => setIsChatOpen(true)}
-                        className="w-full bg-white text-violet-600 font-black py-4 rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg"
+                        className="w-full bg-white text-violet-600 dark:text-violet-400 font-black py-4 rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg"
                       >
                         Talk to us now
                       </button>
                     </div>
 
                     <div className="bg-white rounded-4xl p-8 shadow-xl shadow-black/5 border border-white/60">
-                      <h4 className="text-lg font-black text-gray-900 mb-6 flex items-center gap-2">
-                        <i className="ri-mail-line text-violet-600"></i>
+                      <h4 className="text-lg font-black text-gray-900 dark:text-dark-text mb-6 flex items-center gap-2">
+                        <i className="ri-mail-line text-violet-600 dark:text-violet-400"></i>
                         Direct Email
                       </h4>
                       <div className="space-y-4">
-                        <p className="text-gray-500 text-xs font-bold uppercase tracking-wider">General Enquiries</p>
-                        <a href="mailto:connect-csm@zohomail.in" className="text-lg font-black text-gray-900 hover:text-violet-600 transition-colors bg-violet-50 px-4 py-3 rounded-xl block truncate">
+                        <p className="text-gray-500 dark:text-dark-text-secondary text-xs font-bold uppercase tracking-wider">General Enquiries</p>
+                        <a href="mailto:connect-csm@zohomail.in" className="text-lg font-black text-gray-900 dark:text-dark-text hover:text-violet-600 dark:text-violet-400 dark:hover:text-violet-400 transition-colors bg-violet-50 dark:bg-violet-500/15 px-4 py-3 rounded-xl block truncate">
                           connect-csm@zohomail.in
                         </a>
                       </div>
@@ -305,13 +305,13 @@ const HelpSupport = () => {
                 >
                   <div className="bg-white/80 backdrop-blur-md rounded-4xl p-6 md:p-12 shadow-xl shadow-black/5 border border-white/60">
                     <div className="max-w-3xl mb-12">
-                      <h3 className="text-2xl md:text-3xl font-black text-gray-900 mb-4 flex items-center gap-3">
+                      <h3 className="text-2xl md:text-3xl font-black text-gray-900 dark:text-dark-text mb-4 flex items-center gap-3">
                         <div className="w-10 h-10 bg-blue-600 text-white rounded-xl flex items-center justify-center text-lg shadow-lg shadow-blue-200">
                           <i className="ri-book-3-line"></i>
                         </div>
                         Knowledge Base
                       </h3>
-                      <p className="text-gray-500 text-sm md:text-base leading-relaxed">Everything you need to know about navigating the dashboard, reporting issues, and earning points.</p>
+                      <p className="text-gray-500 dark:text-dark-text-secondary text-sm md:text-base leading-relaxed">Everything you need to know about navigating the dashboard, reporting issues, and earning points.</p>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
@@ -321,39 +321,39 @@ const HelpSupport = () => {
                         { step: "3", title: "Status Tracking", desc: "Monitor progress in 'My Issues'. Get notified for every update." },
                         { step: "4", title: "Community Rank", desc: "Earn reputation points for every resolved report and climb the ranks." }
                       ].map((card, i) => (
-                        <div key={i} className="flex gap-5 p-6 rounded-2xl hover:bg-violet-50/50 transition-colors group">
-                          <div className="shrink-0 w-12 h-12 bg-white rounded-2xl shadow-sm border border-gray-100 flex items-center justify-center font-black text-violet-600 group-hover:scale-110 transition-transform">
+                        <div key={i} className="flex gap-5 p-6 rounded-2xl hover:bg-violet-50 dark:bg-violet-500/15 dark:hover:bg-violet-50 dark:bg-violet-500/150/15/50 transition-colors group">
+                          <div className="shrink-0 w-12 h-12 bg-white dark:bg-dark-card rounded-2xl shadow-sm border border-gray-100 dark:border-dark-border/50 flex items-center justify-center font-black text-violet-600 dark:text-violet-400 group-hover:scale-110 transition-transform">
                             {card.step}
                           </div>
                           <div>
-                            <h4 className="font-bold text-gray-900 mb-1">{card.title}</h4>
-                            <p className="text-sm text-gray-500 leading-relaxed">{card.desc}</p>
+                            <h4 className="font-bold text-gray-900 dark:text-dark-text mb-1">{card.title}</h4>
+                            <p className="text-sm text-gray-500 dark:text-dark-text-secondary leading-relaxed">{card.desc}</p>
                           </div>
                         </div>
                       ))}
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-10 border-t border-gray-100">
-                      <div className="p-8 bg-gray-50/50 rounded-3xl border border-gray-100 group hover:border-violet-200 transition-all flex flex-col justify-between">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-10 border-t border-gray-100 dark:border-dark-border/50">
+                      <div className="p-8 bg-gray-50/50 dark:bg-dark-elevated/50 rounded-3xl border border-gray-100 dark:border-dark-border/50 group hover:border-violet-200 transition-all flex flex-col justify-between">
                         <div>
-                          <div className="w-14 h-14 bg-white rounded-2xl shadow-sm flex items-center justify-center text-rose-600 text-2xl mb-6">
+                          <div className="w-14 h-14 bg-white dark:bg-dark-card rounded-2xl shadow-sm flex items-center justify-center text-rose-600 text-2xl mb-6">
                             <i className="ri-play-circle-line"></i>
                           </div>
-                          <h4 className="text-xl font-black text-gray-900 mb-3">Video Tutorials</h4>
-                          <p className="text-sm text-gray-500 mb-8 leading-relaxed">Prefer watching? Check out our quick 60-second guides on YouTube.</p>
+                          <h4 className="text-xl font-black text-gray-900 dark:text-dark-text mb-3">Video Tutorials</h4>
+                          <p className="text-sm text-gray-500 dark:text-dark-text-secondary mb-8 leading-relaxed">Prefer watching? Check out our quick 60-second guides on YouTube.</p>
                         </div>
                         <button className="w-full text-xs font-black uppercase tracking-widest text-white bg-gray-900 p-4 rounded-xl hover:bg-violet-600 transition-all">
                           Watch Guides
                         </button>
                       </div>
 
-                      <div className="p-8 bg-gray-50/50 rounded-3xl border border-gray-100 group hover:border-violet-200 transition-all flex flex-col justify-between">
+                      <div className="p-8 bg-gray-50/50 dark:bg-dark-elevated/50 rounded-3xl border border-gray-100 dark:border-dark-border/50 group hover:border-violet-200 transition-all flex flex-col justify-between">
                         <div>
-                          <div className="w-14 h-14 bg-white rounded-2xl shadow-sm flex items-center justify-center text-indigo-600 text-2xl mb-6">
+                          <div className="w-14 h-14 bg-white dark:bg-dark-card rounded-2xl shadow-sm flex items-center justify-center text-indigo-600 text-2xl mb-6">
                             <i className="ri-team-line"></i>
                           </div>
-                          <h4 className="text-xl font-black text-gray-900 mb-3">Community Hub</h4>
-                          <p className="text-sm text-gray-500 mb-8 leading-relaxed">Join 2,000+ students and staff discussing platform updates and tips.</p>
+                          <h4 className="text-xl font-black text-gray-900 dark:text-dark-text mb-3">Community Hub</h4>
+                          <p className="text-sm text-gray-500 dark:text-dark-text-secondary mb-8 leading-relaxed">Join 2,000+ students and staff discussing platform updates and tips.</p>
                         </div>
                         <a
                           href="https://chat.whatsapp.com/L8FwfWvRuorDu4zqCJ4uJw?mode=gi_t"
@@ -379,13 +379,13 @@ const HelpSupport = () => {
                 >
                   <div className="bg-white/80 backdrop-blur-md rounded-4xl p-6 md:p-12 shadow-xl shadow-black/5 border border-white/60">
                     <div className="max-w-2xl mb-12">
-                      <h3 className="text-2xl font-black text-gray-900 mb-4 flex items-center gap-3">
+                      <h3 className="text-2xl font-black text-gray-900 dark:text-dark-text mb-4 flex items-center gap-3">
                         <div className="w-10 h-10 bg-gray-900 text-white rounded-xl flex items-center justify-center text-lg">
                           <i className="ri-scales-line"></i>
                         </div>
                         Legal Documentation
                       </h3>
-                      <p className="text-gray-500 text-sm md:text-base leading-relaxed">Your privacy and security are our top priorities. Read our policies below.</p>
+                      <p className="text-gray-500 dark:text-dark-text-secondary text-sm md:text-base leading-relaxed">Your privacy and security are our top priorities. Read our policies below.</p>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -393,18 +393,18 @@ const HelpSupport = () => {
                         href="/legal/privacy-policy.txt"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center justify-between p-8 bg-white rounded-3xl border border-gray-100 hover:border-violet-200 hover:shadow-xl hover:shadow-black/5 transition-all group"
+                        className="flex items-center justify-between p-8 bg-white rounded-3xl border border-gray-100 dark:border-dark-border/50 hover:border-violet-200 hover:shadow-xl hover:shadow-black/5 transition-all group"
                       >
                         <div className="flex items-center gap-6">
-                          <div className="w-16 h-16 bg-violet-50 rounded-2xl flex items-center justify-center text-violet-600 text-2xl group-hover:scale-110 transition-transform">
+                          <div className="w-16 h-16 bg-violet-50 dark:bg-violet-500/15 rounded-2xl flex items-center justify-center text-violet-600 dark:text-violet-400 text-2xl group-hover:scale-110 transition-transform">
                             <i className="ri-file-shield-line"></i>
                           </div>
                           <div>
-                            <h4 className="text-lg font-black text-gray-900">Privacy Policy</h4>
-                            <p className="text-xs font-bold text-gray-400 mt-1 uppercase tracking-widest">TXT Document</p>
+                            <h4 className="text-lg font-black text-gray-900 dark:text-dark-text">Privacy Policy</h4>
+                            <p className="text-xs font-bold text-gray-400 dark:text-dark-text-muted mt-1 uppercase tracking-widest">TXT Document</p>
                           </div>
                         </div>
-                        <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-violet-600 group-hover:text-white transition-all">
+                        <div className="w-10 h-10 rounded-full bg-gray-50 dark:bg-dark-elevated flex items-center justify-center text-gray-400 dark:text-dark-text-muted group-hover:bg-violet-600 group-hover:text-white transition-all">
                           <i className="ri-arrow-right-up-line"></i>
                         </div>
                       </a>
@@ -413,25 +413,25 @@ const HelpSupport = () => {
                         href="/legal/terms-and-conditions.txt"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center justify-between p-8 bg-white rounded-3xl border border-gray-100 hover:border-violet-200 hover:shadow-xl hover:shadow-black/5 transition-all group"
+                        className="flex items-center justify-between p-8 bg-white rounded-3xl border border-gray-100 dark:border-dark-border/50 hover:border-violet-200 hover:shadow-xl hover:shadow-black/5 transition-all group"
                       >
                         <div className="flex items-center gap-6">
-                          <div className="w-16 h-16 bg-violet-50 rounded-2xl flex items-center justify-center text-violet-600 text-2xl group-hover:scale-110 transition-transform">
+                          <div className="w-16 h-16 bg-violet-50 dark:bg-violet-500/15 rounded-2xl flex items-center justify-center text-violet-600 dark:text-violet-400 text-2xl group-hover:scale-110 transition-transform">
                             <i className="ri-scales-3-line"></i>
                           </div>
                           <div>
-                            <h4 className="text-lg font-black text-gray-900">Terms & Conditions</h4>
-                            <p className="text-xs font-bold text-gray-400 mt-1 uppercase tracking-widest">Legal Agreement</p>
+                            <h4 className="text-lg font-black text-gray-900 dark:text-dark-text">Terms & Conditions</h4>
+                            <p className="text-xs font-bold text-gray-400 dark:text-dark-text-muted mt-1 uppercase tracking-widest">Legal Agreement</p>
                           </div>
                         </div>
-                        <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-violet-600 group-hover:text-white transition-all">
+                        <div className="w-10 h-10 rounded-full bg-gray-50 dark:bg-dark-elevated flex items-center justify-center text-gray-400 dark:text-dark-text-muted group-hover:bg-violet-600 group-hover:text-white transition-all">
                           <i className="ri-arrow-right-up-line"></i>
                         </div>
                       </a>
                     </div>
 
-                    <div className="mt-12 p-8 bg-violet-50 rounded-3xl border border-violet-100/50 flex flex-col md:flex-row items-center gap-6">
-                      <div className="w-12 h-12 bg-white rounded-xl shrink-0 flex items-center justify-center text-violet-600 shadow-sm ring-1 ring-black/5">
+                    <div className="mt-12 p-8 bg-violet-50 dark:bg-violet-500/15 rounded-3xl border border-violet-100/50 flex flex-col md:flex-row items-center gap-6">
+                      <div className="w-12 h-12 bg-white dark:bg-dark-card rounded-xl shrink-0 flex items-center justify-center text-violet-600 dark:text-violet-400 shadow-sm ring-1 ring-black/5">
                         <i className="ri-information-line text-xl"></i>
                       </div>
                       <p className="text-sm font-medium text-violet-900/70 text-center md:text-left">

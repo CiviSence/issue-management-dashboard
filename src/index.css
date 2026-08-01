@@ -2,9 +2,12 @@
 
 @import "tailwindcss";
 
+/* Enable Tailwind v4 dark: variant via .dark class on <html> */
+@custom-variant dark (&:where(.dark, .dark *));
 
 body {
   font-family: 'Poppins', sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 @theme {
@@ -28,6 +31,17 @@ body {
 
   --color-border: var(--border);
   --color-input: var(--input);
+
+  /* Dark-mode specific semantic tokens */
+  --color-dark-bg: #0f172a;
+  --color-dark-card: #1e293b;
+  --color-dark-elevated: #334155;
+  --color-dark-border: #475569;
+  --color-dark-hover: #3b4c63;
+  --color-dark-input: #1e293b;
+  --color-dark-text: #f1f5f9;
+  --color-dark-text-secondary: #94a3b8;
+  --color-dark-text-muted: #64748b;
 }
 
 :root {
@@ -57,27 +71,26 @@ body {
 
 .dark {
   /* Dark Theme */
- --background: #F6F6FC;
-  --foreground: #1a1a1a;
+  --background: #0f172a;
+  --foreground: #f1f5f9;
 
-  --primary: #5E65AC;
-  --primary-foreground: #ffffff;
+  --primary: #818cf8;
+  --primary-foreground: #0f172a;
 
-  --secondary: #A6ABD2;
-  --secondary-foreground: #ffffff;
+  --secondary: #6366f1;
+  --secondary-foreground: #f1f5f9;
 
-  --card: #FFFFFF;
-  --card-foreground: #1a1a1a;
+  --card: #1e293b;
+  --card-foreground: #f1f5f9;
 
-  --muted: #E1E4F3;
-  /* using accent as muted bg since actual muted hex is dark */
-  --muted-foreground: #A4A6BF;
+  --muted: #334155;
+  --muted-foreground: #94a3b8;
 
-  --accent: #E1E4F3;
-  --accent-foreground: #5E65AC;
+  --accent: #334155;
+  --accent-foreground: #818cf8;
 
-  --border: #CACCDC;
-  --input: #CACCDC;
+  --border: #475569;
+  --input: #334155;
 }
 
 ::-webkit-scrollbar {

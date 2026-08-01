@@ -100,11 +100,11 @@ const MediaUploadZone = ({ newFiles, setNewFiles, existingUrls, setExistingUrls 
     return (
         <div className="space-y-3">
             <div className="flex items-center justify-between">
-                <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                    <i className="ri-camera-fill text-violet-600" />
+                <label className="text-sm font-semibold text-gray-700 dark:text-dark-text-secondary flex items-center gap-2">
+                    <i className="ri-camera-fill text-violet-600 dark:text-violet-400" />
                     Attach Proof <span className="text-red-500 font-bold">*</span>
                 </label>
-                <span className="text-[10px] font-medium text-gray-400 uppercase tracking-widest">{total} / 6 files</span>
+                <span className="text-[10px] font-medium text-gray-400 dark:text-dark-text-muted uppercase tracking-widest">{total} / 6 files</span>
             </div>
 
             {/* Drop/Upload zone */}
@@ -114,24 +114,24 @@ const MediaUploadZone = ({ newFiles, setNewFiles, existingUrls, setExistingUrls 
                         <button
                             type="button"
                             onClick={takePhoto}
-                            className="flex flex-col items-center justify-center border border-gray-200 rounded-xl p-4 bg-gray-50/20 hover:bg-gray-50 hover:border-violet-400 cursor-pointer transition-all text-center"
+                            className="flex flex-col items-center justify-center border border-gray-200 dark:border-dark-border rounded-xl p-4 bg-gray-50 dark:bg-dark-elevated/20 hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated hover:border-violet-400 cursor-pointer transition-all text-center"
                         >
-                            <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center mb-2 shadow-sm border border-gray-100">
-                                <i className="ri-camera-line text-lg text-violet-600" />
+                            <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center mb-2 shadow-sm border border-gray-100 dark:border-dark-border/50">
+                                <i className="ri-camera-line text-lg text-violet-600 dark:text-violet-400" />
                             </div>
-                            <span className="text-sm font-semibold text-gray-700">Take Photo</span>
-                            <span className="text-[10px] text-gray-400 mt-0.5">Use device camera</span>
+                            <span className="text-sm font-semibold text-gray-700 dark:text-dark-text-secondary">Take Photo</span>
+                            <span className="text-[10px] text-gray-400 dark:text-dark-text-muted mt-0.5">Use device camera</span>
                         </button>
                         <button
                             type="button"
                             onClick={() => inputRef.current?.click()}
-                            className="flex flex-col items-center justify-center border border-gray-200 rounded-xl p-4 bg-gray-50/20 hover:bg-gray-50 hover:border-violet-400 cursor-pointer transition-all text-center"
+                            className="flex flex-col items-center justify-center border border-gray-200 dark:border-dark-border rounded-xl p-4 bg-gray-50 dark:bg-dark-elevated/20 hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated hover:border-violet-400 cursor-pointer transition-all text-center"
                         >
-                            <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center mb-2 shadow-sm border border-gray-100">
-                                <i className="ri-image-line text-lg text-violet-600" />
+                            <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center mb-2 shadow-sm border border-gray-100 dark:border-dark-border/50">
+                                <i className="ri-image-line text-lg text-violet-600 dark:text-violet-400" />
                             </div>
-                            <span className="text-sm font-semibold text-gray-700">Library</span>
-                            <span className="text-[10px] text-gray-400 mt-0.5">Upload gallery media</span>
+                            <span className="text-sm font-semibold text-gray-700 dark:text-dark-text-secondary">Library</span>
+                            <span className="text-[10px] text-gray-400 dark:text-dark-text-muted mt-0.5">Upload gallery media</span>
                         </button>
                         <input
                             ref={inputRef}
@@ -149,15 +149,15 @@ const MediaUploadZone = ({ newFiles, setNewFiles, existingUrls, setExistingUrls 
                         onDrop={onDrop}
                         onClick={() => inputRef.current?.click()}
                         className={`border border-dashed rounded-xl px-4 py-6 text-center cursor-pointer transition-all duration-200
-                            ${dragging ? "border-violet-500 bg-violet-50/50 shadow-sm" : "border-gray-300 bg-gray-50/30 hover:bg-gray-50 hover:border-violet-400"}`}
+                            ${dragging ? "border-violet-500 bg-violet-50 dark:bg-violet-500/15/50 shadow-sm" : "border-gray-300 dark:border-dark-border bg-gray-50 dark:bg-dark-elevated/30 hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated hover:border-violet-400"}`}
                     >
-                        <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center mx-auto mb-2 shadow-sm border border-gray-100">
-                            <i className="ri-upload-2-line text-lg text-violet-600" />
+                        <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center mx-auto mb-2 shadow-sm border border-gray-100 dark:border-dark-border/50">
+                            <i className="ri-upload-2-line text-lg text-violet-600 dark:text-violet-400" />
                         </div>
-                        <p className="text-sm text-gray-600 font-medium">
-                            Click to upload or <span className="text-violet-600">drag and drop</span>
+                        <p className="text-sm text-gray-600 font-medium dark:text-dark-text-secondary">
+                            Click to upload or <span className="text-violet-600 dark:text-violet-400">drag and drop</span>
                         </p>
-                        <p className="text-xs text-gray-400 mt-1">Photos or videos of the issue</p>
+                        <p className="text-xs text-gray-400 dark:text-dark-text-muted mt-1">Photos or videos of the issue</p>
                         <input
                             ref={inputRef}
                             type="file"
@@ -174,7 +174,7 @@ const MediaUploadZone = ({ newFiles, setNewFiles, existingUrls, setExistingUrls 
             {total > 0 && (
                 <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-2">
                     {existingUrls.map((url) => (
-                        <div key={url} className="relative aspect-square rounded-lg overflow-hidden border border-gray-200 group bg-gray-100">
+                        <div key={url} className="relative aspect-square rounded-lg overflow-hidden border border-gray-200 dark:border-dark-border group bg-gray-100 dark:bg-dark-elevated">
                             {isVideoUrl(url) ? (
                                 <video src={url} className="w-full h-full object-cover" />
                             ) : (
@@ -190,7 +190,7 @@ const MediaUploadZone = ({ newFiles, setNewFiles, existingUrls, setExistingUrls 
                         </div>
                     ))}
                     {newFiles.map((file, i) => (
-                        <div key={file.preview} className="relative aspect-square rounded-lg overflow-hidden border-2 border-violet-100 group bg-gray-100">
+                        <div key={file.preview} className="relative aspect-square rounded-lg overflow-hidden border-2 border-violet-100 group bg-gray-100 dark:bg-dark-elevated">
                             {file.type.startsWith("video") ? (
                                 <video src={file.preview} className="w-full h-full object-cover" />
                             ) : (
@@ -214,8 +214,8 @@ const MediaUploadZone = ({ newFiles, setNewFiles, existingUrls, setExistingUrls 
 
 const Field = ({ label, icon, children, error, required }) => (
     <div className="space-y-1.5">
-        <label className="flex items-center gap-2 text-sm font-semibold text-gray-700">
-            {icon && <i className={`${icon} text-violet-500 text-base`} />}
+        <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-dark-text-secondary">
+            {icon && <i className={`${icon} text-violet-500 dark:text-violet-400 text-base`} />}
             {label} {required && <span className="text-red-500">*</span>}
         </label>
         {children}
@@ -321,7 +321,7 @@ const ReportIssueModal = ({ initial, onClose, onSaved }) => {
     };
 
     const inputCls =
-        "w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-violet-500 focus:ring-4 focus:ring-violet-500/5 transition-all placeholder:text-gray-400";
+        "w-full bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-violet-500 focus:ring-4 focus:ring-violet-500/5 transition-all placeholder:text-gray-400 dark:placeholder:text-dark-text-muted dark:text-dark-text-muted";
 
     return (
         <div
@@ -335,23 +335,23 @@ const ReportIssueModal = ({ initial, onClose, onSaved }) => {
                 className="bg-white rounded-none sm:rounded-2xl shadow-xl w-full max-w-xl flex flex-col h-full sm:h-auto sm:max-h-[85vh] overflow-hidden"
             >
                 {/* Header */}
-                <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-white shrink-0">
+                <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-dark-border/50 bg-white shrink-0">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-violet-50 flex items-center justify-center">
-                            <i className={`${isEdit ? "ri-edit-line" : "ri-feedback-line"} text-xl text-violet-600`} />
+                        <div className="w-10 h-10 rounded-xl bg-violet-50 dark:bg-violet-500/15 flex items-center justify-center">
+                            <i className={`${isEdit ? "ri-edit-line" : "ri-feedback-line"} text-xl text-violet-600 dark:text-violet-400`} />
                         </div>
                         <div>
-                            <h2 className="text-base font-bold text-gray-900">
+                            <h2 className="text-base font-bold text-gray-900 dark:text-dark-text">
                                 {isEdit ? "Update Report" : "Report Issue"}
                             </h2>
-                            <p className="text-[11px] text-gray-500 mt-0.5 font-medium">
+                            <p className="text-[11px] text-gray-500 mt-0.5 font-medium dark:text-dark-text-secondary">
                                 Provide details and proof for quick resolution
                             </p>
                         </div>
                     </div>
                     <button
                         onClick={onClose}
-                        className="text-gray-400 hover:text-gray-600 w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-50 transition-colors"
+                        className="text-gray-400 hover:text-gray-600 w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated transition-colors dark:text-dark-text-secondary"
                     >
                         <i className="ri-close-line text-xl" />
                     </button>
@@ -360,7 +360,7 @@ const ReportIssueModal = ({ initial, onClose, onSaved }) => {
                 {/* Content */}
                 <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto px-6 py-6 space-y-6">
                     {/* Media first */}
-                    <div className="bg-gray-50/50 rounded-xl p-4 border border-gray-100">
+                    <div className="bg-gray-50/50 dark:bg-dark-elevated/50 rounded-xl p-4 border border-gray-100 dark:border-dark-border/50">
                         <MediaUploadZone
                             newFiles={newFiles}
                             setNewFiles={setNewFiles}
@@ -391,7 +391,7 @@ const ReportIssueModal = ({ initial, onClose, onSaved }) => {
                                         </option>
                                     ))}
                                 </select>
-                                <i className="ri-arrow-down-s-line absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+                                <i className="ri-arrow-down-s-line absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-dark-text-muted pointer-events-none" />
                             </div>
                         </Field>
 
@@ -412,7 +412,7 @@ const ReportIssueModal = ({ initial, onClose, onSaved }) => {
                                         <option key={v} value={v}>{l}</option>
                                     ))}
                                 </select>
-                                <i className="ri-arrow-down-s-line absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+                                <i className="ri-arrow-down-s-line absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-dark-text-muted pointer-events-none" />
                             </div>
                         </Field>
 
@@ -438,17 +438,17 @@ const ReportIssueModal = ({ initial, onClose, onSaved }) => {
 
                         {/* GPS Geo-tagging Section (Disabled on Frontend) */}
                         <div className="sm:col-span-2">
-                            <div className="bg-gray-50/80 rounded-xl p-4 border border-gray-200/60 space-y-3">
+                            <div className="bg-gray-50 dark:bg-dark-elevated/80 dark:bg-dark-elevated/80 rounded-xl p-4 border border-gray-200 dark:border-dark-border/60 space-y-3">
                                 <div className="flex items-center justify-between">
-                                    <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                                        <i className="ri-map-pin-2-fill text-violet-500" />
+                                    <label className="text-sm font-semibold text-gray-700 dark:text-dark-text-secondary flex items-center gap-2">
+                                        <i className="ri-map-pin-2-fill text-violet-500 dark:text-violet-400" />
                                         Pinpoint GPS Location
                                     </label>
-                                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider bg-gray-200/50 px-2 py-0.5 rounded-full">
+                                    <span className="text-[10px] font-bold text-gray-400 dark:text-dark-text-muted uppercase tracking-wider bg-gray-200 dark:bg-dark-border/50 px-2 py-0.5 rounded-full">
                                         Disabled
                                     </span>
                                 </div>
-                                <p className="text-xs text-gray-400 leading-relaxed">
+                                <p className="text-xs text-gray-400 dark:text-dark-text-muted leading-relaxed">
                                     GPS sharing is currently disabled. In the future, this option will allow maintenance crews to find the exact location instantly.
                                 </p>
                                 <div className="flex flex-wrap items-center gap-3">
@@ -457,20 +457,20 @@ const ReportIssueModal = ({ initial, onClose, onSaved }) => {
                                             type="button"
                                             onClick={handleGetLocation}
                                             disabled={true}
-                                            className="flex items-center gap-2 px-4 py-2.5 bg-gray-200 text-gray-400 rounded-xl text-xs font-bold transition-all cursor-not-allowed border border-gray-300/40"
+                                            className="flex items-center gap-2 px-4 py-2.5 bg-gray-200 dark:bg-dark-border text-gray-400 dark:text-dark-text-muted rounded-xl text-xs font-bold transition-all cursor-not-allowed border border-gray-300 dark:border-dark-border/40"
                                         >
                                             <i className="ri-gps-line text-sm" />
                                             <span>Share GPS Coordinates</span>
                                         </button>
                                     ) : (
-                                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between w-full p-3 bg-gray-100/50 border border-gray-200 rounded-xl gap-2">
+                                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between w-full p-3 bg-gray-100 dark:bg-dark-elevated/50 border border-gray-200 dark:border-dark-border rounded-xl gap-2">
                                             <div className="flex items-center gap-2">
-                                                <div className="w-8 h-8 rounded-lg bg-gray-200 flex items-center justify-center text-gray-400">
+                                                <div className="w-8 h-8 rounded-lg bg-gray-200 dark:bg-dark-border flex items-center justify-center text-gray-400 dark:text-dark-text-muted">
                                                     <i className="ri-map-pin-check-fill text-base" />
                                                 </div>
                                                 <div>
-                                                    <p className="text-xs font-bold text-gray-500">GPS Location Attached</p>
-                                                    <p className="text-[10px] text-gray-400 font-medium">
+                                                    <p className="text-xs font-bold text-gray-500 dark:text-dark-text-secondary">GPS Location Attached</p>
+                                                    <p className="text-[10px] text-gray-400 dark:text-dark-text-muted font-medium">
                                                         {Number(form.latitude).toFixed(6)}, {Number(form.longitude).toFixed(6)}
                                                     </p>
                                                 </div>
@@ -479,7 +479,7 @@ const ReportIssueModal = ({ initial, onClose, onSaved }) => {
                                                 type="button"
                                                 onClick={handleRemoveLocation}
                                                 disabled={true}
-                                                className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-400 rounded-lg text-[11px] font-bold cursor-not-allowed border border-gray-200"
+                                                className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 dark:bg-dark-elevated hover:bg-gray-200 dark:bg-dark-border text-gray-400 dark:text-dark-text-muted rounded-lg text-[11px] font-bold cursor-not-allowed border border-gray-200 dark:border-dark-border"
                                             >
                                                 <i className="ri-delete-bin-line" />
                                                 <span>Remove GPS</span>
@@ -505,7 +505,7 @@ const ReportIssueModal = ({ initial, onClose, onSaved }) => {
                                     minLength={10}
                                 />
                                 <div className="flex justify-end pr-1 pt-1">
-                                    <span className={`text-[9px] font-bold uppercase tracking-widest ${form.description.length < 10 ? "text-gray-400" : "text-emerald-600"}`}>
+                                    <span className={`text-[9px] font-bold uppercase tracking-widest ${form.description.length < 10 ? "text-gray-400 dark:text-dark-text-muted" : "text-emerald-600"}`}>
                                         {form.description.length} Characters
                                     </span>
                                 </div>
@@ -515,12 +515,12 @@ const ReportIssueModal = ({ initial, onClose, onSaved }) => {
                 </form>
 
                 {/* Footer */}
-                <div className="px-6 py-4 border-t border-gray-100 bg-white flex items-center justify-end gap-3 shrink-0">
+                <div className="px-6 py-4 border-t border-gray-100 dark:border-dark-border/50 bg-white flex items-center justify-end gap-3 shrink-0">
                     <button
                         type="button"
                         onClick={onClose}
                         disabled={submitting}
-                        className="px-4 py-2.5 text-gray-600 hover:bg-gray-50 rounded-xl text-sm font-semibold transition-colors disabled:opacity-50"
+                        className="px-4 py-2.5 text-gray-600 hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated dark:bg-dark-elevated rounded-xl text-sm font-semibold transition-colors disabled:opacity-50 dark:text-dark-text-secondary"
                     >
                         Cancel
                     </button>

@@ -7,7 +7,7 @@ const AdCard = ({ ad }) => {
             animate={{ opacity: 1, y: 0 }}
             className="bg-linear-to-br from-violet-50 to-white rounded-2xl border border-violet-100 shadow-sm mb-4 overflow-hidden relative group"
         >
-            <div className="absolute top-4 right-4 bg-violet-600/10 text-violet-600 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider z-10">
+            <div className="absolute top-4 right-4 bg-violet-600/10 text-violet-600 dark:text-violet-400 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider z-10">
                 Sponsored
             </div>
 
@@ -22,10 +22,10 @@ const AdCard = ({ ad }) => {
             )}
 
             <div className="p-5">
-                <h3 className="font-bold text-gray-900 text-lg leading-tight mb-2">
+                <h3 className="font-bold text-gray-900 text-lg leading-tight mb-2 dark:text-dark-text">
                     {ad.title}
                 </h3>
-                <p className="text-gray-600 text-sm leading-relaxed mb-4">
+                <p className="text-gray-600 text-sm leading-relaxed mb-4 dark:text-dark-text-secondary">
                     {ad.description}
                 </p>
 

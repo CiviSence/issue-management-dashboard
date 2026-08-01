@@ -20,9 +20,9 @@ const StatusBadge = ({ type, value, className = '', showDot = true }) => {
   const currentMap = stylesMap[type] || {};
   const normalizedValue = value?.toLowerCase();
   const style = currentMap[normalizedValue] || currentMap.other || {
-    bg: "bg-gray-100",
-    text: "text-gray-600",
-    border: "border-gray-200",
+    bg: "bg-gray-100 dark:bg-dark-elevated",
+    text: "text-gray-600 dark:text-dark-text-secondary",
+    border: "border-gray-200 dark:border-dark-border",
     dot: "bg-gray-500",
     label: value || "Unknown",
   };

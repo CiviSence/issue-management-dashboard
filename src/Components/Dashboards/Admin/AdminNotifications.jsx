@@ -235,13 +235,13 @@ const AdminNotifications = () => {
       <AdminSideNav />
       <BottomNav />
       <ToastContainer />
-      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#F8F9FF] overflow-x-hidden overflow-y-auto h-screen pb-20" id="adminNotifsScroll">
+      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#F8F9FF] dark:bg-dark-bg overflow-x-hidden overflow-y-auto h-screen pb-20" id="adminNotifsScroll">
         <TopBar title="Notifications" />
         <PullToRefresh scrollContainerId="adminNotifsScroll" onRefresh={loadNotifications}>
           <div className="p-2 lg:p-4 w-full min-h-screen">
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+            <div className="bg-white dark:bg-dark-card rounded-2xl shadow-sm border border-gray-200 dark:border-dark-border overflow-hidden">
             {/* Filters and Actions */}
-            <div className="flex flex-wrap items-center justify-between border-b border-gray-150 px-4 py-3 gap-3 bg-gray-50/50">
+            <div className="flex flex-wrap items-center justify-between border-b border-gray-150 px-4 py-3 gap-3 bg-gray-50/50 dark:bg-dark-elevated/50">
               <div className="flex items-center gap-2">
                 {["all", "unread", "read"].map((type) => (
                   <button
@@ -250,7 +250,7 @@ const AdminNotifications = () => {
                     className={`px-3 py-1.5 rounded-lg text-xs font-bold capitalize transition cursor-pointer ${
                       filter === type
                         ? "bg-[#6366f1] text-white shadow-md shadow-indigo-500/20"
-                        : "text-gray-600 hover:bg-gray-100"
+                        : "text-gray-600 dark:text-dark-text-secondary hover:bg-gray-100 dark:hover:bg-dark-elevated dark:bg-dark-elevated"
                     }`}
                   >
                     {type}
@@ -284,11 +284,11 @@ const AdminNotifications = () => {
                 <Loader />
               </div>
             ) : filteredNotifications.length > 0 ? (
-              <div className="divide-y divide-gray-100">
+              <div className="divide-y divide-gray-100 dark:divide-dark-border/50">
                 {filteredNotifications.map((notif) => (
                   <div
                     key={notif.id}
-                    className={`p-4 flex gap-4 transition hover:bg-gray-50/50 relative ${
+                    className={`p-4 flex gap-4 transition hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated/50 dark:bg-dark-elevated/50 relative ${
                       notif.read ? "opacity-75" : "bg-indigo-50/20"
                     }`}
                   >
@@ -298,7 +298,7 @@ const AdminNotifications = () => {
                     <div
                       className={`p-2 rounded-xl shrink-0 h-10 w-10 flex items-center justify-center ${
                         notif.read
-                          ? "bg-gray-100 text-gray-500"
+                          ? "bg-gray-100 dark:bg-dark-elevated text-gray-500 dark:text-dark-text-secondary"
                           : "bg-[#7e70eb]/15 text-[#7e70eb]"
                       }`}
                     >
@@ -306,14 +306,14 @@ const AdminNotifications = () => {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex justify-between items-start gap-2">
-                        <h3 className="font-semibold text-gray-900 text-sm leading-snug">
+                        <h3 className="font-semibold text-gray-900 dark:text-dark-text text-sm leading-snug">
                           {notif.title}
                         </h3>
-                        <span className="text-[10px] text-gray-400 shrink-0 font-medium">
+                        <span className="text-[10px] text-gray-400 dark:text-dark-text-muted shrink-0 font-medium">
                           {notif.time}
                         </span>
                       </div>
-                      <p className="text-gray-500 text-xs mt-1 leading-relaxed">
+                      <p className="text-gray-500 dark:text-dark-text-secondary text-xs mt-1 leading-relaxed">
                         {notif.description}
                       </p>
                       <div className="flex gap-3 mt-3">
@@ -322,14 +322,14 @@ const AdminNotifications = () => {
                             onClick={() =>
                               navigate(notif.link, { state: notif.state })
                             }
-                            className="text-xs font-bold text-[#6366f1] hover:underline cursor-pointer"
+                            className="text-xs font-bold text-[#6366f1] dark:text-indigo-400 hover:underline cursor-pointer"
                           >
                             View Details
                           </button>
                         )}
                         <button
                           onClick={() => handleToggleRead(notif.id, notif.read)}
-                          className="text-xs font-semibold text-gray-400 hover:text-gray-600 transition cursor-pointer"
+                          className="text-xs font-semibold text-gray-400 dark:text-dark-text-muted hover:text-gray-600 dark:text-dark-text-secondary transition cursor-pointer"
                         >
                           {notif.read ? "Mark as unread" : "Mark as read"}
                         </button>
@@ -339,7 +339,7 @@ const AdminNotifications = () => {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-16 text-gray-400">
+              <div className="text-center py-16 text-gray-400 dark:text-dark-text-muted">
                 <div className="text-4xl mb-2">📭</div>
                 <p className="font-bold text-sm">No notifications found</p>
               </div>
@@ -352,7 +352,7 @@ const AdminNotifications = () => {
       {/* Modern Send Notification Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className="bg-white w-full max-w-lg rounded-2xl shadow-2xl border border-gray-100 overflow-hidden transform transition-all animate-in fade-in zoom-in duration-200">
+          <div className="bg-white w-full max-w-lg rounded-2xl shadow-2xl border border-gray-100 dark:border-dark-border/50 overflow-hidden transform transition-all animate-in fade-in zoom-in duration-200">
             <div className="flex justify-between items-center px-6 py-4 bg-linear-to-br from-[#5A50A6] to-[#7E70EB] text-white">
               <h3 className="font-bold text-lg flex items-center gap-2">
                 <i className="ri-send-plane-2-line"></i>
@@ -369,7 +369,7 @@ const AdminNotifications = () => {
             <form onSubmit={handleSendNotification} className="p-6 space-y-4">
               {/* Title Input */}
               <div>
-                <label className="pb-1 text-xs font-bold text-gray-600 block">
+                <label className="pb-1 text-xs font-bold text-gray-600 dark:text-dark-text-secondary block">
                   Target Audience
                 </label>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -385,8 +385,8 @@ const AdminNotifications = () => {
                       onClick={() => setRecipientType(target.id)}
                       className={`py-2 px-2 border rounded-xl text-xs font-bold transition cursor-pointer truncate ${
                         recipientType === target.id
-                          ? "bg-[#6366f1]/10 border-[#6366f1] text-[#6366f1]"
-                          : "border-gray-200 text-gray-600 hover:bg-gray-50"
+                          ? "bg-[#6366f1]/10 border-[#6366f1] text-[#6366f1] dark:text-indigo-400"
+                          : "border-gray-200 dark:border-dark-border text-gray-600 dark:text-dark-text-secondary hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated"
                       }`}
                     >
                       {target.label}
@@ -395,7 +395,7 @@ const AdminNotifications = () => {
                 </div>
               </div>
               <div className="space-y-1">
-                <label className="text-xs font-bold text-gray-600 block">
+                <label className="text-xs font-bold text-gray-600 dark:text-dark-text-secondary block">
                   Notification Title
                 </label>
                 <input
@@ -403,14 +403,14 @@ const AdminNotifications = () => {
                   placeholder="e.g. Server Maintenance Notice"
                   value={modalTitle}
                   onChange={(e) => setModalTitle(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#6366f1]/25 focus:border-[#6366f1] transition-all"
+                  className="w-full px-4 py-2 border border-gray-200 dark:border-dark-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#6366f1]/25 focus:border-[#6366f1] transition-all"
                   required
                 />
               </div>
 
               {/* Message Input */}
               <div className="space-y-1">
-                <label className="text-xs font-bold text-gray-600 block">
+                <label className="text-xs font-bold text-gray-600 dark:text-dark-text-secondary block">
                   Message Body
                 </label>
                 <textarea
@@ -418,7 +418,7 @@ const AdminNotifications = () => {
                   value={modalMessage}
                   onChange={(e) => setModalMessage(e.target.value)}
                   rows={4}
-                  className="w-full px-4 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#6366f1]/25 focus:border-[#6366f1] transition-all resize-none"
+                  className="w-full px-4 py-2 border border-gray-200 dark:border-dark-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#6366f1]/25 focus:border-[#6366f1] transition-all resize-none"
                   required
                 />
               </div>
@@ -428,13 +428,13 @@ const AdminNotifications = () => {
                 {recipientType === "role" && (
                   <div className="mt-3 space-y-3 p-3 bg-indigo-50/50 rounded-xl border border-indigo-100">
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-gray-600 block">
+                      <label className="text-[10px] font-bold text-gray-600 dark:text-dark-text-secondary block">
                         Recipient Group
                       </label>
                       <select
                         value={recipientRole}
                         onChange={(e) => setRecipientRole(e.target.value)}
-                        className="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-[#6366f1]/25 focus:border-[#6366f1]"
+                        className="w-full px-3 py-1.5 bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-[#6366f1]/25 focus:border-[#6366f1]"
                       >
                         <option value="all">All Users</option>
                         <option value="citizen">Citizens (Students)</option>
@@ -447,7 +447,7 @@ const AdminNotifications = () => {
 
                 {recipientType === "individual" && (
                   <div className="mt-2 space-y-1">
-                    <label className="text-[10px] font-bold text-gray-500 block">
+                    <label className="text-[10px] font-bold text-gray-500 dark:text-dark-text-secondary block">
                       Target User ID (UUID)
                     </label>
                     <input
@@ -455,7 +455,7 @@ const AdminNotifications = () => {
                       placeholder="e.g. 71ecdac0-c479-4ab7-9ce6-4f117bbed2f5"
                       value={recipientUserId}
                       onChange={(e) => setRecipientUserId(e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-[#6366f1]/25 focus:border-[#6366f1]"
+                      className="w-full px-3 py-2 border border-gray-200 dark:border-dark-border rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-[#6366f1]/25 focus:border-[#6366f1]"
                     />
                   </div>
                 )}
@@ -464,13 +464,13 @@ const AdminNotifications = () => {
                   <div className="mt-3 space-y-3 p-3 bg-indigo-50/50 rounded-xl border border-indigo-100">
                     {/* Recipient Type */}
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-gray-600 block">
+                      <label className="text-[10px] font-bold text-gray-600 dark:text-dark-text-secondary block">
                         Recipient Type
                       </label>
                       <select
                         value={customRecipientType}
                         onChange={(e) => setCustomRecipientType(e.target.value)}
-                        className="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-[#6366f1]/25 focus:border-[#6366f1]"
+                        className="w-full px-3 py-1.5 bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-[#6366f1]/25 focus:border-[#6366f1]"
                       >
                         <option value="all">All Users</option>
                         <option value="role">By Role</option>
@@ -482,7 +482,7 @@ const AdminNotifications = () => {
                     {/* Filter Option for Role */}
                     {customRecipientType === "role" && (
                       <div className="space-y-1">
-                        <label className="text-[10px] font-bold text-gray-600 block">
+                        <label className="text-[10px] font-bold text-gray-600 dark:text-dark-text-secondary block">
                           Select Target Roles
                         </label>
                         <div className="grid grid-cols-2 gap-1.5">
@@ -499,7 +499,7 @@ const AdminNotifications = () => {
                               className={`py-1.5 px-2 rounded-lg text-[10px] font-bold capitalize border transition cursor-pointer truncate ${
                                 customRoles.includes(r.id)
                                   ? "bg-[#6366f1] border-[#6366f1] text-white shadow-sm shadow-indigo-500/20"
-                                  : "bg-white border-gray-200 text-gray-600 hover:bg-gray-50"
+                                  : "bg-white dark:bg-dark-card border-gray-200 dark:border-dark-border text-gray-600 dark:text-dark-text-secondary hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated"
                               }`}
                             >
                               {r.label}
@@ -512,7 +512,7 @@ const AdminNotifications = () => {
                     {/* Filter Option for Individual */}
                     {customRecipientType === "individual" && (
                       <div className="space-y-1">
-                        <label className="text-[10px] font-bold text-gray-600 block">
+                        <label className="text-[10px] font-bold text-gray-600 dark:text-dark-text-secondary block">
                           Target User ID (UUID)
                         </label>
                         <input
@@ -520,14 +520,14 @@ const AdminNotifications = () => {
                           placeholder="e.g. 71ecdac0-c479-4ab7-9ce6-4f117bbed2f5"
                           value={customUserId}
                           onChange={(e) => setCustomUserId(e.target.value)}
-                          className="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-[#6366f1]/25 focus:border-[#6366f1]"
+                          className="w-full px-3 py-1.5 bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-[#6366f1]/25 focus:border-[#6366f1]"
                         />
                       </div>
                     )}
 
                     {/* Priority */}
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-gray-600 block">
+                      <label className="text-[10px] font-bold text-gray-600 dark:text-dark-text-secondary block">
                         Priority Level
                       </label>
                       <div className="grid grid-cols-4 gap-1.5">
@@ -539,7 +539,7 @@ const AdminNotifications = () => {
                             className={`py-1.5 px-2 rounded-lg text-[10px] font-bold capitalize border transition cursor-pointer truncate ${
                               customPriority === p
                                 ? "bg-[#6366f1] border-[#6366f1] text-white shadow-sm shadow-indigo-500/20"
-                                : "bg-white border-gray-200 text-gray-600 hover:bg-gray-50"
+                                : "bg-white dark:bg-dark-card border-gray-200 dark:border-dark-border text-gray-600 dark:text-dark-text-secondary hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated"
                             }`}
                           >
                             {p}
@@ -553,7 +553,7 @@ const AdminNotifications = () => {
 
               {/* Delivery Channels */}
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-gray-600 block">
+                <label className="text-xs font-bold text-gray-600 dark:text-dark-text-secondary block">
                   Delivery Channels
                 </label>
                 <div className="grid grid-cols-3 gap-2">
@@ -572,8 +572,8 @@ const AdminNotifications = () => {
                       onClick={() => handleChannelToggle(ch.id)}
                       className={`flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold border transition cursor-pointer ${
                         selectedChannels.includes(ch.id)
-                          ? "bg-[#6366f1]/10 border-[#6366f1] text-[#6366f1]"
-                          : "border-gray-200 text-gray-600 hover:bg-gray-50"
+                          ? "bg-[#6366f1]/10 border-[#6366f1] text-[#6366f1] dark:text-indigo-400"
+                          : "border-gray-200 dark:border-dark-border text-gray-600 dark:text-dark-text-secondary hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated"
                       }`}
                     >
                       <i className={ch.icon}></i>
@@ -584,11 +584,11 @@ const AdminNotifications = () => {
               </div>
 
               {/* Submit Buttons */}
-              <div className="flex justify-end gap-2 pt-4 border-t border-gray-100">
+              <div className="flex justify-end gap-2 pt-4 border-t border-gray-100 dark:border-dark-border/50">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 border border-gray-200 text-gray-600 hover:bg-gray-50 rounded-xl text-xs font-bold transition cursor-pointer"
+                  className="px-4 py-2 border border-gray-200 dark:border-dark-border text-gray-600 dark:text-dark-text-secondary hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated dark:bg-dark-elevated rounded-xl text-xs font-bold transition cursor-pointer"
                 >
                   Cancel
                 </button>

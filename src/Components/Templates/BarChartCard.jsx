@@ -13,14 +13,14 @@ const COLORS = ["#10b981", "#f59e0b", "#3b82f6", "#ef4444", "#8b5cf6"];
 
 const BarChartCard = ({data}) => {
   return (
-    <div className="pb-12 w-full min-h-[340px] bg-white border border-border p-5 rounded-2xl shadow-xs shadow-gray-200/40   hover:-translate-y-1 transition-all duration-300 ease-in-out group relative overflow-hidden flex flex-col">
+    <div className="pb-12 w-full min-h-[340px] bg-white dark:bg-dark-card border border-border p-5 rounded-2xl shadow-xs shadow-gray-200/40   hover:-translate-y-1 transition-all duration-300 ease-in-out group relative overflow-hidden flex flex-col">
       {/* Decorative background glow */}
       <div className="absolute -top-10 -right-10 w-32 h-32 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 transition-colors duration-500"></div>
       
       <div className="mb-6 flex items-center justify-between relative z-10">
         <div>
-          <h2 className="text-xl font-bold text-gray-800 tracking-tight">Issues by Priority</h2>
-          <p className="text-xs text-gray-500 mt-1">Breakdown of reported issues</p>
+          <h2 className="text-xl font-bold text-gray-800 tracking-tight dark:text-dark-text">Issues by Priority</h2>
+          <p className="text-xs text-gray-500 mt-1 dark:text-dark-text-secondary">Breakdown of reported issues</p>
         </div>
       </div>
 

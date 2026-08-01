@@ -16,7 +16,7 @@ const IssuesSkeleton = () => {
   return (
     <div className="w-full lg:w-[calc(100vw-19vw)] overflow-x-auto">
       {/* Table Container */}
-      <div className="bg-white rounded-xl shadow-sm p-4 md:p-6 w-full mt-2">
+      <div className="bg-white dark:bg-dark-card rounded-xl shadow-sm p-4 md:p-6 w-full mt-2">
         {/* Table header */}
         <div className="flex justify-between items-center mb-5">
           <Skeleton height={25} width={200} />
@@ -226,7 +226,7 @@ const ReportedIssues = () => {
       <SideNav />
       <BottomNav />
 
-      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#F8F9FF] overflow-x-hidden overflow-y-auto h-screen pb-20" id="reportedIssuesScroll">
+      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#F8F9FF] dark:bg-dark-bg overflow-x-hidden overflow-y-auto h-screen pb-20" id="reportedIssuesScroll">
         <TopBar title="Reported Issues" />
         <PullToRefresh scrollContainerId="reportedIssuesScroll" onRefresh={handleRefresh}>
           <div className="p-2 lg:p-4 w-full">
@@ -234,10 +234,10 @@ const ReportedIssues = () => {
           <IssuesSkeleton />
         ) : issues.length > 0 ? (
           <>
-            <div className="bg-white rounded-xl shadow-sm p-2 lg:p-5 w-full mt-2">
+            <div className="bg-white dark:bg-dark-card rounded-xl shadow-sm p-2 lg:p-5 w-full mt-2">
               {/* Header */}
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-5">
-                <h2 className="text-lg font-semibold text-gray-800">
+                <h2 className="text-lg font-semibold text-gray-800 dark:text-dark-text">
                   All Reported Issues
                 </h2>
 
@@ -247,7 +247,7 @@ const ReportedIssues = () => {
                     <select
                       value={selectedLocation}
                       onChange={(e) => setSelectedLocation(e.target.value)}
-                      className="w-full appearance-none bg-white border border-gray-300 text-gray-700 text-sm rounded-lg pl-3 pr-8 py-2 sm:px-4 sm:pr-10 sm:py-2.5 shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-600 focus:border-violet-600 transition duration-200 cursor-pointer"
+                      className="w-full appearance-none bg-white dark:bg-dark-card border border-gray-300 dark:border-dark-border text-gray-700 dark:text-dark-text-secondary text-sm rounded-lg pl-3 pr-8 py-2 sm:px-4 sm:pr-10 sm:py-2.5 shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-600 focus:border-violet-600 transition duration-200 cursor-pointer"
                     >
                       <option value="all">Location: All</option>
                       {uniqueLocations.map((location, index) => (
@@ -265,7 +265,7 @@ const ReportedIssues = () => {
                     {/* Custom dropdown arrow */}
                     <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                       <svg
-                        className="w-4 h-4 text-gray-500"
+                        className="w-4 h-4 text-gray-500 dark:text-dark-text-secondary"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -285,7 +285,7 @@ const ReportedIssues = () => {
                     <select
                       value={priority}
                       onChange={(e) => setPriority(e.target.value)}
-                      className="w-full appearance-none bg-white border border-gray-300 text-gray-700 text-sm rounded-lg pl-3 pr-8 py-2 sm:px-4 sm:pr-10 sm:py-2.5 shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-600 focus:border-violet-600 transition duration-200 cursor-pointer"
+                      className="w-full appearance-none bg-white dark:bg-dark-card border border-gray-300 dark:border-dark-border text-gray-700 dark:text-dark-text-secondary text-sm rounded-lg pl-3 pr-8 py-2 sm:px-4 sm:pr-10 sm:py-2.5 shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-600 focus:border-violet-600 transition duration-200 cursor-pointer"
                     >
                       <option value="all">Priority: All</option>
                       <option value="low">Low</option>
@@ -295,7 +295,7 @@ const ReportedIssues = () => {
                     {/* Custom dropdown arrow */}
                     <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                       <svg
-                        className="w-4 h-4 text-gray-500"
+                        className="w-4 h-4 text-gray-500 dark:text-dark-text-secondary"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -315,7 +315,7 @@ const ReportedIssues = () => {
               {/* ===== DESKTOP TABLE ===== */}
               <div className="hidden md:block overflow-x-auto">
                 <table className="w-full text-sm">
-                  <thead className="bg-gray-100 text-gray-600">
+                  <thead className="bg-gray-100 dark:bg-dark-elevated text-gray-600 dark:text-dark-text-secondary">
                     <tr>
                       <th className="text-left p-3">Issue Title</th>
                       <th className="text-left p-3">Category</th>
@@ -363,10 +363,10 @@ const ReportedIssues = () => {
 
                         <td className="p-3">
                           <div className="flex flex-col">
-                            <span className="font-medium text-gray-800">
+                            <span className="font-medium text-gray-800 dark:text-dark-text">
                               {issue.user_name}
                             </span>
-                            <span className="text-xs text-gray-400">
+                            <span className="text-xs text-gray-400 dark:text-dark-text-muted">
                               Date: {issue.created_at.split("T")[0]}
                             </span>
                           </div>
@@ -388,11 +388,11 @@ const ReportedIssues = () => {
                                 openDropdown === issue.id ? null : issue.id,
                               );
                             }}
-                            className="p-2 rounded-lg hover:bg-gray-100 active:bg-gray-200 transition"
+                            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-elevated dark:bg-dark-elevated active:bg-gray-200 dark:bg-dark-border transition"
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
-                              className="w-5 h-5 text-gray-600"
+                              className="w-5 h-5 text-gray-600 dark:text-dark-text-secondary"
                               fill="currentColor"
                               viewBox="0 0 24 24"
                             >
@@ -405,7 +405,7 @@ const ReportedIssues = () => {
                           {openDropdown === issue.id && (
                             <div
                               onMouseLeave={() => setActiveSubMenu(null)}
-                              className="absolute right-0  mt-2 w-52 bg-white rounded-xl shadow-lg border border-gray-100 z-50 text-sm"
+                              className="absolute right-0  mt-2 w-52 bg-white dark:bg-dark-card rounded-xl shadow-lg border border-gray-100 dark:border-dark-border/50 z-50 text-sm"
                             >
                               {/* details*/}
                               <button
@@ -414,7 +414,7 @@ const ReportedIssues = () => {
                                     state: issue,
                                   })
                                 }
-                                className="w-full text-left px-4 py-2 hover:bg-gray-50"
+                                className="w-full text-left px-4 py-2 hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated"
                               >
                                 Details
                               </button>
@@ -424,14 +424,14 @@ const ReportedIssues = () => {
                                   onMouseEnter={() =>
                                     setActiveSubMenu("status")
                                   }
-                                  className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 flex justify-between items-center"
+                                  className="w-full text-left px-4 py-2 text-gray-700 dark:text-dark-text-secondary hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated flex justify-between items-center"
                                 >
                                   Set Status
                                   <span>›</span>
                                 </button>
 
                                 {activeSubMenu === "status" && (
-                                  <div className="absolute right-full top-1 mr-1 w-44 bg-white rounded-xl shadow-lg border border-gray-100 z-50">
+                                  <div className="absolute right-full top-1 mr-1 w-44 bg-white dark:bg-dark-card rounded-xl shadow-lg border border-gray-100 dark:border-dark-border/50 z-50">
                                     {[
                                       "new",
                                       "acknowledged",
@@ -446,7 +446,7 @@ const ReportedIssues = () => {
                                           setActiveSubMenu(null);
                                           setOpenDropdown(null);
                                         }}
-                                        className="w-full text-left px-4 py-2 hover:bg-gray-50"
+                                        className="w-full text-left px-4 py-2 hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated"
                                       >
                                         {status.replace("_", " ")}
                                       </button>
@@ -461,7 +461,7 @@ const ReportedIssues = () => {
                                   onMouseEnter={() =>
                                     setActiveSubMenu("priority")
                                   }
-                                  className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 flex justify-between items-center"
+                                  className="w-full text-left px-4 py-2 text-gray-700 dark:text-dark-text-secondary hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated flex justify-between items-center"
                                 >
                                   Set Priority
                                   <span>›</span>
@@ -470,7 +470,7 @@ const ReportedIssues = () => {
                                 {activeSubMenu === "priority" && (
                                   <div
                                     className="absolute right-full mr-1 top-0
- w-44 bg-white rounded-xl shadow-lg border border-gray-100"
+ w-44 bg-white dark:bg-dark-card rounded-xl shadow-lg border border-gray-100 dark:border-dark-border/50"
                                   >
                                     {["critical", "high", "medium", "low"].map(
                                       (level) => (
@@ -481,7 +481,7 @@ const ReportedIssues = () => {
                                             setActiveSubMenu(null);
                                             setOpenDropdown(null);
                                           }}
-                                          className="w-full text-left px-4 py-2 hover:bg-gray-50"
+                                          className="w-full text-left px-4 py-2 hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated"
                                         >
                                           {level}
                                         </button>
@@ -491,12 +491,12 @@ const ReportedIssues = () => {
                                 )}
                               </div>
 
-                              <div className="border-t border-gray-100 my-1"></div>
+                              <div className="border-t border-gray-100 dark:border-dark-border/50 my-1"></div>
 
                               {/* Assign */}
                               <button
                                 onClick={() => openAssignModal(issue.id)}
-                                className="w-full text-left px-4 py-2 hover:bg-gray-50"
+                                className="w-full text-left px-4 py-2 hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated"
                               >
                                 Assign
                               </button>
@@ -512,7 +512,7 @@ const ReportedIssues = () => {
                               {/* Delete */}
                               <button
                                 onClick={() => handleDelete(issue.id)}
-                                className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50"
+                                className="w-full text-left px-4 py-2 text-red-600 dark:text-red-400 hover:bg-red-50"
                               >
                                 Delete
                               </button>
@@ -530,16 +530,16 @@ const ReportedIssues = () => {
                 {filteredIssues.map((issue, i) => (
                   <div
                     key={i}
-                    className="bg-white rounded-2xl p-4 shadow-md border border-gray-100 space-y-4 transition active:scale-[0.98]"
+                    className="bg-white dark:bg-dark-card rounded-2xl p-4 shadow-md border border-gray-100 dark:border-dark-border/50 space-y-4 transition active:scale-[0.98]"
                   >
                     {/* Top Section */}
                     <div className="flex justify-between items-start gap-3">
                       <div>
-                        <h3 className="font-semibold text-gray-900 text-sm leading-snug">
+                        <h3 className="font-semibold text-gray-900 dark:text-dark-text text-sm leading-snug">
                           {issue.title}
                         </h3>
 
-                        <p className="text-xs text-gray-500 mt-1">
+                        <p className="text-xs text-gray-500 dark:text-dark-text-secondary mt-1">
                           {issue.location_building}
                         </p>
                       </div>
@@ -559,7 +559,7 @@ const ReportedIssues = () => {
                     </div>
 
                     {/* User + Date */}
-                    <div className="flex justify-between items-center text-xs text-gray-500">
+                    <div className="flex justify-between items-center text-xs text-gray-500 dark:text-dark-text-secondary">
                       <div className="flex items-center gap-1.5">
                         <i className="ri-user-line"></i>
                         <span>{issue.user_name}</span>
@@ -575,7 +575,7 @@ const ReportedIssues = () => {
                           state: issue,
                         })
                       }
-                      className="w-full bg-violet-50 text-violet-600 text-sm font-medium py-2 rounded-lg hover:bg-violet-100 transition"
+                      className="w-full bg-violet-50 dark:bg-violet-500/15 text-violet-600 dark:text-violet-400 text-sm font-medium py-2 rounded-lg hover:bg-violet-100 transition"
                     >
                       View Details →
                     </button>
@@ -585,14 +585,14 @@ const ReportedIssues = () => {
             </div>
           </>
         ) : (
-          <div className="w-full min-h-[60vh] flex flex-col items-center justify-center text-center p-6 bg-white rounded-2xl shadow-sm mt-4 mx-auto lg:w-[calc(100vw-15vw)]">
-            <div className="w-24 h-24 bg-violet-50 rounded-full flex items-center justify-center mb-6">
-              <i className="ri-file-search-line text-4xl text-violet-500"></i>
+          <div className="w-full min-h-[60vh] flex flex-col items-center justify-center text-center p-6 bg-white dark:bg-dark-card rounded-2xl shadow-sm mt-4 mx-auto lg:w-[calc(100vw-15vw)]">
+            <div className="w-24 h-24 bg-violet-50 dark:bg-violet-500/15 rounded-full flex items-center justify-center mb-6">
+              <i className="ri-file-search-line text-4xl text-violet-500 dark:text-violet-400"></i>
             </div>
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-dark-text mb-2">
               No Issues Found
             </h2>
-            <p className="text-gray-500 max-w-sm">
+            <p className="text-gray-500 dark:text-dark-text-secondary max-w-sm">
               We couldn't find any reported issues at the moment. When students
               report problems, they'll appear here.
             </p>
@@ -629,7 +629,7 @@ const ReportedIssues = () => {
             <div className="flex justify-end gap-3">
               <button
                 onClick={() => setShowAssignModal(false)}
-                className="px-4 py-2 border rounded-lg hover:bg-gray-100"
+                className="px-4 py-2 border rounded-lg hover:bg-gray-100 dark:hover:bg-dark-elevated dark:bg-dark-elevated"
               >
                 Cancel
               </button>

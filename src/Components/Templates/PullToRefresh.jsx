@@ -222,7 +222,7 @@ const PullToRefresh = ({
               ? 'bg-white/95 border-[#7E70EB]/70 text-[#7E70EB] shadow-sm scale-105'
               : refreshState === 'refreshing'
               ? 'bg-white/95 border-[#7E70EB]/40 text-[#7E70EB] shadow-sm animate-pulse'
-              : 'bg-white/95 border-gray-200 text-gray-700 shadow-sm'
+              : 'bg-white/95 border-gray-200 dark:border-dark-border text-gray-700 dark:text-dark-text-secondary shadow-sm'
           }`}
         >
           {/* Icon */}
@@ -241,7 +241,7 @@ const PullToRefresh = ({
                 className={`w-4 h-4 transition-transform duration-200 ${
                   refreshState === 'releasing' 
                     ? 'text-[#7E70EB] rotate-180 scale-110' 
-                    : 'text-gray-600'
+                    : 'text-gray-600 dark:text-dark-text-secondary'
                 }`}
                 fill="none" 
                 stroke="currentColor" 

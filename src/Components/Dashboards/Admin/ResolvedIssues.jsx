@@ -15,7 +15,7 @@ const SkeletonLoader = () => {
   return (
     <div className="w-full lg:w-[calc(100vw-19vw)] overflow-x-auto">
       {/* Table Container */}
-      <div className="bg-white rounded-xl shadow-sm p-4 md:p-6 w-full mt-2">
+      <div className="bg-white dark:bg-dark-card rounded-xl shadow-sm p-4 md:p-6 w-full mt-2">
         {/* Table header */}
         <div className="flex justify-between items-center mb-5">
           <Skeleton height={25} width={200} />
@@ -133,7 +133,7 @@ const ResolvedIssues = () => {
       <SideNav />
       <BottomNav />
       
-      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#F8F9FF] overflow-x-hidden overflow-y-auto h-screen pb-20" id="resolvedIssuesScroll">
+      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#F8F9FF] dark:bg-dark-bg overflow-x-hidden overflow-y-auto h-screen pb-20" id="resolvedIssuesScroll">
         <TopBar title="Resolved Issues" />
         <PullToRefresh scrollContainerId="resolvedIssuesScroll" onRefresh={handleRefresh}>
           <div className="w-full pb-20 md:pb-2 p-2 lg:p-4">
@@ -141,10 +141,10 @@ const ResolvedIssues = () => {
             <SkeletonLoader />
           ) : resolvedIssues.length > 0 ? (
             <>
-              <div className="bg-white rounded-xl shadow-sm p-4 md:p-6 w-full mt-2">
+              <div className="bg-white dark:bg-dark-card rounded-xl shadow-sm p-4 md:p-6 w-full mt-2">
                 {/* Header */}
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-5">
-                  <h2 className="text-lg font-semibold text-gray-800">
+                  <h2 className="text-lg font-semibold text-gray-800 dark:text-dark-text">
                     All Resolved Issues
                   </h2>
 
@@ -154,7 +154,7 @@ const ResolvedIssues = () => {
                       <select
                         value={selectedLocation}
                         onChange={(e) => setSelectedLocation(e.target.value)}
-                        className="w-full appearance-none bg-white border border-gray-300 text-gray-700 text-sm rounded-lg pl-3 pr-8 py-2 sm:px-4 sm:pr-10 sm:py-2.5 shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-600 focus:border-violet-600 transition duration-200 cursor-pointer"
+                        className="w-full appearance-none bg-white dark:bg-dark-card border border-gray-300 dark:border-dark-border text-gray-700 dark:text-dark-text-secondary text-sm rounded-lg pl-3 pr-8 py-2 sm:px-4 sm:pr-10 sm:py-2.5 shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-600 focus:border-violet-600 transition duration-200 cursor-pointer"
                       >
                         <option value="all">Location: All</option>
                         {uniqueLocations.map((location, index) => (
@@ -172,7 +172,7 @@ const ResolvedIssues = () => {
                       {/* Custom dropdown arrow */}
                       <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                         <svg
-                          className="w-4 h-4 text-gray-500"
+                          className="w-4 h-4 text-gray-500 dark:text-dark-text-secondary"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -192,7 +192,7 @@ const ResolvedIssues = () => {
                       <select
                         value={priority}
                         onChange={(e) => setPriority(e.target.value)}
-                        className="w-full appearance-none bg-white border border-gray-300 text-gray-700 text-sm rounded-lg pl-3 pr-8 py-2 sm:px-4 sm:pr-10 sm:py-2.5 shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-600 focus:border-violet-600 transition duration-200 cursor-pointer"
+                        className="w-full appearance-none bg-white dark:bg-dark-card border border-gray-300 dark:border-dark-border text-gray-700 dark:text-dark-text-secondary text-sm rounded-lg pl-3 pr-8 py-2 sm:px-4 sm:pr-10 sm:py-2.5 shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-600 focus:border-violet-600 transition duration-200 cursor-pointer"
                       >
                         <option value="all">Priority: All</option>
                         <option value="low">Low</option>
@@ -202,7 +202,7 @@ const ResolvedIssues = () => {
                       {/* Custom dropdown arrow */}
                       <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                         <svg
-                          className="w-4 h-4 text-gray-500"
+                          className="w-4 h-4 text-gray-500 dark:text-dark-text-secondary"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -222,7 +222,7 @@ const ResolvedIssues = () => {
                 {/* ===== DESKTOP TABLE ===== */}
                 <div className="hidden md:block overflow-x-auto">
                   <table className="w-full text-sm">
-                    <thead className="bg-gray-100 text-gray-600">
+                    <thead className="bg-gray-100 dark:bg-dark-elevated text-gray-600 dark:text-dark-text-secondary">
                       <tr>
                         <th className="text-left p-3">Issue Title</th>
                         <th className="text-left p-3">Category</th>
@@ -238,7 +238,7 @@ const ResolvedIssues = () => {
                       {filteredIssues?.map((issue, i) => (
                         <tr
                           key={i}
-                          className="border-b border-zinc-200 last:border-none cursor-pointer hover:bg-gray-50 transition-colors"
+                          className="border-b border-zinc-200 last:border-none cursor-pointer hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated transition-colors"
                           onClick={() => setSelectedIssue(issue)}
                         >
                           <td className="p-3 font-medium">{issue.title}</td>
@@ -254,11 +254,11 @@ const ResolvedIssues = () => {
                             <StatusBadge type="status" value={issue.status} />
                           </td>
 
-                          <td className="p-3 text-sm text-gray-600 max-w-xs truncate">
+                          <td className="p-3 text-sm text-gray-600 dark:text-dark-text-secondary max-w-xs truncate">
                             {issue.resolution_notes || "N/A"}
                           </td>
 
-                          <td className="p-3 text-gray-500">
+                          <td className="p-3 text-gray-500 dark:text-dark-text-secondary">
                             {issue.created_at.split("T")[0]}
                           </td>
 
@@ -268,7 +268,7 @@ const ResolvedIssues = () => {
                                 e.stopPropagation();
                                 handleDeleteIssue(issue.id);
                               }}
-                              className="ri-delete-bin-line text-xl text-gray-400 hover:text-red-500 cursor-pointer"
+                              className="ri-delete-bin-line text-xl text-gray-400 dark:text-dark-text-muted hover:text-red-500 cursor-pointer"
                             ></i>
                           </td>
                         </tr>
@@ -287,7 +287,7 @@ const ResolvedIssues = () => {
           rounded-xl
           p-4
           shadow-sm
-          border border-gray-100
+          border border-gray-100 dark:border-dark-border/50
           space-y-3
           active:scale-[0.98]
           transition
@@ -296,7 +296,7 @@ const ResolvedIssues = () => {
                     >
                       {/* Title + Priority */}
                       <div className="flex items-start justify-between gap-2">
-                        <h3 className="font-semibold text-gray-900 text-sm leading-snug">
+                        <h3 className="font-semibold text-gray-900 dark:text-dark-text text-sm leading-snug">
                           {issue.title}
                         </h3>
 
@@ -310,21 +310,21 @@ const ResolvedIssues = () => {
                       </div>
 
                       {/* Location */}
-                      <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                      <div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-dark-text-secondary">
                         <span>📍</span>
                         <span>{issue.location_address}</span>
                       </div>
 
                       {/* Resolution Notes */}
                       {issue.resolution_notes && (
-                        <div className="text-xs text-gray-600 bg-gray-50 p-2 rounded border border-gray-100 line-clamp-2">
-                          <span className="font-semibold text-gray-700">Staff Notes: </span>
+                        <div className="text-xs text-gray-600 dark:text-dark-text-secondary bg-gray-50 dark:bg-dark-elevated p-2 rounded border border-gray-100 dark:border-dark-border/50 line-clamp-2">
+                          <span className="font-semibold text-gray-700 dark:text-dark-text-secondary">Staff Notes: </span>
                           {issue.resolution_notes}
                         </div>
                       )}
 
                       {/* Footer */}
-                      <div className="flex items-center justify-between pt-1 text-xs text-gray-400">
+                      <div className="flex items-center justify-between pt-1 text-xs text-gray-400 dark:text-dark-text-muted">
                         <span>{issue.created_at.split("T")[0]}</span>
 
                         <button onClick={(e) => { e.stopPropagation(); handleDeleteIssue(issue.id); }} className="text-red-400 font-medium z-10 relative">
@@ -337,12 +337,12 @@ const ResolvedIssues = () => {
               </div>   
             </>
           ) : (
-            <div className="w-full min-h-[60vh] flex flex-col items-center justify-center text-center p-6 bg-white rounded-2xl shadow-sm mt-4 mx-auto lg:w-[calc(100vw-15vw)]">
+            <div className="w-full min-h-[60vh] flex flex-col items-center justify-center text-center p-6 bg-white dark:bg-dark-card rounded-2xl shadow-sm mt-4 mx-auto lg:w-[calc(100vw-15vw)]">
               <div className="w-24 h-24 bg-emerald-50 rounded-full flex items-center justify-center mb-6">
                 <i className="ri-checkbox-circle-line text-4xl text-emerald-500"></i>
               </div>
-              <h2 className="text-2xl font-bold text-gray-800 mb-2">No Resolved Issues</h2>
-              <p className="text-gray-500 max-w-sm">
+              <h2 className="text-2xl font-bold text-gray-800 dark:text-dark-text mb-2">No Resolved Issues</h2>
+              <p className="text-gray-500 dark:text-dark-text-secondary max-w-sm">
                 Great news! There are no resolved issues to display right now. Check back later as more problems are fixed.
               </p>
             </div>
@@ -354,17 +354,17 @@ const ResolvedIssues = () => {
       {/* Resolution Details Modal */}
       {selectedIssue && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 relative">
+          <div className="bg-white dark:bg-dark-card rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 relative">
             <button
               onClick={() => setSelectedIssue(null)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-full p-2 transition-colors"
+              className="absolute top-4 right-4 text-gray-400 dark:text-dark-text-muted hover:text-gray-700 dark:hover:text-dark-text dark:text-dark-text-secondary bg-gray-100 dark:bg-dark-elevated hover:bg-gray-200 dark:bg-dark-border rounded-full p-2 transition-colors"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
             
-            <h3 className="text-xl font-bold text-gray-900 pr-10 mb-2">{selectedIssue.title}</h3>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-dark-text pr-10 mb-2">{selectedIssue.title}</h3>
             <div className="flex gap-2 mb-6">
               <StatusBadge type="status" value={selectedIssue.status} />
               <StatusBadge type="priority" value={selectedIssue.priority} />
@@ -372,21 +372,21 @@ const ResolvedIssues = () => {
 
             <div className="space-y-6">
               <div>
-                <h4 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-2 flex items-center gap-2">
-                  <span className="w-4 h-0.5 bg-violet-500 rounded-full" />
+                <h4 className="text-sm font-bold text-gray-900 dark:text-dark-text uppercase tracking-wider mb-2 flex items-center gap-2">
+                  <span className="w-4 h-0.5 bg-violet-50 dark:bg-violet-500/150 rounded-full" />
                   Issue Description
                 </h4>
-                <p className="text-gray-700 text-sm bg-gray-50 p-3 rounded-xl border border-gray-100">
+                <p className="text-gray-700 dark:text-dark-text-secondary text-sm bg-gray-50 dark:bg-dark-elevated p-3 rounded-xl border border-gray-100 dark:border-dark-border/50">
                   {selectedIssue.description || "No description provided."}
                 </p>
               </div>
 
               <div>
-                <h4 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-2 flex items-center gap-2">
+                <h4 className="text-sm font-bold text-gray-900 dark:text-dark-text uppercase tracking-wider mb-2 flex items-center gap-2">
                   <span className="w-4 h-0.5 bg-green-500 rounded-full" />
                   Resolution Details
                 </h4>
-                <div className="bg-green-50/50 p-4 rounded-xl border border-green-100 text-gray-700">
+                <div className="bg-green-50/50 p-4 rounded-xl border border-green-100 text-gray-700 dark:text-dark-text-secondary">
                   <div className="mb-4">
                     <span className="font-semibold block mb-1 text-sm">Staff Notes:</span>
                     <p className="text-sm">{selectedIssue.resolution_notes || "No resolution notes provided."}</p>
@@ -397,7 +397,7 @@ const ResolvedIssues = () => {
                       <span className="font-semibold block mb-2 text-sm">Resolution Proof (Photos):</span>
                       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                         {selectedIssue.resolution_media_urls.map((url, idx) => (
-                          <a key={idx} href={url} target="_blank" rel="noopener noreferrer" className="block w-full aspect-square rounded-lg overflow-hidden border border-gray-200">
+                          <a key={idx} href={url} target="_blank" rel="noopener noreferrer" className="block w-full aspect-square rounded-lg overflow-hidden border border-gray-200 dark:border-dark-border">
                             <img src={url} alt={`Resolution proof ${idx + 1}`} className="w-full h-full object-cover hover:scale-105 transition-transform" />
                           </a>
                         ))}
@@ -408,10 +408,10 @@ const ResolvedIssues = () => {
               </div>
             </div>
 
-            <div className="mt-8 flex justify-end gap-3 pt-4 border-t border-gray-100">
+            <div className="mt-8 flex justify-end gap-3 pt-4 border-t border-gray-100 dark:border-dark-border/50">
               <button
                 onClick={() => setSelectedIssue(null)}
-                className="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl transition-colors"
+                className="px-5 py-2.5 bg-gray-100 dark:bg-dark-elevated hover:bg-gray-200 dark:bg-dark-border text-gray-700 dark:text-dark-text-secondary font-medium rounded-xl transition-colors"
               >
                 Close
               </button>

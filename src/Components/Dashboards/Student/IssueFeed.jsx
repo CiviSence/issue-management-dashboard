@@ -174,7 +174,7 @@ const IssueCard = ({ issue, onOpenComments }) => {
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm mb-4 hover:shadow-md transition-all duration-300 overflow-hidden">
+    <div className="bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border/50 shadow-sm mb-4 hover:shadow-md transition-all duration-300 overflow-hidden">
       {/* Profile info */}
       <div className="flex items-start justify-between px-5 pt-5 pb-3">
         <div className="flex items-center gap-3">
@@ -185,10 +185,10 @@ const IssueCard = ({ issue, onOpenComments }) => {
             className="w-10 h-10 rounded-full object-cover border-2 border-violet-100 shrink-0"
           />
           <div>
-            <p className="font-semibold text-gray-900 text-sm leading-tight">
+            <p className="font-semibold text-gray-900 dark:text-dark-text text-sm leading-tight">
               {issue.user?.name || "Unknown User"}
             </p>
-            <div className="flex items-center gap-1.5 text-xs text-gray-400 mt-0.5">
+            <div className="flex items-center gap-1.5 text-xs text-gray-400 dark:text-dark-text-muted mt-0.5">
               <span>{formatTimeAgo(issue.created_at)}</span>
               {displayLocation && (
                 <>
@@ -209,15 +209,15 @@ const IssueCard = ({ issue, onOpenComments }) => {
              <StatusBadge type="priority" value={issue.priority} />
           </div>
         )}
-        <h3 className="font-bold text-gray-900 text-base leading-snug mb-1">
+        <h3 className="font-bold text-gray-900 dark:text-dark-text text-base leading-snug mb-1">
           {issue.title}
         </h3>
-        <p className="text-gray-600 text-sm leading-relaxed">
+        <p className="text-gray-600 dark:text-dark-text-secondary text-sm leading-relaxed">
           {displayDesc}
           {longDesc && (
             <button
               onClick={() => setExpanded((v) => !v)}
-              className="ml-1 text-violet-600 font-medium hover:underline focus:outline-none"
+              className="ml-1 text-violet-600 dark:text-violet-400 font-medium hover:underline focus:outline-none"
             >
               {expanded ? "Show less" : "Read more"}
             </button>
@@ -331,15 +331,15 @@ const IssueCard = ({ issue, onOpenComments }) => {
       <div className="flex items-center justify-between px-5 py-3 border-t border-gray-50">
         {/* Vote group */}
         <div className="flex items-center gap-5">
-          <div className="flex items-center bg-gray-50 rounded-xl px-1 py-0.5 gap-1">
+          <div className="flex items-center bg-gray-50 dark:bg-dark-elevated rounded-xl px-1 py-0.5 gap-1">
             {/* Upvote */}
             <button
               onClick={() => handleVote("up")}
               title="Upvote"
               disabled={isVoting}
               className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-sm font-medium transition-all ${isVoting ? "opacity-50 cursor-not-allowed" : ""} ${voteState === true
-                ? "text-violet-600 bg-violet-50"
-                : "text-gray-500 hover:text-violet-600 hover:bg-white"
+                ? "text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-500/15"
+                : "text-gray-500 dark:text-dark-text-secondary hover:text-violet-600 dark:text-violet-400 dark:hover:text-violet-400 hover:bg-white"
                 }`}
             >
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -348,21 +348,21 @@ const IssueCard = ({ issue, onOpenComments }) => {
               <span>{upvotes}</span>
             </button>
 
-            <div className="w-px h-4 bg-gray-200 mx-0.5" />
+            <div className="w-px h-4 bg-gray-200 dark:bg-dark-border mx-0.5" />
 
             {/* Net score */}
             <span
               className={`px-1 text-sm font-bold tabular-nums ${netVotes > 0
-                ? "text-violet-600"
+                ? "text-violet-600 dark:text-violet-400"
                 : netVotes < 0
                   ? "text-red-500"
-                  : "text-gray-400"
+                  : "text-gray-400 dark:text-dark-text-muted"
                 }`}
             >
               {netVotes > 0 ? "+" : ""}{netVotes}
             </span>
 
-            <div className="w-px h-4 bg-gray-200 mx-0.5" />
+            <div className="w-px h-4 bg-gray-200 dark:bg-dark-border mx-0.5" />
 
             {/* Downvote */}
             <button
@@ -371,7 +371,7 @@ const IssueCard = ({ issue, onOpenComments }) => {
               disabled={isVoting}
               className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-sm font-medium transition-all ${isVoting ? "opacity-50 cursor-not-allowed" : ""} ${voteState === false
                 ? "text-red-500 bg-red-50"
-                : "text-gray-500 hover:text-red-500 hover:bg-white"
+                : "text-gray-500 dark:text-dark-text-secondary hover:text-red-500 hover:bg-white"
                 }`}
             >
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -384,7 +384,7 @@ const IssueCard = ({ issue, onOpenComments }) => {
           {/* Comments */}
           <button
             onClick={handleCommentOpen}
-            className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-violet-600 hover:bg-violet-50 px-2.5 py-1.5 rounded-lg transition-all group"
+            className="flex items-center gap-1.5 text-sm text-gray-500 dark:text-dark-text-secondary hover:text-violet-600 dark:text-violet-400 dark:hover:text-violet-400 hover:bg-violet-50 dark:bg-violet-500/15 dark:hover:bg-violet-50 dark:bg-violet-500/150/15 px-2.5 py-1.5 rounded-lg transition-all group"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
@@ -394,7 +394,7 @@ const IssueCard = ({ issue, onOpenComments }) => {
           </button>
 
           {/* Views */}
-          <div className="flex items-center gap-1.5 text-sm text-gray-500 px-2.5 py-1.5">
+          <div className="flex items-center gap-1.5 text-sm text-gray-500 dark:text-dark-text-secondary px-2.5 py-1.5">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
@@ -419,15 +419,15 @@ const IssueCard = ({ issue, onOpenComments }) => {
             onClick={handleCommentOpen}
           >
             {issue.recent_comments.slice(0, 2).map((c, i) => (
-              <div key={i} className="flex gap-1.5 text-xs text-gray-500">
-                <span className="font-semibold text-gray-700 shrink-0">
+              <div key={i} className="flex gap-1.5 text-xs text-gray-500 dark:text-dark-text-secondary">
+                <span className="font-semibold text-gray-700 dark:text-dark-text-secondary shrink-0">
                   {c.user?.name || "User"}:
                 </span>
                 <span className="truncate">{c.text}</span>
               </div>
             ))}
             {commentCount > 2 && (
-              <span className="text-xs text-violet-500 font-medium hover:underline">
+              <span className="text-xs text-violet-500 dark:text-violet-400 font-medium hover:underline">
                 View all {commentCount} comments →
               </span>
             )}
@@ -480,9 +480,9 @@ const CommentsModal = ({ issueId, onClose, onCommentAdded }) => {
     >
       <div className="bg-white w-full sm:max-w-lg rounded-t-2xl sm:rounded-2xl shadow-2xl flex flex-col max-h-[80vh]">
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-          <h3 className="font-bold text-gray-900 text-base">Comments</h3>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-xl leading-none">✕</button>
+        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-dark-border/50">
+          <h3 className="font-bold text-gray-900 dark:text-dark-text text-base">Comments</h3>
+          <button onClick={onClose} className="text-gray-400 dark:text-dark-text-muted hover:text-gray-600 dark:text-dark-text-secondary text-xl leading-none">✕</button>
         </div>
 
         {/* Comments list */}
@@ -492,7 +492,7 @@ const CommentsModal = ({ issueId, onClose, onCommentAdded }) => {
               <div className="w-6 h-6 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
             </div>
           ) : comments.length === 0 ? (
-            <p className="text-center text-gray-400 py-8 text-sm">No comments yet. Be first!</p>
+            <p className="text-center text-gray-400 dark:text-dark-text-muted py-8 text-sm">No comments yet. Be first!</p>
           ) : (
             comments.map((c, i) => (
               <div key={c.id ?? i} className="flex gap-3">
@@ -504,12 +504,12 @@ const CommentsModal = ({ issueId, onClose, onCommentAdded }) => {
                 />
                 <div className="flex-1">
                   <div className="flex items-baseline gap-2">
-                    <span className="text-sm font-semibold text-gray-800">{c.user?.name || "User"}</span>
+                    <span className="text-sm font-semibold text-gray-800 dark:text-dark-text">{c.user?.name || "User"}</span>
                     {c.created_at && (
-                      <span className="text-xs text-gray-400">{formatTimeAgo(c.created_at)}</span>
+                      <span className="text-xs text-gray-400 dark:text-dark-text-muted">{formatTimeAgo(c.created_at)}</span>
                     )}
                   </div>
-                  <p className="text-sm text-gray-600 mt-0.5 leading-relaxed">{c.text}</p>
+                  <p className="text-sm text-gray-600 dark:text-dark-text-secondary mt-0.5 leading-relaxed">{c.text}</p>
                 </div>
               </div>
             ))
@@ -518,17 +518,17 @@ const CommentsModal = ({ issueId, onClose, onCommentAdded }) => {
         </div>
 
         {/* Input */}
-        <form onSubmit={handleSubmit} className="px-5 py-3 border-t border-gray-100 flex gap-2">
+        <form onSubmit={handleSubmit} className="px-5 py-3 border-t border-gray-100 dark:border-dark-border/50 flex gap-2">
           <input
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder="Add a comment…"
-            className="flex-1 border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-violet-400"
+            className="flex-1 border border-gray-200 dark:border-dark-border rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-violet-400"
           />
           <button
             type="submit"
             disabled={submitting || !text.trim()}
-            className="bg-violet-500 text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-violet-600 disabled:opacity-50 transition shrink-0"
+            className="bg-violet-50 dark:bg-violet-500/150 text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-violet-600 disabled:opacity-50 transition shrink-0"
           >
             {submitting ? "…" : "Post"}
           </button>
@@ -652,7 +652,7 @@ const IssueFeed = () => {
       />
       <StudentSideNav />
       <StudentBottomNav />
-      <div className="w-full p-2 lg:p-4 lg:w-[calc(100vw-15vw)] bg-[#F0EEFF] overflow-y-auto h-screen" id="mainScroll">
+      <div className="w-full p-2 lg:p-4 lg:w-[calc(100vw-15vw)] bg-[#F0EEFF] dark:bg-dark-card overflow-y-auto h-screen" id="mainScroll">
         <PullToRefresh scrollContainerId="mainScroll" onRefresh={() => fetchIssues(true)}>
         {/* Mobile Greeting - Only on small screens */}
         <AnimatePresence>
@@ -680,7 +680,7 @@ const IssueFeed = () => {
         </AnimatePresence>
 
         {/* Header banner - Hidden on mobile, shown from SM up */}
-        <div className="hidden sm:block w-full bg-violet-500 p-4 sm:p-5 lg:p-6 rounded-2xl md:rounded-3xl text-white shadow-md mb-4 md:mb-6">
+        <div className="hidden sm:block w-full bg-violet-50 dark:bg-violet-500/150 p-4 sm:p-5 lg:p-6 rounded-2xl md:rounded-3xl text-white shadow-md mb-4 md:mb-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             <div>
               <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold leading-tight">
@@ -692,7 +692,7 @@ const IssueFeed = () => {
             </div>
             <button
               onClick={() => setFormModal({ mode: "create" })}
-              className="w-full sm:w-auto bg-white text-violet-600 font-semibold px-5 py-2.5 rounded-xl hover:bg-violet-50 transition shadow text-sm sm:text-base border border-transparent hover:border-violet-100"
+              className="w-full sm:w-auto bg-white text-violet-600 dark:text-violet-400 font-semibold px-5 py-2.5 rounded-xl hover:bg-violet-50 dark:bg-violet-500/15 dark:hover:bg-violet-50 dark:bg-violet-500/150/15 transition shadow text-sm sm:text-base border border-transparent hover:border-violet-100"
             >
               + Report Issue
             </button>
@@ -703,16 +703,16 @@ const IssueFeed = () => {
           {/* Main Feed */}
           <div className="lg:col-span-2 flex flex-col gap-3">
             {/* Filters */}
-            <div className="bg-white rounded-xl border border-gray-100 shadow-sm px-4 py-3 flex flex-wrap items-center gap-3">
+            <div className="bg-white dark:bg-dark-card rounded-xl border border-gray-100 dark:border-dark-border/50 shadow-sm px-4 py-3 flex flex-wrap items-center gap-3">
               {/* Sort tabs */}
-              <div className="flex gap-1 bg-gray-50 rounded-lg p-0.5">
+              <div className="flex gap-1 bg-gray-50 dark:bg-dark-elevated rounded-lg p-0.5">
                 {SORTS.map((s) => (
                   <button
                     key={s.value}
                     onClick={() => setSort(s.value)}
                     className={`px-3 py-1.5 rounded-md text-sm font-medium transition ${sort === s.value
-                      ? "bg-white text-violet-600 shadow-sm"
-                      : "text-gray-500 hover:text-gray-700"
+                      ? "bg-white text-violet-600 dark:text-violet-400 shadow-sm"
+                      : "text-gray-500 dark:text-dark-text-secondary hover:text-gray-700 dark:hover:text-dark-text dark:text-dark-text-secondary"
                       }`}
                   >
                     {s.label}
@@ -731,8 +731,8 @@ const IssueFeed = () => {
                     key={label}
                     onClick={() => setSolvedOnly(val)}
                     className={`px-3 py-1.5 rounded-lg text-xs font-medium transition border ${solvedOnly === val
-                      ? "bg-violet-500 text-white border-violet-500"
-                      : "bg-white text-gray-500 border-gray-200 hover:border-violet-300"
+                      ? "bg-violet-50 dark:bg-violet-500/150 text-white border-violet-500"
+                      : "bg-white dark:bg-dark-card text-gray-500 dark:text-dark-text-secondary border-gray-200 dark:border-dark-border hover:border-violet-300"
                       }`}
                   >
                     {label}
@@ -740,7 +740,7 @@ const IssueFeed = () => {
                 ))}
                 <button
                   onClick={() => window.location.reload()}
-                  className="p-1.5 bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-500 hover:text-violet-600 rounded-lg transition active:scale-95 flex items-center justify-center h-8 w-8"
+                  className="p-1.5 bg-gray-50 dark:bg-dark-elevated hover:bg-gray-100 dark:hover:bg-dark-elevated dark:bg-dark-elevated border border-gray-200 dark:border-dark-border text-gray-500 dark:text-dark-text-secondary hover:text-violet-600 dark:text-violet-400 dark:hover:text-violet-400 rounded-lg transition active:scale-95 flex items-center justify-center h-8 w-8"
                   title="Refresh Feed"
                 >
                   <i className="ri-refresh-line text-sm"></i>
@@ -760,7 +760,7 @@ const IssueFeed = () => {
                 loader={<Loader />}
                 scrollableTarget={window.innerWidth >= 1024 ? "feedScroll" : "mainScroll"}
                 endMessage={
-                  <p className="text-center text-gray-400 text-sm py-6">
+                  <p className="text-center text-gray-400 dark:text-dark-text-muted text-sm py-6">
                     {issues.length === 0 ? "No issues found." : "You've seen it all! 🎉"}
                   </p>
                 }
@@ -783,7 +783,7 @@ const IssueFeed = () => {
           {/* Right Sidebar */}
           <div className="hidden lg:block">
             <UserCard limit={3} />
-            {/* <div className="bg-violet-500 text-white p-6 rounded-2xl shadow-lg relative overflow-hidden mt-4">
+            {/* <div className="bg-violet-50 dark:bg-violet-500/150 text-white p-6 rounded-2xl shadow-lg relative overflow-hidden mt-4">
               <div className="relative z-10">
                 <h3 className="text-lg font-bold mb-1">Campus News</h3>
                 <p className="text-violet-200 text-sm">Stay updated with the latest announcements.</p>
@@ -795,12 +795,12 @@ const IssueFeed = () => {
             </div> */}
 
             {/* Quick report shortcut (sidebar) */}
-            <div className="mt-4 bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
-              <h4 className="font-semibold text-gray-800 mb-1">Have a problem?</h4>
-              <p className="text-sm text-gray-500 mb-3">Report a new issue on campus.</p>
+            <div className="mt-4 bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border/50 shadow-sm p-5">
+              <h4 className="font-semibold text-gray-800 dark:text-dark-text mb-1">Have a problem?</h4>
+              <p className="text-sm text-gray-500 dark:text-dark-text-secondary mb-3">Report a new issue on campus.</p>
               <button
                 onClick={() => setFormModal({ mode: "create" })}
-                className="w-full bg-violet-500 text-white py-2 rounded-xl text-sm font-semibold hover:bg-violet-600 transition shadow-lg shadow-violet-100"
+                className="w-full bg-violet-50 dark:bg-violet-500/150 text-white py-2 rounded-xl text-sm font-semibold hover:bg-violet-600 transition shadow-lg shadow-violet-100"
               >
                 + Report Issue
               </button>

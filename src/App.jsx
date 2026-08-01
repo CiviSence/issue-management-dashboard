@@ -22,6 +22,7 @@ import IssueFeed from "./Components/Dashboards/Student/IssueFeed";
 import MyIssues from "./Components/Dashboards/Student/MyIssues";
 import { ThemeProvider } from "./Context/ThemeContext.jsx";
 import ProtectedRoute from "./routes/ProtectedRoute.jsx";
+import GlobalSkeletonTheme from "./Components/GlobalSkeletonTheme.jsx";
 import { ForgotPassword, ResetPassword } from "./Pages/forgetPassword.jsx";
 import AdminPanel from "./Components/Dashboards/Admin/AdminPanel.jsx";
 
@@ -77,12 +78,13 @@ const App = () => {
 
   return (
     <ThemeProvider>
-      <div className="w-full min-h-screen bg-[#FAFAFC] flex">
-        <Analytics />
-        <SpeedInsights />
-        <Routes>
+      <GlobalSkeletonTheme>
+        <div className="w-full min-h-screen bg-[#FAFAFC] dark:bg-dark-bg flex">
+          <Analytics />
+          <SpeedInsights />
+          <Routes>
 
-          {/* public routes */}
+            {/* public routes */}
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<TermsOfUse />} />
           <Route path="/csae-policy" element={<CsaePolicy />} />
@@ -303,8 +305,9 @@ const App = () => {
               </ProtectedRoute>
             }
           />
-        </Routes>
-      </div>
+          </Routes>
+        </div>
+      </GlobalSkeletonTheme>
     </ThemeProvider>
   );
 };

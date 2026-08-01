@@ -113,9 +113,9 @@ const NotificationsTab = ({
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* Send Notification Panel */}
       <div className="lg:col-span-2 space-y-6">
-        <div className="bg-white rounded-2xl p-6 shadow-lg">
-          <h3 className="text-lg font-semibold text-gray-800 mb-6 flex items-center">
-            <Send className="w-5 h-5 mr-2 text-violet-500" />
+        <div className="bg-white dark:bg-dark-card rounded-2xl p-6 shadow-lg">
+          <h3 className="text-lg font-semibold text-gray-800 dark:text-dark-text mb-6 flex items-center">
+            <Send className="w-5 h-5 mr-2 text-violet-500 dark:text-violet-400" />
             Send Notification
           </h3>
 
@@ -133,7 +133,7 @@ const NotificationsTab = ({
                 className={`p-4 rounded-xl border-2 transition-all flex flex-col items-center space-y-2 ${
                   notificationType === type.id
                     ? "border-[#7E70EB] bg-[#7E70EB]/10 text-[#7E70EB]"
-                    : "border-gray-200 hover:border-[#7E70EB]/40"
+                    : "border-gray-200 dark:border-dark-border hover:border-[#7E70EB]/40"
                 }`}
               >
                 <type.icon className="w-6 h-6" />
@@ -144,7 +144,7 @@ const NotificationsTab = ({
 
           <form onSubmit={handleSendNotification} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-dark-text-secondary mb-2">
                 Title
               </label>
               <input
@@ -156,14 +156,14 @@ const NotificationsTab = ({
                     title: e.target.value,
                   })
                 }
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-violet-500 focus:ring-2 focus:ring-violet-200 outline-none transition-all"
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-dark-border focus:border-violet-500 focus:ring-2 focus:ring-violet-200 outline-none transition-all"
                 placeholder="Enter notification title..."
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-dark-text-secondary mb-2">
                 Message
               </label>
               <textarea
@@ -174,7 +174,7 @@ const NotificationsTab = ({
                     message: e.target.value,
                   })
                 }
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-violet-500 focus:ring-2 focus:ring-violet-200 outline-none transition-all h-32 resize-none"
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-dark-border focus:border-violet-500 focus:ring-2 focus:ring-violet-200 outline-none transition-all h-32 resize-none"
                 placeholder="Enter your message..."
                 required
               />
@@ -182,8 +182,8 @@ const NotificationsTab = ({
 
             {/* Target Role Section */}
             {notificationType === "role" && (
-              <div className="p-4 bg-violet-50/50 rounded-xl border border-violet-100 space-y-2">
-                <label className="block text-sm font-medium text-gray-700">
+              <div className="p-4 bg-violet-50 dark:bg-violet-500/15/50 rounded-xl border border-violet-100 space-y-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-dark-text-secondary">
                   Recipient Group
                 </label>
                 <select
@@ -194,7 +194,7 @@ const NotificationsTab = ({
                       role: e.target.value,
                     })
                   }
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-violet-500 focus:ring-2 focus:ring-violet-200 outline-none bg-white"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-dark-border focus:border-violet-500 focus:ring-2 focus:ring-violet-200 outline-none bg-white"
                 >
                   <option value="all">All Users</option>
                   <option value="citizen">Citizens (Students)</option>
@@ -206,7 +206,7 @@ const NotificationsTab = ({
 
             {notificationType === "user" && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-dark-text-secondary mb-2">
                   Target User
                 </label>
                 <UserSelector
@@ -224,9 +224,9 @@ const NotificationsTab = ({
 
             {/* Custom Notification Section */}
             {notificationType === "custom" && (
-              <div className="p-4 bg-violet-50/50 rounded-xl border border-violet-100 space-y-4">
+              <div className="p-4 bg-violet-50 dark:bg-violet-500/15/50 rounded-xl border border-violet-100 space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-dark-text-secondary mb-2">
                     Recipient Type
                   </label>
                   <select
@@ -237,7 +237,7 @@ const NotificationsTab = ({
                         customRecipientType: e.target.value,
                       })
                     }
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-violet-500 focus:ring-2 focus:ring-violet-200 outline-none bg-white text-sm"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-dark-border focus:border-violet-500 focus:ring-2 focus:ring-violet-200 outline-none bg-white text-sm"
                   >
                     <option value="all">All Users</option>
                     <option value="role">By Role</option>
@@ -248,7 +248,7 @@ const NotificationsTab = ({
 
                 {notificationForm.customRecipientType === "role" && (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-dark-text-secondary mb-2">
                       Select Target Roles
                     </label>
                     <div className="grid grid-cols-2 gap-2">
@@ -265,7 +265,7 @@ const NotificationsTab = ({
                           className={`py-2 px-3 rounded-xl text-xs font-semibold capitalize border transition cursor-pointer truncate ${
                             (notificationForm.customRoles || ["citizen"]).includes(r.id)
                               ? "bg-[#7E70EB] border-[#7E70EB] text-white shadow-sm shadow-[#7E70EB]/20"
-                              : "bg-white border-gray-200 text-gray-600 hover:bg-gray-50"
+                              : "bg-white dark:bg-dark-card border-gray-200 dark:border-dark-border text-gray-600 dark:text-dark-text-secondary hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated"
                           }`}
                         >
                           {r.label}
@@ -277,7 +277,7 @@ const NotificationsTab = ({
 
                 {notificationForm.customRecipientType === "individual" && (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-dark-text-secondary mb-2">
                       Target User
                     </label>
                     <UserSelector
@@ -298,7 +298,7 @@ const NotificationsTab = ({
             {/* Priority Section (Not shown for role notification) */}
             {notificationType !== "role" && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-dark-text-secondary mb-2">
                   Priority Level
                 </label>
                 <div className="flex gap-4 flex-wrap">
@@ -318,15 +318,15 @@ const NotificationsTab = ({
                             priority: e.target.value,
                           })
                         }
-                        className="w-4 h-4 text-violet-600 focus:ring-violet-500"
+                        className="w-4 h-4 text-violet-600 dark:text-violet-400 focus:ring-violet-500"
                       />
                       <span
                         className={`text-sm capitalize ${
                           priority === "urgent"
-                            ? "text-red-600 font-medium"
+                            ? "text-red-600 dark:text-red-400 font-medium"
                             : priority === "high"
                               ? "text-orange-600"
-                              : "text-gray-600"
+                              : "text-gray-600 dark:text-dark-text-secondary"
                         }`}
                       >
                         {priority}
@@ -339,7 +339,7 @@ const NotificationsTab = ({
 
             {/* Delivery Channels */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-dark-text-secondary mb-2">
                 Delivery Channels
               </label>
               <div className="flex flex-wrap gap-3">
@@ -355,7 +355,7 @@ const NotificationsTab = ({
                     className={`px-4 py-2 rounded-xl text-xs font-semibold border transition-all cursor-pointer flex items-center space-x-2 ${
                       (notificationForm.channels || ["in_app", "email", "push"]).includes(ch.id)
                         ? "bg-[#7E70EB] border-[#7E70EB] text-white shadow-sm shadow-[#7E70EB]/20"
-                        : "bg-white border-gray-200 text-gray-600 hover:bg-gray-50"
+                        : "bg-white dark:bg-dark-card border-gray-200 dark:border-dark-border text-gray-600 dark:text-dark-text-secondary hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated"
                     }`}
                   >
                     <span>{ch.label}</span>
@@ -384,32 +384,32 @@ const NotificationsTab = ({
 
       {/* Stats Panel */}
       <div className="space-y-6">
-        <div className="bg-white rounded-2xl p-6 shadow-lg">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">
+        <div className="bg-white dark:bg-dark-card rounded-2xl p-6 shadow-lg">
+          <h3 className="text-lg font-semibold text-gray-800 dark:text-dark-text mb-4">
             Notification Stats
           </h3>
           {notificationStats ? (
             <div className="space-y-4">
-              <div className="p-4 bg-violet-50 rounded-xl">
-                <p className="text-sm text-gray-600 mb-1">Total Sent</p>
+              <div className="p-4 bg-violet-50 dark:bg-violet-500/15 rounded-xl">
+                <p className="text-sm text-gray-600 dark:text-dark-text-secondary mb-1">Total Sent</p>
                 <p className="text-2xl font-bold text-violet-700">
                   {notificationStats.total_sent || 0}
                 </p>
               </div>
               <div className="p-4 bg-amber-50 rounded-xl">
-                <p className="text-sm text-gray-600 mb-1">Pending</p>
+                <p className="text-sm text-gray-600 dark:text-dark-text-secondary mb-1">Pending</p>
                 <p className="text-2xl font-bold text-amber-700">
                   {notificationStats.total_pending || 0}
                 </p>
               </div>
               <div className="p-4 bg-green-50 rounded-xl">
-                <p className="text-sm text-gray-600 mb-1">Delivery Rate</p>
+                <p className="text-sm text-gray-600 dark:text-dark-text-secondary mb-1">Delivery Rate</p>
                 <p className="text-2xl font-bold text-green-700">
                   {notificationStats.delivery_rate || 0}%
                 </p>
               </div>
               <div className="p-4 bg-blue-50 rounded-xl">
-                <p className="text-sm text-gray-600 mb-1">Read Rate</p>
+                <p className="text-sm text-gray-600 dark:text-dark-text-secondary mb-1">Read Rate</p>
                 <p className="text-2xl font-bold text-blue-700">
                   {notificationStats.read_rate || 0}%
                 </p>
@@ -420,24 +420,24 @@ const NotificationsTab = ({
           )}
         </div>
 
-        <div className="bg-white rounded-2xl p-6 shadow-lg">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">
+        <div className="bg-white dark:bg-dark-card rounded-2xl p-6 shadow-lg">
+          <h3 className="text-lg font-semibold text-gray-800 dark:text-dark-text mb-4">
             Recent Sent
           </h3>
           <div className="space-y-3 max-h-64 overflow-y-auto">
             {sentNotifications?.map((notif, idx) => (
-              <div key={idx} className="p-3 bg-gray-50 rounded-xl text-sm">
-                <p className="font-medium text-gray-800 truncate">
+              <div key={idx} className="p-3 bg-gray-50 dark:bg-dark-elevated rounded-xl text-sm">
+                <p className="font-medium text-gray-800 dark:text-dark-text truncate">
                   {notif.title}
                 </p>
-                <p className="text-gray-500 text-xs mt-1">
+                <p className="text-gray-500 dark:text-dark-text-secondary text-xs mt-1">
                   Sent to : {notif.recipient_type} • on{" "}
                   {notif.created_at.split("T")[0]}
                 </p>
               </div>
             ))}
             {sentNotifications.length === 0 && (
-              <p className="text-gray-500 text-center py-4 text-sm">
+              <p className="text-gray-500 dark:text-dark-text-secondary text-center py-4 text-sm">
                 No notifications sent yet
               </p>
             )}
@@ -461,7 +461,7 @@ const DashboardSkeleton = () => (
     </div>
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
       {[...Array(4)].map((_, i) => (
-        <div key={i} className="bg-white rounded-xl p-4 border border-gray-100">
+        <div key={i} className="bg-white dark:bg-dark-card rounded-xl p-4 border border-gray-100 dark:border-dark-border/50">
           <Skeleton height={12} width={80} />
           <Skeleton height={32} width={60} className="mt-2" />
           <Skeleton height={12} width={50} className="mt-1" />
@@ -469,11 +469,11 @@ const DashboardSkeleton = () => (
       ))}
     </div>
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-        <div className="px-4 py-3 border-b border-gray-100 bg-gray-50/50">
+      <div className="bg-white dark:bg-dark-card rounded-xl border border-gray-200 dark:border-dark-border overflow-hidden">
+        <div className="px-4 py-3 border-b border-gray-100 dark:border-dark-border/50 bg-gray-50/50 dark:bg-dark-elevated/50">
           <Skeleton height={20} width={180} />
         </div>
-        <div className="divide-y divide-gray-100">
+        <div className="divide-y divide-gray-100 dark:divide-dark-border/50">
           {[...Array(5)].map((_, i) => (
             <div key={i} className="p-4 flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -488,14 +488,14 @@ const DashboardSkeleton = () => (
           ))}
         </div>
       </div>
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-        <div className="px-4 py-3 border-b border-gray-100 bg-gray-50/50">
+      <div className="bg-white dark:bg-dark-card rounded-xl border border-gray-200 dark:border-dark-border overflow-hidden">
+        <div className="px-4 py-3 border-b border-gray-100 dark:border-dark-border/50 bg-gray-50/50 dark:bg-dark-elevated/50">
           <Skeleton height={20} width={160} />
         </div>
         <div className="p-4 space-y-3">
           <div className="grid grid-cols-2 gap-3">
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="p-3 bg-gray-50 rounded-lg">
+              <div key={i} className="p-3 bg-gray-50 dark:bg-dark-elevated rounded-lg">
                 <Skeleton height={12} width={60} />
                 <Skeleton height={24} width={40} className="mt-1" />
               </div>
@@ -507,7 +507,7 @@ const DashboardSkeleton = () => (
     </div>
     <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
       {[...Array(4)].map((_, i) => (
-        <div key={i} className="flex items-center gap-3 p-3 bg-white border border-gray-200 rounded-xl">
+        <div key={i} className="flex items-center gap-3 p-3 bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border rounded-xl">
           <Skeleton circle height={36} width={36} />
           <Skeleton height={14} width={100} />
         </div>
@@ -531,10 +531,10 @@ const UsersTableSkeleton = () => (
         <Skeleton height={36} width={80} borderRadius={8} />
       </div>
     </div>
-    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+    <div className="bg-white dark:bg-dark-card rounded-xl border border-gray-200 dark:border-dark-border overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full">
-          <thead className="bg-gray-50 border-b border-gray-200">
+          <thead className="bg-gray-50 dark:bg-dark-elevated border-b border-gray-200 dark:border-dark-border">
             <tr>
               {["#", "User", "Status", "Role", "Department", "Reputation", "Joined", "Actions"].map((h, i) => (
                 <th key={i} className="px-4 py-3 text-left">
@@ -543,7 +543,7 @@ const UsersTableSkeleton = () => (
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100">
+          <tbody className="divide-y divide-gray-100 dark:divide-dark-border/50">
             {[...Array(8)].map((_, i) => (
               <tr key={i}>
                 <td className="px-4 py-3"><Skeleton height={16} width={16} /></td>
@@ -594,7 +594,7 @@ const UnverifiedSkeleton = () => (
     </div>
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
       {[...Array(8)].map((_, i) => (
-        <div key={i} className="bg-white rounded-xl border border-gray-200 p-4">
+        <div key={i} className="bg-white dark:bg-dark-card rounded-xl border border-gray-200 dark:border-dark-border p-4">
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-3">
               <Skeleton circle height={48} width={48} />
@@ -621,11 +621,11 @@ const UnverifiedSkeleton = () => (
 
 const BannedSkeleton = () => (
   <div className="space-y-6 animate-pulse">
-    <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-      <div className="p-6 border-b border-gray-100">
+    <div className="bg-white dark:bg-dark-card rounded-2xl shadow-lg overflow-hidden">
+      <div className="p-6 border-b border-gray-100 dark:border-dark-border/50">
         <Skeleton height={24} width={200} />
       </div>
-      <div className="divide-y divide-gray-100">
+      <div className="divide-y divide-gray-100 dark:divide-dark-border/50">
         {[...Array(4)].map((_, i) => (
           <div key={i} className="p-6 flex items-center justify-between">
             <div className="flex items-center space-x-4">
@@ -722,9 +722,9 @@ const UserSelector = ({ selectedId, onChange, users }) => {
     <div className="relative">
       <div 
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white flex items-center justify-between cursor-pointer hover:border-gray-300 focus-within:ring-2 focus-within:ring-violet-200 text-sm"
+        className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-dark-border bg-white flex items-center justify-between cursor-pointer hover:border-gray-300 dark:border-dark-border focus-within:ring-2 focus-within:ring-violet-200 text-sm"
       >
-        <span className={selectedUser ? "text-gray-800 font-medium" : "text-gray-400"}>
+        <span className={selectedUser ? "text-gray-800 dark:text-dark-text font-medium" : "text-gray-400 dark:text-dark-text-muted"}>
           {selectedUser ? `${selectedUser.name} (${selectedUser.email})` : "Select a recipient user..."}
         </span>
         <div className="flex items-center gap-1.5">
@@ -735,7 +735,7 @@ const UserSelector = ({ selectedId, onChange, users }) => {
                 e.stopPropagation();
                 onChange("");
               }}
-              className="text-xs text-gray-400 hover:text-red-500 font-bold px-1 py-0.5 rounded hover:bg-gray-100"
+              className="text-xs text-gray-400 dark:text-dark-text-muted hover:text-red-500 font-bold px-1 py-0.5 rounded hover:bg-gray-100 dark:hover:bg-dark-elevated dark:bg-dark-elevated"
             >
               Clear
             </button>
@@ -747,7 +747,7 @@ const UserSelector = ({ selectedId, onChange, users }) => {
       {isOpen && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
-          <div className="absolute z-50 w-full mt-2 bg-white border border-gray-200 rounded-xl shadow-xl max-h-60 overflow-y-auto p-2 space-y-1">
+          <div className="absolute z-50 w-full mt-2 bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border rounded-xl shadow-xl max-h-60 overflow-y-auto p-2 space-y-1">
             <input
               type="text"
               placeholder="Type name or email to search..."
@@ -769,17 +769,17 @@ const UserSelector = ({ selectedId, onChange, users }) => {
                   className={`px-3 py-2 text-sm rounded-lg cursor-pointer transition-colors text-left ${
                     selectedId === u.id 
                       ? "bg-[#7E70EB] text-white font-semibold" 
-                      : "text-gray-700 hover:bg-violet-50"
+                      : "text-gray-700 dark:text-dark-text-secondary hover:bg-violet-50 dark:bg-violet-500/15 dark:hover:bg-violet-50 dark:bg-violet-500/150/15"
                   }`}
                 >
                   <p className="font-semibold">{u.name}</p>
-                  <p className={`text-xs ${selectedId === u.id ? "text-violet-100" : "text-gray-400"}`}>
+                  <p className={`text-xs ${selectedId === u.id ? "text-violet-100" : "text-gray-400 dark:text-dark-text-muted"}`}>
                     {u.email} • {u.role}
                   </p>
                 </div>
               ))
             ) : (
-              <p className="text-xs text-gray-400 text-center py-4">No users found</p>
+              <p className="text-xs text-gray-400 dark:text-dark-text-muted text-center py-4">No users found</p>
             )}
           </div>
         </>
@@ -1294,19 +1294,19 @@ const AdminPanel = () => {
 const QuickStat = ({ title, value, icon: Icon, color, trend, onClick }) => (
   <div
     onClick={onClick}
-    className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 hover:shadow-gray-200/40 transition-all duration-300 cursor-pointer group relative overflow-hidden"
+    className="bg-white dark:bg-dark-card rounded-2xl p-5 border border-gray-100 dark:border-dark-border/50 shadow-sm hover:shadow-xl hover:-translate-y-1 hover:shadow-gray-200/40 transition-all duration-300 cursor-pointer group relative overflow-hidden"
   >
     <div className="flex items-start justify-between relative z-10">
       <div>
-        <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">
+        <p className="text-xs font-medium text-gray-500 dark:text-dark-text-secondary uppercase tracking-wider">
           {title}
         </p>
-        <p className="text-2xl font-bold text-gray-900 mt-1">
+        <p className="text-2xl font-bold text-gray-900 dark:text-dark-text mt-1">
           {value?.toLocaleString() || 0}
         </p>
         {trend && (
           <p
-            className={`text-xs mt-1 flex items-center gap-1 ${trend.startsWith("+") ? "text-green-600" : "text-red-600"}`}
+            className={`text-xs mt-1 flex items-center gap-1 ${trend.startsWith("+") ? "text-green-600" : "text-red-600 dark:text-red-400"}`}
           >
             {trend.startsWith("+") ? (
               <TrendingUp className="w-3 h-3" />
@@ -1350,17 +1350,17 @@ const DashboardTab = ({
           {/* Header */}
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-xl font-bold text-gray-900">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-dark-text">
                 Dashboard Overview
               </h2>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-gray-500 dark:text-dark-text-secondary">
                 Quick insights and recent activity
               </p>
             </div>
             <button
               onClick={handleRefresh}
               disabled={isRefreshing}
-              className="flex items-center gap-2 px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+              className="flex items-center gap-2 px-3 py-1.5 text-sm text-gray-600 dark:text-dark-text-secondary hover:text-gray-900 dark:hover:text-dark-text dark:text-dark-text hover:bg-gray-100 dark:hover:bg-dark-elevated dark:bg-dark-elevated rounded-lg transition-colors"
             >
               <RefreshCw
                 className={`w-4 h-4 ${isRefreshing ? "animate-spin" : ""}`}
@@ -1410,11 +1410,11 @@ const DashboardTab = ({
           {/* Two Column Layout */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Recent Verifications */}
-            <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-              <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+            <div className="bg-white dark:bg-dark-card rounded-xl border border-gray-200 dark:border-dark-border overflow-hidden">
+              <div className="px-4 py-3 border-b border-gray-100 dark:border-dark-border/50 flex items-center justify-between bg-gray-50/50 dark:bg-dark-elevated/50">
                 <div className="flex items-center gap-2">
                   <Clock className="w-4 h-4 text-yellow-500" />
-                  <h3 className="font-semibold text-gray-900">
+                  <h3 className="font-semibold text-gray-900 dark:text-dark-text">
                     Pending Verifications
                   </h3>
                 </div>
@@ -1425,23 +1425,23 @@ const DashboardTab = ({
                 )}
               </div>
 
-              <div className="divide-y divide-gray-100">
+              <div className="divide-y divide-gray-100 dark:divide-dark-border/50">
                 {unverifiedUsers.slice(0, 5).map((user) => (
                   <div
                     key={user.id}
-                    className="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
+                    className="p-4 flex items-center justify-between hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated transition-colors"
                   >
                     <div className="flex items-center gap-3">
                       <img
                         src={user.avatar_url || getDefaultAvatar(user.gender)}
                         alt={user.name}
-                        className="w-12 h-12 rounded-full object-cover border-2 border-gray-100"
+                        className="w-12 h-12 rounded-full object-cover border-2 border-gray-100 dark:border-dark-border/50"
                       />{" "}
                       <div>
-                        <p className="font-medium text-gray-900 text-sm">
+                        <p className="font-medium text-gray-900 dark:text-dark-text text-sm">
                           {user.name}
                         </p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-gray-500 dark:text-dark-text-secondary">
                           Awaiting verification
                         </p>
                       </div>
@@ -1460,7 +1460,7 @@ const DashboardTab = ({
                 {unverifiedUsers.length === 0 && (
                   <div className="p-8 text-center">
                     <CheckCircle className="w-10 h-10 text-green-500 mx-auto mb-2" />
-                    <p className="text-gray-500 text-sm">All users verified!</p>
+                    <p className="text-gray-500 dark:text-dark-text-secondary text-sm">All users verified!</p>
                   </div>
                 )}
 
@@ -1476,17 +1476,17 @@ const DashboardTab = ({
             </div>
 
             {/* Notification Overview */}
-            <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-              <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+            <div className="bg-white dark:bg-dark-card rounded-xl border border-gray-200 dark:border-dark-border overflow-hidden">
+              <div className="px-4 py-3 border-b border-gray-100 dark:border-dark-border/50 flex items-center justify-between bg-gray-50/50 dark:bg-dark-elevated/50">
                 <div className="flex items-center gap-2">
-                  <Bell className="w-4 h-4 text-violet-500" />
-                  <h3 className="font-semibold text-gray-900">
+                  <Bell className="w-4 h-4 text-violet-500 dark:text-violet-400" />
+                  <h3 className="font-semibold text-gray-900 dark:text-dark-text">
                     Notification Stats
                   </h3>
                 </div>
                 <button
                   onClick={() => setActiveTab("notifications")}
-                  className="text-xs text-violet-600 hover:text-violet-700 font-medium"
+                  className="text-xs text-violet-600 dark:text-violet-400 hover:text-violet-700 font-medium"
                 >
                   Manage →
                 </button>
@@ -1519,8 +1519,8 @@ const DashboardTab = ({
                         {notificationStats.total_pending}
                       </p>
                     </div>
-                    <div className="p-3 bg-violet-50 rounded-lg">
-                      <p className="text-xs text-violet-600 font-medium">
+                    <div className="p-3 bg-violet-50 dark:bg-violet-500/15 rounded-lg">
+                      <p className="text-xs text-violet-600 dark:text-violet-400 font-medium">
                         Read Rate
                       </p>
                       <p className="text-lg font-bold text-violet-900">
@@ -1531,13 +1531,13 @@ const DashboardTab = ({
 
                   {/* Mini progress bar */}
                   <div>
-                    <div className="flex justify-between text-xs text-gray-500 mb-1">
+                    <div className="flex justify-between text-xs text-gray-500 dark:text-dark-text-secondary mb-1">
                       <span>Delivery Progress</span>
                       <span>{notificationStats.delivery_rate}%</span>
                     </div>
-                    <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                    <div className="h-2 bg-gray-100 dark:bg-dark-elevated rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-violet-500 rounded-full transition-all duration-500"
+                        className="h-full bg-violet-50 dark:bg-violet-500/150 rounded-full transition-all duration-500"
                         style={{ width: `${notificationStats.delivery_rate}%` }}
                       />
                     </div>
@@ -1565,19 +1565,19 @@ const DashboardTab = ({
                 label: "Send Notification",
                 icon: Send,
                 tab: "notifications",
-                color: "text-violet-600 bg-violet-50",
+                color: "text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-500/15",
               },
               {
                 label: "Banned List",
                 icon: Ban,
                 tab: "banned",
-                color: "text-red-600 bg-red-50",
+                color: "text-red-600 dark:text-red-400 bg-red-50",
               },
               {
                 label: "System Logs",
                 icon: Activity,
                 action: () => {},
-                color: "text-gray-600 bg-gray-50",
+                color: "text-gray-600 dark:text-dark-text-secondary bg-gray-50 dark:bg-dark-elevated",
               },
             ].map((action, idx) => (
               <button
@@ -1585,12 +1585,12 @@ const DashboardTab = ({
                 onClick={() =>
                   action.tab ? setActiveTab(action.tab) : action.action?.()
                 }
-                className="flex items-center gap-3 p-3 bg-white border border-gray-200 rounded-xl hover:border-gray-300 hover:shadow-sm transition-all text-left"
+                className="flex items-center gap-3 p-3 bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border rounded-xl hover:border-gray-300 dark:border-dark-border hover:shadow-sm transition-all text-left"
               >
                 <div className={`p-2 rounded-lg ${action.color}`}>
                   <action.icon className="w-4 h-4" />
                 </div>
-                <span className="text-sm font-medium text-gray-700">
+                <span className="text-sm font-medium text-gray-700 dark:text-dark-text-secondary">
                   {action.label}
                 </span>
               </button>
@@ -1686,9 +1686,9 @@ const DashboardTab = ({
         case "unverified":
           return "bg-yellow-100 text-yellow-700 border-yellow-200";
         case "banned":
-          return "bg-red-100 text-red-700 border-red-200";
+          return "bg-red-100 text-red-700 dark:text-red-400 border-red-200 dark:border-red-500/30";
         default:
-          return "bg-gray-100 text-gray-700";
+          return "bg-gray-100 dark:bg-dark-elevated text-gray-700 dark:text-dark-text-secondary";
       }
     };
 
@@ -1701,13 +1701,13 @@ const DashboardTab = ({
         case "trusted":
           return "bg-indigo-100 text-indigo-700";
         default:
-          return "bg-gray-100 text-gray-700";
+          return "bg-gray-100 dark:bg-dark-elevated text-gray-700 dark:text-dark-text-secondary";
       }
     };
 
     // User Card Component
     const UserCard = ({ user }) => (
-      <div className="group bg-white rounded-xl border border-gray-200 hover:border-violet-300 hover:shadow-md transition-all overflow-hidden">
+      <div className="group bg-white dark:bg-dark-card rounded-xl border border-gray-200 dark:border-dark-border hover:border-violet-300 hover:shadow-md transition-all overflow-hidden">
         <div className="p-4">
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-3">
@@ -1715,7 +1715,7 @@ const DashboardTab = ({
                 <img
                   src={user.avatar_url || getDefaultAvatar(user.gender)}
                   alt={user.name}
-                  className="w-12 h-12 rounded-full object-cover border-2 border-gray-100"
+                  className="w-12 h-12 rounded-full object-cover border-2 border-gray-100 dark:border-dark-border/50"
                 />
 
                 <div
@@ -1727,10 +1727,10 @@ const DashboardTab = ({
                 />
               </div>
               <div className="min-w-0">
-                <h4 className="font-semibold text-gray-900 truncate">
+                <h4 className="font-semibold text-gray-900 dark:text-dark-text truncate">
                   {user.name}
                 </h4>
-                <p className="text-sm text-gray-500 truncate">{user.email}</p>
+                <p className="text-sm text-gray-500 dark:text-dark-text-secondary truncate">{user.email}</p>
               </div>
             </div>
 
@@ -1738,7 +1738,7 @@ const DashboardTab = ({
               type="checkbox"
               checked={selectedUsers.includes(user.id)}
               onChange={() => toggleSelectUser(user.id)}
-              className="w-4 h-4 text-violet-600 rounded border-gray-300 focus:ring-violet-500"
+              className="w-4 h-4 text-violet-600 dark:text-violet-400 rounded border-gray-300 dark:border-dark-border focus:ring-violet-500"
             />
           </div>
 
@@ -1761,23 +1761,23 @@ const DashboardTab = ({
           {/* Details Grid */}
           <div className="mt-4 grid grid-cols-2 gap-3 text-xs">
             {user.department && (
-              <div className="flex items-center gap-1.5 text-gray-600">
-                <Building className="w-3.5 h-3.5 text-gray-400" />
+              <div className="flex items-center gap-1.5 text-gray-600 dark:text-dark-text-secondary">
+                <Building className="w-3.5 h-3.5 text-gray-400 dark:text-dark-text-muted" />
                 <span className="truncate">{user.department}</span>
               </div>
             )}
             {user.designation && (
-              <div className="flex items-center gap-1.5 text-gray-600">
-                <Briefcase className="w-3.5 h-3.5 text-gray-400" />
+              <div className="flex items-center gap-1.5 text-gray-600 dark:text-dark-text-secondary">
+                <Briefcase className="w-3.5 h-3.5 text-gray-400 dark:text-dark-text-muted" />
                 <span className="truncate">{user.designation}</span>
               </div>
             )}
-            <div className="flex items-center gap-1.5 text-gray-600">
+            <div className="flex items-center gap-1.5 text-gray-600 dark:text-dark-text-secondary">
               <Award className="w-3.5 h-3.5 text-yellow-500" />
               <span>{user.reputation_points || 0} pts</span>
             </div>
-            <div className="flex items-center gap-1.5 text-gray-600">
-              <Calendar className="w-3.5 h-3.5 text-gray-400" />
+            <div className="flex items-center gap-1.5 text-gray-600 dark:text-dark-text-secondary">
+              <Calendar className="w-3.5 h-3.5 text-gray-400 dark:text-dark-text-muted" />
               <span>{new Date(user.created_at).toLocaleDateString()}</span>
             </div>
           </div>
@@ -1787,7 +1787,7 @@ const DashboardTab = ({
         <div className="px-4 pb-4 flex gap-2">
           <button
             onClick={() => fetchUserDetails(user.id)}
-            className="flex-1 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg transition-colors flex items-center justify-center gap-1.5"
+            className="flex-1 py-2 bg-gray-100 dark:bg-dark-elevated hover:bg-gray-200 dark:bg-dark-border text-gray-700 dark:text-dark-text-secondary text-sm font-medium rounded-lg transition-colors flex items-center justify-center gap-1.5"
           >
             <Eye className="w-4 h-4" />
             View
@@ -1803,7 +1803,7 @@ const DashboardTab = ({
           )}
           <button
             onClick={() => openBanModal(user.id)}
-            className="px-3 py-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg transition-colors"
+            className="px-3 py-2 bg-red-50 dark:bg-red-500/15 hover:bg-red-100 text-red-600 dark:text-red-400 rounded-lg transition-colors"
             title="Ban"
           >
             <Ban className="w-4 h-4" />
@@ -1814,13 +1814,13 @@ const DashboardTab = ({
 
     // Compact List Item
     const UserListItem = ({ user }) => (
-      <div className="group flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 p-4 bg-white border-b border-gray-100 hover:bg-gray-50 transition-colors">
+      <div className="group flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 p-4 bg-white dark:bg-dark-card border-b border-gray-100 dark:border-dark-border/50 hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated transition-colors">
         <div className="flex items-center gap-3 min-w-0 flex-1">
           <input
             type="checkbox"
             checked={selectedUsers.includes(user.id)}
             onChange={() => toggleSelectUser(user.id)}
-            className="w-4 h-4 text-violet-600 rounded border-gray-300 focus:ring-violet-500 shrink-0"
+            className="w-4 h-4 text-violet-600 dark:text-violet-400 rounded border-gray-300 dark:border-dark-border focus:ring-violet-500 shrink-0"
           />
 
           <div className="relative shrink-0">
@@ -1832,8 +1832,8 @@ const DashboardTab = ({
           </div>
 
           <div className="min-w-0 flex-1">
-            <p className="font-medium text-gray-900 truncate">{user.name}</p>
-            <p className="text-sm text-gray-500 truncate">{user.email}</p>
+            <p className="font-medium text-gray-900 dark:text-dark-text truncate">{user.name}</p>
+            <p className="text-sm text-gray-500 dark:text-dark-text-secondary truncate">{user.email}</p>
           </div>
         </div>
 
@@ -1843,10 +1843,10 @@ const DashboardTab = ({
           >
             {user.verification_status}
           </span>
-          <span className="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
+          <span className="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 dark:bg-dark-elevated text-gray-600 dark:text-dark-text-secondary">
             {user.role || "User"}
           </span>
-          <span className="flex items-center gap-1 text-xs text-gray-600">
+          <span className="flex items-center gap-1 text-xs text-gray-600 dark:text-dark-text-secondary">
             <Award className="w-3.5 h-3.5 text-yellow-500" />
             {user.reputation_points || 0}
           </span>
@@ -1855,7 +1855,7 @@ const DashboardTab = ({
         <div className="flex items-center gap-1 pl-17 sm:pl-0 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity shrink-0">
           <button
             onClick={() => fetchUserDetails(user.id)}
-            className="p-2 text-gray-400 hover:text-violet-600"
+            className="p-2 text-gray-400 dark:text-dark-text-muted hover:text-violet-600 dark:text-violet-400 dark:hover:text-violet-400"
           >
             <Eye className="w-4 h-4" />
           </button>
@@ -1869,7 +1869,7 @@ const DashboardTab = ({
           )}
           <button
             onClick={() => openBanModal(user.id)}
-            className="p-2 text-red-600 hover:bg-red-50 rounded"
+            className="p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:bg-red-500/15 rounded"
           >
             <Ban className="w-4 h-4" />
           </button>
@@ -1884,11 +1884,11 @@ const DashboardTab = ({
         {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
-            <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-              <Users className="w-5 h-5 text-violet-500" />
+            <h2 className="text-xl font-bold text-gray-900 dark:text-dark-text flex items-center gap-2">
+              <Users className="w-5 h-5 text-violet-500 dark:text-violet-400" />
               All Users
             </h2>
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-sm text-gray-500 dark:text-dark-text-secondary mt-1">
               {filteredUsers.length} user{filteredUsers.length !== 1 ? "s" : ""}{" "}
               total
             </p>
@@ -1905,7 +1905,7 @@ const DashboardTab = ({
             </button>
             <button
               onClick={() => setActiveTab("banned")}
-              className="flex items-center gap-2 px-3 py-1.5 bg-red-100 text-red-700 rounded-full text-sm font-medium hover:bg-red-200 transition-colors"
+              className="flex items-center gap-2 px-3 py-1.5 bg-red-100 text-red-700 dark:text-red-400 rounded-full text-sm font-medium hover:bg-red-200 transition-colors"
             >
               <Ban className="w-4 h-4" />
               Banned ({stats.bannedUsers})
@@ -1915,13 +1915,13 @@ const DashboardTab = ({
 
             {/* Search */}
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-dark-text-muted" />
               <input
                 type="text"
                 placeholder="Search users..."
                 value={localSearchQuery}
                 onChange={(e) => setLocalSearchQuery(e.target.value)}
-                className="pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 w-48"
+                className="pl-9 pr-4 py-2 border border-gray-200 dark:border-dark-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 w-48"
               />
             </div>
 
@@ -1931,7 +1931,7 @@ const DashboardTab = ({
               className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                 showFilters
                   ? "bg-violet-100 text-violet-700"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  : "bg-gray-100 dark:bg-dark-elevated text-gray-700 dark:text-dark-text-secondary hover:bg-gray-200 dark:bg-dark-border"
               }`}
             >
               <Filter className="w-4 h-4" />
@@ -1939,7 +1939,7 @@ const DashboardTab = ({
             </button>
 
             {/* View Mode Toggle */}
-            <div className="flex bg-gray-100 rounded-lg p-1">
+            <div className="flex bg-gray-100 dark:bg-dark-elevated rounded-lg p-1">
               {[
                 { mode: "table", icon: Table2 },
                 { mode: "grid", icon: LayoutGrid },
@@ -1948,7 +1948,7 @@ const DashboardTab = ({
                 <button
                   key={mode}
                   onClick={() => setViewMode(mode)}
-                  className={`p-1.5 rounded ${viewMode === mode ? "bg-white shadow-sm text-gray-900" : "text-gray-500"}`}
+                  className={`p-1.5 rounded ${viewMode === mode ? "bg-white dark:bg-dark-card shadow-sm text-gray-900 dark:text-dark-text" : "text-gray-500 dark:text-dark-text-secondary"}`}
                   title={`${mode} view`}
                 >
                   <Icon className="w-4 h-4" />
@@ -1960,10 +1960,10 @@ const DashboardTab = ({
 
         {/* Expandable Filters */}
         {showFilters && (
-          <div className="p-4 bg-gray-50 rounded-xl border border-gray-200 animate-fade-in">
+          <div className="p-4 bg-gray-50 dark:bg-dark-elevated rounded-xl border border-gray-200 dark:border-dark-border animate-fade-in">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label className="text-xs font-medium text-gray-600 uppercase mb-2 block">
+                <label className="text-xs font-medium text-gray-600 dark:text-dark-text-secondary uppercase mb-2 block">
                   Status
                 </label>
                 <select
@@ -1971,7 +1971,7 @@ const DashboardTab = ({
                   onChange={(e) =>
                     setFilters({ ...filters, status: e.target.value })
                   }
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
+                  className="w-full px-3 py-2 border border-gray-200 dark:border-dark-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
                 >
                   <option value="all">All Status</option>
                   <option value="verified">Verified</option>
@@ -1979,7 +1979,7 @@ const DashboardTab = ({
                 </select>
               </div>
               <div>
-                <label className="text-xs font-medium text-gray-600 uppercase mb-2 block">
+                <label className="text-xs font-medium text-gray-600 dark:text-dark-text-secondary uppercase mb-2 block">
                   Role
                 </label>
                 <select
@@ -1987,7 +1987,7 @@ const DashboardTab = ({
                   onChange={(e) =>
                     setFilters({ ...filters, role: e.target.value })
                   }
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
+                  className="w-full px-3 py-2 border border-gray-200 dark:border-dark-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
                 >
                   <option value="all">All Roles</option>
                   <option value="admin">Admin</option>
@@ -1996,7 +1996,7 @@ const DashboardTab = ({
                 </select>
               </div>
               <div>
-                <label className="text-xs font-medium text-gray-600 uppercase mb-2 block">
+                <label className="text-xs font-medium text-gray-600 dark:text-dark-text-secondary uppercase mb-2 block">
                   Sort By
                 </label>
                 <select
@@ -2004,7 +2004,7 @@ const DashboardTab = ({
                   onChange={(e) =>
                     setFilters({ ...filters, sortBy: e.target.value })
                   }
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
+                  className="w-full px-3 py-2 border border-gray-200 dark:border-dark-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
                 >
                   <option value="newest">Newest First</option>
                   <option value="oldest">Oldest First</option>
@@ -2018,7 +2018,7 @@ const DashboardTab = ({
 
         {/* Bulk Actions Bar */}
         {selectedUsers.length > 0 && (
-          <div className="flex items-center justify-between p-3 bg-violet-50 border border-violet-200 rounded-lg animate-fade-in">
+          <div className="flex items-center justify-between p-3 bg-violet-50 dark:bg-violet-500/15 border border-violet-200 rounded-lg animate-fade-in">
             <div className="flex items-center gap-2 text-sm text-violet-900">
               <CheckSquare className="w-4 h-4" />
               <span className="font-medium">
@@ -2034,7 +2034,7 @@ const DashboardTab = ({
               </button>
               <button
                 onClick={() => handleBulkAction("export")}
-                className="px-3 py-1.5 bg-white border border-[#7E70EB]/40 text-[#7E70EB] text-sm font-medium rounded-lg hover:bg-[#7E70EB]/10"
+                className="px-3 py-1.5 bg-white dark:bg-dark-card border border-[#7E70EB]/40 text-[#7E70EB] text-sm font-medium rounded-lg hover:bg-[#7E70EB]/10"
               >
                 <Download className="w-4 h-4 inline mr-1" />
                 Export
@@ -2067,7 +2067,7 @@ const DashboardTab = ({
         )}
 
         {viewMode === "list" && (
-          <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+          <div className="bg-white dark:bg-dark-card rounded-xl border border-gray-200 dark:border-dark-border overflow-hidden">
             {filteredUsers.map((user) => (
               <UserListItem key={user.id} user={user} />
             ))}
@@ -2075,10 +2075,10 @@ const DashboardTab = ({
         )}
 
         {viewMode === "table" && (
-          <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+          <div className="bg-white dark:bg-dark-card rounded-xl border border-gray-200 dark:border-dark-border overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-50 border-b border-gray-200">
+                <thead className="bg-gray-50 dark:bg-dark-elevated border-b border-gray-200 dark:border-dark-border">
                   <tr>
                     <th className="px-4 py-3 text-left">
                       <input
@@ -2088,44 +2088,44 @@ const DashboardTab = ({
                           filteredUsers.length > 0
                         }
                         onChange={toggleSelectAll}
-                        className="w-4 h-4 text-violet-600 rounded border-gray-300 focus:ring-violet-500"
+                        className="w-4 h-4 text-violet-600 dark:text-violet-400 rounded border-gray-300 dark:border-dark-border focus:ring-violet-500"
                       />
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 dark:text-dark-text-secondary uppercase">
                       User
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 dark:text-dark-text-secondary uppercase">
                       Status
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 dark:text-dark-text-secondary uppercase">
                       Role
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 dark:text-dark-text-secondary uppercase">
                       Department
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 dark:text-dark-text-secondary uppercase">
                       Reputation
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 dark:text-dark-text-secondary uppercase">
                       Joined
                     </th>
-                    <th className="px-4 py-3 text-right text-xs font-semibold text-gray-600 uppercase">
+                    <th className="px-4 py-3 text-right text-xs font-semibold text-gray-600 dark:text-dark-text-secondary uppercase">
                       Actions
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100">
+                <tbody className="divide-y divide-gray-100 dark:divide-dark-border/50">
                   {filteredUsers.map((user) => (
                     <tr
                       key={user.id}
-                      className="hover:bg-gray-50 transition-colors"
+                      className="hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated transition-colors"
                     >
                       <td className="px-4 py-3">
                         <input
                           type="checkbox"
                           checked={selectedUsers.includes(user.id)}
                           onChange={() => toggleSelectUser(user.id)}
-                          className="w-4 h-4 text-violet-600 rounded border-gray-300 focus:ring-violet-500"
+                          className="w-4 h-4 text-violet-600 dark:text-violet-400 rounded border-gray-300 dark:border-dark-border focus:ring-violet-500"
                         />
                       </td>
                       <td className="px-4 py-3">
@@ -2137,10 +2137,10 @@ const DashboardTab = ({
                           />
 
                           <div>
-                            <p className="font-medium text-gray-900 text-sm">
+                            <p className="font-medium text-gray-900 dark:text-dark-text text-sm">
                               {user.name}
                             </p>
-                            <p className="text-xs text-gray-500">
+                            <p className="text-xs text-gray-500 dark:text-dark-text-secondary">
                               {user.email}
                             </p>
                           </div>
@@ -2160,16 +2160,16 @@ const DashboardTab = ({
                           {user.role || "User"}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-sm text-gray-600">
+                      <td className="px-4 py-3 text-sm text-gray-600 dark:text-dark-text-secondary">
                         {user.department || "—"}
                       </td>
                       <td className="px-4 py-3">
-                        <div className="flex items-center gap-1 text-sm text-gray-700">
+                        <div className="flex items-center gap-1 text-sm text-gray-700 dark:text-dark-text-secondary">
                           <Award className="w-4 h-4 text-yellow-500" />
                           {user.reputation_points || 0}
                         </div>
                       </td>
-                      <td className="px-4 py-3 text-sm text-gray-500">
+                      <td className="px-4 py-3 text-sm text-gray-500 dark:text-dark-text-secondary">
                         {new Date(user.created_at).toLocaleDateString()}{" "}
                         {new Date(user.created_at).toLocaleTimeString()}
                       </td>
@@ -2178,7 +2178,7 @@ const DashboardTab = ({
                           <button
                             title="Details"
                             onClick={() => fetchUserDetails(user.id)}
-                            className="p-1.5 text-gray-400 hover:text-[#7E70EB] hover:bg-[#7E70EB]/10 rounded transition-colors"
+                            className="p-1.5 text-gray-400 dark:text-dark-text-muted hover:text-[#7E70EB] hover:bg-[#7E70EB]/10 rounded transition-colors"
                           >
                             <Eye className="w-4 h-4" />
                           </button>
@@ -2194,7 +2194,7 @@ const DashboardTab = ({
                             <button
                               title="Revoke Verification"
                               onClick={() => handleRevokeVerification(user.id)}
-                              className="p-1.5 text-red-600 hover:bg-red-50 rounded transition-colors"
+                              className="p-1.5 text-red-600 dark:text-red-400 hover:bg-red-50 dark:bg-red-500/15 rounded transition-colors"
                             >
                               <X className="w-4 h-4" />
                             </button>
@@ -2202,7 +2202,7 @@ const DashboardTab = ({
                           <button
                             title="Ban User"
                             onClick={() => openBanModal(user.id)}
-                            className="p-1.5 text-red-600 hover:bg-red-50 rounded transition-colors"
+                            className="p-1.5 text-red-600 dark:text-red-400 hover:bg-red-50 dark:bg-red-500/15 rounded transition-colors"
                           >
                             <Ban className="w-4 h-4" />
                           </button>
@@ -2218,14 +2218,14 @@ const DashboardTab = ({
 
         {/* Empty State */}
         {filteredUsers.length === 0 && (
-          <div className="text-center py-16 bg-white rounded-xl border border-gray-200">
+          <div className="text-center py-16 bg-white dark:bg-dark-card rounded-xl border border-gray-200 dark:border-dark-border">
             {localSearchQuery ||
             filters.status !== "all" ||
             filters.role !== "all" ? (
               <>
                 <Search className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                <p className="text-gray-500 font-medium">No users found</p>
-                <p className="text-sm text-gray-400 mt-1">
+                <p className="text-gray-500 dark:text-dark-text-secondary font-medium">No users found</p>
+                <p className="text-sm text-gray-400 dark:text-dark-text-muted mt-1">
                   Try adjusting your filters
                 </p>
                 <button
@@ -2237,7 +2237,7 @@ const DashboardTab = ({
                       sortBy: "newest",
                     });
                   }}
-                  className="mt-4 text-violet-600 hover:text-violet-700 text-sm font-medium"
+                  className="mt-4 text-violet-600 dark:text-violet-400 hover:text-violet-700 text-sm font-medium"
                 >
                   Clear all filters
                 </button>
@@ -2245,7 +2245,7 @@ const DashboardTab = ({
             ) : (
               <>
                 <Users className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                <p className="text-gray-500 font-medium">No users yet</p>
+                <p className="text-gray-500 dark:text-dark-text-secondary font-medium">No users yet</p>
               </>
             )}
           </div>
@@ -2317,7 +2317,7 @@ const DashboardTab = ({
     };
 
     const UserCard = ({ user }) => (
-      <div className="group bg-white rounded-xl border border-gray-200 hover:border-violet-300 hover:shadow-md transition-all overflow-hidden">
+      <div className="group bg-white dark:bg-dark-card rounded-xl border border-gray-200 dark:border-dark-border hover:border-violet-300 hover:shadow-md transition-all overflow-hidden">
         <div className="p-4">
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-3">
@@ -2325,15 +2325,15 @@ const DashboardTab = ({
                 <img
                   src={user.avatar_url || getDefaultAvatar(user.gender)}
                   alt={user.name}
-                  className="w-12 h-12 rounded-full object-cover border-2 border-gray-100"
+                  className="w-12 h-12 rounded-full object-cover border-2 border-gray-100 dark:border-dark-border/50"
                 />
                 <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-yellow-400 border-2 border-white rounded-full" />
               </div>
               <div className="min-w-0">
-                <h4 className="font-semibold text-gray-900 truncate">
+                <h4 className="font-semibold text-gray-900 dark:text-dark-text truncate">
                   {user.name}
                 </h4>
-                <p className="text-sm text-gray-500 truncate">
+                <p className="text-sm text-gray-500 dark:text-dark-text-secondary truncate">
                   {user.email || "No email"}
                 </p>
               </div>
@@ -2342,24 +2342,24 @@ const DashboardTab = ({
               type="checkbox"
               checked={selectedUsers.includes(user.id)}
               onChange={() => toggleSelectUser(user.id)}
-              className="w-4 h-4 text-violet-600 rounded border-gray-300 focus:ring-violet-500"
+              className="w-4 h-4 text-violet-600 dark:text-violet-400 rounded border-gray-300 dark:border-dark-border focus:ring-violet-500"
             />
           </div>
           <div className="mt-4 grid grid-cols-2 gap-2 text-xs">
             {user.department && (
-              <div className="flex items-center gap-1.5 text-gray-600">
-                <Building className="w-3.5 h-3.5 text-gray-400" />
+              <div className="flex items-center gap-1.5 text-gray-600 dark:text-dark-text-secondary">
+                <Building className="w-3.5 h-3.5 text-gray-400 dark:text-dark-text-muted" />
                 <span className="truncate">{user.department}</span>
               </div>
             )}
             {user.designation && (
-              <div className="flex items-center gap-1.5 text-gray-600">
-                <Briefcase className="w-3.5 h-3.5 text-gray-400" />
+              <div className="flex items-center gap-1.5 text-gray-600 dark:text-dark-text-secondary">
+                <Briefcase className="w-3.5 h-3.5 text-gray-400 dark:text-dark-text-muted" />
                 <span className="truncate">{user.designation}</span>
               </div>
             )}
-            <div className="flex items-center gap-1.5 text-gray-600">
-              <Star className="w-3.5 h-3.5 text-gray-400" />
+            <div className="flex items-center gap-1.5 text-gray-600 dark:text-dark-text-secondary">
+              <Star className="w-3.5 h-3.5 text-gray-400 dark:text-dark-text-muted" />
               <span>{user.reputation_points || 0} pts</span>
             </div>
           </div>
@@ -2374,7 +2374,7 @@ const DashboardTab = ({
           </button>
           <button
             onClick={() => fetchUserDetails(user.id)}
-            className="px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors"
+            className="px-3 py-2 bg-gray-100 dark:bg-dark-elevated hover:bg-gray-200 dark:bg-dark-border text-gray-700 dark:text-dark-text-secondary rounded-lg transition-colors"
           >
             <Eye className="w-4 h-4" />
           </button>
@@ -2383,7 +2383,7 @@ const DashboardTab = ({
     );
 
     const RequestCard = ({ req }) => (
-      <div className="bg-white rounded-xl border border-gray-200 p-4 hover:shadow-md transition-all">
+      <div className="bg-white dark:bg-dark-card rounded-xl border border-gray-200 dark:border-dark-border p-4 hover:shadow-md transition-all">
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-3">
             {req.requesting_user_avatar ? (
@@ -2393,15 +2393,15 @@ const DashboardTab = ({
                 className="w-10 h-10 rounded-full object-cover border-2 border-violet-100"
               />
             ) : (
-              <div className="w-10 h-10 rounded-full bg-violet-100 text-violet-600 flex items-center justify-center font-bold">
+              <div className="w-10 h-10 rounded-full bg-violet-100 text-violet-600 dark:text-violet-400 flex items-center justify-center font-bold">
                 {req.requesting_user_name?.charAt(0)}
               </div>
             )}
             <div>
-              <h4 className="font-semibold text-gray-900">
+              <h4 className="font-semibold text-gray-900 dark:text-dark-text">
                 {req.requesting_user_name || "Unknown User"}
               </h4>
-              <p className="text-xs text-gray-500 capitalize">
+              <p className="text-xs text-gray-500 dark:text-dark-text-secondary capitalize">
                 {req.verification_type} Request
               </p>
             </div>
@@ -2410,7 +2410,7 @@ const DashboardTab = ({
             className={`text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded ${
               req.status === "pending"
                 ? "bg-amber-50 text-amber-600"
-                : "bg-gray-100 text-gray-600"
+                : "bg-gray-100 dark:bg-dark-elevated text-gray-600 dark:text-dark-text-secondary"
             }`}
           >
             {req.status}
@@ -2418,19 +2418,19 @@ const DashboardTab = ({
         </div>
 
         {req.target_user_name && (
-          <div className="mb-3 flex items-center gap-2 text-xs text-gray-500 bg-gray-50 px-3 py-2 rounded-lg">
-            <User className="w-3.5 h-3.5 text-gray-400" />
-            <span>Vouching for: <span className="font-semibold text-gray-700">{req.target_user_name}</span></span>
+          <div className="mb-3 flex items-center gap-2 text-xs text-gray-500 dark:text-dark-text-secondary bg-gray-50 dark:bg-dark-elevated px-3 py-2 rounded-lg">
+            <User className="w-3.5 h-3.5 text-gray-400 dark:text-dark-text-muted" />
+            <span>Vouching for: <span className="font-semibold text-gray-700 dark:text-dark-text-secondary">{req.target_user_name}</span></span>
           </div>
         )}
 
         {req.message && (
-          <p className="text-sm text-gray-600 mb-4 italic">"{req.message}"</p>
+          <p className="text-sm text-gray-600 dark:text-dark-text-secondary mb-4 italic">"{req.message}"</p>
         )}
 
         {req.documents && req.documents.length > 0 && (
           <div className="mb-4">
-            <p className="text-xs font-bold text-gray-400 uppercase mb-2">
+            <p className="text-xs font-bold text-gray-400 dark:text-dark-text-muted uppercase mb-2">
               Attached Proofs
             </p>
             <div className="flex flex-wrap gap-2">
@@ -2440,7 +2440,7 @@ const DashboardTab = ({
                   href={doc.url || doc}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-lg text-xs font-medium text-gray-700 transition-colors"
+                  className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 dark:bg-dark-elevated hover:bg-gray-200 dark:bg-dark-border rounded-lg text-xs font-medium text-gray-700 dark:text-dark-text-secondary transition-colors"
                 >
                   <FileText className="w-3.5 h-3.5" />
                   {doc.name || `Proof ${i + 1}`}
@@ -2450,7 +2450,7 @@ const DashboardTab = ({
           </div>
         )}
 
-        <div className="text-[11px] text-gray-400 mb-3">
+        <div className="text-[11px] text-gray-400 dark:text-dark-text-muted mb-3">
           Submitted {new Date(req.created_at).toLocaleDateString()} at {new Date(req.created_at).toLocaleTimeString()}
         </div>
 
@@ -2458,7 +2458,7 @@ const DashboardTab = ({
           <button
             onClick={() => handleReview(req.id, "reject")}
             disabled={reviewingId === req.id}
-            className="flex-1 py-2 text-sm font-bold text-red-600 hover:bg-red-50 rounded-lg border border-red-100 transition-colors"
+            className="flex-1 py-2 text-sm font-bold text-red-600 dark:text-red-400 hover:bg-red-50 dark:bg-red-500/15 rounded-lg border border-red-100 transition-colors"
           >
             Reject
           </button>
@@ -2483,16 +2483,16 @@ const DashboardTab = ({
     return (
       <div className="space-y-4 animate-fade-in">
         <div className="flex items-center justify-between">
-          <div className="flex gap-2 bg-white/50 p-1 rounded-xl border border-gray-100 w-fit">
+          <div className="flex gap-2 bg-white/50 p-1 rounded-xl border border-gray-100 dark:border-dark-border/50 w-fit">
             <button
               onClick={() => setSubTab("users")}
-              className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-all ${subTab === "users" ? "bg-[#7E70EB] text-white shadow-md" : "text-gray-500 hover:bg-white"}`}
+              className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-all ${subTab === "users" ? "bg-[#7E70EB] text-white shadow-md" : "text-gray-500 dark:text-dark-text-secondary hover:bg-white"}`}
             >
               Unverified Users
             </button>
             <button
               onClick={() => setSubTab("requests")}
-              className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-all ${subTab === "requests" ? "bg-[#7E70EB] text-white shadow-md" : "text-gray-500 hover:bg-white"}`}
+              className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-all ${subTab === "requests" ? "bg-[#7E70EB] text-white shadow-md" : "text-gray-500 dark:text-dark-text-secondary hover:bg-white"}`}
             >
               Review Requests{" "}
               {verificationRequests.filter((r) => r.status?.toLowerCase() === "pending").length > 0 && (
@@ -2508,35 +2508,35 @@ const DashboardTab = ({
           <>
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div>
-                <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-dark-text flex items-center gap-2">
                   <Shield className="w-5 h-5 text-yellow-500" />
                   Manual Overrides
                 </h2>
-                <p className="text-sm text-gray-500 mt-1">
+                <p className="text-sm text-gray-500 dark:text-dark-text-secondary mt-1">
                   Directly verify users without requests
                 </p>
               </div>
               <div className="flex items-center gap-3">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-dark-text-muted" />
                   <input
                     type="text"
                     placeholder="Search users..."
                     value={localSearchQuery}
                     onChange={(e) => setLocalSearchQuery(e.target.value)}
-                    className="pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 w-64"
+                    className="pl-9 pr-4 py-2 border border-gray-200 dark:border-dark-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 w-64"
                   />
                 </div>
-                <div className="flex bg-gray-100 rounded-lg p-1">
+                <div className="flex bg-gray-100 dark:bg-dark-elevated rounded-lg p-1">
                   <button
                     onClick={() => setViewMode("grid")}
-                    className={`p-1.5 rounded ${viewMode === "grid" ? "bg-white shadow-sm text-gray-900" : "text-gray-500"}`}
+                    className={`p-1.5 rounded ${viewMode === "grid" ? "bg-white dark:bg-dark-card shadow-sm text-gray-900 dark:text-dark-text" : "text-gray-500 dark:text-dark-text-secondary"}`}
                   >
                     <LayoutGrid className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => setViewMode("list")}
-                    className={`p-1.5 rounded ${viewMode === "list" ? "bg-white shadow-sm text-gray-900" : "text-gray-500"}`}
+                    className={`p-1.5 rounded ${viewMode === "list" ? "bg-white dark:bg-dark-card shadow-sm text-gray-900 dark:text-dark-text" : "text-gray-500 dark:text-dark-text-secondary"}`}
                   >
                     <List className="w-4 h-4" />
                   </button>
@@ -2551,43 +2551,43 @@ const DashboardTab = ({
                 ))}
               </div>
             ) : (
-              <div className="bg-white rounded-xl border border-gray-200 divide-y divide-gray-100 overflow-hidden">
+              <div className="bg-white dark:bg-dark-card rounded-xl border border-gray-200 dark:border-dark-border divide-y divide-gray-100 dark:divide-dark-border/50 overflow-hidden">
                 {filteredUsers.map((user) => (
                   <div
                     key={user.id}
-                    className="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
+                    className="p-4 flex items-center justify-between hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated transition-colors"
                   >
                     <div className="flex items-center gap-3 min-w-0">
                       <input
                         type="checkbox"
                         checked={selectedUsers.includes(user.id)}
                         onChange={() => toggleSelectUser(user.id)}
-                        className="w-4 h-4 text-violet-600 rounded border-gray-300 focus:ring-violet-500 shrink-0"
+                        className="w-4 h-4 text-violet-600 dark:text-violet-400 rounded border-gray-300 dark:border-dark-border focus:ring-violet-500 shrink-0"
                       />
                       <div className="relative shrink-0">
                         <img
                           src={user.avatar_url || getDefaultAvatar(user.gender)}
                           alt={user.name}
-                          className="w-10 h-10 rounded-full object-cover border-2 border-gray-100"
+                          className="w-10 h-10 rounded-full object-cover border-2 border-gray-100 dark:border-dark-border/50"
                         />
                         <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-yellow-400 border-2 border-white rounded-full" />
                       </div>
                       <div className="min-w-0">
-                        <h4 className="font-semibold text-gray-900 text-sm truncate">
+                        <h4 className="font-semibold text-gray-900 dark:text-dark-text text-sm truncate">
                           {user.name}
                         </h4>
-                        <p className="text-xs text-gray-500 truncate">
+                        <p className="text-xs text-gray-500 dark:text-dark-text-secondary truncate">
                           {user.email || "No email"}
                         </p>
                       </div>
                       {user.department && (
-                        <span className="hidden sm:flex items-center gap-1 text-xs text-gray-500 ml-2 shrink-0">
-                          <Building className="w-3.5 h-3.5 text-gray-400" />
+                        <span className="hidden sm:flex items-center gap-1 text-xs text-gray-500 dark:text-dark-text-secondary ml-2 shrink-0">
+                          <Building className="w-3.5 h-3.5 text-gray-400 dark:text-dark-text-muted" />
                           {user.department}
                         </span>
                       )}
-                      <span className="hidden sm:flex items-center gap-1 text-xs text-gray-500 ml-2 shrink-0">
-                        <Star className="w-3.5 h-3.5 text-gray-400" />
+                      <span className="hidden sm:flex items-center gap-1 text-xs text-gray-500 dark:text-dark-text-secondary ml-2 shrink-0">
+                        <Star className="w-3.5 h-3.5 text-gray-400 dark:text-dark-text-muted" />
                         {user.reputation_points || 0} pts
                       </span>
                     </div>
@@ -2601,7 +2601,7 @@ const DashboardTab = ({
                       </button>
                       <button
                         onClick={() => fetchUserDetails(user.id)}
-                        className="p-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors"
+                        className="p-1.5 bg-gray-100 dark:bg-dark-elevated hover:bg-gray-200 dark:bg-dark-border text-gray-700 dark:text-dark-text-secondary rounded-lg transition-colors"
                       >
                         <Eye className="w-4 h-4" />
                       </button>
@@ -2612,9 +2612,9 @@ const DashboardTab = ({
             )}
 
             {filteredUsers.length === 0 && (
-              <div className="text-center py-16 bg-white rounded-2xl border border-gray-100">
+              <div className="text-center py-16 bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border/50">
                 <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-4 opacity-20" />
-                <p className="text-gray-500 font-medium">
+                <p className="text-gray-500 dark:text-dark-text-secondary font-medium">
                   No unverified users found
                 </p>
               </div>
@@ -2629,14 +2629,14 @@ const DashboardTab = ({
               ))}
             {verificationRequests.filter((r) => r.status?.toLowerCase() === "pending")
               .length === 0 && (
-              <div className="col-span-full text-center py-20 bg-white rounded-3xl border border-gray-100">
-                <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="col-span-full text-center py-20 bg-white rounded-3xl border border-gray-100 dark:border-dark-border/50">
+                <div className="w-16 h-16 bg-gray-50 dark:bg-dark-elevated rounded-full flex items-center justify-center mx-auto mb-4">
                   <CheckSquare className="w-8 h-8 text-gray-200" />
                 </div>
-                <h3 className="text-lg font-bold text-gray-900">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-dark-text">
                   No Pending Requests
                 </h3>
-                <p className="text-sm text-gray-500 mt-1">
+                <p className="text-sm text-gray-500 dark:text-dark-text-secondary mt-1">
                   All verification applications have been reviewed.
                 </p>
               </div>
@@ -2658,30 +2658,30 @@ const DashboardTab = ({
           {bannedUsers.map((user) => (
             <div
               key={user.id}
-              className="bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 p-4"
+              className="bg-white dark:bg-dark-card rounded-xl border border-gray-100 dark:border-dark-border/50 shadow-sm hover:shadow-md transition-all duration-300 p-4"
             >
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 {/* User Info */}
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-red-50 flex items-center justify-center shrink-0">
+                  <div className="w-12 h-12 rounded-xl bg-red-50 dark:bg-red-500/15 flex items-center justify-center shrink-0">
                     <UserX className="w-6 h-6 text-red-500" />
                   </div>
 
                   <div>
                     <div className="flex items-center gap-2 flex-wrap">
-                      <h3 className="text-lg font-semibold text-gray-800">
+                      <h3 className="text-lg font-semibold text-gray-800 dark:text-dark-text">
                         {user.name}
                       </h3>
 
-                      <span className="px-3 py-1 text-xs font-medium rounded-full bg-red-100 text-red-600">
+                      <span className="px-3 py-1 text-xs font-medium rounded-full bg-red-100 text-red-600 dark:text-red-400">
                         Banned
                       </span>
                     </div>
 
-                    <p className="text-gray-500 text-sm">{user.email}</p>
+                    <p className="text-gray-500 dark:text-dark-text-secondary text-sm">{user.email}</p>
 
                     <div className="mt-3 flex flex-wrap gap-2">
-                      <span className="px-3 py-1 rounded-full bg-gray-100 text-gray-600 text-xs">
+                      <span className="px-3 py-1 rounded-full bg-gray-100 dark:bg-dark-elevated text-gray-600 dark:text-dark-text-secondary text-xs">
                          {new Date(user.banned_at).toLocaleDateString()}
                       </span>
 
@@ -2705,16 +2705,16 @@ const DashboardTab = ({
           ))}
         </div>
       ) : (
-        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 py-20 text-center">
+        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 dark:border-dark-border/50 py-20 text-center">
           <div className="w-20 h-20 mx-auto bg-green-100 rounded-full flex items-center justify-center mb-5">
             <Shield className="w-10 h-10 text-green-500" />
           </div>
 
-          <h3 className="text-xl font-semibold text-gray-800">
+          <h3 className="text-xl font-semibold text-gray-800 dark:text-dark-text">
             No banned users
           </h3>
 
-          <p className="text-gray-500 mt-2">
+          <p className="text-gray-500 dark:text-dark-text-secondary mt-2">
             Your community is healthy and safe!
           </p>
         </div>
@@ -2743,7 +2743,7 @@ const DashboardTab = ({
       return (
         <div className="w-full space-y-4 animate-fade-in">
           {[...Array(3)].map((_, i) => (
-            <div key={i} className="bg-white rounded-2xl p-6 shadow-md border border-gray-100 space-y-4">
+            <div key={i} className="bg-white dark:bg-dark-card rounded-2xl p-6 shadow-md border border-gray-100 dark:border-dark-border/50 space-y-4">
               <div className="flex justify-between items-center">
                 <Skeleton height={24} width={120} />
                 <Skeleton height={20} width={80} />
@@ -2763,8 +2763,8 @@ const DashboardTab = ({
     return (
       <div className="space-y-6 animate-fade-in">
         {/* Search & Filters */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-4 rounded-2xl border border-gray-100 shadow-xs">
-          <div className="flex bg-gray-100 p-1 rounded-xl w-fit">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-4 rounded-2xl border border-gray-100 dark:border-dark-border/50 shadow-xs">
+          <div className="flex bg-gray-100 dark:bg-dark-elevated p-1 rounded-xl w-fit">
             {[
               { id: "all", label: "All Reports" },
               { id: "pending", label: "Pending" },
@@ -2777,7 +2777,7 @@ const DashboardTab = ({
                 className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${
                   reportsStatusFilter === filter.id
                     ? "bg-[#7E70EB] text-white shadow-sm"
-                    : "text-gray-500 hover:text-gray-900"
+                    : "text-gray-500 dark:text-dark-text-secondary hover:text-gray-900 dark:hover:text-dark-text dark:text-dark-text"
                 }`}
               >
                 {filter.label}
@@ -2786,13 +2786,13 @@ const DashboardTab = ({
           </div>
 
           <div className="relative flex-1 md:max-w-md">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-dark-text-muted" />
             <input
               type="text"
               placeholder="Search reports by reporter, reported user, reason..."
               value={reportsSearchQuery}
               onChange={(e) => setReportsSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 bg-gray-50/50"
+              className="w-full pl-10 pr-4 py-2 border border-gray-200 dark:border-dark-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 bg-gray-50/50 dark:bg-dark-elevated/50"
             />
           </div>
         </div>
@@ -2807,8 +2807,8 @@ const DashboardTab = ({
             return (
               <div
                 key={report.id}
-                className={`bg-white rounded-2xl border transition-all duration-300 hover:shadow-md ${
-                  isPending ? "border-amber-100 hover:border-amber-200" : "border-gray-200"
+                className={`bg-white dark:bg-dark-card rounded-2xl border transition-all duration-300 hover:shadow-md ${
+                  isPending ? "border-amber-100 hover:border-amber-200" : "border-gray-200 dark:border-dark-border"
                 }`}
               >
                 {/* Card Header */}
@@ -2816,13 +2816,13 @@ const DashboardTab = ({
                   <div className="flex items-center gap-3">
                     <div className={`p-2 rounded-xl ${
                       isPending ? "bg-amber-50 text-amber-600" :
-                      isReviewed ? "bg-emerald-50 text-emerald-600" : "bg-gray-100 text-gray-600"
+                      isReviewed ? "bg-emerald-50 text-emerald-600" : "bg-gray-100 dark:bg-dark-elevated text-gray-600 dark:text-dark-text-secondary"
                     }`}>
                       <AlertTriangle className="w-5 h-5" />
                     </div>
                     <div>
-                      <h4 className="font-bold text-gray-900 text-base">Report #{report.id}</h4>
-                      <p className="text-xs text-gray-400 mt-0.5">
+                      <h4 className="font-bold text-gray-900 dark:text-dark-text text-base">Report #{report.id}</h4>
+                      <p className="text-xs text-gray-400 dark:text-dark-text-muted mt-0.5">
                         Created on {new Date(report.created_at).toLocaleDateString()} at {new Date(report.created_at).toLocaleTimeString()}
                       </p>
                     </div>
@@ -2835,7 +2835,7 @@ const DashboardTab = ({
                           ? "bg-amber-50 text-amber-700 border-amber-200"
                           : isReviewed
                           ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                          : "bg-gray-100 text-gray-700 border-gray-200"
+                          : "bg-gray-100 dark:bg-dark-elevated text-gray-700 dark:text-dark-text-secondary border-gray-200 dark:border-dark-border"
                       }`}
                     >
                       {report.status}
@@ -2847,23 +2847,23 @@ const DashboardTab = ({
                 <div className="p-5 space-y-4">
                   {/* Parties involved */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="bg-gray-50/50 p-3 rounded-xl border border-gray-100">
-                      <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Reporter</p>
-                      <p className="font-semibold text-gray-800 text-sm">
+                    <div className="bg-gray-50/50 dark:bg-dark-elevated/50 p-3 rounded-xl border border-gray-100 dark:border-dark-border/50">
+                      <p className="text-xs font-bold text-gray-400 dark:text-dark-text-muted uppercase tracking-wider mb-1">Reporter</p>
+                      <p className="font-semibold text-gray-800 dark:text-dark-text text-sm">
                         <UserDisplayName userId={report.reporter_user_id} defaultName={report.reporter_name} />
                       </p>
                     </div>
 
-                    <div className="bg-gray-50/50 p-3 rounded-xl border border-gray-100">
-                      <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Reported User</p>
-                      <p className="font-semibold text-gray-800 text-sm">
+                    <div className="bg-gray-50/50 dark:bg-dark-elevated/50 p-3 rounded-xl border border-gray-100 dark:border-dark-border/50">
+                      <p className="text-xs font-bold text-gray-400 dark:text-dark-text-muted uppercase tracking-wider mb-1">Reported User</p>
+                      <p className="font-semibold text-gray-800 dark:text-dark-text text-sm">
                         <UserDisplayName userId={report.reported_user_id} defaultName={report.reported_user_name} />
                       </p>
                     </div>
 
-                    <div className="bg-gray-50/50 p-3 rounded-xl border border-gray-100">
-                      <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Report Reason</p>
-                      <span className="inline-block px-2.5 py-1 bg-violet-50 text-violet-700 text-xs font-bold rounded-lg border border-violet-100 capitalize mt-1">
+                    <div className="bg-gray-50/50 dark:bg-dark-elevated/50 p-3 rounded-xl border border-gray-100 dark:border-dark-border/50">
+                      <p className="text-xs font-bold text-gray-400 dark:text-dark-text-muted uppercase tracking-wider mb-1">Report Reason</p>
+                      <span className="inline-block px-2.5 py-1 bg-violet-50 dark:bg-violet-500/15 text-violet-700 text-xs font-bold rounded-lg border border-violet-100 capitalize mt-1">
                         {report.reason?.replace(/_/g, " ")}
                       </span>
                     </div>
@@ -2874,9 +2874,9 @@ const DashboardTab = ({
                     <div className="bg-linear-to-r from-violet-50/30 to-indigo-50/30 p-3 rounded-xl border border-indigo-50 flex flex-wrap items-center justify-between gap-3">
                       <div className="flex items-center gap-2">
                         <FileText className="w-4 h-4 text-indigo-500" />
-                        <span className="text-xs text-gray-600">
+                        <span className="text-xs text-gray-600 dark:text-dark-text-secondary">
                           Reported Item:{" "}
-                          <span className="font-bold text-gray-900">
+                          <span className="font-bold text-gray-900 dark:text-dark-text">
                             {report.comment_id ? "Comment" : "Issue"}
                           </span>
                         </span>
@@ -2884,7 +2884,7 @@ const DashboardTab = ({
                       {report.issue_id && (
                         <button
                           onClick={() => navigate(`/issues/${report.issue_id}`)}
-                          className="px-3 py-1 bg-white hover:bg-[#7E70EB]/10 text-[#7E70EB] text-xs font-bold rounded-lg border border-[#7E70EB]/30 transition-colors shadow-xs cursor-pointer"
+                          className="px-3 py-1 bg-white dark:bg-dark-card hover:bg-[#7E70EB]/10 text-[#7E70EB] text-xs font-bold rounded-lg border border-[#7E70EB]/30 transition-colors shadow-xs cursor-pointer"
                         >
                           View Issue: "{report.issue_title || `ID: ${report.issue_id}`}"
                         </button>
@@ -2894,8 +2894,8 @@ const DashboardTab = ({
 
                   {/* Report Description */}
                   <div className="space-y-1">
-                    <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Description</p>
-                    <div className="bg-gray-50 p-3 rounded-xl border border-gray-100 italic text-gray-700 text-sm">
+                    <p className="text-xs font-bold text-gray-400 dark:text-dark-text-muted uppercase tracking-wider">Description</p>
+                    <div className="bg-gray-50 dark:bg-dark-elevated p-3 rounded-xl border border-gray-100 dark:border-dark-border/50 italic text-gray-700 dark:text-dark-text-secondary text-sm">
                       "{report.description || "No description provided."}"
                     </div>
                   </div>
@@ -2911,12 +2911,12 @@ const DashboardTab = ({
                           </span>
                         )}
                       </div>
-                      <div className="text-sm text-gray-700">
+                      <div className="text-sm text-gray-700 dark:text-dark-text-secondary">
                         <span className="font-bold text-emerald-800">Action:</span>{" "}
                         <span className="capitalize font-medium">{report.action || "Reviewed"}</span>
                       </div>
                       {report.admin_notes && (
-                        <div className="text-sm text-gray-700">
+                        <div className="text-sm text-gray-700 dark:text-dark-text-secondary">
                           <span className="font-bold text-emerald-800">Admin Notes:</span>{" "}
                           <span className="italic">"{report.admin_notes}"</span>
                         </div>
@@ -2926,7 +2926,7 @@ const DashboardTab = ({
 
                   {/* Resolution Details for Dismissed Reports */}
                   {isDismissed && report.resolved_at && (
-                    <div className="mt-4 p-3 bg-gray-50 rounded-xl border border-gray-100 text-xs text-gray-500">
+                    <div className="mt-4 p-3 bg-gray-50 dark:bg-dark-elevated rounded-xl border border-gray-100 dark:border-dark-border/50 text-xs text-gray-500 dark:text-dark-text-secondary">
                       Dismissed on {new Date(report.resolved_at).toLocaleDateString()}
                     </div>
                   )}
@@ -2934,11 +2934,11 @@ const DashboardTab = ({
 
                 {/* Card Actions */}
                 {isPending && (
-                  <div className="px-5 py-4 bg-gray-50/50 rounded-b-2xl border-t border-gray-50 flex justify-end gap-3">
+                  <div className="px-5 py-4 bg-gray-50/50 dark:bg-dark-elevated/50 rounded-b-2xl border-t border-gray-50 flex justify-end gap-3">
                     <button
                       onClick={() => handleDismissReport(report.id)}
                       disabled={actioningReportId === report.id}
-                      className="px-4 py-2 border border-gray-200 hover:border-red-200 hover:bg-red-50 text-gray-600 hover:text-red-600 text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                      className="px-4 py-2 border border-gray-200 dark:border-dark-border hover:border-red-200 dark:border-red-500/30 hover:bg-red-50 dark:bg-red-500/15 text-gray-600 dark:text-dark-text-secondary hover:text-red-600 dark:text-red-400 text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
                     >
                       {actioningReportId === report.id ? (
                         <RefreshCw className="w-3.5 h-3.5 animate-spin" />
@@ -2966,10 +2966,10 @@ const DashboardTab = ({
           })}
 
           {filteredReports.length === 0 && (
-            <div className="text-center py-16 bg-white rounded-2xl border border-gray-100">
+            <div className="text-center py-16 bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border/50">
               <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-4 opacity-25" />
-              <p className="text-gray-500 font-bold">No reports found</p>
-              <p className="text-sm text-gray-400 mt-1">Excellent! No matching reports to display.</p>
+              <p className="text-gray-500 dark:text-dark-text-secondary font-bold">No reports found</p>
+              <p className="text-sm text-gray-400 dark:text-dark-text-muted mt-1">Excellent! No matching reports to display.</p>
             </div>
           )}
         </div>
@@ -2994,7 +2994,7 @@ const DashboardTab = ({
       <SideNav />
       <BottomNav />
 
-      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#F8F9FF] overflow-x-hidden overflow-y-auto h-screen pb-20" id="adminPanelScroll">
+      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#F8F9FF] dark:bg-dark-bg overflow-x-hidden overflow-y-auto h-screen pb-20" id="adminPanelScroll">
         <TopBar title="Admin Control Panel" />
         <PullToRefresh scrollContainerId="adminPanelScroll" onRefresh={handleRefresh}>
           <div className="p-2 lg:p-4 w-full min-h-screen">
@@ -3029,7 +3029,7 @@ const DashboardTab = ({
               className={`flex items-center space-x-1 sm:space-x-2 px-3 sm:px-4 md:px-6 py-2 sm:py-3 rounded-xl font-medium transition-all whitespace-nowrap ${
                 activeTab === tab.id
                   ? "bg-[#7E70EB] text-white shadow-lg shadow-indigo-100"
-                  : "bg-gray-100 text-gray-600 hover:bg-gray-300"
+                  : "bg-gray-100 dark:bg-dark-elevated text-gray-600 dark:text-dark-text-secondary hover:bg-gray-300"
               }`}
             >
               <tab.icon className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
@@ -3038,8 +3038,8 @@ const DashboardTab = ({
                 <span
                   className={`px-1.5 sm:px-2 py-0.5 rounded-full text-xs ${
                     activeTab === tab.id
-                      ? "bg-white text-violet-600"
-                      : "bg-violet-100 text-violet-600"
+                      ? "bg-white text-violet-600 dark:text-violet-400"
+                      : "bg-violet-100 text-violet-600 dark:text-violet-400"
                   }`}
                 >
                   {tab.badge}
@@ -3050,7 +3050,7 @@ const DashboardTab = ({
         </div>
 
         {/* Content Area */}
-        <div className="animate-fade-in md:bg-[#F3F1FF] p-2 sm:p-2 md:p-4 rounded-2xl min-h-125">
+        <div className="animate-fade-in md:bg-[#F3F1FF] dark:md:bg-dark-card dark:bg-dark-card p-2 sm:p-2 md:p-4 rounded-2xl min-h-125">
           {activeTab === "dashboard" && (
             <DashboardTab
               loadingUsers={loadingUsers}
@@ -3088,33 +3088,33 @@ const DashboardTab = ({
 
         {showReviewModal && selectedReport && (
           <div className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-50 animate-in fade-in duration-200">
-            <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 border border-gray-100 mx-4">
-              <h2 className="text-xl font-bold text-gray-900 mb-2 flex items-center gap-2">
+            <div className="bg-white dark:bg-dark-card rounded-2xl shadow-xl w-full max-w-md p-6 border border-gray-100 dark:border-dark-border/50 mx-4">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-dark-text mb-2 flex items-center gap-2">
                 <AlertTriangle className="w-5 h-5 text-amber-500" />
                 Review Report #{selectedReport.id}
               </h2>
               
-              <div className="mb-4 bg-gray-50 p-3 rounded-xl border border-gray-100 text-xs text-gray-600 space-y-1">
+              <div className="mb-4 bg-gray-50 dark:bg-dark-elevated p-3 rounded-xl border border-gray-100 dark:border-dark-border/50 text-xs text-gray-600 dark:text-dark-text-secondary space-y-1">
                 <div>
-                  <span className="font-bold text-gray-700">Reporter:</span> <UserDisplayName userId={selectedReport.reporter_user_id} defaultName={selectedReport.reporter_name} />
+                  <span className="font-bold text-gray-700 dark:text-dark-text-secondary">Reporter:</span> <UserDisplayName userId={selectedReport.reporter_user_id} defaultName={selectedReport.reporter_name} />
                 </div>
                 <div>
-                  <span className="font-bold text-gray-700">Reported User:</span> <UserDisplayName userId={selectedReport.reported_user_id} defaultName={selectedReport.reported_user_name} />
+                  <span className="font-bold text-gray-700 dark:text-dark-text-secondary">Reported User:</span> <UserDisplayName userId={selectedReport.reported_user_id} defaultName={selectedReport.reported_user_name} />
                 </div>
                 <div>
-                  <span className="font-bold text-gray-700">Reason:</span> <span className="capitalize">{selectedReport.reason?.replace(/_/g, " ")}</span>
+                  <span className="font-bold text-gray-700 dark:text-dark-text-secondary">Reason:</span> <span className="capitalize">{selectedReport.reason?.replace(/_/g, " ")}</span>
                 </div>
               </div>
 
               {/* Action Dropdown */}
               <div className="mb-4 relative">
-                <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">
+                <label className="block text-xs font-bold text-gray-400 dark:text-dark-text-muted uppercase tracking-wider mb-1.5">
                   Select Action
                 </label>
                 <select
                   value={reviewAction}
                   onChange={(e) => setReviewAction(e.target.value)}
-                  className="w-full bg-white border border-gray-200 text-gray-800 text-sm rounded-xl px-4 py-2.5 shadow-xs focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition duration-200 cursor-pointer"
+                  className="w-full bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border text-gray-800 dark:text-dark-text text-sm rounded-xl px-4 py-2.5 shadow-xs focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition duration-200 cursor-pointer"
                 >
                   <option value="delete_content">Delete Content (delete_content)</option>
                   <option value="keep_content">Keep Content (keep_content)</option>
@@ -3124,13 +3124,13 @@ const DashboardTab = ({
 
               {/* Admin Notes */}
               <div className="mb-6">
-                <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">
+                <label className="block text-xs font-bold text-gray-400 dark:text-dark-text-muted uppercase tracking-wider mb-1.5">
                   Admin Notes
                 </label>
                 <textarea
                   value={reviewNotes}
                   onChange={(e) => setReviewNotes(e.target.value)}
-                  className="w-full border border-gray-200 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500"
+                  className="w-full border border-gray-200 dark:border-dark-border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500"
                   rows="4"
                   placeholder="Enter details about why this action was taken..."
                 />
@@ -3141,7 +3141,7 @@ const DashboardTab = ({
                 <button
                   onClick={() => setShowReviewModal(false)}
                   disabled={actioningReportId === selectedReport.id}
-                  className="px-4 py-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xs cursor-pointer transition-colors disabled:opacity-50"
+                  className="px-4 py-2.5 rounded-xl bg-gray-100 dark:bg-dark-elevated hover:bg-gray-200 dark:bg-dark-border text-gray-700 dark:text-dark-text-secondary font-bold text-xs cursor-pointer transition-colors disabled:opacity-50"
                 >
                   Cancel
                 </button>
@@ -3165,7 +3165,7 @@ const DashboardTab = ({
 
         {showBanModal && (
           <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
-            <div className="bg-white rounded-xl shadow-lg w-full max-w-md p-6">
+            <div className="bg-white dark:bg-dark-card rounded-xl shadow-lg w-full max-w-md p-6">
               <h2 className="text-xl font-semibold mb-4">Ban User</h2>
 
               {/* Reason */}
@@ -3206,7 +3206,7 @@ const DashboardTab = ({
               <div className="flex justify-end gap-3">
                 <button
                   onClick={() => setShowBanModal(false)}
-                  className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300"
+                  className="px-4 py-2 rounded-lg bg-gray-200 dark:bg-dark-border hover:bg-gray-300"
                 >
                   Cancel
                 </button>
@@ -3291,58 +3291,58 @@ const DashboardTab = ({
 
               <div className="p-6 space-y-6">
                 {/* Academic Info */}
-                <div className="bg-gray-50 rounded-2xl p-5 border border-gray-100">
-                  <h4 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                <div className="bg-gray-50 dark:bg-dark-elevated rounded-2xl p-5 border border-gray-100 dark:border-dark-border/50">
+                  <h4 className="text-sm font-bold text-gray-400 dark:text-dark-text-muted uppercase tracking-wider mb-4 flex items-center gap-2">
                     <GraduationCap className="w-4 h-4" /> Academic Information
                   </h4>
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                     <div>
-                      <p className="text-xs text-gray-500 mb-1">Course</p>
-                      <p className="font-semibold text-gray-800">
+                      <p className="text-xs text-gray-500 dark:text-dark-text-secondary mb-1">Course</p>
+                      <p className="font-semibold text-gray-800 dark:text-dark-text">
                         {userDetails.user?.course || "N/A"}
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-500 mb-1">Department</p>
-                      <p className="font-semibold text-gray-800">
+                      <p className="text-xs text-gray-500 dark:text-dark-text-secondary mb-1">Department</p>
+                      <p className="font-semibold text-gray-800 dark:text-dark-text">
                         {userDetails.user?.department || "N/A"}
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-500 mb-1">Year</p>
-                      <p className="font-semibold text-gray-800">
+                      <p className="text-xs text-gray-500 dark:text-dark-text-secondary mb-1">Year</p>
+                      <p className="font-semibold text-gray-800 dark:text-dark-text">
                         {userDetails.user?.year || "N/A"}
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-500 mb-1">Semester</p>
-                      <p className="font-semibold text-gray-800">
+                      <p className="text-xs text-gray-500 dark:text-dark-text-secondary mb-1">Semester</p>
+                      <p className="font-semibold text-gray-800 dark:text-dark-text">
                         {userDetails.user?.semester || "N/A"}
                       </p>
                     </div>
                     <div className="col-span-2 sm:col-span-2">
-                      <p className="text-xs text-gray-500 mb-1">
+                      <p className="text-xs text-gray-500 dark:text-dark-text-secondary mb-1">
                         Registration No
                       </p>
-                      <p className="font-semibold text-gray-800 font-mono text-sm">
+                      <p className="font-semibold text-gray-800 dark:text-dark-text font-mono text-sm">
                         {userDetails.user?.registration_number || "N/A"}
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-500 mb-1">Designation</p>
-                      <p className="font-semibold text-gray-800">
+                      <p className="text-xs text-gray-500 dark:text-dark-text-secondary mb-1">Designation</p>
+                      <p className="font-semibold text-gray-800 dark:text-dark-text">
                         {userDetails.user?.designation || "N/A"}
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-500 mb-1">Hosteler</p>
-                      <p className="font-semibold text-gray-800">
+                      <p className="text-xs text-gray-500 dark:text-dark-text-secondary mb-1">Hosteler</p>
+                      <p className="font-semibold text-gray-800 dark:text-dark-text">
                         {userDetails.user?.is_hosteler ? (
                           <span className="text-green-600 flex items-center gap-1">
                             <Home className="w-3 h-3" /> Yes
                           </span>
                         ) : (
-                          <span className="text-gray-500">No</span>
+                          <span className="text-gray-500 dark:text-dark-text-secondary">No</span>
                         )}
                       </p>
                     </div>
@@ -3353,12 +3353,12 @@ const DashboardTab = ({
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                   <div className="bg-linear-to-br from-violet-50 to-purple-50 p-4 rounded-xl border border-violet-100">
                     <div className="flex items-center gap-2 mb-2">
-                      <Award className="w-5 h-5 text-violet-600" />
-                      <span className="text-xs font-medium text-violet-600">
+                      <Award className="w-5 h-5 text-violet-600 dark:text-violet-400" />
+                      <span className="text-xs font-medium text-violet-600 dark:text-violet-400">
                         Reputation
                       </span>
                     </div>
-                    <p className="text-2xl font-bold text-gray-800">
+                    <p className="text-2xl font-bold text-gray-800 dark:text-dark-text">
                       {userDetails.user?.reputation_points || 0}
                     </p>
                   </div>
@@ -3370,10 +3370,10 @@ const DashboardTab = ({
                         Total Issues
                       </span>
                     </div>
-                    <p className="text-2xl font-bold text-gray-800">
+                    <p className="text-2xl font-bold text-gray-800 dark:text-dark-text">
                       {userDetails.activity?.total_issues || 0}
                     </p>
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs text-gray-500 dark:text-dark-text-secondary mt-1">
                       {userDetails.activity?.active_issues || 0} active
                     </p>
                   </div>
@@ -3385,10 +3385,10 @@ const DashboardTab = ({
                         Resolved
                       </span>
                     </div>
-                    <p className="text-2xl font-bold text-gray-800">
+                    <p className="text-2xl font-bold text-gray-800 dark:text-dark-text">
                       {userDetails.activity?.resolved_issues || 0}
                     </p>
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs text-gray-500 dark:text-dark-text-secondary mt-1">
                       {userDetails.activity?.success_rate || 0}% success
                     </p>
                   </div>
@@ -3400,45 +3400,45 @@ const DashboardTab = ({
                         Activity
                       </span>
                     </div>
-                    <p className="text-2xl font-bold text-gray-800">
+                    <p className="text-2xl font-bold text-gray-800 dark:text-dark-text">
                       {userDetails.activity?.total_activity || 0}
                     </p>
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs text-gray-500 dark:text-dark-text-secondary mt-1">
                       {userDetails.activity?.total_comments || 0} comments
                     </p>
                   </div>
                 </div>
 
                 {/* Detailed Activity */}
-                <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-                  <div className="px-5 py-4 bg-gray-50 border-b border-gray-200 flex items-center justify-between">
-                    <h4 className="font-semibold text-gray-800 flex items-center gap-2">
-                      <BarChart3 className="w-4 h-4 text-gray-500" /> Activity
+                <div className="bg-white dark:bg-dark-card rounded-2xl border border-gray-200 dark:border-dark-border overflow-hidden">
+                  <div className="px-5 py-4 bg-gray-50 dark:bg-dark-elevated border-b border-gray-200 dark:border-dark-border flex items-center justify-between">
+                    <h4 className="font-semibold text-gray-800 dark:text-dark-text flex items-center gap-2">
+                      <BarChart3 className="w-4 h-4 text-gray-500 dark:text-dark-text-secondary" /> Activity
                       Breakdown
                     </h4>
                   </div>
                   <div className="p-5 grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
-                    <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                      <span className="text-gray-600 flex items-center gap-2">
+                    <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-dark-elevated rounded-lg">
+                      <span className="text-gray-600 dark:text-dark-text-secondary flex items-center gap-2">
                         <ThumbsUp className="w-4 h-4" /> Total Votes
                       </span>
-                      <span className="font-semibold text-gray-800">
+                      <span className="font-semibold text-gray-800 dark:text-dark-text">
                         {userDetails.activity?.total_votes || 0}
                       </span>
                     </div>
-                    <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                      <span className="text-gray-600 flex items-center gap-2">
+                    <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-dark-elevated rounded-lg">
+                      <span className="text-gray-600 dark:text-dark-text-secondary flex items-center gap-2">
                         <Vote className="w-4 h-4" /> Poll Votes
                       </span>
-                      <span className="font-semibold text-gray-800">
+                      <span className="font-semibold text-gray-800 dark:text-dark-text">
                         {userDetails.activity?.total_poll_votes || 0}
                       </span>
                     </div>
-                    <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                      <span className="text-gray-600 flex items-center gap-2">
+                    <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-dark-elevated rounded-lg">
+                      <span className="text-gray-600 dark:text-dark-text-secondary flex items-center gap-2">
                         <MessageCircle className="w-4 h-4" /> Comments
                       </span>
-                      <span className="font-semibold text-gray-800">
+                      <span className="font-semibold text-gray-800 dark:text-dark-text">
                         {userDetails.activity?.total_comments || 0}
                       </span>
                     </div>
@@ -3447,21 +3447,21 @@ const DashboardTab = ({
 
                 {/* Personal Info */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
-                    <h5 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                  <div className="bg-gray-50 dark:bg-dark-elevated rounded-xl p-4 border border-gray-100 dark:border-dark-border/50">
+                    <h5 className="text-xs font-bold text-gray-400 dark:text-dark-text-muted uppercase tracking-wider mb-3 flex items-center gap-2">
                       <User className="w-4 h-4" /> Personal Details
                     </h5>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
-                        <span className="text-gray-500">Gender</span>
-                        <span className="font-medium text-gray-800 capitalize">
+                        <span className="text-gray-500 dark:text-dark-text-secondary">Gender</span>
+                        <span className="font-medium text-gray-800 dark:text-dark-text capitalize">
                           {userDetails.user?.gender?.replace(/_/g, " ") ||
                             "N/A"}
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-500">Date of Birth</span>
-                        <span className="font-medium text-gray-800">
+                        <span className="text-gray-500 dark:text-dark-text-secondary">Date of Birth</span>
+                        <span className="font-medium text-gray-800 dark:text-dark-text">
                           {userDetails.user?.date_of_birth
                             ? new Date(
                                 userDetails.user.date_of_birth,
@@ -3470,39 +3470,39 @@ const DashboardTab = ({
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-500">Phone</span>
-                        <span className="font-medium text-gray-800">
+                        <span className="text-gray-500 dark:text-dark-text-secondary">Phone</span>
+                        <span className="font-medium text-gray-800 dark:text-dark-text">
                           {userDetails.user?.phone_number || "Not provided"}
                         </span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
-                    <h5 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                  <div className="bg-gray-50 dark:bg-dark-elevated rounded-xl p-4 border border-gray-100 dark:border-dark-border/50">
+                    <h5 className="text-xs font-bold text-gray-400 dark:text-dark-text-muted uppercase tracking-wider mb-3 flex items-center gap-2">
                       <Clock className="w-4 h-4" /> Account Info
                     </h5>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
-                        <span className="text-gray-500">Member Since</span>
-                        <span className="font-medium text-gray-800">
+                        <span className="text-gray-500 dark:text-dark-text-secondary">Member Since</span>
+                        <span className="font-medium text-gray-800 dark:text-dark-text">
                           {new Date(
                             userDetails.user?.created_at,
                           ).toLocaleDateString()}
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-500">
+                        <span className="text-gray-500 dark:text-dark-text-secondary">
                           Verifications Given
                         </span>
-                        <span className="font-medium text-gray-800">
+                        <span className="font-medium text-gray-800 dark:text-dark-text">
                           {userDetails.user?.verifications_given_count || 0}
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-500">Can Verify Others</span>
+                        <span className="text-gray-500 dark:text-dark-text-secondary">Can Verify Others</span>
                         <span
-                          className={`font-medium ${userDetails.user?.can_verify_others ? "text-green-600" : "text-gray-500"}`}
+                          className={`font-medium ${userDetails.user?.can_verify_others ? "text-green-600" : "text-gray-500 dark:text-dark-text-secondary"}`}
                         >
                           {userDetails.user?.can_verify_others ? "Yes" : "No"}
                         </span>
@@ -3513,11 +3513,11 @@ const DashboardTab = ({
 
                 {/* Ban Info (if banned) */}
                 {userDetails.user?.is_banned && (
-                  <div className="bg-red-50 border border-red-200 rounded-xl p-4">
-                    <h5 className="text-sm font-bold text-red-700 flex items-center gap-2 mb-2">
+                  <div className="bg-red-50 dark:bg-red-500/15 border border-red-200 dark:border-red-500/30 rounded-xl p-4">
+                    <h5 className="text-sm font-bold text-red-700 dark:text-red-400 flex items-center gap-2 mb-2">
                       <AlertTriangle className="w-4 h-4" /> Ban Information
                     </h5>
-                    <div className="space-y-1 text-sm text-red-700">
+                    <div className="space-y-1 text-sm text-red-700 dark:text-red-400">
                       <p>
                         <span className="font-medium">Reason:</span>{" "}
                         {userDetails.user?.ban_reason || "No reason provided"}
@@ -3541,25 +3541,25 @@ const DashboardTab = ({
                 {/* Recent Issues */}
                 {userDetails.recent_issues &&
                   userDetails.recent_issues.length > 0 && (
-                    <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-                      <div className="px-5 py-4 bg-gray-50 border-b border-gray-200">
-                        <h4 className="font-semibold text-gray-800 flex items-center gap-2">
-                          <History className="w-4 h-4 text-gray-500" /> Recent
+                    <div className="bg-white dark:bg-dark-card rounded-2xl border border-gray-200 dark:border-dark-border overflow-hidden">
+                      <div className="px-5 py-4 bg-gray-50 dark:bg-dark-elevated border-b border-gray-200 dark:border-dark-border">
+                        <h4 className="font-semibold text-gray-800 dark:text-dark-text flex items-center gap-2">
+                          <History className="w-4 h-4 text-gray-500 dark:text-dark-text-secondary" /> Recent
                           Issues
                         </h4>
                       </div>
-                      <div className="divide-y divide-gray-100">
+                      <div className="divide-y divide-gray-100 dark:divide-dark-border/50">
                         {userDetails.recent_issues.map((issue, idx) => (
                           <div
                             key={idx}
-                            className="p-4 hover:bg-gray-50 transition-colors"
+                            className="p-4 hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated transition-colors"
                           >
                             <div className="flex items-start justify-between gap-3">
                               <div className="flex-1">
-                                <p className="font-medium text-gray-800 text-sm line-clamp-1">
+                                <p className="font-medium text-gray-800 dark:text-dark-text text-sm line-clamp-1">
                                   {issue.title}
                                 </p>
-                                <p className="text-xs text-gray-500 mt-1">
+                                <p className="text-xs text-gray-500 dark:text-dark-text-secondary mt-1">
                                   {issue.status} •{" "}
                                   {new Date(
                                     issue.created_at,
@@ -3569,10 +3569,10 @@ const DashboardTab = ({
                               <span
                                 className={`px-2 py-1 rounded-full text-xs font-medium ${
                                   issue.priority === "critical"
-                                    ? "bg-red-100 text-red-700"
+                                    ? "bg-red-100 text-red-700 dark:text-red-400"
                                     : issue.priority === "high"
                                       ? "bg-orange-100 text-orange-700"
-                                      : "bg-gray-100 text-gray-700"
+                                      : "bg-gray-100 dark:bg-dark-elevated text-gray-700 dark:text-dark-text-secondary"
                                 }`}
                               >
                                 {issue.priority}
@@ -3585,8 +3585,8 @@ const DashboardTab = ({
                   )}
 
                 {/* Quick Actions */}
-                <div className="space-y-3 pt-4 border-t border-gray-200">
-                  <h5 className="font-semibold text-gray-800 flex items-center gap-2">
+                <div className="space-y-3 pt-4 border-t border-gray-200 dark:border-dark-border">
+                  <h5 className="font-semibold text-gray-800 dark:text-dark-text flex items-center gap-2">
                     <Settings className="w-4 h-4" /> Admin Actions
                   </h5>
 

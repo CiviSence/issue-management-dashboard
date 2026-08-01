@@ -35,12 +35,12 @@ export const ForgotPassword = () => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#f3f0ff] flex flex-col">
+    <div className="min-h-screen w-full bg-[#f3f0ff] dark:bg-dark-bg flex flex-col">
       {/* Back Button */}
       <div className="p-6">
         <Link
           to="/login"
-          className="flex items-center text-gray-500 hover:text-gray-700 transition-colors"
+          className="flex items-center text-gray-500 dark:text-dark-text-secondary hover:text-gray-700 dark:hover:text-dark-text dark:text-dark-text-secondary transition-colors"
         >
           <i className="ri-arrow-left-s-line"></i>
           <span className="text-sm">Back</span>
@@ -53,18 +53,18 @@ export const ForgotPassword = () => {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.4 }}
-          className="w-full max-w-lg bg-white rounded-2xl shadow-lg overflow-hidden flex min-h-125"
+          className="w-full max-w-lg bg-white dark:bg-dark-card rounded-2xl shadow-lg overflow-hidden flex min-h-125"
         >
           <div className="w-full p-12 flex flex-col justify-center">
             <h2 className="text-3xl font-semibold text-[#7c6bff] text-center mb-2">
               Forgot Password?
             </h2>
-            <p className="text-sm text-gray-500 text-center mb-8">
+            <p className="text-sm text-gray-500 dark:text-dark-text-secondary text-center mb-8">
               Enter your email and we'll send you an OTP to reset your password
             </p>
 
             {error && (
-              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm text-center">
+              <div className="mb-4 p-3 bg-red-50 dark:bg-red-500/15 border border-red-200 dark:border-red-500/30 rounded-lg text-red-600 dark:text-red-400 text-sm text-center">
                 {error}
               </div>
             )}
@@ -78,11 +78,11 @@ export const ForgotPassword = () => {
             <form className="space-y-5" onSubmit={handleSubmit}>
               {/* Email Input */}
               <div>
-                <label className="block text-xs text-gray-500 mb-1.5">
+                <label className="block text-xs text-gray-500 dark:text-dark-text-secondary mb-1.5">
                   Email address
                 </label>
                 <input
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7c6bff] focus:border-transparent transition-all text-sm"
+                  className="w-full px-4 py-2.5 border border-gray-200 dark:border-dark-border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7c6bff] focus:border-transparent transition-all text-sm"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -124,11 +124,11 @@ export const ForgotPassword = () => {
               </button>
 
               {/* Back to Login */}
-              <p className="text-sm text-gray-500 text-center">
+              <p className="text-sm text-gray-500 dark:text-dark-text-secondary text-center">
                 Remember your password?{" "}
                 <Link
                   to="/login"
-                  className="text-gray-700 font-medium underline hover:text-[#7c6bff] transition-colors"
+                  className="text-gray-700 dark:text-dark-text-secondary font-medium underline hover:text-[#7c6bff] transition-colors"
                 >
                   Sign in
                 </Link>
@@ -162,10 +162,10 @@ export const ResetPassword = () => {
   // Redirect if no email in state
   if (!email) {
     return (
-      <div className="min-h-screen w-full bg-[#f3f0ff] flex flex-col">
+      <div className="min-h-screen w-full bg-[#f3f0ff] dark:bg-dark-bg flex flex-col">
         <div className="flex-1 flex items-center justify-center px-6">
           <div className="text-center">
-            <p className="text-gray-600 mb-4">
+            <p className="text-gray-600 dark:text-dark-text-secondary mb-4">
               No email provided. Please start from the forgot password page.
             </p>
             <Link
@@ -225,12 +225,12 @@ export const ResetPassword = () => {
 
   if (success) {
     return (
-      <div className="min-h-screen w-full bg-[#f3f0ff] flex flex-col">
+      <div className="min-h-screen w-full bg-[#f3f0ff] dark:bg-dark-bg flex flex-col">
         <div className="flex-1 flex items-center justify-center px-6">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8 text-center"
+            className="w-full max-w-md bg-white dark:bg-dark-card rounded-2xl shadow-lg p-8 text-center"
           >
             <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
               <svg
@@ -250,10 +250,10 @@ export const ResetPassword = () => {
             <h3 className="text-2xl font-semibold text-[#7c6bff] mb-2">
               Success!
             </h3>
-            <p className="text-gray-600 mb-4">
+            <p className="text-gray-600 dark:text-dark-text-secondary mb-4">
               Your password has been reset successfully.
             </p>
-            <p className="text-sm text-gray-400">Redirecting to login...</p>
+            <p className="text-sm text-gray-400 dark:text-dark-text-muted">Redirecting to login...</p>
           </motion.div>
         </div>
       </div>
@@ -261,12 +261,12 @@ export const ResetPassword = () => {
   }
 
   return (
-    <div className="min-h-screen w-full bg-[#f3f0ff] flex flex-col">
+    <div className="min-h-screen w-full bg-[#f3f0ff] dark:bg-dark-bg flex flex-col">
       {/* Back Button */}
       <div className="p-6">
         <Link
           to="/forgot-password"
-          className="flex items-center text-gray-500 hover:text-gray-700 transition-colors"
+          className="flex items-center text-gray-500 dark:text-dark-text-secondary hover:text-gray-700 dark:hover:text-dark-text dark:text-dark-text-secondary transition-colors"
         >
           <i className="ri-arrow-left-s-line"></i>
           <span className="text-sm">Back</span>
@@ -279,20 +279,20 @@ export const ResetPassword = () => {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.4 }}
-          className="w-full max-w-lg bg-white rounded-2xl shadow-lg overflow-hidden flex min-h-125"
+          className="w-full max-w-lg bg-white dark:bg-dark-card rounded-2xl shadow-lg overflow-hidden flex min-h-125"
         >
           {/* Left Side - Form */}
           <div className="w-full  p-12 flex flex-col justify-center">
             <h2 className="text-3xl font-semibold text-[#7c6bff] text-center mb-2">
               Reset Password
             </h2>
-            <p className="text-sm text-gray-500 text-center mb-8">
+            <p className="text-sm text-gray-500 dark:text-dark-text-secondary text-center mb-8">
               Enter the OTP sent to{" "}
-              <span className="font-medium text-gray-700">{email}</span>
+              <span className="font-medium text-gray-700 dark:text-dark-text-secondary">{email}</span>
             </p>
 
             {error && (
-              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm text-center">
+              <div className="mb-4 p-3 bg-red-50 dark:bg-red-500/15 border border-red-200 dark:border-red-500/30 rounded-lg text-red-600 dark:text-red-400 text-sm text-center">
                 {error}
               </div>
             )}
@@ -300,11 +300,11 @@ export const ResetPassword = () => {
             <form className="space-y-5" onSubmit={handleSubmit}>
               {/* OTP Input */}
               <div>
-                <label className="block text-xs text-gray-500 mb-1.5">
+                <label className="block text-xs text-gray-500 dark:text-dark-text-secondary mb-1.5">
                   OTP Code
                 </label>
                 <input
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7c6bff] focus:border-transparent transition-all text-sm text-center tracking-widest"
+                  className="w-full px-4 py-2.5 border border-gray-200 dark:border-dark-border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7c6bff] focus:border-transparent transition-all text-sm text-center tracking-widest"
                   type="text"
                   name="otp"
                   maxLength={6}
@@ -318,11 +318,11 @@ export const ResetPassword = () => {
               {/* New Password */}
               <div>
                 <div className="flex justify-between items-center mb-1.5">
-                  <label className="text-xs text-gray-500">New Password</label>
+                  <label className="text-xs text-gray-500 dark:text-dark-text-secondary">New Password</label>
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="text-xs text-gray-400 flex items-center hover:text-gray-600 transition-colors"
+                    className="text-xs text-gray-400 dark:text-dark-text-muted flex items-center hover:text-gray-600 dark:text-dark-text-secondary transition-colors"
                   >
                     <svg
                       className="w-3.5 h-3.5 mr-1"
@@ -349,7 +349,7 @@ export const ResetPassword = () => {
                 <input
                   type={showPassword ? "text" : "password"}
                   name="new_password"
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7c6bff] focus:border-transparent transition-all text-sm"
+                  className="w-full px-4 py-2.5 border border-gray-200 dark:border-dark-border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7c6bff] focus:border-transparent transition-all text-sm"
                   value={formData.new_password}
                   onChange={handleChange}
                   placeholder="••••••••"
@@ -359,13 +359,13 @@ export const ResetPassword = () => {
 
               {/* Confirm Password */}
               <div>
-                <label className="block text-xs text-gray-500 mb-1.5">
+                <label className="block text-xs text-gray-500 dark:text-dark-text-secondary mb-1.5">
                   Confirm New Password
                 </label>
                 <input
                   type={showPassword ? "text" : "password"}
                   name="confirm_password"
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7c6bff] focus:border-transparent transition-all text-sm"
+                  className="w-full px-4 py-2.5 border border-gray-200 dark:border-dark-border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7c6bff] focus:border-transparent transition-all text-sm"
                   value={formData.confirm_password}
                   onChange={handleChange}
                   placeholder="••••••••"
@@ -409,13 +409,13 @@ export const ResetPassword = () => {
               <div className="flex justify-between items-center text-sm">
                 <Link
                   to="/forgot-password"
-                  className="text-gray-500 hover:text-[#7c6bff] hover:underline transition-colors"
+                  className="text-gray-500 dark:text-dark-text-secondary hover:text-[#7c6bff] hover:underline transition-colors"
                 >
                   Resend OTP
                 </Link>
                 <Link
                   to="/login"
-                  className="text-gray-500 hover:text-[#7c6bff] hover:underline transition-colors"
+                  className="text-gray-500 dark:text-dark-text-secondary hover:text-[#7c6bff] hover:underline transition-colors"
                 >
                   Back to login
                 </Link>

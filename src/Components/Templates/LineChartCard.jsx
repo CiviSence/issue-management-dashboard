@@ -44,15 +44,15 @@ const LineChartCard = () => {
   }, [period]);
 
   return (
-    <div className="bg-white w-full h-75 border border-border p-5 rounded-2xl shadow-xs">
+    <div className="bg-white dark:bg-dark-card w-full h-75 border border-border p-5 rounded-2xl shadow-xs">
       {/* Header */}
       <div className="flex justify-between items-center mb-2">
-        <h2 className="text-lg font-semibold text-gray-700">Issues Trend</h2>
+        <h2 className="text-lg font-semibold text-gray-700 dark:text-dark-text">Issues Trend</h2>
 
         <select
           value={period}
           onChange={(e) => setPeriod(e.target.value)}
-          className="appearance-none bg-white border border-gray-300 text-gray-700 text-xs rounded px-2 py-1  focus:outline-none focus:ring-2 focus:ring-violet-600 focus:border-violet-600 transition duration-200"
+          className="appearance-none bg-white dark:bg-dark-card border border-gray-300 dark:border-dark-border text-gray-700 dark:text-dark-text-secondary text-xs rounded px-2 py-1  focus:outline-none focus:ring-2 focus:ring-violet-600 focus:border-violet-600 transition duration-200"
         >
           <option value="7d">Last 7 Days</option>
           <option value="30d">Last 30 Days</option>
@@ -61,7 +61,7 @@ const LineChartCard = () => {
       </div>
 
       {/* Totals */}
-      <div className="flex gap-2 text-sm text-gray-600 mb-2">
+      <div className="flex gap-2 text-sm text-gray-600 mb-2 dark:text-dark-text-secondary">
         <p>
           Total Issues:{" "}
           <span className="font-semibold text-blue-600">
@@ -78,7 +78,7 @@ const LineChartCard = () => {
 
       {/* Chart */}
       {loading ? (
-        <div className="flex items-center justify-center h-62.5 text-gray-400">
+        <div className="flex items-center justify-center h-62.5 text-gray-400 dark:text-dark-text-muted">
           Loading trend...
         </div>
       ) : (

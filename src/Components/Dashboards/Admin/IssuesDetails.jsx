@@ -320,7 +320,7 @@ const IssueDetails = () => {
       <SideNav />
       <BottomNav />
 
-      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#F8F9FF] overflow-x-hidden overflow-y-auto h-screen pb-20">
+      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#F8F9FF] dark:bg-dark-bg overflow-x-hidden overflow-y-auto h-screen pb-20">
         <TopBar title="Issue Details" />
         <div className="w-full pb-20 md:pb-2 p-2 lg:p-4">
           {issue ? (
@@ -328,7 +328,7 @@ const IssueDetails = () => {
               <div className="mx-auto w-full">
                 {/* Admin Action Bar - Sticky Top */}
                 <div className="sticky top-[70px] z-30 shadow-md rounded-xl">
-                  <div className="bg-white rounded-xl border border-gray-200 p-2 sm:p-3 flex  sm:flex-row flex-wrap items-stretch sm:items-center justify-between gap-2 sm:gap-3">
+                  <div className="bg-white dark:bg-dark-card rounded-xl border border-gray-200 dark:border-dark-border p-2 sm:p-3 flex  sm:flex-row flex-wrap items-stretch sm:items-center justify-between gap-2 sm:gap-3">
                     <div className="flex items-center gap-2 justify-between sm:justify-start">
                       <button
                         onClick={() => {
@@ -338,7 +338,7 @@ const IssueDetails = () => {
                             navigate("/reported-issues");
                           }
                         }}
-                        className="px-2.5 py-1.5 sm:py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-all duration-200 flex items-center gap-1 sm:gap-1.5 text-xs sm:text-sm font-medium shrink-0"
+                        className="px-2.5 py-1.5 sm:py-2 bg-gray-100 dark:bg-dark-elevated hover:bg-gray-200 dark:bg-dark-border text-gray-700 dark:text-dark-text-secondary rounded-lg transition-all duration-200 flex items-center gap-1 sm:gap-1.5 text-xs sm:text-sm font-medium shrink-0"
                         title="Go Back"
                       >
                         <svg
@@ -357,7 +357,7 @@ const IssueDetails = () => {
                         <span>Back</span>
                       </button>
                       
-                      <span className="text-sm sm:text-m text-gray-500">
+                      <span className="text-sm sm:text-m text-gray-500 dark:text-dark-text-secondary">
                         Issue #{issue.id}
                       </span>
                     </div>
@@ -367,7 +367,7 @@ const IssueDetails = () => {
                       <button
                         className={`px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 flex items-center gap-1.5 sm:gap-2 whitespace-nowrap ${issue.status === "spam"
                           ? "bg-orange-100 text-orange-700 border border-orange-200"
-                          : "bg-white border border-gray-300 text-gray-700 hover:bg-orange-50 hover:text-orange-600 hover:border-orange-300"
+                          : "bg-white dark:bg-dark-card border border-gray-300 dark:border-dark-border text-gray-700 dark:text-dark-text-secondary hover:bg-orange-50 hover:text-orange-600 hover:border-orange-300"
                           }`}
                       >
                         <svg
@@ -404,8 +404,8 @@ const IssueDetails = () => {
                         disabled={isDeleting}
                         className={
                           isDeleting
-                            ? "opacity-50 px-2 sm:px-4 py-1.5 sm:py-2 bg-white border border-gray-300 text-red-600 hover:bg-red-50 hover:border-red-300 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 flex items-center gap-1.5 sm:gap-2 whitespace-nowrap cursor-not-allowed"
-                            : "px-2 sm:px-4 py-1.5 sm:py-2 bg-white border border-gray-300 text-red-600 hover:bg-red-50 hover:border-red-300 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 flex items-center gap-1.5 sm:gap-2 whitespace-nowrap"
+                            ? "opacity-50 px-2 sm:px-4 py-1.5 sm:py-2 bg-white dark:bg-dark-card border border-gray-300 dark:border-dark-border text-red-600 dark:text-red-400 hover:bg-red-50 dark:bg-red-500/15 hover:border-red-300 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 flex items-center gap-1.5 sm:gap-2 whitespace-nowrap cursor-not-allowed"
+                            : "px-2 sm:px-4 py-1.5 sm:py-2 bg-white dark:bg-dark-card border border-gray-300 dark:border-dark-border text-red-600 dark:text-red-400 hover:bg-red-50 dark:bg-red-500/15 hover:border-red-300 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 flex items-center gap-1.5 sm:gap-2 whitespace-nowrap"
                         }
                       >
                         <svg
@@ -458,11 +458,11 @@ const IssueDetails = () => {
 
                   {/* Expandable Admin Panel */}
                   {showAdminPanel && (
-                    <div className="mt-2 sm:mt-3 bg-white rounded-xl shadow-lg border border-gray-200 p-3 sm:p-5 animate-in slide-in-from-top-2">
+                    <div className="mt-2 sm:mt-3 bg-white dark:bg-dark-card rounded-xl shadow-lg border border-gray-200 dark:border-dark-border p-3 sm:p-5 animate-in slide-in-from-top-2">
                       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                         {/* Status Management */}
                         <div>
-                          <label className="text-xs sm:text-sm font-semibold text-gray-700 mb-2 sm:mb-3 flex items-center gap-2">
+                          <label className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-dark-text-secondary mb-2 sm:mb-3 flex items-center gap-2">
                             <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full" />
                             Update Status
                           </label>
@@ -481,7 +481,7 @@ const IssueDetails = () => {
                                 }}
                                 className={`px-2 sm:px-3 py-2 rounded-lg text-xs sm:text-sm font-medium capitalize transition-all duration-200 ${issue.status === status
                                   ? "bg-gray-900 text-white shadow-md"
-                                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                                  : "bg-gray-100 dark:bg-dark-elevated text-gray-600 dark:text-dark-text-secondary hover:bg-gray-200 dark:bg-dark-border"
                                   }`}
                               >
                                 {status.replace("_", " ")}
@@ -492,7 +492,7 @@ const IssueDetails = () => {
 
                         {/* Priority Management */}
                         <div>
-                          <label className="text-xs sm:text-sm font-semibold text-gray-700 mb-2 sm:mb-3 flex items-center gap-2">
+                          <label className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-dark-text-secondary mb-2 sm:mb-3 flex items-center gap-2">
                             <span className="w-1.5 h-1.5 bg-rose-500 rounded-full" />
                             Set Priority
                           </label>
@@ -512,7 +512,7 @@ const IssueDetails = () => {
                                         : priority === "medium"
                                           ? "bg-yellow-500 text-white"
                                           : "bg-green-500 text-white"
-                                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                                    : "bg-gray-100 dark:bg-dark-elevated text-gray-600 dark:text-dark-text-secondary hover:bg-gray-200 dark:bg-dark-border"
                                     }`}
                                 >
                                   {priority}
@@ -524,13 +524,13 @@ const IssueDetails = () => {
 
                         {/* Assignment */}
 
-                        <div className="w-full col-span-1 md:col-span-2 bg-gray-50 border border-gray-200 rounded-lg p-3 sm:p-4">
+                        <div className="w-full col-span-1 md:col-span-2 bg-gray-50 dark:bg-dark-elevated border border-gray-200 dark:border-dark-border rounded-lg p-3 sm:p-4">
                           <div className="flex flex-col md:flex-row gap-4 sm:gap-6">
                             {/* Assign To */}
                             <div className="flex-1">
                               <label
                                 htmlFor="staff-select"
-                                className="text-xs sm:text-sm font-semibold text-gray-700 mb-2 sm:mb-3 flex items-center gap-2"
+                                className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-dark-text-secondary mb-2 sm:mb-3 flex items-center gap-2"
                               >
                                 <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
                                 Assign To
@@ -540,7 +540,7 @@ const IssueDetails = () => {
                                 value={selectedStaff}
                                 onChange={(e) => setSelectedStaff(e.target.value)}
                                 disabled={isAssigning}
-                                className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent disabled:opacity-50"
+                                className="w-full px-3 py-2 bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent disabled:opacity-50"
                               >
                                 <option value="">{issue.assigned_to_name}</option>
                                 {staff?.map((person) => (
@@ -555,7 +555,7 @@ const IssueDetails = () => {
                             <div className="flex-1">
                               <label
                                 htmlFor="internal-note"
-                                className="text-xs sm:text-sm font-semibold text-gray-700 mb-2 sm:mb-3 flex items-center gap-2"
+                                className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-dark-text-secondary mb-2 sm:mb-3 flex items-center gap-2"
                               >
                                 <span className="w-1.5 h-1.5 bg-amber-500 rounded-full" />
                                 Internal Notes
@@ -570,7 +570,7 @@ const IssueDetails = () => {
                                     setInternalNote(e.target.value)
                                   }
                                   disabled={isAssigning}
-                                  className="flex-1 px-3 py-2 bg-white border border-gray-200 rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent disabled:opacity-50"
+                                  className="flex-1 px-3 py-2 bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent disabled:opacity-50"
                                 />
                                 <button
                                   type="button"
@@ -605,7 +605,7 @@ const IssueDetails = () => {
                       <p className="text-xs text-blue-600 font-medium uppercase tracking-wider mb-0.5">
                         Assigned To
                       </p>
-                      <p className="text-sm sm:text-base font-semibold text-gray-900 truncate">
+                      <p className="text-sm sm:text-base font-semibold text-gray-900 dark:text-dark-text truncate">
                         {issue.assigned_to_name}
                       </p>
                     </div>
@@ -615,8 +615,8 @@ const IssueDetails = () => {
                   </div>
                 ) : (
                   /* Unassigned State */
-                  <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-gray-50 shadow-sm   rounded-xl border border-gray-200 border-dashed mt-2 mb-2">
-                    <div className="shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gray-200 flex items-center justify-center text-gray-400">
+                  <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-gray-50 dark:bg-dark-elevated shadow-sm   rounded-xl border border-gray-200 dark:border-dark-border border-dashed mt-2 mb-2">
+                    <div className="shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gray-200 dark:bg-dark-border flex items-center justify-center text-gray-400 dark:text-dark-text-muted">
                       <svg
                         className="w-5 h-5 sm:w-6 sm:h-6"
                         fill="none"
@@ -633,15 +633,15 @@ const IssueDetails = () => {
                     </div>
 
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs text-gray-500 font-medium uppercase tracking-wider mb-0.5">
+                      <p className="text-xs text-gray-500 dark:text-dark-text-secondary font-medium uppercase tracking-wider mb-0.5">
                         Assignment Status
                       </p>
-                      <p className="text-sm sm:text-base font-medium text-gray-500 truncate">
+                      <p className="text-sm sm:text-base font-medium text-gray-500 dark:text-dark-text-secondary truncate">
                         Unassigned
                       </p>
                     </div>
 
-                    <span className="shrink-0 px-2 py-1 text-xs font-medium text-gray-500 bg-gray-200 rounded-full">
+                    <span className="shrink-0 px-2 py-1 text-xs font-medium text-gray-500 dark:text-dark-text-secondary bg-gray-200 dark:bg-dark-border rounded-full">
                       Open
                     </span>
                   </div>
@@ -649,9 +649,9 @@ const IssueDetails = () => {
 
                 {/* Main Content Card */}
                 <div
-                  className={`bg-white rounded-2xl shadow-sm border transition-all duration-300 ${issue.is_spam
+                  className={`bg-white dark:bg-dark-card rounded-2xl shadow-sm border transition-all duration-300 ${issue.is_spam
                     ? "border-orange-300 bg-orange-50/30"
-                    : "border-gray-100"
+                    : "border-gray-100 dark:border-dark-border/50"
                     }`}
                 >
                   {/* Spam Warning Banner */}
@@ -775,7 +775,7 @@ const IssueDetails = () => {
                                   className="w-full h-full object-cover"
                                 />
                                 {(currentImageIndex || 0) === index && (
-                                  <div className="absolute inset-0 bg-violet-500/20" />
+                                  <div className="absolute inset-0 bg-violet-50 dark:bg-violet-500/150/20" />
                                 )}
                               </button>
                             ))}
@@ -790,15 +790,15 @@ const IssueDetails = () => {
                       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 sm:gap-4 mb-3 sm:mb-4">
                         <h1
                           className={`text-xl sm:text-2xl lg:text-3xl font-bold leading-tight ${issue.status === "spam"
-                            ? "text-gray-500 line-through"
-                            : "text-gray-900"
+                            ? "text-gray-500 dark:text-dark-text-secondary line-through"
+                            : "text-gray-900 dark:text-dark-text"
                             }`}
                         >
                           {issue.title}
                         </h1>
 
                         {/* Quick Stats */}
-                        <div className="flex sm:hidden items-center gap-3 text-xs text-gray-500 bg-gray-50 px-3 py-2 rounded-lg self-start">
+                        <div className="flex sm:hidden items-center gap-3 text-xs text-gray-500 dark:text-dark-text-secondary bg-gray-50 dark:bg-dark-elevated px-3 py-2 rounded-lg self-start">
                           <span className="flex items-center gap-1">
                             <svg
                               className="w-3.5 h-3.5"
@@ -822,12 +822,12 @@ const IssueDetails = () => {
                             {issue.views_count}
                           </span>
                           <span className="w-px h-3 bg-gray-300" />
-                          <span className="font-medium text-gray-900">
+                          <span className="font-medium text-gray-900 dark:text-dark-text">
                             Score: {issue.net_score}
                           </span>
                         </div>
 
-                        <div className="hidden sm:flex items-center gap-3 text-sm text-gray-500 bg-gray-50 px-3 py-2 rounded-lg">
+                        <div className="hidden sm:flex items-center gap-3 text-sm text-gray-500 dark:text-dark-text-secondary bg-gray-50 dark:bg-dark-elevated px-3 py-2 rounded-lg">
                           <span className="flex items-center gap-1">
                             <svg
                               className="w-4 h-4"
@@ -851,7 +851,7 @@ const IssueDetails = () => {
                             {issue.views_count}
                           </span>
                           <span className="w-px h-4 bg-gray-300" />
-                          <span className="font-medium text-gray-900">
+                          <span className="font-medium text-gray-900 dark:text-dark-text">
                             Score: {issue.net_score}
                           </span>
                         </div>
@@ -885,14 +885,14 @@ const IssueDetails = () => {
                     </div>
 
                     {/* Reporter Info Card */}
-                    <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-gray-50 rounded-xl border border-gray-100 mb-4 sm:mb-6">
+                    <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-gray-50 dark:bg-dark-elevated rounded-xl border border-gray-100 dark:border-dark-border/50 mb-4 sm:mb-6">
                       <img
                         src={issue.user_avatar || getDefaultAvatar(issue.user_gender)}
                         className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover ring-2 ring-white shadow-sm shrink-0"
                       />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-1.5 sm:gap-2">
-                          <p className="text-sm font-semibold text-gray-900 truncate">
+                          <p className="text-sm font-semibold text-gray-900 dark:text-dark-text truncate">
                             {issue.user_name}
                           </p>
                           {issue.user_verification_status === "verified" && (
@@ -909,7 +909,7 @@ const IssueDetails = () => {
                             </svg>
                           )}
                         </div>
-                        <p className="text-xs text-gray-500 mt-0.5">
+                        <p className="text-xs text-gray-500 dark:text-dark-text-secondary mt-0.5">
                           {new Date(issue.created_at).toLocaleString("en-US", {
                             month: "short",
                             day: "numeric",
@@ -932,7 +932,7 @@ const IssueDetails = () => {
                                   : issue.user_id,
                               );
                             }}
-                            className="px-2 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors flex items-center gap-1.5 sm:gap-2 whitespace-nowrap"
+                            className="px-2 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm font-medium text-gray-700 dark:text-dark-text-secondary bg-gray-100 dark:bg-dark-elevated hover:bg-gray-200 dark:bg-dark-border rounded-lg transition-colors flex items-center gap-1.5 sm:gap-2 whitespace-nowrap"
                             title="User Actions"
                           >
                             <span>Actions</span>
@@ -952,13 +952,13 @@ const IssueDetails = () => {
                           </button>
 
                           {userMenuOpen === issue.user_id && (
-                            <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-200 z-50 text-sm overflow-hidden">
+                            <div className="absolute right-0 top-full mt-2 w-56 bg-white dark:bg-dark-card rounded-xl shadow-xl border border-gray-200 dark:border-dark-border z-50 text-sm overflow-hidden">
                               <button
                                 onClick={() => {
                                   promoteToTrusted(issue.user_id);
                                   setUserMenuOpen(null);
                                 }}
-                                className="w-full text-left px-4 py-2.5 text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                                className="w-full text-left px-4 py-2.5 text-gray-700 dark:text-dark-text-secondary hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated flex items-center gap-2"
                               >
                                 <svg
                                   className="w-4 h-4 text-green-500"
@@ -981,7 +981,7 @@ const IssueDetails = () => {
                                   revokeVerification(issue.user_id);
                                   setUserMenuOpen(null);
                                 }}
-                                className="w-full text-left px-4 py-2.5 text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                                className="w-full text-left px-4 py-2.5 text-gray-700 dark:text-dark-text-secondary hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated flex items-center gap-2"
                               >
                                 <svg
                                   className="w-4 h-4 text-orange-500"
@@ -1004,7 +1004,7 @@ const IssueDetails = () => {
                                   addReputationPoints(issue.user_id);
                                   setUserMenuOpen(null);
                                 }}
-                                className="w-full text-left px-4 py-2.5 text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                                className="w-full text-left px-4 py-2.5 text-gray-700 dark:text-dark-text-secondary hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated flex items-center gap-2"
                               >
                                 <svg
                                   className="w-4 h-4 text-blue-500"
@@ -1022,12 +1022,12 @@ const IssueDetails = () => {
                                 Add Reputation Points
                               </button>
 
-                              <div className="h-px bg-gray-200 my-1" />
+                              <div className="h-px bg-gray-200 dark:bg-dark-border my-1" />
 
                               <button
                                 title="Ban User"
                                 onClick={() => openBanModal()}
-                                className="w-full text-left px-4 py-2.5 text-red-600 hover:bg-red-50 flex items-center gap-2"
+                                className="w-full text-left px-4 py-2.5 text-red-600 dark:text-red-400 hover:bg-red-50 dark:bg-red-500/15 flex items-center gap-2"
                               >
                                 <svg
                                   className="w-4 h-4"
@@ -1050,10 +1050,10 @@ const IssueDetails = () => {
                                   getUserDetails(issue.user_id);
                                   setUserMenuOpen(null);
                                 }}
-                                className="w-full text-left px-4 py-2.5 text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                                className="w-full text-left px-4 py-2.5 text-gray-700 dark:text-dark-text-secondary hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated flex items-center gap-2"
                               >
                                 <svg
-                                  className="w-4 h-4 text-gray-500"
+                                  className="w-4 h-4 text-gray-500 dark:text-dark-text-secondary"
                                   fill="none"
                                   stroke="currentColor"
                                   viewBox="0 0 24 24"
@@ -1121,10 +1121,10 @@ const IssueDetails = () => {
                           </svg>
                         </div>
                         <div className="min-w-0">
-                          <p className="text-xs text-gray-500 uppercase font-medium">
+                          <p className="text-xs text-gray-500 dark:text-dark-text-secondary uppercase font-medium">
                             Location
                           </p>
-                          <p className="text-xs sm:text-sm font-semibold text-gray-900 truncate">
+                          <p className="text-xs sm:text-sm font-semibold text-gray-900 dark:text-dark-text truncate">
                             {issue.location_address || "No address provided"}
                           </p>
                         </div>
@@ -1146,10 +1146,10 @@ const IssueDetails = () => {
                           </svg>
                         </div>
                         <div className="min-w-0">
-                          <p className="text-xs text-gray-500 uppercase font-medium">
+                          <p className="text-xs text-gray-500 dark:text-dark-text-secondary uppercase font-medium">
                             Building
                           </p>
-                          <p className="text-xs sm:text-sm font-semibold text-gray-900 truncate">
+                          <p className="text-xs sm:text-sm font-semibold text-gray-900 dark:text-dark-text truncate">
                             {issue.location_building}
                           </p>
                         </div>
@@ -1158,14 +1158,14 @@ const IssueDetails = () => {
 
                     {/* Description */}
                     <div className="mb-6 sm:mb-8">
-                      <h2 className="text-xs sm:text-sm font-bold text-gray-900 uppercase tracking-wider mb-2 sm:mb-3 flex items-center gap-2">
-                        <span className="w-6 sm:w-8 h-0.5 bg-violet-500 rounded-full" />
+                      <h2 className="text-xs sm:text-sm font-bold text-gray-900 dark:text-dark-text uppercase tracking-wider mb-2 sm:mb-3 flex items-center gap-2">
+                        <span className="w-6 sm:w-8 h-0.5 bg-violet-50 dark:bg-violet-500/150 rounded-full" />
                         Description
                       </h2>
                       <div
                         className={`p-3 sm:p-4 rounded-xl border ${issue.is_spam
-                          ? "bg-orange-50/50 border-orange-100 text-gray-500"
-                          : "bg-gray-50 border-gray-100 text-gray-700"
+                          ? "bg-orange-50/50 border-orange-100 text-gray-500 dark:text-dark-text-secondary"
+                          : "bg-gray-50 dark:bg-dark-elevated border-gray-100 dark:border-dark-border/50 text-gray-700 dark:text-dark-text-secondary"
                           }`}
                       >
                         <p className="text-sm sm:text-base leading-relaxed">
@@ -1177,11 +1177,11 @@ const IssueDetails = () => {
                     {/* Resolution Details */}
                     {(issue.resolution_notes || (issue.resolution_media_urls && issue.resolution_media_urls.length > 0)) && (
                       <div className="mb-6 sm:mb-8">
-                        <h2 className="text-xs sm:text-sm font-bold text-gray-900 uppercase tracking-wider mb-2 sm:mb-3 flex items-center gap-2">
+                        <h2 className="text-xs sm:text-sm font-bold text-gray-900 dark:text-dark-text uppercase tracking-wider mb-2 sm:mb-3 flex items-center gap-2">
                           <span className="w-6 sm:w-8 h-0.5 bg-green-500 rounded-full" />
                           Resolution Details
                         </h2>
-                        <div className="p-3 sm:p-4 rounded-xl border bg-green-50/50 border-green-100 text-gray-700">
+                        <div className="p-3 sm:p-4 rounded-xl border bg-green-50/50 border-green-100 text-gray-700 dark:text-dark-text-secondary">
                           {issue.resolution_notes && (
                             <p className="text-sm sm:text-base leading-relaxed mb-4">
                               <span className="font-semibold block mb-1">Staff Notes:</span>
@@ -1193,7 +1193,7 @@ const IssueDetails = () => {
                               <span className="font-semibold block mb-2 text-sm">Resolution Proof:</span>
                               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                                 {issue.resolution_media_urls.map((url, idx) => (
-                                  <a key={idx} href={url} target="_blank" rel="noopener noreferrer" className="block w-full aspect-square rounded-lg overflow-hidden border border-gray-200">
+                                  <a key={idx} href={url} target="_blank" rel="noopener noreferrer" className="block w-full aspect-square rounded-lg overflow-hidden border border-gray-200 dark:border-dark-border">
                                     <img src={url} alt={`Resolution proof ${idx + 1}`} className="w-full h-full object-cover hover:scale-105 transition-transform" />
                                   </a>
                                 ))}
@@ -1204,7 +1204,7 @@ const IssueDetails = () => {
                       </div>
                     )}
                     {/* Engagement Stats */}
-                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between pt-4 sm:pt-6 border-t border-gray-100 gap-3 sm:gap-0">
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between pt-4 sm:pt-6 border-t border-gray-100 dark:border-dark-border/50 gap-3 sm:gap-0">
                       <div className="flex items-center gap-2 sm:gap-4 justify-between sm:justify-start">
                         <div className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 bg-emerald-50 text-emerald-700 rounded-lg">
                           <svg
@@ -1250,7 +1250,7 @@ const IssueDetails = () => {
                         </div>
                       </div>
 
-                      <button className="flex items-center justify-center sm:justify-start gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors">
+                      <button className="flex items-center justify-center sm:justify-start gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 bg-gray-100 dark:bg-dark-elevated hover:bg-gray-200 dark:bg-dark-border text-gray-700 dark:text-dark-text-secondary rounded-lg transition-colors">
                         <svg
                           className="w-4 h-4 sm:w-5 sm:h-5"
                           fill="none"
@@ -1267,7 +1267,7 @@ const IssueDetails = () => {
                         <span className="font-medium text-sm sm:text-base">
                           {issue.comments_count}
                         </span>
-                        <span className="text-xs sm:text-sm text-gray-500">
+                        <span className="text-xs sm:text-sm text-gray-500 dark:text-dark-text-secondary">
                           comments
                         </span>
                       </button>
@@ -1276,10 +1276,10 @@ const IssueDetails = () => {
                 </div>
 
                 {/* Activity Log - Admin Only */}
-                <div className="mt-2 sm:mt-3 bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-6">
-                  <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-3 sm:mb-4 flex items-center gap-2">
+                <div className="mt-2 sm:mt-3 bg-white dark:bg-dark-card rounded-2xl shadow-sm border border-gray-100 dark:border-dark-border/50 p-4 sm:p-6">
+                  <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-dark-text mb-3 sm:mb-4 flex items-center gap-2">
                     <svg
-                      className="w-4 h-4 sm:w-5 sm:h-5 text-gray-500"
+                      className="w-4 h-4 sm:w-5 sm:h-5 text-gray-500 dark:text-dark-text-secondary"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -1295,16 +1295,16 @@ const IssueDetails = () => {
                   </h3>
                   <div className="space-y-2 sm:space-y-3">
                     {/* status */}
-                    <div className="flex items-start gap-2 sm:gap-3 p-2.5 sm:p-3 bg-gray-50 rounded-lg">
+                    <div className="flex items-start gap-2 sm:gap-3 p-2.5 sm:p-3 bg-gray-50 dark:bg-dark-elevated rounded-lg">
                       <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-blue-500 rounded-full mt-1.5 sm:mt-2 shrink-0" />
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs sm:text-sm text-gray-900">
+                        <p className="text-xs sm:text-sm text-gray-900 dark:text-dark-text">
                           Status changed to{" "}
                           <span className="font-semibold">
                             {issue.status.replace("_", " ")}
                           </span>
                         </p>
-                        <p className="text-xs text-gray-500 mt-0.5 sm:mt-1">
+                        <p className="text-xs text-gray-500 dark:text-dark-text-secondary mt-0.5 sm:mt-1">
                           {`By Admin • ${issue.updated_at.split("T")[0]} ${new Date(
                             issue.updated_at,
                           ).toLocaleTimeString([], {
@@ -1317,16 +1317,16 @@ const IssueDetails = () => {
 
                     {/* assigned */}
                     {issue.assigned_to && (
-                      <div className="flex items-start gap-2 sm:gap-3 p-2.5 sm:p-3 bg-gray-50 rounded-lg">
+                      <div className="flex items-start gap-2 sm:gap-3 p-2.5 sm:p-3 bg-gray-50 dark:bg-dark-elevated rounded-lg">
                         <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-yellow-500 rounded-full mt-1.5 sm:mt-2 shrink-0" />
                         <div className="flex-1 min-w-0">
-                          <p className="text-xs sm:text-sm text-gray-900">
+                          <p className="text-xs sm:text-sm text-gray-900 dark:text-dark-text">
                             Issue Assigned to{" "}
                             <span className="font-semibold">
                               {issue.assigned_to_name}
                             </span>
                           </p>
-                          <p className="text-xs text-gray-500 mt-0.5 sm:mt-1">
+                          <p className="text-xs text-gray-500 dark:text-dark-text-secondary mt-0.5 sm:mt-1">
                             {`By Admin • ${issue.updated_at.split("T")[0]} ${new Date(
                               issue.updated_at,
                             ).toLocaleTimeString([], {
@@ -1338,14 +1338,14 @@ const IssueDetails = () => {
                       </div>
                     )}
                     {/* //created */}
-                    <div className="flex items-start gap-2 sm:gap-3 p-2.5 sm:p-3 bg-gray-50 rounded-lg">
-                      <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-violet-500 rounded-full mt-1.5 sm:mt-2 shrink-0" />
+                    <div className="flex items-start gap-2 sm:gap-3 p-2.5 sm:p-3 bg-gray-50 dark:bg-dark-elevated rounded-lg">
+                      <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-violet-50 dark:bg-violet-500/150 rounded-full mt-1.5 sm:mt-2 shrink-0" />
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs sm:text-sm text-gray-900">
+                        <p className="text-xs sm:text-sm text-gray-900 dark:text-dark-text">
                           Issue created by{" "}
                           <span className="font-semibold">{issue.user_name}</span>
                         </p>
-                        <p className="text-xs text-gray-500 mt-0.5 sm:mt-1">
+                        <p className="text-xs text-gray-500 dark:text-dark-text-secondary mt-0.5 sm:mt-1">
                           Date : {issue.created_at.split("T")[0]}{" "}
                           {new Date(issue.created_at).toLocaleTimeString([], {
                             hour: "2-digit",
@@ -1368,7 +1368,7 @@ const IssueDetails = () => {
                     navigate("/reported-issues");
                   }
                 }}
-                className="mb-4 px-3 py-2 bg-white hover:bg-gray-100 border border-gray-200 shadow-sm text-gray-700 rounded-lg transition-all duration-200 flex items-center gap-1.5 text-sm font-medium w-fit"
+                className="mb-4 px-3 py-2 bg-white dark:bg-dark-card hover:bg-gray-100 dark:hover:bg-dark-elevated dark:bg-dark-elevated border border-gray-200 dark:border-dark-border shadow-sm text-gray-700 dark:text-dark-text-secondary rounded-lg transition-all duration-200 flex items-center gap-1.5 text-sm font-medium w-fit"
               >
                 <svg
                   className="w-4 h-4"
@@ -1391,7 +1391,7 @@ const IssueDetails = () => {
         </div>
         {showBanModal && (
           <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
-            <div className="bg-white rounded-xl shadow-lg w-full max-w-md p-6">
+            <div className="bg-white dark:bg-dark-card rounded-xl shadow-lg w-full max-w-md p-6">
               <h2 className="text-xl font-semibold mb-4">Ban User</h2>
 
               {/* Reason */}
@@ -1432,7 +1432,7 @@ const IssueDetails = () => {
               <div className="flex justify-end gap-3">
                 <button
                   onClick={() => setShowBanModal(false)}
-                  className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300"
+                  className="px-4 py-2 rounded-lg bg-gray-200 dark:bg-dark-border hover:bg-gray-300"
                 >
                   Cancel
                 </button>

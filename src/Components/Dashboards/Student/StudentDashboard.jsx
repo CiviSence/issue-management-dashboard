@@ -181,12 +181,12 @@ const StudentDashboard = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div>
-                <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">{getGreeting()}</p>
-                <h1 className="text-lg font-bold text-gray-900">{firstName}</h1>
+                <p className="text-xs font-medium text-gray-400 dark:text-dark-text-muted uppercase tracking-wider">{getGreeting()}</p>
+                <h1 className="text-lg font-bold text-gray-900 dark:text-dark-text">{firstName}</h1>
               </div>
               <button
                 onClick={() => window.location.reload()}
-                className="p-1.5 bg-gray-150 hover:bg-gray-200 text-gray-600 rounded-full transition active:scale-95 flex items-center justify-center"
+                className="p-1.5 bg-gray-150 hover:bg-gray-200 dark:bg-dark-border text-gray-600 dark:text-dark-text-secondary rounded-full transition active:scale-95 flex items-center justify-center"
                 title="Refresh Page"
               >
                 <i className="ri-refresh-line text-sm"></i>
@@ -203,40 +203,40 @@ const StudentDashboard = () => {
 
         {/* Stats Overview */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 mb-4 md:mb-6">
-          <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-3">
-            <div className="p-2.5 bg-indigo-50 text-[#6366f1] rounded-lg">
+          <div className="bg-white p-4 rounded-xl border border-gray-100 dark:border-dark-border/50 shadow-sm flex items-center gap-3">
+            <div className="p-2.5 bg-indigo-50 text-[#6366f1] dark:text-indigo-400 rounded-lg">
               <i className="ri-file-list-3-line text-lg"></i>
             </div>
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Total Reports</p>
-              <p className="text-lg font-bold text-gray-900">{myIssues.length}</p>
+              <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-dark-text-muted">Total Reports</p>
+              <p className="text-lg font-bold text-gray-900 dark:text-dark-text">{myIssues.length}</p>
             </div>
           </div>
-          <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-3">
+          <div className="bg-white p-4 rounded-xl border border-gray-100 dark:border-dark-border/50 shadow-sm flex items-center gap-3">
             <div className="p-2.5 bg-emerald-50 text-emerald-600 rounded-lg">
               <i className="ri-checkbox-circle-line text-lg"></i>
             </div>
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Resolved</p>
-              <p className="text-lg font-bold text-gray-900">{resolvedCount}</p>
+              <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-dark-text-muted">Resolved</p>
+              <p className="text-lg font-bold text-gray-900 dark:text-dark-text">{resolvedCount}</p>
             </div>
           </div>
-          <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-3">
+          <div className="bg-white p-4 rounded-xl border border-gray-100 dark:border-dark-border/50 shadow-sm flex items-center gap-3">
             <div className="p-2.5 bg-amber-50 text-amber-600 rounded-lg">
               <i className="ri-time-line text-lg"></i>
             </div>
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Pending</p>
-              <p className="text-lg font-bold text-gray-900">{pendingCount}</p>
+              <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-dark-text-muted">Pending</p>
+              <p className="text-lg font-bold text-gray-900 dark:text-dark-text">{pendingCount}</p>
             </div>
           </div>
-          <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-3">
+          <div className="bg-white p-4 rounded-xl border border-gray-100 dark:border-dark-border/50 shadow-sm flex items-center gap-3">
             <div className="p-2.5 bg-blue-50 text-blue-600 rounded-lg">
               <i className="ri-copper-coin-line text-lg"></i>
             </div>
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Reputation</p>
-              <p className="text-lg font-bold text-gray-900">{profileData?.reputation_points || 0}</p>
+              <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-dark-text-muted">Reputation</p>
+              <p className="text-lg font-bold text-gray-900 dark:text-dark-text">{profileData?.reputation_points || 0}</p>
             </div>
           </div>
         </div>
@@ -257,15 +257,15 @@ const StudentDashboard = () => {
               </div>
               <button
                 onClick={() => setFormModal({ mode: "create" })}
-                className="relative z-10 shrink-0 bg-white text-[#6366f1] px-5 py-2.5 sm:px-6 sm:py-3 rounded-xl font-bold hover:bg-indigo-50 transition shadow-xl text-sm sm:text-base active:scale-95"
+                className="relative z-10 shrink-0 bg-white text-[#6366f1] dark:text-indigo-400 px-5 py-2.5 sm:px-6 sm:py-3 rounded-xl font-bold hover:bg-indigo-50 transition shadow-xl text-sm sm:text-base active:scale-95"
               >
                 Report Issue
               </button>
             </div>
 
             {/* Recent Activity */}
-            <div className="bg-white p-3 lg:p-6 rounded-xl md:rounded-2xl shadow-sm border border-gray-100 min-h-75">
-              <h3 className="text-lg font-bold text-gray-800 mb-4">
+            <div className="bg-white p-3 lg:p-6 rounded-xl md:rounded-2xl shadow-sm border border-gray-100 dark:border-dark-border/50 min-h-75">
+              <h3 className="text-lg font-bold text-gray-800 dark:text-dark-text mb-4">
                 Your Recent Reports
               </h3>
 
@@ -280,7 +280,7 @@ const StudentDashboard = () => {
                         ? "border-emerald-200 bg-emerald-50/30"
                         : issue.status === "in_progress"
                           ? "border-blue-200 bg-blue-50/30"
-                          : "border-gray-200 hover:border-blue-300"
+                          : "border-gray-200 dark:border-dark-border hover:border-blue-300"
                         } ${isDeleting === issue.id ? "opacity-50" : ""}`}
                     >
                       {/* Status Indicator Strip */}
@@ -299,10 +299,10 @@ const StudentDashboard = () => {
                         {/* Header: Title + Status Badge */}
                         <div className="flex items-start justify-between gap-3 mb-3">
                           <div className="flex-1 min-w-0">
-                            <h4 className="text-base font-semibold text-gray-900 leading-snug line-clamp-2">
+                            <h4 className="text-base font-semibold text-gray-900 dark:text-dark-text leading-snug line-clamp-2">
                               {issue.title}
                             </h4>
-                            <p className="mt-1.5 text-sm text-gray-600 line-clamp-2 leading-relaxed">
+                            <p className="mt-1.5 text-sm text-gray-600 dark:text-dark-text-secondary line-clamp-2 leading-relaxed">
                               {issue.description}
                             </p>
                           </div>
@@ -311,23 +311,23 @@ const StudentDashboard = () => {
                         </div>
 
                         {/* Meta Row */}
-                        <div className="flex flex-wrap items-center gap-4 text-xs text-gray-500 mb-2">
+                        <div className="flex flex-wrap items-center gap-4 text-xs text-gray-500 dark:text-dark-text-secondary mb-2">
                           <div className="flex items-center gap-1.5">
-                            <i className="ri-map-pin-line text-gray-400" />
-                            <span className="font-medium text-gray-700">
+                            <i className="ri-map-pin-line text-gray-400 dark:text-dark-text-muted" />
+                            <span className="font-medium text-gray-700 dark:text-dark-text-secondary">
                               {issue.location_building.replace("-", " ")}
                             </span>
                             {issue.location_address && (
-                              <span className="text-gray-400">
+                              <span className="text-gray-400 dark:text-dark-text-muted">
                                 · {issue.location_address}
                               </span>
                             )}
                           </div>
                           <div className="flex items-center gap-1.5">
-                            <i className="ri-time-line text-gray-400" />
+                            <i className="ri-time-line text-gray-400 dark:text-dark-text-muted" />
                             <time
                               dateTime={issue.created_at}
-                              className="font-medium text-gray-700"
+                              className="font-medium text-gray-700 dark:text-dark-text-secondary"
                             >
                               {formatSmartTime(issue.created_at)}
                             </time>
@@ -339,20 +339,20 @@ const StudentDashboard = () => {
 
                         {/* Engagement stats */}
                         {issue.engagement && (
-                          <div className="flex items-center gap-3 text-xs text-gray-500 mb-4">
-                            <span className="flex items-center gap-1 bg-gray-50 px-2 py-1 rounded-lg">
+                          <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-dark-text-secondary mb-4">
+                            <span className="flex items-center gap-1 bg-gray-50 dark:bg-dark-elevated px-2 py-1 rounded-lg">
                               <i className="ri-thumb-up-fill text-emerald-500 text-sm" />
                               {issue.engagement.upvotes || 0}
                             </span>
-                            <span className="flex items-center gap-1 bg-gray-50 px-2 py-1 rounded-lg">
+                            <span className="flex items-center gap-1 bg-gray-50 dark:bg-dark-elevated px-2 py-1 rounded-lg">
                               <i className="ri-thumb-down-fill text-rose-500 text-sm" />
                               {issue.engagement.downvotes || 0}
                             </span>
-                            <span className="flex items-center gap-1 bg-gray-50 px-2 py-1 rounded-lg">
-                              <i className="ri-eye-line text-gray-400 text-sm" />
+                            <span className="flex items-center gap-1 bg-gray-50 dark:bg-dark-elevated px-2 py-1 rounded-lg">
+                              <i className="ri-eye-line text-gray-400 dark:text-dark-text-muted text-sm" />
                               {issue.engagement.views_count || 0}
                             </span>
-                            <span className="flex items-center gap-1 bg-gray-50 px-2 py-1 rounded-lg">
+                            <span className="flex items-center gap-1 bg-gray-50 dark:bg-dark-elevated px-2 py-1 rounded-lg">
                               <i className="ri-chat-3-line text-violet-400 text-sm" />
                               {issue.engagement.comment_count ?? 0}
                             </span>
@@ -360,11 +360,11 @@ const StudentDashboard = () => {
                         )}
 
                         {/* Action Buttons */}
-                        <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
+                        <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100 dark:border-dark-border/50">
                           <button
                             onClick={() => setFormModal({ mode: "edit", issue })}
                             disabled={isDeleting === issue.id}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-700 bg-gray-50 rounded-lg hover:bg-gray-100 hover:text-blue-600 transition-colors disabled:opacity-50"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-700 dark:text-dark-text-secondary bg-gray-50 dark:bg-dark-elevated rounded-lg hover:bg-gray-100 dark:hover:bg-dark-elevated dark:bg-dark-elevated hover:text-blue-600 transition-colors disabled:opacity-50"
                           >
                             <i className="ri-edit-line text-sm" />
                             Edit
@@ -373,7 +373,7 @@ const StudentDashboard = () => {
                           <button
                             onClick={() => handleDeleteIssue(issue.id)}
                             disabled={isDeleting === issue.id}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-700 bg-gray-50 rounded-lg hover:bg-red-50 hover:text-red-600 transition-colors disabled:opacity-50"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-700 dark:text-dark-text-secondary bg-gray-50 dark:bg-dark-elevated rounded-lg hover:bg-red-50 dark:bg-red-500/15 hover:text-red-600 dark:text-red-400 transition-colors disabled:opacity-50"
                           >
                             {isDeleting === issue.id ? (
                               <i className="ri-loader-4-line text-sm animate-spin" />
@@ -390,16 +390,16 @@ const StudentDashboard = () => {
               ) : (
                 /* Empty State — clean */
                 <div className="py-12 flex flex-col items-center text-center">
-                  <div className="w-16 h-16 bg-violet-50 rounded-2xl flex items-center justify-center mb-4">
+                  <div className="w-16 h-16 bg-violet-50 dark:bg-violet-500/15 rounded-2xl flex items-center justify-center mb-4">
                     <i className="ri-file-search-line text-3xl text-violet-400" />
                   </div>
-                  <h4 className="text-base font-semibold text-gray-800 mb-1">No reports yet</h4>
-                  <p className="text-sm text-gray-400 max-w-xs mb-5">
+                  <h4 className="text-base font-semibold text-gray-800 dark:text-dark-text mb-1">No reports yet</h4>
+                  <p className="text-sm text-gray-400 dark:text-dark-text-muted max-w-xs mb-5">
                     You haven't reported any campus issues. When you do, they'll show up right here.
                   </p>
                   <button
                     onClick={() => setFormModal({ mode: "create" })}
-                    className="bg-violet-500 text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-violet-600 transition shadow-md shadow-violet-200"
+                    className="bg-violet-50 dark:bg-violet-500/150 text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-violet-600 transition shadow-md shadow-violet-200"
                   >
                     Report your first issue
                   </button>
@@ -412,10 +412,10 @@ const StudentDashboard = () => {
             <UserCard limit={3} />
 
             {/* Notifications Panel */}
-            <div className="bg-white border border-gray-100 p-5 rounded-2xl shadow-sm mt-2 lg:mt-4">
+            <div className="bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border/50 p-5 rounded-2xl shadow-sm mt-2 lg:mt-4">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-bold text-gray-800 flex items-center gap-2">
-                  <i className="ri-notification-3-line text-violet-500" />
+                <h3 className="text-sm font-bold text-gray-800 dark:text-dark-text flex items-center gap-2">
+                  <i className="ri-notification-3-line text-violet-500 dark:text-violet-400" />
                   Notifications
                   {unreadCount > 0 && (
                     <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
@@ -426,7 +426,7 @@ const StudentDashboard = () => {
                 {unreadCount > 0 && (
                   <button
                     onClick={handleMarkAllAsRead}
-                    className="text-[10px] font-medium text-violet-600 hover:text-violet-800 transition-colors"
+                    className="text-[10px] font-medium text-violet-600 dark:text-violet-400 hover:text-violet-800 transition-colors"
                   >
                     Mark all read
                   </button>
@@ -442,21 +442,21 @@ const StudentDashboard = () => {
                       key={notif.id}
                       onClick={() => notif.is_unread && handleMarkAsRead(notif.id)}
                       className={`relative p-3 rounded-xl border transition-all cursor-pointer ${notif.is_unread
-                        ? "bg-violet-50/60 border-violet-200 hover:bg-violet-50"
-                        : "bg-gray-50/50 border-gray-100 hover:bg-gray-50"
+                        ? "bg-violet-50 dark:bg-violet-500/15/60 border-violet-200 hover:bg-violet-50 dark:bg-violet-500/15 dark:hover:bg-violet-50 dark:bg-violet-500/150/15"
+                        : "bg-gray-50/50 dark:bg-dark-elevated/50 border-gray-100 dark:border-dark-border/50 hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated"
                         }`}
                     >
                       {notif.is_unread && (
-                        <span className="absolute top-3 right-3 w-2 h-2 bg-violet-500 rounded-full" />
+                        <span className="absolute top-3 right-3 w-2 h-2 bg-violet-50 dark:bg-violet-500/150 rounded-full" />
                       )}
-                      <p className={`text-xs font-semibold leading-snug mb-0.5 pr-4 ${notif.is_unread ? "text-gray-900" : "text-gray-600"
+                      <p className={`text-xs font-semibold leading-snug mb-0.5 pr-4 ${notif.is_unread ? "text-gray-900 dark:text-dark-text" : "text-gray-600 dark:text-dark-text-secondary"
                         }`}>
                         {notif.title}
                       </p>
-                      <p className="text-[11px] text-gray-500 line-clamp-2 leading-relaxed">
+                      <p className="text-[11px] text-gray-500 dark:text-dark-text-secondary line-clamp-2 leading-relaxed">
                         {notif.message}
                       </p>
-                      <p className="text-[10px] text-gray-400 mt-1">
+                      <p className="text-[10px] text-gray-400 dark:text-dark-text-muted mt-1">
                         {formatSmartTime(notif.sent_at)}
                       </p>
                     </div>
@@ -464,18 +464,18 @@ const StudentDashboard = () => {
                 </div>
               ) : (
                 <div className="py-6 flex flex-col items-center text-center">
-                  <div className="w-10 h-10 bg-violet-50 rounded-xl flex items-center justify-center mb-2">
+                  <div className="w-10 h-10 bg-violet-50 dark:bg-violet-500/15 rounded-xl flex items-center justify-center mb-2">
                     <i className="ri-notification-off-line text-xl text-violet-300" />
                   </div>
-                  <p className="text-xs text-gray-400">No notifications yet</p>
+                  <p className="text-xs text-gray-400 dark:text-dark-text-muted">No notifications yet</p>
                 </div>
               )}
             </div>
 
             {/* Activity Highlights */}
-            <div className="bg-white border border-gray-100 p-5 rounded-2xl shadow-sm mt-2 lg:mt-4">
-              <h3 className="text-sm font-bold text-gray-800 mb-3 flex items-center gap-2">
-                <i className="ri-pulse-line text-violet-500" />
+            <div className="bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border/50 p-5 rounded-2xl shadow-sm mt-2 lg:mt-4">
+              <h3 className="text-sm font-bold text-gray-800 dark:text-dark-text mb-3 flex items-center gap-2">
+                <i className="ri-pulse-line text-violet-500 dark:text-violet-400" />
                 Activity Highlights
               </h3>
               <div className="space-y-2.5">
@@ -492,11 +492,11 @@ const StudentDashboard = () => {
                   </div>
                 ) : null}
                 {!latestResolved && !latestInProgress && (
-                  <div className="p-3 bg-gray-50 rounded-xl border border-gray-100">
-                    <p className="text-xs text-gray-500 text-center">No activity highlights yet.</p>
+                  <div className="p-3 bg-gray-50 dark:bg-dark-elevated rounded-xl border border-gray-100 dark:border-dark-border/50">
+                    <p className="text-xs text-gray-500 dark:text-dark-text-secondary text-center">No activity highlights yet.</p>
                   </div>
                 )}
-                <div className="p-3 bg-violet-50 rounded-xl border border-violet-100">
+                <div className="p-3 bg-violet-50 dark:bg-violet-500/15 rounded-xl border border-violet-100">
                   <div className="flex items-center justify-between">
                     <p className="text-[11px] font-semibold text-violet-700 uppercase tracking-wide">Reputation</p>
                     <p className="text-sm font-bold text-violet-700">{profileData?.reputation_points || 0} pts</p>
@@ -507,26 +507,26 @@ const StudentDashboard = () => {
 
             {/* Campus Overview */}
             {campusStats && (
-              <div className="bg-white border border-gray-100 p-5 rounded-2xl shadow-sm mt-2 lg:mt-4">
-                <h3 className="text-sm font-bold text-gray-800 mb-3 flex items-center gap-2">
-                  <i className="ri-bar-chart-2-line text-violet-500" />
+              <div className="bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border/50 p-5 rounded-2xl shadow-sm mt-2 lg:mt-4">
+                <h3 className="text-sm font-bold text-gray-800 dark:text-dark-text mb-3 flex items-center gap-2">
+                  <i className="ri-bar-chart-2-line text-violet-500 dark:text-violet-400" />
                   Campus Overview
                 </h3>
                 <div className="space-y-2">
                   <div className="flex items-center justify-between py-2 border-b border-gray-50">
-                    <span className="text-xs text-gray-500">Total campus issues</span>
-                    <span className="text-sm font-bold text-gray-800">{campusStats.issues?.total || 0}</span>
+                    <span className="text-xs text-gray-500 dark:text-dark-text-secondary">Total campus issues</span>
+                    <span className="text-sm font-bold text-gray-800 dark:text-dark-text">{campusStats.issues?.total || 0}</span>
                   </div>
                   <div className="flex items-center justify-between py-2 border-b border-gray-50">
-                    <span className="text-xs text-gray-500">Reported today</span>
-                    <span className="text-sm font-bold text-gray-800">{campusStats.issues?.today || 0}</span>
+                    <span className="text-xs text-gray-500 dark:text-dark-text-secondary">Reported today</span>
+                    <span className="text-sm font-bold text-gray-800 dark:text-dark-text">{campusStats.issues?.today || 0}</span>
                   </div>
                   <div className="flex items-center justify-between py-2 border-b border-gray-50">
-                    <span className="text-xs text-gray-500">This week</span>
-                    <span className="text-sm font-bold text-gray-800">{campusStats.issues?.this_week || 0}</span>
+                    <span className="text-xs text-gray-500 dark:text-dark-text-secondary">This week</span>
+                    <span className="text-sm font-bold text-gray-800 dark:text-dark-text">{campusStats.issues?.this_week || 0}</span>
                   </div>
                   <div className="flex items-center justify-between py-2">
-                    <span className="text-xs text-gray-500">Resolution rate</span>
+                    <span className="text-xs text-gray-500 dark:text-dark-text-secondary">Resolution rate</span>
                     <span className="text-sm font-bold text-emerald-600">{campusStats.issues?.resolution_rate || 0}%</span>
                   </div>
                 </div>
@@ -541,7 +541,7 @@ const StudentDashboard = () => {
                   Help & Support
                 </h3>
                 <p className="text-indigo-100/90 text-xs mb-3">Facing issues? Our support team is here to help you 24/7.</p>
-                <button className="bg-white text-[#6366f1] px-4 py-1.5 rounded-lg text-xs font-bold hover:bg-indigo-50 transition-colors">
+                <button className="bg-white text-[#6366f1] dark:text-indigo-400 px-4 py-1.5 rounded-lg text-xs font-bold hover:bg-indigo-50 transition-colors">
                   Contact Support
                 </button>
               </div>

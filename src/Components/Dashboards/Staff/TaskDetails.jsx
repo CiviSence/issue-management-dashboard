@@ -228,11 +228,11 @@ const TaskDetails = () => {
         <BottomNav />
         <div className="flex-1 h-screen overflow-y-auto pt-0 md:pt-6 pb-24 md:pb-6 px-3 md:px-6 bg-background text-foreground flex items-center justify-center">
           <div className="text-center">
-            <AlertCircle className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h2 className="text-xl font-semibold text-gray-600">
+            <AlertCircle className="w-16 h-16 text-gray-400 dark:text-dark-text-muted mx-auto mb-4" />
+            <h2 className="text-xl font-semibold text-gray-600 dark:text-dark-text-secondary">
               Task Not Found
             </h2>
-            <p className="text-gray-500 mt-2">
+            <p className="text-gray-500 dark:text-dark-text-secondary mt-2">
               The requested task could not be loaded.
             </p>
           </div>
@@ -254,9 +254,9 @@ const TaskDetails = () => {
           <div className="flex items-center gap-3 mb-4 px-2">
             <button
               onClick={() => window.history.back()}
-              className="p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors"
+              className="p-2 bg-gray-100 dark:bg-dark-elevated hover:bg-gray-200 dark:bg-dark-border rounded-full transition-colors"
             >
-              <ChevronLeft className="w-5 h-5 text-gray-700" />
+              <ChevronLeft className="w-5 h-5 text-gray-700 dark:text-dark-text-secondary" />
             </button>
             <div className="flex gap-2 ml-auto">
               <StatusBadge type="status" value={task.status} />
@@ -281,7 +281,7 @@ const TaskDetails = () => {
               {task.media_urls && Array.isArray(task.media_urls) && task.media_urls.length > 0 && (
                 <div className="bg-card rounded-2xl shadow-sm border border-border p-4 md:p-6">
                   <h3 className="text-lg font-semibold text-card-foreground mb-4 flex items-center gap-2">
-                    <Camera className="w-5 h-5 text-[#6366f1]" />
+                    <Camera className="w-5 h-5 text-[#6366f1] dark:text-indigo-400" />
                     Issue Photos
                   </h3>
                   <div className="space-y-3">
@@ -325,7 +325,7 @@ const TaskDetails = () => {
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="flex items-start gap-3">
-                    <div className="p-2 bg-indigo-50/50 text-[#6366f1] rounded-lg">
+                    <div className="p-2 bg-indigo-50/50 text-[#6366f1] dark:text-indigo-400 rounded-lg">
                       <Tag className="w-5 h-5" />
                     </div>
                     <div>
@@ -417,7 +417,7 @@ const TaskDetails = () => {
                     </p>
                     <p className="text-sm opacity-85">Upvotes</p>
                   </div>
-                  <div className="text-center p-4 bg-red-50/30 border border-red-100/50 text-red-600 rounded-xl">
+                  <div className="text-center p-4 bg-red-50/30 border border-red-100/50 text-red-600 dark:text-red-400 rounded-xl">
                     <ThumbsDown className="w-6 h-6 mx-auto mb-2" />
                     <p className="text-2xl font-bold">
                       {task.downvotes || 0}
@@ -485,7 +485,7 @@ const TaskDetails = () => {
                         </button>
                         <button
                           onClick={() => setActiveModal("reject")}
-                          className="w-full flex items-center justify-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 text-red-600 hover:bg-red-50 border border-red-200 rounded-xl text-sm sm:text-base font-medium transition-colors cursor-pointer bg-transparent"
+                          className="w-full flex items-center justify-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 text-red-600 dark:text-red-400 hover:bg-red-50 dark:bg-red-500/15 border border-red-200 dark:border-red-500/30 rounded-xl text-sm sm:text-base font-medium transition-colors cursor-pointer bg-transparent"
                         >
                           <XCircle className="w-4 h-4 sm:w-5 sm:h-5" />
                           Reject Task
@@ -505,7 +505,7 @@ const TaskDetails = () => {
                       </button>
                       <button
                         onClick={() => setActiveModal("unassign")}
-                        className="w-full flex items-center justify-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 text-red-600 hover:bg-red-50 border border-red-200 rounded-xl text-sm sm:text-base font-medium transition-colors cursor-pointer bg-transparent"
+                        className="w-full flex items-center justify-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 text-red-600 dark:text-red-400 hover:bg-red-50 dark:bg-red-500/15 border border-red-200 dark:border-red-500/30 rounded-xl text-sm sm:text-base font-medium transition-colors cursor-pointer bg-transparent"
                       >
                         <XCircle className="w-4 h-4 sm:w-5 sm:h-5" />
                         Unassign Task (Revert)
@@ -766,7 +766,7 @@ const TaskDetails = () => {
       {/* Unassign Modal */}
       {activeModal === "unassign" && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="bg-white rounded-2xl w-full max-w-md p-6">
+          <div className="bg-white dark:bg-dark-card rounded-2xl w-full max-w-md p-6">
             <h3 className="text-xl font-semibold mb-2">Unassign Task</h3>
             <p className="text-sm text-muted-foreground mb-4">
               Are you sure you want to unassign yourself from this task? It will be returned to the issue pool.

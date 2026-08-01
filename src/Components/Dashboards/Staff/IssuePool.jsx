@@ -158,7 +158,7 @@ const IssuePool = () => {
                               onClick={() => navigate(`/tasks/${issue.id}`, { state: issue })}
                             >
                               <div className="flex items-center justify-between mb-3">
-                                <span className="text-[11px] font-semibold px-2.5 py-1 rounded-lg border bg-gray-50 text-gray-700 border-gray-200">
+                                <span className="text-[11px] font-semibold px-2.5 py-1 rounded-lg border bg-gray-50 dark:bg-dark-elevated text-gray-700 dark:text-dark-text-secondary border-gray-200 dark:border-dark-border">
                                   Unassigned
                                 </span>
                                 <span className="text-xs text-muted-foreground font-mono">
@@ -281,7 +281,7 @@ const IssuePool = () => {
                 {searchQuery && (
                   <button
                     onClick={() => setSearchQuery("")}
-                    className="mt-4 px-4 py-2 text-xs font-semibold text-[#6366f1] bg-[#6366f1]/10 hover:bg-[#6366f1]/20 rounded-xl transition-colors"
+                    className="mt-4 px-4 py-2 text-xs font-semibold text-[#6366f1] dark:text-indigo-400 bg-[#6366f1]/10 hover:bg-[#6366f1]/20 rounded-xl transition-colors"
                   >
                     Clear Search
                   </button>
@@ -296,15 +296,15 @@ const IssuePool = () => {
       {/* Confirmation Modal */}
       {confirmSelfAssignId && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-sm p-6 transform transition-all">
-            <h3 className="text-lg font-bold text-gray-900 mb-2">Confirm Assignment</h3>
-            <p className="text-sm text-gray-500 mb-6">
+          <div className="bg-white dark:bg-dark-card rounded-xl shadow-xl w-full max-w-sm p-6 transform transition-all">
+            <h3 className="text-lg font-bold text-gray-900 dark:text-dark-text mb-2">Confirm Assignment</h3>
+            <p className="text-sm text-gray-500 dark:text-dark-text-secondary mb-6">
               Are you sure you want to assign this task to yourself? You will be responsible for completing it.
             </p>
             <div className="flex justify-end gap-3">
               <button
                 onClick={() => setConfirmSelfAssignId(null)}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+                className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-dark-text-secondary bg-gray-100 dark:bg-dark-elevated hover:bg-gray-200 dark:bg-dark-border rounded-lg transition-colors"
                 disabled={actionLoading}
               >
                 Cancel

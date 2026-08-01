@@ -109,7 +109,7 @@ const StudentBottomNav = () => {
                             className="flex flex-col items-center justify-center py-1.5 px-3 relative group"
                         >
                             {isActive && (
-                                <span className="absolute inset-0 bg-violet-50 rounded-xl -z-10" />
+                                <span className="absolute inset-0 bg-violet-50 dark:bg-violet-500/15 rounded-xl -z-10" />
                             )}
 
                             {tab.isAvatar ? (
@@ -131,8 +131,8 @@ const StudentBottomNav = () => {
                     ${isActive ? tab.activeIcon : tab.icon}
                     text-[20px] transition-all duration-300
                     ${isActive
-                                            ? "text-violet-600"
-                                            : "text-gray-400 group-hover:text-gray-600"
+                                            ? "text-violet-600 dark:text-violet-400"
+                                            : "text-gray-400 dark:text-dark-text-muted group-hover:text-gray-600 dark:text-dark-text-secondary"
                                         }
                   `}
                                 />
@@ -142,8 +142,8 @@ const StudentBottomNav = () => {
                                 className={`
                   text-[10px] mt-0.5 font-semibold tracking-wide transition-all duration-300
                   ${isActive
-                                        ? "text-violet-600"
-                                        : "text-gray-400 group-hover:text-gray-600"
+                                        ? "text-violet-600 dark:text-violet-400"
+                                        : "text-gray-400 dark:text-dark-text-muted group-hover:text-gray-600 dark:text-dark-text-secondary"
                                     }
                 `}
                             >

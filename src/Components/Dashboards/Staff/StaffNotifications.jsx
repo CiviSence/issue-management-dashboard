@@ -118,9 +118,9 @@ const StaffNotifications = () => {
         <PullToRefresh scrollContainerId="staffNotifsScroll" onRefresh={fetchNotifications}>
           <div className="w-full mx-auto p-2 lg:p-4">
         <div className="p-2 md:p-0">
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+          <div className="bg-white dark:bg-dark-card rounded-2xl shadow-sm border border-gray-200 dark:border-dark-border overflow-hidden">
             {/* Filters and Actions */}
-            <div className="flex flex-wrap items-center justify-between border-b border-gray-150 px-4 py-3 gap-3 bg-gray-50/50">
+            <div className="flex flex-wrap items-center justify-between border-b border-gray-150 px-4 py-3 gap-3 bg-gray-50/50 dark:bg-dark-elevated/50">
               <div className="flex items-center gap-2">
                 {["all", "unread", "read"].map((type) => (
                   <button
@@ -129,7 +129,7 @@ const StaffNotifications = () => {
                     className={`px-3 py-1.5 rounded-lg text-xs font-bold capitalize transition cursor-pointer ${
                       filter === type
                         ? "bg-[#6366f1] text-white shadow-md shadow-indigo-500/20"
-                        : "text-gray-600 hover:bg-gray-100"
+                        : "text-gray-600 dark:text-dark-text-secondary hover:bg-gray-100 dark:hover:bg-dark-elevated dark:bg-dark-elevated"
                     }`}
                   >
                     {type}
@@ -152,11 +152,11 @@ const StaffNotifications = () => {
                 <Loader />
               </div>
             ) : filteredNotifications.length > 0 ? (
-              <div className="divide-y divide-gray-100">
+              <div className="divide-y divide-gray-100 dark:divide-dark-border/50">
                 {filteredNotifications.map((notif) => (
                   <div
                     key={notif.id}
-                    className={`p-4 flex gap-4 transition hover:bg-gray-50/50 relative ${
+                    className={`p-4 flex gap-4 transition hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated/50 dark:bg-dark-elevated/50 relative ${
                       notif.read ? "opacity-75" : "bg-indigo-50/20"
                     }`}
                   >
@@ -166,22 +166,22 @@ const StaffNotifications = () => {
                     <div
                       className={`p-2 rounded-xl shrink-0 h-10 w-10 flex items-center justify-center ${
                         notif.read
-                          ? "bg-gray-100 text-gray-500"
-                          : "bg-indigo-100 text-[#6366f1]"
+                          ? "bg-gray-100 dark:bg-dark-elevated text-gray-500 dark:text-dark-text-secondary"
+                          : "bg-indigo-100 text-[#6366f1] dark:text-indigo-400"
                       }`}
                     >
                       <i className={`${notif.icon} text-lg`}></i>
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex justify-between items-start gap-2">
-                        <h3 className="font-semibold text-gray-900 text-sm leading-snug">
+                        <h3 className="font-semibold text-gray-900 dark:text-dark-text text-sm leading-snug">
                           {notif.title}
                         </h3>
-                        <span className="text-[10px] text-gray-400 shrink-0 font-medium">
+                        <span className="text-[10px] text-gray-400 dark:text-dark-text-muted shrink-0 font-medium">
                           {notif.time}
                         </span>
                       </div>
-                      <p className="text-gray-500 text-xs mt-1 leading-relaxed">
+                      <p className="text-gray-500 dark:text-dark-text-secondary text-xs mt-1 leading-relaxed">
                         {notif.description}
                       </p>
                       <div className="flex gap-3 mt-3">
@@ -190,14 +190,14 @@ const StaffNotifications = () => {
                             onClick={() =>
                               navigate(notif.link, { state: notif.state })
                             }
-                            className="text-xs font-bold text-[#6366f1] hover:underline cursor-pointer"
+                            className="text-xs font-bold text-[#6366f1] dark:text-indigo-400 hover:underline cursor-pointer"
                           >
                             View Details
                           </button>
                         )}
                         <button
                           onClick={() => handleToggleRead(notif.id, notif.read)}
-                          className="text-xs font-semibold text-gray-400 hover:text-gray-600 transition cursor-pointer"
+                          className="text-xs font-semibold text-gray-400 dark:text-dark-text-muted hover:text-gray-600 dark:text-dark-text-secondary transition cursor-pointer"
                         >
                           {notif.read ? "Mark as unread" : "Mark as read"}
                         </button>
@@ -207,7 +207,7 @@ const StaffNotifications = () => {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-16 text-gray-400">
+              <div className="text-center py-16 text-gray-400 dark:text-dark-text-muted">
                 <div className="text-4xl mb-2">📭</div>
                 <p className="font-bold text-sm">No notifications found</p>
               </div>

@@ -32,7 +32,7 @@ const NavItem = ({ to, icon, iconActive, label }) => (
         className={({ isActive }) =>
             `flex items-center justify-center lg:justify-start gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group
        ${isActive
-                ? "bg-white text-violet-600 font-semibold shadow-sm"
+                ? "bg-white text-violet-600 dark:text-violet-400 font-semibold shadow-sm"
                 : "text-violet-100 hover:bg-violet-400/60 hover:text-white"
             }`
         }
@@ -88,7 +88,7 @@ const ProfilePopup = ({ profileData, onLogout, onClose }) => {
     ];
 
     return (
-        <div className="absolute bottom-[calc(100%+8px)] left-0 w-72 bg-white rounded-2xl shadow-2xl overflow-hidden z-50 border border-gray-100">
+        <div className="absolute bottom-[calc(100%+8px)] left-0 w-72 bg-white dark:bg-dark-card rounded-2xl shadow-2xl overflow-hidden z-50 border border-gray-100 dark:border-dark-border/50">
             {/* Profile hero */}
             <div className="bg-linear-to-br from-violet-500 to-purple-600 px-5 py-5">
                 <div className="flex items-center gap-4">
@@ -170,7 +170,7 @@ const ProfilePopup = ({ profileData, onLogout, onClose }) => {
                     <button
                         key={label}
                         onClick={action}
-                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-gray-700 hover:bg-violet-50 hover:text-violet-600 transition-all text-left"
+                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-gray-700 dark:text-dark-text-secondary hover:bg-violet-50 dark:bg-violet-500/15 dark:hover:bg-violet-50 dark:bg-violet-500/150/15 hover:text-violet-600 dark:text-violet-400 dark:hover:text-violet-400 transition-all text-left"
                     >
                         <i className={`${icon} text-base w-5 text-center`} />
                         {label}
@@ -178,13 +178,13 @@ const ProfilePopup = ({ profileData, onLogout, onClose }) => {
                 ))}
             </div>
 
-            <div className="h-px bg-gray-100 mx-3" />
+            <div className="h-px bg-gray-100 dark:bg-dark-elevated mx-3" />
 
             {/* Logout */}
             <div className="p-2">
                 <button
                     onClick={onLogout}
-                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-red-500 hover:bg-red-50 transition-all"
+                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-red-500 hover:bg-red-50 dark:bg-red-500/15 transition-all"
                 >
                     <i className="ri-logout-box-r-line text-base w-5 text-center" />
                     Log out
@@ -216,12 +216,12 @@ const LogoutModal = ({ onClose }) => {
 
     return (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-100">
-            <div className="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm">
-                <div className="w-12 h-12 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="bg-white dark:bg-dark-card rounded-2xl shadow-2xl p-6 w-full max-w-sm">
+                <div className="w-12 h-12 bg-red-50 dark:bg-red-500/15 rounded-full flex items-center justify-center mx-auto mb-4">
                     <i className="ri-logout-box-r-line text-2xl text-red-500" />
                 </div>
-                <h3 className="text-center font-bold text-gray-900 text-lg mb-1">Confirm Logout</h3>
-                <p className="text-center text-sm text-gray-500 mb-5">Choose which sessions to end</p>
+                <h3 className="text-center font-bold text-gray-900 dark:text-dark-text text-lg mb-1">Confirm Logout</h3>
+                <p className="text-center text-sm text-gray-500 dark:text-dark-text-secondary mb-5">Choose which sessions to end</p>
 
                 <div className="space-y-2 mb-5">
                     {[
@@ -232,8 +232,8 @@ const LogoutModal = ({ onClose }) => {
                             key={val}
                             className={`flex items-center gap-3 p-3 rounded-xl border-2 cursor-pointer transition-all
                 ${type === val
-                                    ? accent === "red" ? "border-red-400 bg-red-50" : "border-violet-400 bg-violet-50"
-                                    : "border-gray-100 hover:border-gray-200"
+                                    ? accent === "red" ? "border-red-400 bg-red-50" : "border-violet-400 bg-violet-50 dark:bg-violet-500/15"
+                                    : "border-gray-100 dark:border-dark-border/50 hover:border-gray-200 dark:border-dark-border"
                                 }`}
                         >
                             <input
@@ -246,35 +246,35 @@ const LogoutModal = ({ onClose }) => {
                             <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0
                 ${type === val
                                     ? accent === "red" ? "border-red-500" : "border-violet-500"
-                                    : "border-gray-300"}`}
+                                    : "border-gray-300 dark:border-dark-border"}`}
                             >
                                 {type === val && (
-                                    <div className={`w-2 h-2 rounded-full ${accent === "red" ? "bg-red-500" : "bg-violet-500"}`} />
+                                    <div className={`w-2 h-2 rounded-full ${accent === "red" ? "bg-red-500" : "bg-violet-50 dark:bg-violet-500/150"}`} />
                                 )}
                             </div>
                             <div>
-                                <p className="text-sm font-semibold text-gray-800">{label}</p>
-                                <p className="text-xs text-gray-400">{sub}</p>
+                                <p className="text-sm font-semibold text-gray-800 dark:text-dark-text">{label}</p>
+                                <p className="text-xs text-gray-400 dark:text-dark-text-muted">{sub}</p>
                             </div>
                         </label>
                     ))}
                 </div>
 
-                <p className="text-xs text-gray-500 text-center mb-2">
+                <p className="text-xs text-gray-500 dark:text-dark-text-secondary text-center mb-2">
                     Type <span className="font-bold text-red-500">logout</span> to confirm
                 </p>
                 <input
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     placeholder="logout"
-                    className="w-full border-2 border-gray-200 rounded-xl px-3 py-2.5 text-center text-sm font-medium text-red-500 focus:outline-none focus:border-red-400 transition mb-4"
+                    className="w-full border-2 border-gray-200 dark:border-dark-border rounded-xl px-3 py-2.5 text-center text-sm font-medium text-red-500 focus:outline-none focus:border-red-400 transition mb-4"
                 />
 
                 <div className="flex gap-3">
                     <button
                         onClick={onClose}
                         disabled={loading}
-                        className="flex-1 py-2.5 border border-gray-200 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-50 transition"
+                        className="flex-1 py-2.5 border border-gray-200 dark:border-dark-border rounded-xl text-sm font-medium text-gray-600 dark:text-dark-text-secondary hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated transition"
                     >
                         Cancel
                     </button>
@@ -314,7 +314,7 @@ const StudentSideNav = () => {
         : "??";
 
     return (
-        <aside className="bg-violet-500 hidden md:flex flex-col justify-between w-20 lg:w-[17vw] shrink-0 h-screen z-40 p-3 lg:p-5 text-white relative">
+        <aside className="bg-violet-50 dark:bg-violet-500/150 hidden md:flex flex-col justify-between w-20 lg:w-[17vw] shrink-0 h-screen z-40 p-3 lg:p-5 text-white relative">
             {/* Top: Logo + Nav */}
             <div className="flex flex-col items-center lg:items-start w-full">
                 {/* Logo / Brand */}

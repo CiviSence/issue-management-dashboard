@@ -29,7 +29,7 @@ const IssueCard = ({ issue }) => {
       )}
 
       <div className="flex-1 min-w-0 pr-1 sm:pr-2">
-        <h2 className="text-base sm:text-base lg:text-lg font-bold text-white truncate">
+        <h2 className="text-base sm:text-base lg:text-lg font-bold text-white truncate dark:text-dark-text">
           {issue.name}
         </h2>
         <p className="text-white/95 text-[10px] sm:text-xs md:text-sm mt-0.5 line-clamp-1 sm:line-clamp-2">

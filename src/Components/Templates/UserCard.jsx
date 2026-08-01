@@ -41,36 +41,36 @@ const UserCard = ({ limit }) => {
   const displayedUsers = limit ? leaderboard.slice(0, limit) : leaderboard;
 
   const SkeletonRow = () => (
-    <tr className="animate-pulse border-b border-gray-100">
+    <tr className="animate-pulse border-b border-gray-100 dark:border-dark-border/50">
       <td className="py-3 px-2 sm:px-4">
-        <div className="h-3 sm:h-4 w-6 sm:w-10 bg-gray-300 rounded"></div>
+        <div className="h-3 sm:h-4 w-6 sm:w-10 bg-gray-300 dark:bg-dark-border rounded"></div>
       </td>
       <td className="py-3 px-2 sm:px-4">
         <div className="flex items-center gap-2 sm:gap-3">
-          <div className="w-7 h-7 sm:w-9 sm:h-9 bg-gray-300 rounded-full"></div>
-          <div className="h-3 sm:h-4 w-20 sm:w-32 bg-gray-300 rounded"></div>
+          <div className="w-7 h-7 sm:w-9 sm:h-9 bg-gray-300 dark:bg-dark-border rounded-full"></div>
+          <div className="h-3 sm:h-4 w-20 sm:w-32 bg-gray-300 dark:bg-dark-border rounded"></div>
         </div>
       </td>
       <td className="py-3 px-2 sm:px-4">
-        <div className="h-3 sm:h-4 w-10 sm:w-16 bg-gray-300 rounded"></div>
+        <div className="h-3 sm:h-4 w-10 sm:w-16 bg-gray-300 dark:bg-dark-border rounded"></div>
       </td>
       <td className="py-3 px-2 sm:px-4 hidden sm:table-cell">
-        <div className="h-3 sm:h-4 w-10 sm:w-16 bg-gray-300 rounded"></div>
+        <div className="h-3 sm:h-4 w-10 sm:w-16 bg-gray-300 dark:bg-dark-border rounded"></div>
       </td>
       <td className="py-3 px-2 sm:px-4 hidden md:table-cell">
-        <div className="h-3 sm:h-4 w-10 sm:w-16 bg-gray-300 rounded"></div>
+        <div className="h-3 sm:h-4 w-10 sm:w-16 bg-gray-300 dark:bg-dark-border rounded"></div>
       </td>
       <td className="py-3 px-2 sm:px-4">
-        <div className="h-3 sm:h-4 w-10 sm:w-12 bg-gray-300 rounded"></div>
+        <div className="h-3 sm:h-4 w-10 sm:w-12 bg-gray-300 dark:bg-dark-border rounded"></div>
       </td>
     </tr>
   );
 
   return (
-    <div className="bg-white p-3 sm:p-4 w-full   rounded-2xl shadow-xs">
+    <div className="bg-white dark:bg-dark-card text-gray-800 dark:text-dark-text-secondary p-3 sm:p-4 w-full   rounded-2xl shadow-xs">
       {/* filter buttons */}
       <div className="flex overflow-x-auto scrollbar-hide">
-        <div className="inline-flex bg-gray-200 rounded-xl p-1 min-w-max">
+        <div className="inline-flex bg-gray-200 dark:bg-dark-elevated rounded-xl p-1 min-w-max">
           {periods.map((item) => (
             <button
               key={item.value}
@@ -78,8 +78,8 @@ const UserCard = ({ limit }) => {
               className={`px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 text-xs font-medium rounded-lg transition-all duration-200 whitespace-nowrap
                 ${
                   timePeriod === item.value
-                    ? "bg-[#7E70EB] text-white shadow-sm"
-                    : "text-gray-500 hover:bg-gray-300"
+                    ? "bg-[#7E70EB] dark:bg-indigo-600 text-white shadow-sm"
+                    : "text-gray-500 dark:text-dark-text-secondary hover:bg-gray-300 dark:hover:bg-dark-hover"
                 }`}
             >
               {item.label}
@@ -93,23 +93,23 @@ const UserCard = ({ limit }) => {
         <table className="w-full border-collapse min-w-150 sm:min-w-0">
           {/* HEADER*/}
           <thead>
-            <tr className="border-b border-gray-200 text-left">
-              <th className="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm font-medium text-gray-500 w-12 sm:w-16">
+            <tr className="border-b border-gray-200 dark:border-dark-border text-left">
+              <th className="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm font-medium text-gray-500 w-12 sm:w-16 dark:text-dark-text-secondary">
                 Rank
               </th>
-              <th className="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm font-medium text-gray-500">
+              <th className="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm font-medium text-gray-500 dark:text-dark-text-secondary">
                 Name
               </th>
-              <th className="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm font-medium text-gray-500">
+              <th className="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm font-medium text-gray-500 dark:text-dark-text-secondary">
                 Rep
               </th>
-              <th className="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm font-medium text-gray-500 ">
+              <th className="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm font-medium text-gray-500 dark:text-dark-text-secondary">
                 Issues
               </th>
-              <th className="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm font-medium text-gray-500 ">
+              <th className="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm font-medium text-gray-500 dark:text-dark-text-secondary">
                 Resolved
               </th>
-              <th className="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm font-medium text-gray-500">
+              <th className="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm font-medium text-gray-500 dark:text-dark-text-secondary">
                 Rate
               </th>
             </tr>
@@ -127,9 +127,9 @@ const UserCard = ({ limit }) => {
                   return (
                     <tr
                       key={user.id}
-                      className="border-b border-gray-100 hover:bg-gray-50 transition"
+                      className="border-b border-gray-100 dark:border-dark-border/50 hover:bg-gray-50 dark:bg-dark dark:hover:bg-muted/30 transition"
                     >
-                      <td className="py-2 sm:py-3 px-2 sm:px-4 font-semibold text-xs sm:text-sm">
+                      <td className="py-2 sm:py-3 px-2 sm:px-4 font-semibold text-gray-900 dark:text-dark-text text-xs sm:text-sm">
                         #{rank}
                       </td>
 
@@ -143,7 +143,7 @@ const UserCard = ({ limit }) => {
                               className="w-full h-full object-cover"
                             />
                           </div>
-                          <span className="font-medium text-xs sm:text-sm truncate max-w-25 sm:max-w-none">
+                          <span className="font-medium text-gray-900 dark:text-dark-text text-xs sm:text-sm truncate max-w-25 sm:max-w-none">
                             {user.name}
                           </span>
                         </div>

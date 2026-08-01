@@ -193,7 +193,7 @@ const AssignedIssues = () => {
       label: "All",
       count: counts.all,
       icon: ClipboardList,
-      color: "text-[#6366f1]",
+      color: "text-[#6366f1] dark:text-indigo-400",
       bg: "bg-[#6366f1]",
       lightBg: "bg-indigo-50",
     },
@@ -406,7 +406,7 @@ const AssignedIssues = () => {
                                         setActiveModal("reject");
                                       }}
                                       disabled={isLoading}
-                                      className="flex-1 flex items-center justify-center gap-1.5 py-2 text-red-600 hover:bg-red-50 border border-red-200 rounded-lg text-xs font-medium transition-colors disabled:opacity-50"
+                                      className="flex-1 flex items-center justify-center gap-1.5 py-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:bg-red-500/15 border border-red-200 dark:border-red-500/30 rounded-lg text-xs font-medium transition-colors disabled:opacity-50"
                                     >
                                       <XCircle className="w-3.5 h-3.5" />
                                       Reject
@@ -583,7 +583,7 @@ const AssignedIssues = () => {
                                             setActiveModal("reject");
                                           }}
                                           disabled={isLoading}
-                                          className="flex items-center gap-1.5 px-3 py-1.5 text-red-600 hover:bg-red-50 border border-red-200 rounded-lg text-xs font-medium transition-colors disabled:opacity-50"
+                                          className="flex items-center gap-1.5 px-3 py-1.5 text-red-600 dark:text-red-400 hover:bg-red-50 dark:bg-red-500/15 border border-red-200 dark:border-red-500/30 rounded-lg text-xs font-medium transition-colors disabled:opacity-50"
                                         >
                                           <XCircle className="w-3 h-3" />
                                           Reject
@@ -662,7 +662,7 @@ const AssignedIssues = () => {
                       setSearchQuery("");
                       setActiveFilter("all");
                     }}
-                    className="mt-4 px-4 py-2 text-xs font-semibold text-[#6366f1] bg-[#6366f1]/10 hover:bg-[#6366f1]/20 rounded-xl transition-colors"
+                    className="mt-4 px-4 py-2 text-xs font-semibold text-[#6366f1] dark:text-indigo-400 bg-[#6366f1]/10 hover:bg-[#6366f1]/20 rounded-xl transition-colors"
                   >
                     Clear Filters
                   </button>
@@ -739,7 +739,7 @@ const AssignedIssues = () => {
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-red-100 rounded-xl">
-                    <XCircle className="w-5 h-5 text-red-600" />
+                    <XCircle className="w-5 h-5 text-red-600 dark:text-red-400" />
                   </div>
                   <h3 className="text-lg font-bold text-card-foreground">
                     Reject Task
@@ -798,7 +798,7 @@ const AssignedIssues = () => {
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-indigo-100 rounded-xl">
-                    <CircleCheckBig className="w-5 h-5 text-[#6366f1]" />
+                    <CircleCheckBig className="w-5 h-5 text-[#6366f1] dark:text-indigo-400" />
                   </div>
                   <h3 className="text-lg font-bold text-card-foreground">
                     Complete Task

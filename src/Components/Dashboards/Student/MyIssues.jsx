@@ -64,21 +64,21 @@ const DeleteModal = ({ issue, onClose, onDeleted }) => {
       className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6">
-        <div className="w-12 h-12 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
+      <div className="bg-white dark:bg-dark-card rounded-2xl shadow-xl w-full max-w-sm p-6">
+        <div className="w-12 h-12 bg-red-50 dark:bg-red-500/15 rounded-full flex items-center justify-center mx-auto mb-4">
           <svg className="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
               d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
           </svg>
         </div>
-        <h3 className="text-center font-bold text-gray-900 text-base mb-1">Delete Issue?</h3>
-        <p className="text-center text-sm text-gray-500 mb-6 leading-relaxed">
+        <h3 className="text-center font-bold text-gray-900 dark:text-dark-text text-base mb-1">Delete Issue?</h3>
+        <p className="text-center text-sm text-gray-500 dark:text-dark-text-secondary mb-6 leading-relaxed">
           "{issue.title}" will be permanently removed. This action cannot be undone.
         </p>
         <div className="flex gap-3">
           <button
             onClick={onClose}
-            className="flex-1 px-4 py-2.5 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 transition"
+            className="flex-1 px-4 py-2.5 border border-gray-200 dark:border-dark-border rounded-xl text-sm font-medium text-gray-700 dark:text-dark-text-secondary hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated transition"
           >
             Cancel
           </button>
@@ -116,16 +116,16 @@ const IssueRow = ({ issue, onEdit, onDelete }) => {
         {/* Top row: title + status + priority */}
         <div className="flex items-start justify-between gap-3 mb-2">
           <div className="flex-1 min-w-0">
-            <h4 className="font-semibold text-gray-900 text-sm leading-snug">{issue.title}</h4>
+            <h4 className="font-semibold text-gray-900 dark:text-dark-text text-sm leading-snug">{issue.title}</h4>
 
             {/* Description */}
-            <p className={`mt-1 text-sm text-gray-500 leading-relaxed ${expanded ? "" : "line-clamp-2"}`}>
+            <p className={`mt-1 text-sm text-gray-500 dark:text-dark-text-secondary leading-relaxed ${expanded ? "" : "line-clamp-2"}`}>
               {issue.description}
             </p>
             {issue.description?.length > 120 && (
               <button
                 onClick={() => setExpanded((v) => !v)}
-                className="text-xs text-violet-500 mt-0.5 hover:underline"
+                className="text-xs text-violet-500 dark:text-violet-400 mt-0.5 hover:underline"
               >
                 {expanded ? "Show less" : "Read more"}
               </button>
@@ -139,7 +139,7 @@ const IssueRow = ({ issue, onEdit, onDelete }) => {
         </div>
 
         {/* Meta row */}
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-400 mb-3">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-400 dark:text-dark-text-muted mb-3">
           {loc && (
             <span className="flex items-center gap-1">
               <i className="ri-map-pin-line text-sm" />
@@ -147,7 +147,7 @@ const IssueRow = ({ issue, onEdit, onDelete }) => {
             </span>
           )}
           {issue.main_category && (
-            <span className="capitalize bg-gray-50 px-2 py-0.5 rounded border border-gray-100">
+            <span className="capitalize bg-gray-50 dark:bg-dark-elevated px-2 py-0.5 rounded border border-gray-100 dark:border-dark-border/50">
               {issue.main_category}
             </span>
           )}
@@ -159,27 +159,27 @@ const IssueRow = ({ issue, onEdit, onDelete }) => {
 
         {/* Engagement stats */}
         {issue.engagement && (
-          <div className="flex items-center gap-3 text-xs text-gray-500 mb-3">
-            <span className="flex items-center gap-1 bg-gray-50 px-2 py-1 rounded-lg">
+          <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-dark-text-secondary mb-3">
+            <span className="flex items-center gap-1 bg-gray-50 dark:bg-dark-elevated px-2 py-1 rounded-lg">
               <i className="ri-thumb-up-fill text-emerald-500 text-sm" />
               {issue.engagement.upvotes || 0}
             </span>
-            <span className="flex items-center gap-1 bg-gray-50 px-2 py-1 rounded-lg">
+            <span className="flex items-center gap-1 bg-gray-50 dark:bg-dark-elevated px-2 py-1 rounded-lg">
               <i className="ri-thumb-down-fill text-rose-500 text-sm" />
               {issue.engagement.downvotes || 0}
             </span>
-            <span className="flex items-center gap-1 bg-gray-50 px-2 py-1 rounded-lg">
-              <i className="ri-eye-line text-gray-400 text-sm" />
+            <span className="flex items-center gap-1 bg-gray-50 dark:bg-dark-elevated px-2 py-1 rounded-lg">
+              <i className="ri-eye-line text-gray-400 dark:text-dark-text-muted text-sm" />
               {issue.engagement.views_count || 0}
             </span>
-            <span className="flex items-center gap-1 bg-gray-50 px-2 py-1 rounded-lg">
+            <span className="flex items-center gap-1 bg-gray-50 dark:bg-dark-elevated px-2 py-1 rounded-lg">
               <i className="ri-chat-3-line text-violet-400 text-sm" />
               {issue.engagement.comment_count ?? 0}
             </span>
           </div>
         ) || (
-            <div className="flex items-center gap-3 text-xs text-gray-400 mb-3">
-              <span className="bg-gray-50 px-2.5 py-1 rounded-lg text-gray-400 border border-gray-100">No engagement data</span>
+            <div className="flex items-center gap-3 text-xs text-gray-400 dark:text-dark-text-muted mb-3">
+              <span className="bg-gray-50 dark:bg-dark-elevated px-2.5 py-1 rounded-lg text-gray-400 dark:text-dark-text-muted border border-gray-100 dark:border-dark-border/50">No engagement data</span>
             </div>
           )}
 
@@ -187,14 +187,14 @@ const IssueRow = ({ issue, onEdit, onDelete }) => {
         <div className="flex items-center gap-2 pt-3 border-t border-gray-50">
           <button
             onClick={() => onEdit(issue)}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-600 bg-gray-50 rounded-lg hover:bg-violet-50 hover:text-violet-600 border border-transparent hover:border-violet-200 transition-all"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-dark-text-secondary bg-gray-50 dark:bg-dark-elevated rounded-lg hover:bg-violet-50 dark:bg-violet-500/15 dark:hover:bg-violet-50 dark:bg-violet-500/150/15 hover:text-violet-600 dark:text-violet-400 dark:hover:text-violet-400 border border-transparent hover:border-violet-200 transition-all"
           >
             <i className="ri-edit-line text-sm" />
             Edit
           </button>
           <button
             onClick={() => onDelete(issue)}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-600 bg-gray-50 rounded-lg hover:bg-red-50 hover:text-red-600 border border-transparent hover:border-red-200 transition-all"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-dark-text-secondary bg-gray-50 dark:bg-dark-elevated rounded-lg hover:bg-red-50 dark:bg-red-500/15 hover:text-red-600 dark:text-red-400 border border-transparent hover:border-red-200 dark:border-red-500/30 transition-all"
           >
             <i className="ri-delete-bin-6-line text-sm" />
             Delete
@@ -219,7 +219,7 @@ const StatsBar = ({ issues }) => {
   );
 
   const cards = [
-    { label: "Total Reported", value: issues.length, color: "text-violet-600", bg: "bg-violet-50" },
+    { label: "Total Reported", value: issues.length, color: "text-violet-600 dark:text-violet-400", bg: "bg-violet-50 dark:bg-violet-500/15" },
     { label: "Pending / New", value: counts.pending, color: "text-amber-600", bg: "bg-amber-50" },
     { label: "In Progress", value: counts.inProgress, color: "text-blue-600", bg: "bg-blue-50" },
     { label: "Resolved", value: counts.resolved, color: "text-emerald-600", bg: "bg-emerald-50" },
@@ -230,7 +230,7 @@ const StatsBar = ({ issues }) => {
       {cards.map(({ label, value, color, bg }) => (
         <div key={label} className={`${bg} rounded-xl p-4 border border-white shadow-sm`}>
           <p className={`text-2xl font-bold ${color}`}>{value}</p>
-          <p className="text-xs text-gray-500 mt-0.5">{label}</p>
+          <p className="text-xs text-gray-500 dark:text-dark-text-secondary mt-0.5">{label}</p>
         </div>
       ))}
     </div>
@@ -278,14 +278,14 @@ const MyIssues = () => {
     <>
       <StudentSideNav />
       <StudentBottomNav />
-      <div className="w-full p-2 lg:p-4 lg:w-[calc(100vw-15vw)] bg-[#F0EEFF] overflow-y-auto h-screen" id="myIssuesScroll">
+      <div className="w-full p-2 lg:p-4 lg:w-[calc(100vw-15vw)] bg-[#F0EEFF] dark:bg-dark-card overflow-y-auto h-screen" id="myIssuesScroll">
         <PullToRefresh scrollContainerId="myIssuesScroll" onRefresh={() => fetchIssues(true)}>
         {/* Mobile Header */}
         <div className="sm:hidden mb-3 flex items-center justify-between">
-          <h1 className="text-lg font-bold text-gray-900">My Reports</h1>
+          <h1 className="text-lg font-bold text-gray-900 dark:text-dark-text">My Reports</h1>
           <button
             onClick={() => window.location.reload()}
-            className="p-1.5 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-full transition active:scale-95 flex items-center justify-center h-8 w-8"
+            className="p-1.5 bg-gray-100 dark:bg-dark-elevated hover:bg-gray-200 dark:bg-dark-border text-gray-600 dark:text-dark-text-secondary rounded-full transition active:scale-95 flex items-center justify-center h-8 w-8"
             title="Refresh Page"
           >
             <i className="ri-refresh-line text-sm"></i>
@@ -293,7 +293,7 @@ const MyIssues = () => {
         </div>
 
         {/* Desktop Header */}
-        <div className="hidden sm:block w-full bg-violet-500 p-4 sm:p-5 lg:p-6 rounded-2xl md:rounded-3xl text-white shadow-md mb-4">
+        <div className="hidden sm:block w-full bg-violet-50 dark:bg-violet-500/150 p-4 sm:p-5 lg:p-6 rounded-2xl md:rounded-3xl text-white shadow-md mb-4">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
               <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold leading-tight">
@@ -305,7 +305,7 @@ const MyIssues = () => {
             </div>
             <button
               onClick={() => setFormModal({ mode: "create" })}
-              className="w-full sm:w-auto bg-white text-violet-600 font-semibold px-5 py-2.5 rounded-xl hover:bg-violet-50 transition shadow text-sm"
+              className="w-full sm:w-auto bg-white text-violet-600 dark:text-violet-400 font-semibold px-5 py-2.5 rounded-xl hover:bg-violet-50 dark:bg-violet-500/15 dark:hover:bg-violet-50 dark:bg-violet-500/150/15 transition shadow text-sm"
             >
               + Report New Issue
             </button>
@@ -321,17 +321,17 @@ const MyIssues = () => {
             {!loading && <StatsBar issues={issues} />}
 
             {/* Filters */}
-            <div className="bg-white rounded-xl border border-gray-100 shadow-sm px-4 py-3 mb-3 flex flex-col sm:flex-row gap-3">
+            <div className="bg-white dark:bg-dark-card rounded-xl border border-gray-100 dark:border-dark-border/50 shadow-sm px-4 py-3 mb-3 flex flex-col sm:flex-row gap-3">
               {/* Search */}
               <div className="relative flex-1">
-                <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-dark-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
                 <input
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder="Search issues…"
-                  className="w-full pl-9 pr-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-violet-400 transition"
+                  className="w-full pl-9 pr-3 py-2 text-sm border border-gray-200 dark:border-dark-border rounded-lg focus:outline-none focus:border-violet-400 transition"
                 />
               </div>
 
@@ -339,7 +339,7 @@ const MyIssues = () => {
               <select
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value)}
-                className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-violet-400 transition bg-white"
+                className="border border-gray-200 dark:border-dark-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-violet-400 transition bg-white"
               >
                 {FILTER_STATUS.map((s) => (
                   <option key={s} value={s}>
@@ -357,17 +357,17 @@ const MyIssues = () => {
                 ))}
               </div>
             ) : filtered.length === 0 ? (
-              <div className="bg-white rounded-2xl border border-dashed border-gray-200 p-12 text-center">
-                <div className="w-14 h-14 bg-violet-50 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="bg-white dark:bg-dark-card rounded-2xl border border-dashed border-gray-200 dark:border-dark-border p-12 text-center">
+                <div className="w-14 h-14 bg-violet-50 dark:bg-violet-500/15 rounded-full flex items-center justify-center mx-auto mb-4">
                   <svg className="w-7 h-7 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
                       d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                   </svg>
                 </div>
-                <p className="text-gray-500 font-medium">
+                <p className="text-gray-500 dark:text-dark-text-secondary font-medium">
                   {search || filterStatus !== "all" ? "No matching issues found" : "No issues reported yet"}
                 </p>
-                <p className="text-sm text-gray-400 mt-1 mb-4">
+                <p className="text-sm text-gray-400 dark:text-dark-text-muted mt-1 mb-4">
                   {search || filterStatus !== "all"
                     ? "Try adjusting your filters"
                     : "Report your first campus issue"}
@@ -375,7 +375,7 @@ const MyIssues = () => {
                 {!search && filterStatus === "all" && (
                   <button
                     onClick={() => setFormModal({ mode: "create" })}
-                    className="bg-violet-500 text-white px-5 py-2 rounded-xl text-sm font-semibold hover:bg-violet-600 transition"
+                    className="bg-violet-50 dark:bg-violet-500/150 text-white px-5 py-2 rounded-xl text-sm font-semibold hover:bg-violet-600 transition"
                   >
                     + Report Issue
                   </button>
@@ -406,17 +406,17 @@ const MyIssues = () => {
             <UserCard limit={3} />
 
             {/* Quick tip card */}
-            <div className="mt-4 bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
-              <h4 className="font-semibold text-gray-800 mb-3 text-sm">Quick Actions</h4>
+            <div className="mt-4 bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border/50 shadow-sm p-5">
+              <h4 className="font-semibold text-gray-800 dark:text-dark-text mb-3 text-sm">Quick Actions</h4>
               <button
                 onClick={() => setFormModal({ mode: "create" })}
-                className="w-full bg-violet-500 text-white py-2.5 rounded-xl text-sm font-semibold hover:bg-violet-600 transition mb-2"
+                className="w-full bg-violet-50 dark:bg-violet-500/150 text-white py-2.5 rounded-xl text-sm font-semibold hover:bg-violet-600 transition mb-2"
               >
                 + Report New Issue
               </button>
               <button
                 onClick={() => fetchIssues(true)}
-                className="w-full bg-gray-50 text-gray-600 py-2.5 rounded-xl text-sm font-medium hover:bg-gray-100 transition border border-gray-200 flex items-center justify-center gap-2"
+                className="w-full bg-gray-50 dark:bg-dark-elevated text-gray-600 dark:text-dark-text-secondary py-2.5 rounded-xl text-sm font-medium hover:bg-gray-100 dark:hover:bg-dark-elevated dark:bg-dark-elevated transition border border-gray-200 dark:border-dark-border flex items-center justify-center gap-2"
               >
                 <i className="ri-refresh-line text-base" />
                 Refresh
@@ -424,15 +424,15 @@ const MyIssues = () => {
             </div>
 
             {/* Status legend */}
-            <div className="mt-4 bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
-              <h4 className="font-semibold text-gray-800 mb-3 text-sm">Status Guide</h4>
+            <div className="mt-4 bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border/50 shadow-sm p-5">
+              <h4 className="font-semibold text-gray-800 dark:text-dark-text mb-3 text-sm">Status Guide</h4>
               <div className="space-y-2">
                 {Object.entries(statusStyles)
                   .filter(([k]) => k !== "spam" && k !== "pending" && k !== "accepted" && k !== "rejected")
                   .map(([key, val]) => (
                   <div key={key} className="flex items-center gap-2">
                     <span className={`w-2 h-2 rounded-full ${val.dot}`} />
-                    <span className="text-xs text-gray-600">{val.label}</span>
+                    <span className="text-xs text-gray-600 dark:text-dark-text-secondary">{val.label}</span>
                   </div>
                 ))}
               </div>
@@ -440,26 +440,26 @@ const MyIssues = () => {
 
             {/* Campus Overview */}
             {campusStats && (
-              <div className="mt-4 bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
-                <h4 className="font-semibold text-gray-800 mb-3 text-sm flex items-center gap-2">
-                  <i className="ri-bar-chart-2-line text-violet-500" />
+              <div className="mt-4 bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border/50 shadow-sm p-5">
+                <h4 className="font-semibold text-gray-800 dark:text-dark-text mb-3 text-sm flex items-center gap-2">
+                  <i className="ri-bar-chart-2-line text-violet-500 dark:text-violet-400" />
                   Campus Overview
                 </h4>
                 <div className="space-y-2">
                   <div className="flex items-center justify-between py-2 border-b border-gray-50">
-                    <span className="text-xs text-gray-500">Total campus issues</span>
-                    <span className="text-sm font-bold text-gray-800">{campusStats.issues?.total || 0}</span>
+                    <span className="text-xs text-gray-500 dark:text-dark-text-secondary">Total campus issues</span>
+                    <span className="text-sm font-bold text-gray-800 dark:text-dark-text">{campusStats.issues?.total || 0}</span>
                   </div>
                   <div className="flex items-center justify-between py-2 border-b border-gray-50">
-                    <span className="text-xs text-gray-500">Reported today</span>
-                    <span className="text-sm font-bold text-gray-800">{campusStats.issues?.today || 0}</span>
+                    <span className="text-xs text-gray-500 dark:text-dark-text-secondary">Reported today</span>
+                    <span className="text-sm font-bold text-gray-800 dark:text-dark-text">{campusStats.issues?.today || 0}</span>
                   </div>
                   <div className="flex items-center justify-between py-2 border-b border-gray-50">
-                    <span className="text-xs text-gray-500">This week</span>
-                    <span className="text-sm font-bold text-gray-800">{campusStats.issues?.this_week || 0}</span>
+                    <span className="text-xs text-gray-500 dark:text-dark-text-secondary">This week</span>
+                    <span className="text-sm font-bold text-gray-800 dark:text-dark-text">{campusStats.issues?.this_week || 0}</span>
                   </div>
                   <div className="flex items-center justify-between py-2">
-                    <span className="text-xs text-gray-500">Resolution rate</span>
+                    <span className="text-xs text-gray-500 dark:text-dark-text-secondary">Resolution rate</span>
                     <span className="text-sm font-bold text-emerald-600">{campusStats.issues?.resolution_rate || 0}%</span>
                   </div>
                 </div>
