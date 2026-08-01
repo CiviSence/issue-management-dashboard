@@ -9,6 +9,11 @@
     },
     "CapacitorCookies": {
       "enabled": true
+    },
+    "StatusBar": {
+      "overlaysWebView": false,
+      "style": "DARK",
+      "backgroundColor": "#FAFAFC"
     }
   }
 }

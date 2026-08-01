@@ -70,15 +70,17 @@ export const uploadAvatar = async (file) => {
     }
 };
 
-/**
- * Fetches the user's active organization details
- * @returns {Promise<object>}
- */
-export const getMyOrganization = async () => {
-    try {
-        const { data } = await axios.get('/organizations/my');
-        return data;
-    } catch (error) {
-        throw new Error(error.response?.data?.detail || 'Failed to fetch organization');
-    }
+import {
+    getMyOrganization,
+    updateOrgSettings,
+    submitOrgChangeRequest,
+    createOrganization
+} from './organization-api';
+
+export {
+    getMyOrganization,
+    updateOrgSettings,
+    submitOrgChangeRequest,
+    createOrganization
 };
+

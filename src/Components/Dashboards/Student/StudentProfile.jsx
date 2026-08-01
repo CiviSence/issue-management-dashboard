@@ -7,6 +7,8 @@ import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import ProfileEditForm from "../../Inputs/ProfileEditForm";
 import { updateMyProfile, getMyOrganization } from "../../../Utils/profile-api";
+import OrgChangeRequestModal from "../../common/OrgChangeRequestModal";
+
 import {
     getActiveSessions,
     logoutAllSessions,
@@ -170,6 +172,8 @@ const StudentProfile = () => {
     const [myIssues, setMyIssues] = useState([]);
     const [orgData, setOrgData] = useState(null);
     const [loadingOrg, setLoadingOrg] = useState(true);
+    const [isOrgModalOpen, setIsOrgModalOpen] = useState(false);
+
 
     useEffect(() => {
         let isMounted = true;
@@ -486,23 +490,51 @@ const StudentProfile = () => {
                                 if (!orgItem) return null;
                                 const org = orgItem.organization || orgItem;
                                 return (
-                                    <InfoCard title="Organization Details" icon="ri-community-line">
-                                        <Info label="Name" value={org.name} />
-                                        {org.code && <Info label="Code" value={org.code} />}
-                                        {org.description && <Info label="Description" value={org.description} />}
-                                        {org.official_email && <Info label="Official Email" value={org.official_email} />}
-                                        {org.phone && <Info label="Phone" value={org.phone} />}
-                                        {org.address && <Info label="Address" value={org.address} />}
-                                        {orgItem.role && <Info label="Your Role" value={orgItem.role} />}
-                                        {orgItem.joined_at && (
-                                            <Info
-                                                label="Joined At"
-                                                value={formatDate(orgItem.joined_at)}
-                                            />
-                                        )}
-                                    </InfoCard>
+                                    <>
+                                        <InfoCard title="Organization Details" icon="ri-community-line">
+                                            <div className="flex justify-between items-center pb-2 mb-2 border-b border-gray-50">
+                                                <span className="text-xs text-gray-400 font-semibold uppercase">Organization Info</span>
+                                                <button
+                                                    onClick={() => setIsOrgModalOpen(true)}
+                                                    className="text-xs font-bold text-violet-600 hover:text-violet-700 bg-violet-50 hover:bg-violet-100 px-2.5 py-1 rounded-lg transition-colors flex items-center gap-1"
+                                                >
+                                                    <i className="ri-arrow-left-right-line"></i>
+                                                    Switch Org
+                                                </button>
+                                            </div>
+                                            <Info label="Name" value={org.name} />
+                                            {org.code && <Info label="Code" value={org.code} />}
+                                            {org.description && <Info label="Description" value={org.description} />}
+                                            {org.official_email && <Info label="Official Email" value={org.official_email} />}
+                                            {org.phone && <Info label="Phone" value={org.phone} />}
+                                            {org.address && <Info label="Address" value={org.address} />}
+                                            {orgItem.role && <Info label="Your Role" value={orgItem.role} />}
+                                            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-sm gap-1 sm:gap-4 py-3 border-b border-gray-50">
+                                                <span className="text-gray-500 font-medium">Feed Verification</span>
+                                                <span className={`px-2 py-0.5 rounded text-xs font-bold ${
+                                                    org.require_verified_feed 
+                                                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' 
+                                                        : 'bg-gray-50 text-gray-600 border border-gray-200'
+                                                }`}>
+                                                    {org.require_verified_feed ? 'Verified Feed Required' : 'Open Feed'}
+                                                </span>
+                                            </div>
+                                            {orgItem.joined_at && (
+                                                <Info
+                                                    label="Joined At"
+                                                    value={formatDate(orgItem.joined_at)}
+                                                />
+                                            )}
+                                        </InfoCard>
+
+                                        <OrgChangeRequestModal
+                                            isOpen={isOrgModalOpen}
+                                            onClose={() => setIsOrgModalOpen(false)}
+                                        />
+                                    </>
                                 );
                             })()}
+
 
                             <div className="lg:col-span-3">
                                 <SessionsCard />
