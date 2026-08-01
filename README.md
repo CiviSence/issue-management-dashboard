@@ -1,4 +1,6 @@
-# CiviSence Frontend – Issue Management Dashboard
+
+# CivicSence Admin/staff – Issue Management Dashboard
+
 
 A modern React-based frontend dashboard for the CivicSence Backend, built to help students, staff, and administrators report, track, and manage civic issues in college hostels and institutes.
 
