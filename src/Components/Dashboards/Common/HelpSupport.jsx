@@ -129,7 +129,7 @@ const HelpSupport = () => {
     <>
       {renderSideNav()}
       <BottomNav />
-      <div className="flex-1 bg-[#FBFBFF] dark:bg-dark-bg min-h-screen overflow-y-auto">
+      <div className="flex-1 bg-[#FBFBFF] dark:bg-dark-bg h-screen overflow-y-auto">
         <div className="max-w-350 lg:pl-32 xl:pl-44">
           {/* HEADER */}
           <div className="relative pt-12 pb-24 md:pt-20 md:pb-32 px-6 overflow-hidden">

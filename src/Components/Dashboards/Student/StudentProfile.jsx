@@ -266,7 +266,7 @@ const StudentProfile = () => {
             <StudentSideNav />
             <StudentBottomNav />
 
-            <div className="mx-auto w-full overflow-y-auto bg-[#F8F9FF] dark:bg-dark-bg min-h-screen">
+            <div className="mx-auto w-full overflow-y-auto bg-[#F8F9FF] dark:bg-dark-bg h-screen">
                 <TopBar title="Profile" />
                 {profileData ? (
                     <>

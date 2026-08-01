@@ -625,7 +625,7 @@ const Settings = () => {
       {renderSideNav()}
       {renderBottomNav()}
 
-      <div className="mx-auto w-full overflow-y-auto bg-[#F8F9FF] dark:bg-dark-bg min-h-screen pb-28 md:pb-12">
+      <div className="mx-auto w-full overflow-y-auto bg-[#F8F9FF] dark:bg-dark-bg h-screen pb-28 md:pb-12">
         <TopBar title="Settings" />
 
         {/* Floating Toast Notification */}
