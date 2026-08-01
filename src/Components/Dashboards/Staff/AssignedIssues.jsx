@@ -231,7 +231,7 @@ const AssignedIssues = () => {
       <StaffSideNav />
       <BottomNav />
 
-      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#FDFDFF] overflow-x-hidden overflow-y-auto h-screen pb-20" id="assignedIssuesScroll">
+      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#FDFDFF] dark:bg-dark-bg overflow-x-hidden overflow-y-auto h-screen pb-20" id="assignedIssuesScroll">
         <TopBar title="Your Tasks" />
         <PullToRefresh scrollContainerId="assignedIssuesScroll" onRefresh={fetchAssigned}>
           <div className="w-full mx-auto p-2 lg:p-4">
@@ -322,16 +322,16 @@ const AssignedIssues = () => {
                         const statusConfig = {
                           pending: {
                             label: "Pending",
-                            class: "bg-amber-50 text-amber-700 border-amber-200",
+                            class: "bg-amber-50 dark:bg-amber-500/15 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-500/30",
                           },
                           accepted: {
                             label: "In Progress",
-                            class: "bg-blue-50 text-blue-700 border-blue-200",
+                            class: "bg-blue-50 dark:bg-blue-500/15 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-500/30",
                           },
                           completed: {
                             label: "Completed",
                             class:
-                              "bg-emerald-50 text-emerald-700 border-emerald-200",
+                              "bg-emerald-50 dark:bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/30",
                           },
                         };
                         const badge =
@@ -738,7 +738,7 @@ const AssignedIssues = () => {
             <div className="bg-card rounded-2xl shadow-xl max-w-md w-full p-6 border border-border animate-in fade-in zoom-in-95 duration-150">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-red-100 rounded-xl">
+                  <div className="p-2 bg-red-100 dark:bg-red-500/20 rounded-xl">
                     <XCircle className="w-5 h-5 text-red-600 dark:text-red-400" />
                   </div>
                   <h3 className="text-lg font-bold text-card-foreground">
@@ -797,7 +797,7 @@ const AssignedIssues = () => {
             <div className="bg-card rounded-2xl shadow-xl max-w-lg w-full p-6 border border-border max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in-95 duration-150">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-indigo-100 rounded-xl">
+                  <div className="p-2 bg-indigo-100 dark:bg-indigo-500/20 rounded-xl">
                     <CircleCheckBig className="w-5 h-5 text-[#6366f1] dark:text-indigo-400" />
                   </div>
                   <h3 className="text-lg font-bold text-card-foreground">

@@ -325,7 +325,7 @@ const TaskDetails = () => {
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="flex items-start gap-3">
-                    <div className="p-2 bg-indigo-50/50 text-[#6366f1] dark:text-indigo-400 rounded-lg">
+                    <div className="p-2 bg-indigo-50/50 dark:bg-indigo-500/10 text-[#6366f1] dark:text-indigo-400 rounded-lg">
                       <Tag className="w-5 h-5" />
                     </div>
                     <div>
@@ -340,7 +340,7 @@ const TaskDetails = () => {
                   </div>
 
                   <div className="flex items-start gap-3">
-                    <div className="p-2 bg-blue-50/50 text-blue-600 rounded-lg">
+                    <div className="p-2 bg-blue-50/50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-lg">
                       <MapPin className="w-5 h-5" />
                     </div>
                     <div>
@@ -358,7 +358,7 @@ const TaskDetails = () => {
                   </div>
 
                   <div className="flex items-start gap-3">
-                    <div className="p-2 bg-emerald-50/50 text-emerald-600 rounded-lg">
+                    <div className="p-2 bg-emerald-50/50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-lg">
                       <Calendar className="w-5 h-5" />
                     </div>
                     <div>
@@ -371,7 +371,7 @@ const TaskDetails = () => {
 
                   {task.assigned_at && (
                     <div className="flex items-start gap-3">
-                      <div className="p-2 bg-indigo-50/50 text-indigo-600 rounded-lg">
+                      <div className="p-2 bg-indigo-50/50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-lg">
                         <UserCheck className="w-5 h-5" />
                       </div>
                       <div>
@@ -384,7 +384,7 @@ const TaskDetails = () => {
                   )}
 
                   <div className="flex items-start gap-3">
-                    <div className="p-2 bg-amber-50/50 text-amber-600 rounded-lg">
+                    <div className="p-2 bg-amber-50/50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-lg">
                       <Clock className="w-5 h-5" />
                     </div>
                     <div>
@@ -410,21 +410,21 @@ const TaskDetails = () => {
                     </p>
                     <p className="text-sm text-muted-foreground">Views</p>
                   </div>
-                  <div className="text-center p-4 bg-emerald-50/30 border border-emerald-100/50 text-emerald-600 rounded-xl">
+                  <div className="text-center p-4 bg-emerald-50/30 dark:bg-emerald-500/10 border border-emerald-100/50 dark:border-emerald-500/20 text-emerald-600 dark:text-emerald-400 rounded-xl">
                     <ThumbsUp className="w-6 h-6 mx-auto mb-2" />
                     <p className="text-2xl font-bold">
                       {task.upvotes || 0}
                     </p>
                     <p className="text-sm opacity-85">Upvotes</p>
                   </div>
-                  <div className="text-center p-4 bg-red-50/30 border border-red-100/50 text-red-600 dark:text-red-400 rounded-xl">
+                  <div className="text-center p-4 bg-red-50/30 dark:bg-red-500/10 border border-red-100/50 dark:border-red-500/20 text-red-600 dark:text-red-400 rounded-xl">
                     <ThumbsDown className="w-6 h-6 mx-auto mb-2" />
                     <p className="text-2xl font-bold">
                       {task.downvotes || 0}
                     </p>
                     <p className="text-sm opacity-85">Downvotes</p>
                   </div>
-                  <div className="text-center p-4 bg-blue-50/30 border border-blue-100/50 text-blue-600 rounded-xl">
+                  <div className="text-center p-4 bg-blue-50/30 dark:bg-blue-500/10 border border-blue-100/50 dark:border-blue-500/20 text-blue-600 dark:text-blue-400 rounded-xl">
                     <MessageSquare className="w-6 h-6 mx-auto mb-2" />
                     <p className="text-2xl font-bold">
                       {task.comments_count || 0}
@@ -515,7 +515,7 @@ const TaskDetails = () => {
 
                   {/* Show resolved status */}
                   {task.assignment_status === "completed" && (
-                    <div className="text-center p-4 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-xl">
+                    <div className="text-center p-4 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/30 rounded-xl">
                       <CheckCircle className="w-12 h-12 text-emerald-600 mx-auto mb-2" />
                       <p className="font-semibold">
                         Task Completed

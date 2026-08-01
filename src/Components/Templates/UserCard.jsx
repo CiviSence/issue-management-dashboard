@@ -127,7 +127,7 @@ const UserCard = ({ limit }) => {
                   return (
                     <tr
                       key={user.id}
-                      className="border-b border-gray-100 dark:border-dark-border/50 hover:bg-gray-50 dark:bg-dark dark:hover:bg-muted/30 transition"
+                      className="border-b border-gray-100 dark:border-dark-border/50 hover:bg-gray-50 dark:hover:bg-dark-elevated transition"
                     >
                       <td className="py-2 sm:py-3 px-2 sm:px-4 font-semibold text-gray-900 dark:text-dark-text text-xs sm:text-sm">
                         #{rank}

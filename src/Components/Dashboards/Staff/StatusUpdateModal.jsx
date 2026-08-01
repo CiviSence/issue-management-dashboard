@@ -31,7 +31,7 @@ const StatusUpdateModal = ({ issue, onClose, onUpdate }) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white dark:bg-dark-card rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
-        <div className="bg-violet-50 dark:bg-violet-500/150 p-4 text-white flex justify-between items-center">
+        <div className="bg-[#6366f1] dark:bg-indigo-500/20 p-4 text-white flex justify-between items-center">
           <h3 className="text-xl font-bold">Update Status</h3>
           <button
             onClick={onClose}
@@ -102,7 +102,7 @@ const StatusUpdateModal = ({ issue, onClose, onUpdate }) => {
             <button
               type="submit"
               disabled={loading}
-              className="px-6 py-2 bg-violet-50 dark:bg-violet-500/150 text-white rounded-lg hover:bg-violet-700 transition-colors disabled:opacity-50"
+              className="px-6 py-2 bg-[#6366f1] dark:bg-indigo-500/20 text-white rounded-lg hover:bg-[#5445c9] transition-colors disabled:opacity-50"
             >
               {loading ? "Updating..." : "Save Changes"}
             </button>

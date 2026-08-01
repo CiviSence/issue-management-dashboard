@@ -95,7 +95,7 @@ const IssuePool = () => {
       <StaffSideNav />
       <BottomNav />
 
-      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#FDFDFF] overflow-x-hidden overflow-y-auto h-screen pb-20" id="issuePoolScroll">
+      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#FDFDFF] dark:bg-dark-bg overflow-x-hidden overflow-y-auto h-screen pb-20" id="issuePoolScroll">
         <TopBar title="Issue Pool" />
         <PullToRefresh scrollContainerId="issuePoolScroll" onRefresh={fetchPool}>
           <div className="w-full mx-auto p-2 lg:p-4">

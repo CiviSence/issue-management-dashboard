@@ -113,14 +113,14 @@ const StaffNotifications = () => {
       <StaffSideNav />
       <BottomNav />
       <ToastContainer />
-      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#FDFDFF] overflow-x-hidden overflow-y-auto h-screen pb-20" id="staffNotifsScroll">
+      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#FDFDFF] dark:bg-dark-bg overflow-x-hidden overflow-y-auto h-screen pb-20" id="staffNotifsScroll">
         <TopBar title="Notifications" />
         <PullToRefresh scrollContainerId="staffNotifsScroll" onRefresh={fetchNotifications}>
           <div className="w-full mx-auto p-2 lg:p-4">
         <div className="p-2 md:p-0">
           <div className="bg-white dark:bg-dark-card rounded-2xl shadow-sm border border-gray-200 dark:border-dark-border overflow-hidden">
             {/* Filters and Actions */}
-            <div className="flex flex-wrap items-center justify-between border-b border-gray-150 px-4 py-3 gap-3 bg-gray-50/50 dark:bg-dark-elevated/50">
+            <div className="flex flex-wrap items-center justify-between border-b border-gray-200 dark:border-dark-border px-4 py-3 gap-3 bg-gray-50/50 dark:bg-dark-elevated/50">
               <div className="flex items-center gap-2">
                 {["all", "unread", "read"].map((type) => (
                   <button
@@ -140,7 +140,7 @@ const StaffNotifications = () => {
               {notifications.some((n) => !n.read) && (
                 <button
                   onClick={handleMarkAllRead}
-                  className="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-lg text-xs font-bold transition-all cursor-pointer"
+                  className="px-3 py-1.5 bg-indigo-50 dark:bg-indigo-500/20 hover:bg-indigo-100 dark:hover:bg-indigo-500/30 text-indigo-700 dark:text-indigo-400 rounded-lg text-xs font-bold transition-all cursor-pointer"
                 >
                   Mark all read
                 </button>
@@ -157,7 +157,7 @@ const StaffNotifications = () => {
                   <div
                     key={notif.id}
                     className={`p-4 flex gap-4 transition hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated/50 dark:bg-dark-elevated/50 relative ${
-                      notif.read ? "opacity-75" : "bg-indigo-50/20"
+                      notif.read ? "opacity-75" : "bg-indigo-50/20 dark:bg-indigo-500/10"
                     }`}
                   >
                     {!notif.read && (
@@ -167,7 +167,7 @@ const StaffNotifications = () => {
                       className={`p-2 rounded-xl shrink-0 h-10 w-10 flex items-center justify-center ${
                         notif.read
                           ? "bg-gray-100 dark:bg-dark-elevated text-gray-500 dark:text-dark-text-secondary"
-                          : "bg-indigo-100 text-[#6366f1] dark:text-indigo-400"
+                          : "bg-indigo-100 dark:bg-indigo-500/20 text-[#6366f1] dark:text-indigo-400"
                       }`}
                     >
                       <i className={`${notif.icon} text-lg`}></i>

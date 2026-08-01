@@ -38,7 +38,7 @@ const InfoCard = ({ title, children, icon }) => (
 );
 
 const Info = ({ label, value }) => (
-    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-sm gap-1 sm:gap-4 py-2.5 sm:py-3 border-b border-gray-50 last:border-0">
+    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-sm gap-1 sm:gap-4 py-2.5 sm:py-3 border-b border-gray-50 dark:border-dark-border/50 last:border-0">
         <span className="text-gray-500 dark:text-dark-text-secondary font-medium">{label}</span>
         <span className="font-semibold text-gray-800 dark:text-dark-text break-words sm:text-right">{value || "—"}</span>
     </div>
@@ -97,7 +97,7 @@ const SessionsCard = () => {
                 </h2>
                 <button
                     onClick={fetchSessions}
-                    className="text-violet-600 dark:text-violet-400 hover:bg-violet-50 dark:bg-violet-500/15 dark:hover:bg-violet-50 dark:bg-violet-500/150/15 p-1.5 rounded-lg transition-colors"
+                    className="text-violet-600 dark:text-violet-400 hover:bg-violet-50 dark:hover:bg-violet-500/20 p-1.5 rounded-lg transition-colors"
                     title="Refresh"
                 >
                     <i className="ri-refresh-line"></i>
@@ -125,7 +125,7 @@ const SessionsCard = () => {
                         return (
                             <div
                                 key={id || index}
-                                className="flex items-center justify-between p-3 sm:p-4 bg-gray-50/50 dark:bg-dark-elevated/50 rounded-lg sm:rounded-xl border border-gray-100 dark:border-dark-border/50 hover:border-violet-200 hover:bg-white transition-all group"
+                                className="flex items-center justify-between p-3 sm:p-4 bg-gray-50/50 dark:bg-dark-elevated/50 rounded-lg sm:rounded-xl border border-gray-100 dark:border-dark-border/50 hover:border-violet-200 dark:hover:border-violet-500/30 hover:bg-white dark:hover:bg-dark-card transition-all group"
                             >
                                 <div className="flex items-center gap-3">
                                     <div className="p-2.5 bg-white dark:bg-dark-card shadow-sm border border-gray-100 dark:border-dark-border/50 text-violet-600 dark:text-violet-400 rounded-xl group-hover:bg-violet-600 group-hover:text-white transition-all">
@@ -310,7 +310,7 @@ const StudentProfile = () => {
                                 </button>
                                 <Link
                                     to="/settings"
-                                    className="flex-1 sm:flex-none justify-center bg-white text-violet-600 dark:text-violet-400 border border-violet-200 font-bold px-4 py-2.5 sm:px-6 sm:py-3 text-sm sm:text-base rounded-xl sm:rounded-2xl hover:bg-violet-50 dark:bg-violet-500/15 dark:hover:bg-violet-50 dark:bg-violet-500/150/15 transition shadow-lg shadow-violet-100 active:scale-95 flex items-center gap-1.5 sm:gap-2"
+                                    className="flex-1 sm:flex-none justify-center bg-white text-violet-600 dark:text-violet-400 border border-violet-200 font-bold px-4 py-2.5 sm:px-6 sm:py-3 text-sm sm:text-base rounded-xl sm:rounded-2xl hover:bg-violet-50 dark:bg-violet-500/15 dark:hover:bg-violet-500/20 transition shadow-lg shadow-violet-100 active:scale-95 flex items-center gap-1.5 sm:gap-2"
                                 >
                                     <i className="ri-settings-2-line text-base sm:text-lg"></i>
                                     Setting
@@ -329,7 +329,7 @@ const StudentProfile = () => {
                     <div className="px-3 py-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-6 pb-28 md:pb-32">
                         {/* Stats Overview */}
                         <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
-                            <div className="bg-white p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-gray-100 dark:border-dark-border/50 shadow-sm flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
+                            <div className="bg-white dark:bg-dark-card p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-gray-100 dark:border-dark-border/50 shadow-sm flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
                                 <div className="p-2 sm:p-3 bg-violet-50 dark:bg-violet-500/15 text-violet-600 dark:text-violet-400 rounded-lg sm:rounded-xl">
                                     <i className="ri-file-list-3-line text-lg sm:text-xl"></i>
                                 </div>
@@ -338,8 +338,8 @@ const StudentProfile = () => {
                                     <p className="text-base sm:text-xl font-black text-gray-900 dark:text-dark-text truncate">{myIssues.length}</p>
                                 </div>
                             </div>
-                            <div className="bg-white p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-gray-100 dark:border-dark-border/50 shadow-sm flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
-                                <div className="p-2 sm:p-3 bg-emerald-50 text-emerald-600 rounded-lg sm:rounded-xl">
+                            <div className="bg-white dark:bg-dark-card p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-gray-100 dark:border-dark-border/50 shadow-sm flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
+                                <div className="p-2 sm:p-3 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-lg sm:rounded-xl">
                                     <i className="ri-checkbox-circle-line text-lg sm:text-xl"></i>
                                 </div>
                                 <div className="min-w-0 w-full">
@@ -347,8 +347,8 @@ const StudentProfile = () => {
                                     <p className="text-base sm:text-xl font-black text-gray-900 dark:text-dark-text truncate">{myIssues.filter(i => i.status === 'resolved').length}</p>
                                 </div>
                             </div>
-                            <div className="bg-white p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-gray-100 dark:border-dark-border/50 shadow-sm flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
-                                <div className="p-2 sm:p-3 bg-amber-50 text-amber-600 rounded-lg sm:rounded-xl">
+                            <div className="bg-white dark:bg-dark-card p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-gray-100 dark:border-dark-border/50 shadow-sm flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
+                                <div className="p-2 sm:p-3 bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-lg sm:rounded-xl">
                                     <i className="ri-copper-coin-line text-lg sm:text-xl"></i>
                                 </div>
                                 <div className="min-w-0 w-full">
@@ -356,8 +356,8 @@ const StudentProfile = () => {
                                     <p className="text-base sm:text-xl font-black text-gray-900 dark:text-dark-text truncate">{profileData.reputation_points || 0}</p>
                                 </div>
                             </div>
-                            <div className="bg-white p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-gray-100 dark:border-dark-border/50 shadow-sm flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
-                                <div className="p-2 sm:p-3 bg-blue-50 text-blue-600 rounded-lg sm:rounded-xl">
+                            <div className="bg-white dark:bg-dark-card p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-gray-100 dark:border-dark-border/50 shadow-sm flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
+                                <div className="p-2 sm:p-3 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-lg sm:rounded-xl">
                                     <i className="ri-chat-smile-3-line text-lg sm:text-xl"></i>
                                 </div>
                                 <div className="min-w-0 w-full">
@@ -408,7 +408,7 @@ const StudentProfile = () => {
                                 ) : (
                                     <>
                                         <Info label="Status" value="Day Scholar" />
-                                        <div className="mt-2 p-3 bg-violet-50 dark:bg-violet-500/15 rounded-xl border border-violet-100">
+                                        <div className="mt-2 p-3 bg-violet-50 dark:bg-violet-500/15 rounded-xl border border-violet-100 dark:border-indigo-500/20">
                                             <p className="text-xs text-violet-700 font-medium text-center">No hostel drama — just vibes, traffic & tiffin boxes!</p>
                                         </div>
                                     </>
@@ -420,7 +420,7 @@ const StudentProfile = () => {
                                     label="Email Verified"
                                     value={profileData.email_verified ? "Yes" : "No"}
                                 />
-                                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-sm gap-1 sm:gap-4 py-3 border-b border-gray-50">
+                                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-sm gap-1 sm:gap-4 py-3 border-b border-gray-50 dark:border-dark-border/50">
                                     <span className="text-gray-500 dark:text-dark-text-secondary font-medium">Verification Status</span>
                                     <StatusBadge type="profile" value={profileData.verification_status || "unverified"} showDot={true} />
                                 </div>
