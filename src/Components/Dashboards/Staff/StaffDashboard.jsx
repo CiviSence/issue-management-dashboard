@@ -254,11 +254,11 @@ const StaffDashboard = () => {
     <>
       <StaffSideNav />
       <BottomNav />
-      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#FDFDFF] overflow-x-hidden overflow-y-auto h-screen pb-20" id="staffDashboardScroll">
+      <div className="w-full lg:w-[calc(100vw-15vw)] bg-[#FDFDFF] dark:bg-dark-bg overflow-x-hidden overflow-y-auto h-screen pb-20" id="staffDashboardScroll">
         <TopBar title="Your Dashboard" />
         <PullToRefresh scrollContainerId="staffDashboardScroll" onRefresh={handleRefresh}>
           <div className="w-full mx-auto p-2 lg:p-4">
-          <div className="w-full gap-2 flex flex-wrap justify-center p-4 rounded-2xl ">
+          <div className="w-full gap-1.5 sm:gap-2 md:gap-3 flex flex-wrap justify-between py-2 sm:py-2 md:py-3 lg:py-6 rounded-2xl">
             {stats?.map((item, index) => (
               <IssueCard key={index} issue={item} />
             ))}
@@ -278,7 +278,7 @@ const StaffDashboard = () => {
                         Pending Issues
                       </h2>
                       {pendingIssues.length > 0 && (
-                        <span className="bg-amber-100 text-amber-700 border border-amber-200 text-xs font-semibold px-2 py-0.5 rounded-full">
+                        <span className="bg-amber-100 dark:bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-500/30 text-xs font-semibold px-2 py-0.5 rounded-full">
                           {pendingIssues.length}
                         </span>
                       )}
@@ -327,7 +327,7 @@ const StaffDashboard = () => {
                                   type="priority"
                                   value={issue?.priority || "low"}
                                 />
-                                <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-lg border bg-amber-50 text-amber-700 border-amber-200">
+                                <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-lg border bg-amber-50 dark:bg-amber-500/15 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-500/30">
                                   Pending
                                 </span>
                               </div>
@@ -425,7 +425,7 @@ const StaffDashboard = () => {
                                     />
                                   </td>
                                   <td className="px-5 py-3.5">
-                                    <span className="text-[11px] font-semibold px-2.5 py-1 rounded-lg border bg-amber-50 text-amber-700 border-amber-200">
+                                    <span className="text-[11px] font-semibold px-2.5 py-1 rounded-lg border bg-amber-50 dark:bg-amber-500/15 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-500/30">
                                       Pending
                                     </span>
                                   </td>
@@ -674,7 +674,7 @@ const StaffDashboard = () => {
           <div className="bg-card rounded-2xl shadow-xl max-w-md w-full p-6 border border-border animate-in fade-in zoom-in-95 duration-150 text-gray-800 dark:text-dark-text">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-emerald-100 rounded-xl">
+                <div className="p-2 bg-emerald-100 dark:bg-emerald-500/20 rounded-xl">
                   <CheckCircle className="w-5 h-5 text-emerald-600" />
                 </div>
                 <h3 className="text-lg font-bold text-card-foreground">
@@ -733,7 +733,7 @@ const StaffDashboard = () => {
           <div className="bg-card rounded-2xl shadow-xl max-w-md w-full p-6 border border-border animate-in fade-in zoom-in-95 duration-150 text-gray-800 dark:text-dark-text">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-red-100 rounded-xl">
+                <div className="p-2 bg-red-100 dark:bg-red-500/20 rounded-xl">
                   <XCircle className="w-5 h-5 text-red-600 dark:text-red-400" />
                 </div>
                 <h3 className="text-lg font-bold text-card-foreground">
