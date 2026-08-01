@@ -204,7 +204,7 @@ const AdminDashboard = () => {
       <BottomNav />
 
       <div
-        className="w-full lg:w-[calc(100vw-15vw)] bg-[#F8F9FF] dark:bg-dark-bg overflow-x-hidden overflow-y-auto h-screen pb-20"
+        className="w-full lg:w-[calc(100vw-15vw)] bg-[#F3F1FF] dark:bg-dark-bg overflow-x-hidden overflow-y-auto h-screen pb-20 lg:pb-3"
         id="adminDashboardScroll"
       >
         <TopBar title="Main Dashboard" />
@@ -212,9 +212,9 @@ const AdminDashboard = () => {
           scrollContainerId="adminDashboardScroll"
           onRefresh={handleRefresh}
         >
-          <div className="p-2 lg:p-4 w-full">
+          <div className="w-full px-2 lg:px-4">
             {/* ========== 1. STATUS CARDS — Instant overview ========== */}
-            <div className="w-full md:mt-4 gap-1.5 sm:gap-2 md:gap-3 flex flex-wrap justify-center md:bg-[#F3F1FF] dark:md:bg-dark-card dark:bg-dark-card p-2 sm:p-2 md:p-3 lg:p-4 rounded-2xl ">
+            <div className="w-full gap-1.5 sm:gap-2 md:gap-3 flex flex-wrap justify-between py-2 sm:py-2 md:py-3 lg:py-6 rounded-2xl ">
               {loadingStats ? (
                 <>
                   <CardSkeleton />
@@ -231,46 +231,39 @@ const AdminDashboard = () => {
               )}
             </div>
 
-            {/* ========== 5. DETAILED BREAKDOWN — Priority + Category + Location ========== */}
-            {/* <h1 className="md:pt-4 pl-2 text-lg sm:text-xl md:text-2xl font-semibold text-[#363434]">
-          Issue Breakdown
-        </h1> */}
-
-            <div className="md:bg-[#F3F1FF] dark:md:bg-dark-card dark:bg-dark-card p-2 sm:p-2 md:p-3 lg:p-4 rounded-2xl">
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
-                {loadingIssues ? (
-                  <>
-                    <ChartSkeleton />
-                    <ChartSkeleton />
-                    <ChartSkeleton />
-                  </>
-                ) : (
-                  <>
-                    <Suspense fallback={<ChartSkeleton />}>
-                      <BarChartCard data={barChartData} />
-                    </Suspense>
-
-                    <Suspense fallback={<ChartSkeleton />}>
-                      <PieChartCard data={pieChartData} />
-                    </Suspense>
-
-                    <Suspense fallback={<ChartSkeleton />}>
-                      <StatusChart data={locationData} />
-                    </Suspense>
-                  </>
-                )}
-              </div>
-
-              {/* Heatmap — full-width below breakdowns */}
-              <div className="mt-3">
-                {loadingIssues ? (
-                  <ChartSkeleton height={280} />
-                ) : (
-                  <Suspense fallback={<ChartSkeleton height={280} />}>
-                    <CategoryPriorityHeatmap issues={issues} />
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+              {loadingIssues ? (
+                <>
+                  <ChartSkeleton />
+                  <ChartSkeleton />
+                  <ChartSkeleton />
+                </>
+              ) : (
+                <>
+                  <Suspense fallback={<ChartSkeleton />}>
+                    <BarChartCard data={barChartData} />
                   </Suspense>
-                )}
-              </div>
+
+                  <Suspense fallback={<ChartSkeleton />}>
+                    <PieChartCard data={pieChartData} />
+                  </Suspense>
+
+                  <Suspense fallback={<ChartSkeleton />}>
+                    <StatusChart data={locationData} />
+                  </Suspense>
+                </>
+              )}
+            </div>
+
+            {/* Heatmap — full-width below breakdowns */}
+            <div className="mt-3">
+              {loadingIssues ? (
+                <ChartSkeleton height={280} />
+              ) : (
+                <Suspense fallback={<ChartSkeleton height={280} />}>
+                  <CategoryPriorityHeatmap issues={issues} />
+                </Suspense>
+              )}
             </div>
 
             {/* ========== 2. HEALTH PULSE — Resolution rate + Weekly comparison ========== */}
@@ -278,28 +271,26 @@ const AdminDashboard = () => {
           Health Pulse
         </h1> */}
 
-            <div className="md:bg-[#F3F1FF] dark:md:bg-dark-card dark:bg-dark-card p-2 sm:p-2 md:p-3 lg:p-4 rounded-2xl">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {loadingIssues || loadingStats ? (
-                  <>
-                    <ChartSkeleton height={280} />
-                    <ChartSkeleton height={280} />
-                  </>
-                ) : (
-                  <>
-                    <Suspense fallback={<ChartSkeleton height={280} />}>
-                      <ResolutionRateCard
-                        resolved={allstats?.issues?.by_status?.resolved || 0}
-                        total={allstats?.issues?.total || 0}
-                      />
-                    </Suspense>
+            <div className="grid grid-cols-1 mt-3 md:grid-cols-2 gap-3">
+              {loadingIssues || loadingStats ? (
+                <>
+                  <ChartSkeleton height={280} />
+                  <ChartSkeleton height={280} />
+                </>
+              ) : (
+                <>
+                  <Suspense fallback={<ChartSkeleton height={280} />}>
+                    <ResolutionRateCard
+                      resolved={allstats?.issues?.by_status?.resolved || 0}
+                      total={allstats?.issues?.total || 0}
+                    />
+                  </Suspense>
 
-                    <Suspense fallback={<ChartSkeleton height={280} />}>
-                      <WeeklyComparisonCard issues={issues} />
-                    </Suspense>
-                  </>
-                )}
-              </div>
+                  <Suspense fallback={<ChartSkeleton height={280} />}>
+                    <WeeklyComparisonCard issues={issues} />
+                  </Suspense>
+                </>
+              )}
             </div>
 
             {/* ========== 3. URGENT ACTIONS — Aging + Recent activity ========== */}
@@ -307,33 +298,31 @@ const AdminDashboard = () => {
           Needs Attention
         </h1> */}
 
-            <div className="md:bg-[#F3F1FF] dark:md:bg-dark-card dark:bg-dark-card p-2 sm:p-2 md:p-3 lg:p-4 rounded-2xl">
-              <div className="grid grid-cols-1 lg:grid-cols-5 gap-3">
-                {loadingIssues ? (
-                  <>
-                    <div className="lg:col-span-2">
-                      <ChartSkeleton height={340} />
-                    </div>
-                    <div className="lg:col-span-3">
-                      <ChartSkeleton height={340} />
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div className="lg:col-span-2">
-                      <Suspense fallback={<ChartSkeleton height={340} />}>
-                        <IssueAgingCard issues={issues} />
-                      </Suspense>
-                    </div>
+            <div className="grid grid-cols-1 mt-3 lg:grid-cols-5 gap-3">
+              {loadingIssues ? (
+                <>
+                  <div className="lg:col-span-2">
+                    <ChartSkeleton height={340} />
+                  </div>
+                  <div className="lg:col-span-3">
+                    <ChartSkeleton height={340} />
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="lg:col-span-2">
+                    <Suspense fallback={<ChartSkeleton height={340} />}>
+                      <IssueAgingCard issues={issues} />
+                    </Suspense>
+                  </div>
 
-                    <div className="lg:col-span-3">
-                      <Suspense fallback={<ChartSkeleton height={340} />}>
-                        <RecentActivityCard issues={issues} />
-                      </Suspense>
-                    </div>
-                  </>
-                )}
-              </div>
+                  <div className="lg:col-span-3">
+                    <Suspense fallback={<ChartSkeleton height={340} />}>
+                      <RecentActivityCard issues={issues} />
+                    </Suspense>
+                  </div>
+                </>
+              )}
             </div>
 
             {/* ========== 4. TRENDS — Full-width line chart ========== */}
@@ -341,15 +330,17 @@ const AdminDashboard = () => {
           Issue Trends
         </h1> */}
 
-            <div className="md:bg-[#F3F1FF] dark:md:bg-dark-card dark:bg-dark-card p-2 sm:p-2 md:p-3 lg:p-4 rounded-2xl">
-              {loadingIssues ? (
+            {loadingIssues ? (
+              <div className="mt-3">
                 <ChartSkeleton height={280} />
-              ) : (
-                <Suspense fallback={<ChartSkeleton height={280} />}>
+              </div>
+            ) : (
+              <Suspense fallback={<ChartSkeleton height={280} />}>
+                <div className="mt-3">
                   <LineChartCard />
-                </Suspense>
-              )}
-            </div>
+                </div>
+              </Suspense>
+            )}
 
             {/* ========== 6. OPERATIONS — Assignment stats + Performance metrics ========== */}
             {/* <h1 className="md:pt-4 pl-2 text-lg sm:text-xl md:text-2xl font-semibold text-[#363434]">
@@ -362,7 +353,7 @@ const AdminDashboard = () => {
                 <Skeleton height={200} borderRadius={16} />
               </div>
             ) : (
-              <div className="w-full p-2 sm:p-2 md:p-3 lg:p-4 grid grid-cols-1 lg:grid-cols-2 gap-1 sm:gap-2 md:gap-3 lg:gap-6 md:bg-[#F3F1FF] dark:md:bg-dark-card dark:bg-dark-card rounded-2xl ">
+              <div className="w-full mt-3 grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-3 md:gap-3 lg:gap-3">
                 {/* Left: Overall Assignment Counts */}
                 <div className="bg-card border border-border p-5 rounded-2xl shadow-xs">
                   <h3 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
@@ -489,21 +480,9 @@ const AdminDashboard = () => {
             )}
 
             {/* ========== 7. TOP REPORTERS — Community ========== */}
-            <h1 className="md:pt-4 pl-2 text-lg sm:text-xl md:text-2xl font-semibold text-[#363434]">
-              Top Reporters
-            </h1>
 
-            <div className="w-full md:mt-2 gap-1 sm:gap-2 md:gap-3 flex flex-wrap  md:bg-[#F3F1FF] dark:md:bg-dark-card dark:bg-dark-card p-2 sm:p-2 md:p-3 lg:p-4 rounded-2xl">
+            <div className="w-full md:mt-2 lg:mt-3">
               {loadingStats ? <UserSectionSkeleton /> : <UserCard limit={3} />}
-
-              <div className="flex justify-end mt-3">
-                <Link
-                  to="/leaderboard"
-                  className="text-xs lg:text-sm font-bold text-[#7E70EB] hover:text-[#5A50A6] hover:underline transition-all"
-                >
-                  View Full Leaderboard →
-                </Link>
-              </div>
             </div>
           </div>
         </PullToRefresh>
