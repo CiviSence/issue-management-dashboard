@@ -11,11 +11,15 @@ export const loginUser = async (credentials) => {
   try {
     const { data } = await axios.post("/auth/login", credentials);
     if (data.user) {
-      let roleStr = data.user.role || data.user.intended_role || data.user.userType || data.user.user_type;
+      let roleStr =
+        data.user.role ||
+        data.user.intended_role ||
+        data.user.userType ||
+        data.user.user_type;
       if (roleStr) {
         let normalizedRole = roleStr.toLowerCase();
-        if (normalizedRole === 'citizen') normalizedRole = 'student';
-        if (normalizedRole === 'official') normalizedRole = 'staff';
+        if (normalizedRole === "citizen") normalizedRole = "student";
+        if (normalizedRole === "official") normalizedRole = "staff";
         data.user.role = normalizedRole;
       }
     }
@@ -28,9 +32,14 @@ export const loginUser = async (credentials) => {
       }
     }
     if (error.response?.status === 429) {
-      const err = new Error(error.response?.data?.detail || "Too many attempts");
+      const err = new Error(
+        error.response?.data?.detail || "Too many attempts",
+      );
       err.status = 429;
-      err.retryAfter = error.response.headers["retry-after"] || error.response.headers["Retry-After"] || 60;
+      err.retryAfter =
+        error.response.headers["retry-after"] ||
+        error.response.headers["Retry-After"] ||
+        60;
       throw err;
     }
     throw new Error(error.response?.data?.detail || "Login failed");
@@ -45,13 +54,17 @@ export const loginUser = async (credentials) => {
 export const registerUser = async (userData) => {
   try {
     const payload = { ...userData };
-    if (payload.userType?.toLowerCase() === 'student') payload.userType = 'citizen';
-    if (payload.userType?.toLowerCase() === 'staff') payload.userType = 'official';
-    if (payload.role?.toLowerCase() === 'student') payload.role = 'citizen';
-    if (payload.role?.toLowerCase() === 'staff') payload.role = 'official';
-    if (payload.intended_role?.toLowerCase() === 'student') payload.intended_role = 'citizen';
-    if (payload.intended_role?.toLowerCase() === 'staff') payload.intended_role = 'official';
-    
+    if (payload.userType?.toLowerCase() === "student")
+      payload.userType = "citizen";
+    if (payload.userType?.toLowerCase() === "staff")
+      payload.userType = "official";
+    if (payload.role?.toLowerCase() === "student") payload.role = "citizen";
+    if (payload.role?.toLowerCase() === "staff") payload.role = "official";
+    if (payload.intended_role?.toLowerCase() === "student")
+      payload.intended_role = "citizen";
+    if (payload.intended_role?.toLowerCase() === "staff")
+      payload.intended_role = "official";
+
     const { data } = await axios.post("/auth/register", payload);
     return data;
   } catch (error) {
@@ -93,8 +106,6 @@ export const resendOtp = async (data) => {
   }
 };
 
-
-
 /**
  * Logs out the user on the server side
  */
@@ -108,11 +119,6 @@ export const logoutUser = async () => {
   } catch (error) {
     console.error("Failed to unregister device token on logout", error);
   }
-
-  // Clear theme and force light mode
-  Cookies.remove("theme");
-  window.document.documentElement.classList.remove("dark");
-  window.document.documentElement.classList.add("light");
 
   try {
     await axios.post("/auth/logout");
@@ -191,11 +197,6 @@ export const logoutAllSessions = async () => {
   } catch (error) {
     console.error("Failed to unregister device token on logout all", error);
   }
-
-  // Clear theme and force light mode
-  Cookies.remove("theme");
-  window.document.documentElement.classList.remove("dark");
-  window.document.documentElement.classList.add("light");
 
   try {
     const { data } = await axios.post("/auth/logout-all");

@@ -244,7 +244,7 @@ const SignUp = () => {
 
                 {/* Email */}
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-gray-400 ml-1">
+                  <label className="text-xs font-bold text-gray-400 dark:text-dark-text-secondary ml-1">
                     Email address
                   </label>
                   <input
@@ -254,13 +254,13 @@ const SignUp = () => {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full bg-white placeholder:text-gray-300 text-sm font-medium text-gray-500 px-4 py-2.5 rounded-lg border border-gray-200 focus:ring-2 focus:ring-[#6366f1]/20 outline-none transition-all"
+                    className="w-full bg-white dark:bg-dark-card placeholder:text-gray-300 dark:placeholder:text-dark-text-muted text-sm font-medium text-gray-500 dark:text-dark-text px-4 py-2.5 rounded-lg border border-gray-200 dark:border-dark-border focus:ring-2 focus:ring-[#6366f1]/20 dark:focus:ring-indigo-500/30 outline-none transition-all"
                   />
                 </div>
 
                 {/* Mobile Number */}
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-gray-400 ml-1">
+                  <label className="text-xs font-bold text-gray-400 dark:text-dark-text-secondary ml-1">
                     Phone Number
                   </label>
                   <input
@@ -270,7 +270,7 @@ const SignUp = () => {
                     value={formData.phone_number}
                     onChange={handleChange}
                     required
-                    className="w-full bg-white placeholder:text-gray-300 text-sm font-medium text-gray-500 px-4 py-2.5 rounded-lg border border-gray-200 focus:ring-2 focus:ring-[#6366f1]/20 outline-none transition-all"
+                    className="w-full bg-white dark:bg-dark-card placeholder:text-gray-300 dark:placeholder:text-dark-text-muted text-sm font-medium text-gray-500 dark:text-dark-text px-4 py-2.5 rounded-lg border border-gray-200 dark:border-dark-border focus:ring-2 focus:ring-[#6366f1]/20 dark:focus:ring-indigo-500/30 outline-none transition-all"
                   />
                 </div>
 
@@ -292,7 +292,7 @@ const SignUp = () => {
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-gray-400 ml-1">
+                    <label className="text-xs font-bold text-gray-400 dark:text-dark-text-secondary ml-1">
                       Confirm password
                     </label>
                     <input
@@ -302,7 +302,7 @@ const SignUp = () => {
                       placeholder="min. 8 character"
                       onChange={handleChange}
                       required
-                      className="w-full bg-white placeholder:text-gray-300 text-sm font-medium text-gray-500 px-4 py-2.5 rounded-lg border border-gray-200 focus:ring-2 focus:ring-[#6366f1]/20 outline-none transition-all"
+                      className="w-full bg-white dark:bg-dark-card placeholder:text-gray-300 dark:placeholder:text-dark-text-muted text-sm font-medium text-gray-500 dark:text-dark-text px-4 py-2.5 rounded-lg border border-gray-200 dark:border-dark-border focus:ring-2 focus:ring-[#6366f1]/20 dark:focus:ring-indigo-500/30 outline-none transition-all"
                     />
                   </div>
                 </div>
@@ -312,7 +312,7 @@ const SignUp = () => {
                   <input
                     id="show-password"
                     type="checkbox"
-                    className="w-4 h-4 bg-white "
+                    className="w-4 h-4 bg-white dark:bg-dark-card border-gray-300 dark:border-dark-border rounded cursor-pointer"
                     checked={showPassword}
                     onChange={(e) => setShowPassword(e.target.checked)}
                   />
