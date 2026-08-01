@@ -77,7 +77,7 @@ const App = () => {
 
   return (
     <ThemeProvider>
-      <div className="w-full min-h-screen bg-[#FAFAFC] flex flex-col">
+      <div className="w-full min-h-screen bg-[#FAFAFC] flex">
         <Analytics />
         <SpeedInsights />
         <Routes>
