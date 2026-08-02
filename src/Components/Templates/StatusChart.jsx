@@ -51,16 +51,6 @@ const StatusChart = ({ data }) => {
             />
             <Tooltip
               cursor={{ fill: "rgba(243, 244, 246, 0.5)" }}
-              contentStyle={{
-                borderRadius: "12px",
-                border: "none",
-                boxShadow:
-                  "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
-                backgroundColor: "rgba(255, 255, 255, 0.95)",
-                backdropFilter: "blur(8px)",
-                fontWeight: 500,
-              }}
-              itemStyle={{ color: "#1f2937" }}
             />
             <Bar
               dataKey="value"

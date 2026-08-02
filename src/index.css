@@ -101,3 +101,25 @@ body {
   background: rgba(255, 255, 255, 0.15);
   border-radius: 6px;
 }
+
+/* Recharts Dark Mode Overrides */
+.dark .recharts-tooltip-wrapper .recharts-default-tooltip {
+  background-color: var(--card) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--card-foreground) !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5) !important;
+}
+.dark .recharts-tooltip-wrapper .recharts-tooltip-item {
+  color: var(--card-foreground) !important;
+}
+.dark .recharts-cartesian-grid-horizontal line,
+.dark .recharts-cartesian-grid-vertical line {
+  stroke: var(--border) !important;
+}
+.dark .recharts-text {
+  fill: var(--muted-foreground) !important;
+}
+.dark .recharts-polar-grid-angle line,
+.dark .recharts-polar-grid-radial polygon {
+  stroke: var(--border) !important;
+}

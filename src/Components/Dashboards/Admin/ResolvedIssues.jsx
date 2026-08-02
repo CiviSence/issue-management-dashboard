@@ -238,7 +238,7 @@ const ResolvedIssues = () => {
                       {filteredIssues?.map((issue, i) => (
                         <tr
                           key={i}
-                          className="border-b border-zinc-200 last:border-none cursor-pointer hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated transition-colors"
+                          className="border-b border-zinc-200 dark:border-dark-border text-gray-700 dark:text-dark-text-secondary last:border-none cursor-pointer hover:bg-gray-50 dark:hover:bg-dark-elevated transition-colors"
                           onClick={() => setSelectedIssue(issue)}
                         >
                           <td className="p-3 font-medium">{issue.title}</td>
@@ -354,10 +354,10 @@ const ResolvedIssues = () => {
       {/* Resolution Details Modal */}
       {selectedIssue && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="bg-white dark:bg-dark-card rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 relative">
+          <div className="bg-white dark:bg-dark-card text-gray-900 dark:text-dark-text border border-transparent dark:border-dark-border rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 relative">
             <button
               onClick={() => setSelectedIssue(null)}
-              className="absolute top-4 right-4 text-gray-400 dark:text-dark-text-muted hover:text-gray-700 dark:hover:text-dark-text dark:text-dark-text-secondary bg-gray-100 dark:bg-dark-elevated hover:bg-gray-200 dark:bg-dark-border rounded-full p-2 transition-colors"
+              className="absolute top-4 right-4 text-gray-400 dark:text-dark-text-muted hover:text-gray-700 dark:hover:text-dark-text bg-gray-100 dark:bg-dark-elevated hover:bg-gray-200 dark:hover:bg-dark-border rounded-full p-2 transition-colors"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -373,7 +373,7 @@ const ResolvedIssues = () => {
             <div className="space-y-6">
               <div>
                 <h4 className="text-sm font-bold text-gray-900 dark:text-dark-text uppercase tracking-wider mb-2 flex items-center gap-2">
-                  <span className="w-4 h-0.5 bg-violet-50 dark:bg-violet-500/150 rounded-full" />
+                  <span className="w-4 h-0.5 bg-violet-50 dark:bg-violet-500/20 rounded-full" />
                   Issue Description
                 </h4>
                 <p className="text-gray-700 dark:text-dark-text-secondary text-sm bg-gray-50 dark:bg-dark-elevated p-3 rounded-xl border border-gray-100 dark:border-dark-border/50">
@@ -386,7 +386,7 @@ const ResolvedIssues = () => {
                   <span className="w-4 h-0.5 bg-green-500 rounded-full" />
                   Resolution Details
                 </h4>
-                <div className="bg-green-50/50 p-4 rounded-xl border border-green-100 text-gray-700 dark:text-dark-text-secondary">
+                <div className="bg-green-50/50 dark:bg-green-500/10 p-4 rounded-xl border border-green-100 dark:border-green-500/20 text-gray-700 dark:text-dark-text-secondary">
                   <div className="mb-4">
                     <span className="font-semibold block mb-1 text-sm">Staff Notes:</span>
                     <p className="text-sm">{selectedIssue.resolution_notes || "No resolution notes provided."}</p>
@@ -411,7 +411,7 @@ const ResolvedIssues = () => {
             <div className="mt-8 flex justify-end gap-3 pt-4 border-t border-gray-100 dark:border-dark-border/50">
               <button
                 onClick={() => setSelectedIssue(null)}
-                className="px-5 py-2.5 bg-gray-100 dark:bg-dark-elevated hover:bg-gray-200 dark:bg-dark-border text-gray-700 dark:text-dark-text-secondary font-medium rounded-xl transition-colors"
+                className="px-5 py-2.5 bg-gray-100 dark:bg-dark-elevated hover:bg-gray-200 dark:hover:bg-dark-border text-gray-700 dark:text-dark-text-secondary font-medium rounded-xl transition-colors"
               >
                 Close
               </button>

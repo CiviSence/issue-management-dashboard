@@ -182,7 +182,7 @@ const NotificationsTab = ({
 
             {/* Target Role Section */}
             {notificationType === "role" && (
-              <div className="p-4 bg-violet-50 dark:bg-violet-500/15/50 rounded-xl border border-violet-100 space-y-2">
+              <div className="p-4 bg-violet-50 dark:bg-violet-500/15 rounded-xl border border-violet-100 dark:border-violet-500/20 dark:border-violet-500/20 space-y-2">
                 <label className="block text-sm font-medium text-gray-700 dark:text-dark-text-secondary">
                   Recipient Group
                 </label>
@@ -194,7 +194,7 @@ const NotificationsTab = ({
                       role: e.target.value,
                     })
                   }
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-dark-border focus:border-violet-500 focus:ring-2 focus:ring-violet-200 outline-none bg-white"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-dark-border focus:border-violet-500 focus:ring-2 focus:ring-violet-200 outline-none bg-white dark:bg-dark-card"
                 >
                   <option value="all">All Users</option>
                   <option value="citizen">Citizens (Students)</option>
@@ -224,7 +224,7 @@ const NotificationsTab = ({
 
             {/* Custom Notification Section */}
             {notificationType === "custom" && (
-              <div className="p-4 bg-violet-50 dark:bg-violet-500/15/50 rounded-xl border border-violet-100 space-y-4">
+              <div className="p-4 bg-violet-50 dark:bg-violet-500/15 rounded-xl border border-violet-100 dark:border-violet-500/20 dark:border-violet-500/20 space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-dark-text-secondary mb-2">
                     Recipient Type
@@ -237,7 +237,7 @@ const NotificationsTab = ({
                         customRecipientType: e.target.value,
                       })
                     }
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-dark-border focus:border-violet-500 focus:ring-2 focus:ring-violet-200 outline-none bg-white text-sm"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-dark-border focus:border-violet-500 focus:ring-2 focus:ring-violet-200 outline-none bg-white dark:bg-dark-card text-sm"
                   >
                     <option value="all">All Users</option>
                     <option value="role">By Role</option>
@@ -392,25 +392,25 @@ const NotificationsTab = ({
             <div className="space-y-4">
               <div className="p-4 bg-violet-50 dark:bg-violet-500/15 rounded-xl">
                 <p className="text-sm text-gray-600 dark:text-dark-text-secondary mb-1">Total Sent</p>
-                <p className="text-2xl font-bold text-violet-700">
+                <p className="text-2xl font-bold text-violet-700 dark:text-violet-400">
                   {notificationStats.total_sent || 0}
                 </p>
               </div>
-              <div className="p-4 bg-amber-50 rounded-xl">
+              <div className="p-4 bg-amber-50 dark:bg-amber-500/15 rounded-xl">
                 <p className="text-sm text-gray-600 dark:text-dark-text-secondary mb-1">Pending</p>
-                <p className="text-2xl font-bold text-amber-700">
+                <p className="text-2xl font-bold text-amber-700 dark:text-amber-500">
                   {notificationStats.total_pending || 0}
                 </p>
               </div>
-              <div className="p-4 bg-green-50 rounded-xl">
+              <div className="p-4 bg-green-50 dark:bg-green-500/15 rounded-xl">
                 <p className="text-sm text-gray-600 dark:text-dark-text-secondary mb-1">Delivery Rate</p>
-                <p className="text-2xl font-bold text-green-700">
+                <p className="text-2xl font-bold text-green-700 dark:text-green-500">
                   {notificationStats.delivery_rate || 0}%
                 </p>
               </div>
-              <div className="p-4 bg-blue-50 rounded-xl">
+              <div className="p-4 bg-blue-50 dark:bg-blue-500/15 rounded-xl">
                 <p className="text-sm text-gray-600 dark:text-dark-text-secondary mb-1">Read Rate</p>
-                <p className="text-2xl font-bold text-blue-700">
+                <p className="text-2xl font-bold text-blue-700 dark:text-blue-500">
                   {notificationStats.read_rate || 0}%
                 </p>
               </div>
@@ -722,7 +722,7 @@ const UserSelector = ({ selectedId, onChange, users }) => {
     <div className="relative">
       <div 
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-dark-border bg-white flex items-center justify-between cursor-pointer hover:border-gray-300 dark:border-dark-border focus-within:ring-2 focus-within:ring-violet-200 text-sm"
+        className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-dark-border bg-white dark:bg-dark-card flex items-center justify-between cursor-pointer hover:border-gray-300 dark:border-dark-border focus-within:ring-2 focus-within:ring-violet-200 text-sm"
       >
         <span className={selectedUser ? "text-gray-800 dark:text-dark-text font-medium" : "text-gray-400 dark:text-dark-text-muted"}>
           {selectedUser ? `${selectedUser.name} (${selectedUser.email})` : "Select a recipient user..."}
@@ -769,7 +769,7 @@ const UserSelector = ({ selectedId, onChange, users }) => {
                   className={`px-3 py-2 text-sm rounded-lg cursor-pointer transition-colors text-left ${
                     selectedId === u.id 
                       ? "bg-[#7E70EB] text-white font-semibold" 
-                      : "text-gray-700 dark:text-dark-text-secondary hover:bg-violet-50 dark:bg-violet-500/15 dark:hover:bg-violet-50 dark:bg-violet-500/150/15"
+                      : "text-gray-700 dark:text-dark-text-secondary hover:bg-violet-50 dark:hover:bg-violet-500/15"
                   }`}
                 >
                   <p className="font-semibold">{u.name}</p>
@@ -1419,7 +1419,7 @@ const DashboardTab = ({
                   </h3>
                 </div>
                 {stats.unverifiedUsers > 0 && (
-                  <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full font-medium">
+                  <span className="text-xs bg-yellow-100 dark:bg-yellow-500/20 text-yellow-700 dark:text-yellow-400 px-2 py-0.5 rounded-full font-medium">
                     {stats.unverifiedUsers} pending
                   </span>
                 )}
@@ -1486,7 +1486,7 @@ const DashboardTab = ({
                 </div>
                 <button
                   onClick={() => setActiveTab("notifications")}
-                  className="text-xs text-violet-600 dark:text-violet-400 hover:text-violet-700 font-medium"
+                  className="text-xs text-violet-600 dark:text-violet-400 hover:text-violet-700 dark:text-violet-400 font-medium"
                 >
                   Manage →
                 </button>
@@ -1495,27 +1495,27 @@ const DashboardTab = ({
               {notificationStats ? (
                 <div className="p-4 space-y-4">
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="p-3 bg-blue-50 rounded-lg">
-                      <p className="text-xs text-blue-600 font-medium">
+                    <div className="p-3 bg-blue-50 dark:bg-blue-500/15 rounded-lg">
+                      <p className="text-xs text-blue-600 dark:text-blue-400 font-medium">
                         Total Sent
                       </p>
-                      <p className="text-lg font-bold text-blue-900">
+                      <p className="text-lg font-bold text-blue-900 dark:text-blue-100">
                         {notificationStats.total_sent}
                       </p>
                     </div>
-                    <div className="p-3 bg-green-50 rounded-lg">
-                      <p className="text-xs text-green-600 font-medium">
+                    <div className="p-3 bg-green-50 dark:bg-green-500/15 rounded-lg">
+                      <p className="text-xs text-green-600 dark:text-green-400 font-medium">
                         Delivered
                       </p>
-                      <p className="text-lg font-bold text-green-900">
+                      <p className="text-lg font-bold text-green-900 dark:text-green-100">
                         {notificationStats.delivery_rate}%
                       </p>
                     </div>
-                    <div className="p-3 bg-yellow-50 rounded-lg">
-                      <p className="text-xs text-yellow-600 font-medium">
+                    <div className="p-3 bg-yellow-50 dark:bg-yellow-500/15 rounded-lg">
+                      <p className="text-xs text-yellow-600 dark:text-yellow-400 font-medium">
                         Pending
                       </p>
-                      <p className="text-lg font-bold text-yellow-900">
+                      <p className="text-lg font-bold text-yellow-900 dark:text-yellow-100">
                         {notificationStats.total_pending}
                       </p>
                     </div>
@@ -1523,7 +1523,7 @@ const DashboardTab = ({
                       <p className="text-xs text-violet-600 dark:text-violet-400 font-medium">
                         Read Rate
                       </p>
-                      <p className="text-lg font-bold text-violet-900">
+                      <p className="text-lg font-bold text-violet-900 dark:text-violet-100">
                         {notificationStats.read_rate}%
                       </p>
                     </div>
@@ -1537,7 +1537,7 @@ const DashboardTab = ({
                     </div>
                     <div className="h-2 bg-gray-100 dark:bg-dark-elevated rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-violet-50 dark:bg-violet-500/150 rounded-full transition-all duration-500"
+                        className="h-full bg-violet-500 dark:bg-violet-400 rounded-full transition-all duration-500"
                         style={{ width: `${notificationStats.delivery_rate}%` }}
                       />
                     </div>
@@ -1559,7 +1559,7 @@ const DashboardTab = ({
                 label: "View All Users",
                 icon: Users,
                 tab: "users",
-                color: "text-blue-600 bg-blue-50",
+                color: "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/15",
               },
               {
                 label: "Send Notification",
@@ -1571,7 +1571,7 @@ const DashboardTab = ({
                 label: "Banned List",
                 icon: Ban,
                 tab: "banned",
-                color: "text-red-600 dark:text-red-400 bg-red-50",
+                color: "text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/15",
               },
               {
                 label: "System Logs",
@@ -1682,11 +1682,11 @@ const DashboardTab = ({
     const getStatusColor = (status) => {
       switch (status) {
         case "verified":
-          return "bg-green-100 text-green-700 border-green-200";
+          return "bg-green-100 dark:bg-green-500/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-500/30";
         case "unverified":
-          return "bg-yellow-100 text-yellow-700 border-yellow-200";
+          return "bg-yellow-100 dark:bg-yellow-500/20 text-yellow-700 dark:text-yellow-400 border-yellow-200 dark:border-yellow-500/30";
         case "banned":
-          return "bg-red-100 text-red-700 dark:text-red-400 border-red-200 dark:border-red-500/30";
+          return "bg-red-100 dark:bg-red-500/20 text-red-700 dark:text-red-400 border-red-200 dark:border-red-500/30";
         default:
           return "bg-gray-100 dark:bg-dark-elevated text-gray-700 dark:text-dark-text-secondary";
       }
@@ -1695,11 +1695,11 @@ const DashboardTab = ({
     const getRoleColor = (role) => {
       switch (role?.toLowerCase()) {
         case "admin":
-          return "bg-purple-100 text-purple-700 border-purple-200";
+          return "bg-purple-100 dark:bg-purple-500/20 text-purple-700 dark:text-purple-400 border-purple-200 dark:border-purple-500/30";
         case "moderator":
-          return "bg-blue-100 text-blue-700 border-blue-200";
+          return "bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-500/30";
         case "trusted":
-          return "bg-indigo-100 text-indigo-700";
+          return "bg-indigo-100 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-400";
         default:
           return "bg-gray-100 dark:bg-dark-elevated text-gray-700 dark:text-dark-text-secondary";
       }
@@ -1787,7 +1787,7 @@ const DashboardTab = ({
         <div className="px-4 pb-4 flex gap-2">
           <button
             onClick={() => fetchUserDetails(user.id)}
-            className="flex-1 py-2 bg-gray-100 dark:bg-dark-elevated hover:bg-gray-200 dark:bg-dark-border text-gray-700 dark:text-dark-text-secondary text-sm font-medium rounded-lg transition-colors flex items-center justify-center gap-1.5"
+            className="flex-1 py-2 bg-gray-100 dark:bg-dark-elevated hover:bg-gray-200 dark:hover:bg-dark-border text-gray-700 dark:text-dark-text-secondary text-sm font-medium rounded-lg transition-colors flex items-center justify-center gap-1.5"
           >
             <Eye className="w-4 h-4" />
             View
@@ -1803,7 +1803,7 @@ const DashboardTab = ({
           )}
           <button
             onClick={() => openBanModal(user.id)}
-            className="px-3 py-2 bg-red-50 dark:bg-red-500/15 hover:bg-red-100 text-red-600 dark:text-red-400 rounded-lg transition-colors"
+            className="px-3 py-2 bg-red-50 dark:bg-red-500/15 dark:hover:bg-red-500/25 text-red-600 dark:text-red-400 rounded-lg transition-colors"
             title="Ban"
           >
             <Ban className="w-4 h-4" />
@@ -1862,14 +1862,14 @@ const DashboardTab = ({
           {user.verification_status !== "verified" && (
             <button
               onClick={() => handleVerifyUser(user.id)}
-              className="p-2 text-green-600 hover:bg-green-50 rounded"
+              className="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-500/15 rounded"
             >
               <CheckCircle className="w-4 h-4" />
             </button>
           )}
           <button
             onClick={() => openBanModal(user.id)}
-            className="p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:bg-red-500/15 rounded"
+            className="p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/15 rounded"
           >
             <Ban className="w-4 h-4" />
           </button>
@@ -1898,14 +1898,14 @@ const DashboardTab = ({
             {/* Quick Filter Chips */}
             <button
               onClick={() => setActiveTab("unverified")}
-              className="flex items-center gap-2 px-3 py-1.5 bg-yellow-100 text-yellow-700 rounded-full text-sm font-medium hover:bg-yellow-200 transition-colors"
+              className="flex items-center gap-2 px-3 py-1.5 bg-yellow-100 dark:bg-yellow-500/20 text-yellow-700 dark:text-yellow-400 rounded-full text-sm font-medium hover:bg-yellow-200 transition-colors"
             >
               <Shield className="w-4 h-4" />
               Pending ({stats.unverifiedUsers})
             </button>
             <button
               onClick={() => setActiveTab("banned")}
-              className="flex items-center gap-2 px-3 py-1.5 bg-red-100 text-red-700 dark:text-red-400 rounded-full text-sm font-medium hover:bg-red-200 transition-colors"
+              className="flex items-center gap-2 px-3 py-1.5 bg-red-100 dark:bg-red-500/20 text-red-700 dark:text-red-400 rounded-full text-sm font-medium hover:bg-red-200 transition-colors"
             >
               <Ban className="w-4 h-4" />
               Banned ({stats.bannedUsers})
@@ -1930,8 +1930,8 @@ const DashboardTab = ({
               onClick={() => setShowFilters(!showFilters)}
               className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                 showFilters
-                  ? "bg-violet-100 text-violet-700"
-                  : "bg-gray-100 dark:bg-dark-elevated text-gray-700 dark:text-dark-text-secondary hover:bg-gray-200 dark:bg-dark-border"
+                  ? "bg-violet-100 dark:bg-violet-500/20 text-violet-700 dark:text-violet-400"
+                  : "bg-gray-100 dark:bg-dark-elevated text-gray-700 dark:text-dark-text-secondary hover:bg-gray-200 dark:hover:bg-dark-border"
               }`}
             >
               <Filter className="w-4 h-4" />
@@ -2018,7 +2018,7 @@ const DashboardTab = ({
 
         {/* Bulk Actions Bar */}
         {selectedUsers.length > 0 && (
-          <div className="flex items-center justify-between p-3 bg-violet-50 dark:bg-violet-500/15 border border-violet-200 rounded-lg animate-fade-in">
+          <div className="flex items-center justify-between p-3 bg-violet-50 dark:bg-violet-500/15 border border-violet-200 dark:border-violet-500/30 rounded-lg animate-fade-in">
             <div className="flex items-center gap-2 text-sm text-violet-900">
               <CheckSquare className="w-4 h-4" />
               <span className="font-medium">
@@ -2186,7 +2186,7 @@ const DashboardTab = ({
                             <button
                               title="Verify User"
                               onClick={() => handleVerifyUser(user.id)}
-                              className="p-1.5 text-green-600 hover:bg-green-50 rounded transition-colors"
+                              className="p-1.5 text-green-600 hover:bg-green-50 dark:hover:bg-green-500/15 rounded transition-colors"
                             >
                               <CheckCircle className="w-4 h-4" />
                             </button>
@@ -2194,7 +2194,7 @@ const DashboardTab = ({
                             <button
                               title="Revoke Verification"
                               onClick={() => handleRevokeVerification(user.id)}
-                              className="p-1.5 text-red-600 dark:text-red-400 hover:bg-red-50 dark:bg-red-500/15 rounded transition-colors"
+                              className="p-1.5 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/15 rounded transition-colors"
                             >
                               <X className="w-4 h-4" />
                             </button>
@@ -2202,7 +2202,7 @@ const DashboardTab = ({
                           <button
                             title="Ban User"
                             onClick={() => openBanModal(user.id)}
-                            className="p-1.5 text-red-600 dark:text-red-400 hover:bg-red-50 dark:bg-red-500/15 rounded transition-colors"
+                            className="p-1.5 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/15 rounded transition-colors"
                           >
                             <Ban className="w-4 h-4" />
                           </button>
@@ -2237,7 +2237,7 @@ const DashboardTab = ({
                       sortBy: "newest",
                     });
                   }}
-                  className="mt-4 text-violet-600 dark:text-violet-400 hover:text-violet-700 text-sm font-medium"
+                  className="mt-4 text-violet-600 dark:text-violet-400 hover:text-violet-700 dark:text-violet-400 text-sm font-medium"
                 >
                   Clear all filters
                 </button>
@@ -2374,7 +2374,7 @@ const DashboardTab = ({
           </button>
           <button
             onClick={() => fetchUserDetails(user.id)}
-            className="px-3 py-2 bg-gray-100 dark:bg-dark-elevated hover:bg-gray-200 dark:bg-dark-border text-gray-700 dark:text-dark-text-secondary rounded-lg transition-colors"
+            className="px-3 py-2 bg-gray-100 dark:bg-dark-elevated hover:bg-gray-200 dark:hover:bg-dark-border text-gray-700 dark:text-dark-text-secondary rounded-lg transition-colors"
           >
             <Eye className="w-4 h-4" />
           </button>
@@ -2390,10 +2390,10 @@ const DashboardTab = ({
               <img
                 src={req.requesting_user_avatar}
                 alt={req.requesting_user_name}
-                className="w-10 h-10 rounded-full object-cover border-2 border-violet-100"
+                className="w-10 h-10 rounded-full object-cover border-2 border-violet-100 dark:border-violet-500/20"
               />
             ) : (
-              <div className="w-10 h-10 rounded-full bg-violet-100 text-violet-600 dark:text-violet-400 flex items-center justify-center font-bold">
+              <div className="w-10 h-10 rounded-full bg-violet-100 dark:bg-violet-500/20 text-violet-600 dark:text-violet-400 flex items-center justify-center font-bold">
                 {req.requesting_user_name?.charAt(0)}
               </div>
             )}
@@ -2409,7 +2409,7 @@ const DashboardTab = ({
           <span
             className={`text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded ${
               req.status === "pending"
-                ? "bg-amber-50 text-amber-600"
+                ? "bg-amber-50 dark:bg-amber-500/15 text-amber-600 dark:text-amber-500"
                 : "bg-gray-100 dark:bg-dark-elevated text-gray-600 dark:text-dark-text-secondary"
             }`}
           >
@@ -2440,7 +2440,7 @@ const DashboardTab = ({
                   href={doc.url || doc}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 dark:bg-dark-elevated hover:bg-gray-200 dark:bg-dark-border rounded-lg text-xs font-medium text-gray-700 dark:text-dark-text-secondary transition-colors"
+                  className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 dark:bg-dark-elevated hover:bg-gray-200 dark:hover:bg-dark-border rounded-lg text-xs font-medium text-gray-700 dark:text-dark-text-secondary transition-colors"
                 >
                   <FileText className="w-3.5 h-3.5" />
                   {doc.name || `Proof ${i + 1}`}
@@ -2458,7 +2458,7 @@ const DashboardTab = ({
           <button
             onClick={() => handleReview(req.id, "reject")}
             disabled={reviewingId === req.id}
-            className="flex-1 py-2 text-sm font-bold text-red-600 dark:text-red-400 hover:bg-red-50 dark:bg-red-500/15 rounded-lg border border-red-100 transition-colors"
+            className="flex-1 py-2 text-sm font-bold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/15 rounded-lg border border-red-100 dark:border-red-500/20 dark:border-red-500/20 transition-colors"
           >
             Reject
           </button>
@@ -2483,20 +2483,20 @@ const DashboardTab = ({
     return (
       <div className="space-y-4 animate-fade-in">
         <div className="flex items-center justify-between">
-          <div className="flex gap-2 bg-white/50 p-1 rounded-xl border border-gray-100 dark:border-dark-border/50 w-fit">
+          <div className="flex gap-2 bg-white dark:bg-dark-card/50 p-1 rounded-xl border border-gray-100 dark:border-dark-border/50 w-fit">
             <button
               onClick={() => setSubTab("users")}
-              className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-all ${subTab === "users" ? "bg-[#7E70EB] text-white shadow-md" : "text-gray-500 dark:text-dark-text-secondary hover:bg-white"}`}
+              className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-all ${subTab === "users" ? "bg-[#7E70EB] text-white shadow-md" : "text-gray-500 dark:text-dark-text-secondary hover:bg-white dark:bg-dark-card"}`}
             >
               Unverified Users
             </button>
             <button
               onClick={() => setSubTab("requests")}
-              className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-all ${subTab === "requests" ? "bg-[#7E70EB] text-white shadow-md" : "text-gray-500 dark:text-dark-text-secondary hover:bg-white"}`}
+              className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-all ${subTab === "requests" ? "bg-[#7E70EB] text-white shadow-md" : "text-gray-500 dark:text-dark-text-secondary hover:bg-white dark:bg-dark-card"}`}
             >
               Review Requests{" "}
               {verificationRequests.filter((r) => r.status?.toLowerCase() === "pending").length > 0 && (
-                <span className="ml-1 px-1.5 bg-white text-[#7E70EB] rounded-md text-[10px]">
+                <span className="ml-1 px-1.5 bg-white dark:bg-dark-card text-[#7E70EB] rounded-md text-[10px]">
                   {verificationRequests.filter((r) => r.status?.toLowerCase() === "pending").length}
                 </span>
               )}
@@ -2555,7 +2555,7 @@ const DashboardTab = ({
                 {filteredUsers.map((user) => (
                   <div
                     key={user.id}
-                    className="p-4 flex items-center justify-between hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated transition-colors"
+                    className="p-4 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-dark-elevated transition-colors"
                   >
                     <div className="flex items-center gap-3 min-w-0">
                       <input
@@ -2601,7 +2601,7 @@ const DashboardTab = ({
                       </button>
                       <button
                         onClick={() => fetchUserDetails(user.id)}
-                        className="p-1.5 bg-gray-100 dark:bg-dark-elevated hover:bg-gray-200 dark:bg-dark-border text-gray-700 dark:text-dark-text-secondary rounded-lg transition-colors"
+                        className="p-1.5 bg-gray-100 dark:bg-dark-elevated hover:bg-gray-200 dark:hover:bg-dark-border text-gray-700 dark:text-dark-text-secondary rounded-lg transition-colors"
                       >
                         <Eye className="w-4 h-4" />
                       </button>
@@ -2629,7 +2629,7 @@ const DashboardTab = ({
               ))}
             {verificationRequests.filter((r) => r.status?.toLowerCase() === "pending")
               .length === 0 && (
-              <div className="col-span-full text-center py-20 bg-white rounded-3xl border border-gray-100 dark:border-dark-border/50">
+              <div className="col-span-full text-center py-20 bg-white dark:bg-dark-card rounded-3xl border border-gray-100 dark:border-dark-border/50">
                 <div className="w-16 h-16 bg-gray-50 dark:bg-dark-elevated rounded-full flex items-center justify-center mx-auto mb-4">
                   <CheckSquare className="w-8 h-8 text-gray-200" />
                 </div>
@@ -2673,7 +2673,7 @@ const DashboardTab = ({
                         {user.name}
                       </h3>
 
-                      <span className="px-3 py-1 text-xs font-medium rounded-full bg-red-100 text-red-600 dark:text-red-400">
+                      <span className="px-3 py-1 text-xs font-medium rounded-full bg-red-100 dark:bg-red-500/20 text-red-600 dark:text-red-400">
                         Banned
                       </span>
                     </div>
@@ -2685,7 +2685,7 @@ const DashboardTab = ({
                          {new Date(user.banned_at).toLocaleDateString()}
                       </span>
 
-                      <span className="px-3 py-1 rounded-full bg-amber-50 text-amber-600 text-xs">
+                      <span className="px-3 py-1 rounded-full bg-amber-50 dark:bg-amber-500/15 text-amber-600 dark:text-amber-500 text-xs">
                          {user.ban_reason || "Violation of terms"}
                       </span>
                     </div>
@@ -2705,8 +2705,8 @@ const DashboardTab = ({
           ))}
         </div>
       ) : (
-        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 dark:border-dark-border/50 py-20 text-center">
-          <div className="w-20 h-20 mx-auto bg-green-100 rounded-full flex items-center justify-center mb-5">
+        <div className="bg-white dark:bg-dark-card rounded-3xl shadow-sm border border-gray-100 dark:border-dark-border/50 py-20 text-center">
+          <div className="w-20 h-20 mx-auto bg-green-100 dark:bg-green-500/20 rounded-full flex items-center justify-center mb-5">
             <Shield className="w-10 h-10 text-green-500" />
           </div>
 
@@ -2763,7 +2763,7 @@ const DashboardTab = ({
     return (
       <div className="space-y-6 animate-fade-in">
         {/* Search & Filters */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-4 rounded-2xl border border-gray-100 dark:border-dark-border/50 shadow-xs">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white dark:bg-dark-card p-4 rounded-2xl border border-gray-100 dark:border-dark-border/50 shadow-xs">
           <div className="flex bg-gray-100 dark:bg-dark-elevated p-1 rounded-xl w-fit">
             {[
               { id: "all", label: "All Reports" },
@@ -2808,15 +2808,15 @@ const DashboardTab = ({
               <div
                 key={report.id}
                 className={`bg-white dark:bg-dark-card rounded-2xl border transition-all duration-300 hover:shadow-md ${
-                  isPending ? "border-amber-100 hover:border-amber-200" : "border-gray-200 dark:border-dark-border"
+                  isPending ? "border-amber-100 dark:border-amber-500/20 hover:border-amber-200 dark:border-amber-500/30" : "border-gray-200 dark:border-dark-border"
                 }`}
               >
                 {/* Card Header */}
                 <div className="p-5 border-b border-gray-50 flex flex-wrap items-center justify-between gap-4">
                   <div className="flex items-center gap-3">
                     <div className={`p-2 rounded-xl ${
-                      isPending ? "bg-amber-50 text-amber-600" :
-                      isReviewed ? "bg-emerald-50 text-emerald-600" : "bg-gray-100 dark:bg-dark-elevated text-gray-600 dark:text-dark-text-secondary"
+                      isPending ? "bg-amber-50 dark:bg-amber-500/15 text-amber-600 dark:text-amber-500" :
+                      isReviewed ? "bg-emerald-50 dark:bg-emerald-500/15 text-emerald-600 dark:text-emerald-500" : "bg-gray-100 dark:bg-dark-elevated text-gray-600 dark:text-dark-text-secondary"
                     }`}>
                       <AlertTriangle className="w-5 h-5" />
                     </div>
@@ -2832,9 +2832,9 @@ const DashboardTab = ({
                     <span
                       className={`text-xs font-black uppercase tracking-widest px-2.5 py-1 rounded-md border ${
                         isPending
-                          ? "bg-amber-50 text-amber-700 border-amber-200"
+                          ? "bg-amber-50 dark:bg-amber-500/15 text-amber-700 dark:text-amber-500 border border-amber-200 dark:border-amber-500/20"
                           : isReviewed
-                          ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                          ? "bg-emerald-50 dark:bg-emerald-500/15 text-emerald-700 dark:text-emerald-500 border border-emerald-200 dark:border-emerald-500/20"
                           : "bg-gray-100 dark:bg-dark-elevated text-gray-700 dark:text-dark-text-secondary border-gray-200 dark:border-dark-border"
                       }`}
                     >
@@ -2863,7 +2863,7 @@ const DashboardTab = ({
 
                     <div className="bg-gray-50/50 dark:bg-dark-elevated/50 p-3 rounded-xl border border-gray-100 dark:border-dark-border/50">
                       <p className="text-xs font-bold text-gray-400 dark:text-dark-text-muted uppercase tracking-wider mb-1">Report Reason</p>
-                      <span className="inline-block px-2.5 py-1 bg-violet-50 dark:bg-violet-500/15 text-violet-700 text-xs font-bold rounded-lg border border-violet-100 capitalize mt-1">
+                      <span className="inline-block px-2.5 py-1 bg-violet-50 dark:bg-violet-500/15 text-violet-700 dark:text-violet-400 text-xs font-bold rounded-lg border border-violet-100 dark:border-violet-500/20 capitalize mt-1">
                         {report.reason?.replace(/_/g, " ")}
                       </span>
                     </div>
@@ -2871,7 +2871,7 @@ const DashboardTab = ({
 
                   {/* Reported Item Link */}
                   {(report.issue_id || report.comment_id) && (
-                    <div className="bg-linear-to-r from-violet-50/30 to-indigo-50/30 p-3 rounded-xl border border-indigo-50 flex flex-wrap items-center justify-between gap-3">
+                    <div className="bg-linear-to-r from-violet-50/30 to-indigo-50/30 dark:from-violet-500/10 dark:to-indigo-500/10 p-3 rounded-xl border border-indigo-50 dark:border-indigo-500/20 flex flex-wrap items-center justify-between gap-3">
                       <div className="flex items-center gap-2">
                         <FileText className="w-4 h-4 text-indigo-500" />
                         <span className="text-xs text-gray-600 dark:text-dark-text-secondary">
@@ -2902,8 +2902,8 @@ const DashboardTab = ({
 
                   {/* Resolution Details for Reviewed Reports */}
                   {isReviewed && (
-                    <div className="mt-4 p-4 bg-emerald-50/30 rounded-xl border border-emerald-100 space-y-2 animate-fade-in">
-                      <div className="flex justify-between text-xs text-emerald-700 font-bold uppercase tracking-wider">
+                    <div className="mt-4 p-4 bg-emerald-50/30 dark:bg-emerald-500/10 rounded-xl border border-emerald-100 dark:border-emerald-500/20 space-y-2 animate-fade-in">
+                      <div className="flex justify-between text-xs text-emerald-700 dark:text-emerald-400 font-bold uppercase tracking-wider">
                         <span>Resolution Details</span>
                         {report.resolved_at && (
                           <span>
@@ -3028,8 +3028,8 @@ const DashboardTab = ({
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center space-x-1 sm:space-x-2 px-3 sm:px-4 md:px-6 py-2 sm:py-3 rounded-xl font-medium transition-all whitespace-nowrap ${
                 activeTab === tab.id
-                  ? "bg-[#7E70EB] text-white shadow-lg shadow-indigo-100"
-                  : "bg-gray-100 dark:bg-dark-elevated text-gray-600 dark:text-dark-text-secondary hover:bg-gray-300"
+                  ? "bg-[#7E70EB] text-white shadow-lg shadow-indigo-100 dark:shadow-none"
+                  : "bg-gray-100 dark:bg-dark-elevated text-gray-600 dark:text-dark-text-secondary hover:bg-gray-300 dark:hover:bg-dark-border"
               }`}
             >
               <tab.icon className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
@@ -3038,8 +3038,8 @@ const DashboardTab = ({
                 <span
                   className={`px-1.5 sm:px-2 py-0.5 rounded-full text-xs ${
                     activeTab === tab.id
-                      ? "bg-white text-violet-600 dark:text-violet-400"
-                      : "bg-violet-100 text-violet-600 dark:text-violet-400"
+                      ? "bg-white dark:bg-dark-card text-violet-600 dark:text-violet-400"
+                      : "bg-violet-100 dark:bg-violet-500/20 text-violet-600 dark:text-violet-400"
                   }`}
                 >
                   {tab.badge}
@@ -3130,7 +3130,7 @@ const DashboardTab = ({
                 <textarea
                   value={reviewNotes}
                   onChange={(e) => setReviewNotes(e.target.value)}
-                  className="w-full border border-gray-200 dark:border-dark-border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500"
+                  className="w-full bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border text-gray-900 dark:text-dark-text rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 placeholder:text-gray-400 dark:placeholder:text-dark-text-muted"
                   rows="4"
                   placeholder="Enter details about why this action was taken..."
                 />
@@ -3141,7 +3141,7 @@ const DashboardTab = ({
                 <button
                   onClick={() => setShowReviewModal(false)}
                   disabled={actioningReportId === selectedReport.id}
-                  className="px-4 py-2.5 rounded-xl bg-gray-100 dark:bg-dark-elevated hover:bg-gray-200 dark:bg-dark-border text-gray-700 dark:text-dark-text-secondary font-bold text-xs cursor-pointer transition-colors disabled:opacity-50"
+                  className="px-4 py-2.5 rounded-xl bg-gray-100 dark:bg-dark-elevated hover:bg-gray-200 dark:hover:bg-dark-border text-gray-700 dark:text-dark-text-secondary font-bold text-xs cursor-pointer transition-colors disabled:opacity-50"
                 >
                   Cancel
                 </button>
@@ -3225,7 +3225,7 @@ const DashboardTab = ({
         {/* User Details Modal */}
         {showUserModal && (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-in fade-in duration-200">
-            <div className="bg-white rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl ring-1 ring-black/5">
+            <div className="bg-white dark:bg-dark-card rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl ring-1 ring-black/5 dark:ring-white/10">
               {/* Header */}
               <div className="relative bg-linear-to-r from-violet-600 to-purple-700 p-6 sm:p-8 text-white">
                 <button
@@ -3246,7 +3246,7 @@ const DashboardTab = ({
                     </div>
                     {userDetails.user?.is_active && (
                       <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-4 border-white flex items-center justify-center">
-                        <div className="w-2 h-2 bg-white rounded-full" />
+                        <div className="w-2 h-2 bg-white dark:bg-dark-card rounded-full" />
                       </div>
                     )}
                   </div>
@@ -3351,7 +3351,7 @@ const DashboardTab = ({
 
                 {/* Stats Grid */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  <div className="bg-linear-to-br from-violet-50 to-purple-50 p-4 rounded-xl border border-violet-100">
+                  <div className="bg-linear-to-br from-violet-50 to-purple-50 dark:from-violet-500/10 dark:to-purple-500/10 p-4 rounded-xl border border-violet-100 dark:border-violet-500/20">
                     <div className="flex items-center gap-2 mb-2">
                       <Award className="w-5 h-5 text-violet-600 dark:text-violet-400" />
                       <span className="text-xs font-medium text-violet-600 dark:text-violet-400">
@@ -3363,7 +3363,7 @@ const DashboardTab = ({
                     </p>
                   </div>
 
-                  <div className="bg-linear-to-br from-blue-50 to-cyan-50 p-4 rounded-xl border border-blue-100">
+                  <div className="bg-linear-to-br from-blue-50 to-cyan-50 dark:from-blue-500/10 dark:to-cyan-500/10 p-4 rounded-xl border border-blue-100 dark:border-blue-500/20">
                     <div className="flex items-center gap-2 mb-2">
                       <FileText className="w-5 h-5 text-blue-600" />
                       <span className="text-xs font-medium text-blue-600">
@@ -3378,7 +3378,7 @@ const DashboardTab = ({
                     </p>
                   </div>
 
-                  <div className="bg-linear-to-br from-green-50 to-emerald-50 p-4 rounded-xl border border-green-100">
+                  <div className="bg-linear-to-br from-green-50 to-emerald-50 dark:from-green-500/10 dark:to-emerald-500/10 p-4 rounded-xl border border-green-100 dark:border-green-500/20">
                     <div className="flex items-center gap-2 mb-2">
                       <CheckCircle2 className="w-5 h-5 text-green-600" />
                       <span className="text-xs font-medium text-green-600">
@@ -3393,7 +3393,7 @@ const DashboardTab = ({
                     </p>
                   </div>
 
-                  <div className="bg-linear-to-br from-amber-50 to-orange-50 p-4 rounded-xl border border-amber-100">
+                  <div className="bg-linear-to-br from-amber-50 to-orange-50 dark:from-amber-500/10 dark:to-orange-500/10 p-4 rounded-xl border border-amber-100 dark:border-amber-500/20">
                     <div className="flex items-center gap-2 mb-2">
                       <Activity className="w-5 h-5 text-amber-600" />
                       <span className="text-xs font-medium text-amber-600">
@@ -3569,7 +3569,7 @@ const DashboardTab = ({
                               <span
                                 className={`px-2 py-1 rounded-full text-xs font-medium ${
                                   issue.priority === "critical"
-                                    ? "bg-red-100 text-red-700 dark:text-red-400"
+                                    ? "bg-red-100 dark:bg-red-500/20 text-red-700 dark:text-red-400"
                                     : issue.priority === "high"
                                       ? "bg-orange-100 text-orange-700"
                                       : "bg-gray-100 dark:bg-dark-elevated text-gray-700 dark:text-dark-text-secondary"

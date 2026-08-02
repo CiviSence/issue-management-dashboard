@@ -79,12 +79,6 @@ const IssueAgingCard = ({ issues = [] }) => {
             interval={0}
           />
           <Tooltip
-            contentStyle={{
-              borderRadius: "10px",
-              border: "none",
-              boxShadow: "0 4px 12px rgb(0 0 0 / 0.08)",
-              fontSize: "13px",
-            }}
             formatter={(value) => [`${value} issues`, "Count"]}
           />
           <Bar

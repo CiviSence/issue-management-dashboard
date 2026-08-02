@@ -338,7 +338,7 @@ const IssueDetails = () => {
                             navigate("/reported-issues");
                           }
                         }}
-                        className="px-2.5 py-1.5 sm:py-2 bg-gray-100 dark:bg-dark-elevated hover:bg-gray-200 dark:bg-dark-border text-gray-700 dark:text-dark-text-secondary rounded-lg transition-all duration-200 flex items-center gap-1 sm:gap-1.5 text-xs sm:text-sm font-medium shrink-0"
+                        className="px-2.5 py-1.5 sm:py-2 bg-gray-100 dark:bg-dark-elevated hover:bg-gray-200 dark:hover:bg-dark-border text-gray-700 dark:text-dark-text-secondary rounded-lg transition-all duration-200 flex items-center gap-1 sm:gap-1.5 text-xs sm:text-sm font-medium shrink-0"
                         title="Go Back"
                       >
                         <svg
@@ -366,8 +366,8 @@ const IssueDetails = () => {
                       {/* Quick Actions */}
                       <button
                         className={`px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 flex items-center gap-1.5 sm:gap-2 whitespace-nowrap ${issue.status === "spam"
-                          ? "bg-orange-100 text-orange-700 border border-orange-200"
-                          : "bg-white dark:bg-dark-card border border-gray-300 dark:border-dark-border text-gray-700 dark:text-dark-text-secondary hover:bg-orange-50 hover:text-orange-600 hover:border-orange-300"
+                          ? "bg-orange-100 text-orange-700 border border-orange-200 dark:bg-orange-500/10 dark:text-orange-400 dark:border-orange-500/30"
+                          : "bg-white dark:bg-dark-card border border-gray-300 dark:border-dark-border text-gray-700 dark:text-dark-text-secondary hover:bg-orange-50 dark:hover:bg-orange-500/10 hover:text-orange-600 dark:hover:text-orange-400 hover:border-orange-300 dark:hover:border-orange-500/50"
                           }`}
                       >
                         <svg
@@ -404,8 +404,8 @@ const IssueDetails = () => {
                         disabled={isDeleting}
                         className={
                           isDeleting
-                            ? "opacity-50 px-2 sm:px-4 py-1.5 sm:py-2 bg-white dark:bg-dark-card border border-gray-300 dark:border-dark-border text-red-600 dark:text-red-400 hover:bg-red-50 dark:bg-red-500/15 hover:border-red-300 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 flex items-center gap-1.5 sm:gap-2 whitespace-nowrap cursor-not-allowed"
-                            : "px-2 sm:px-4 py-1.5 sm:py-2 bg-white dark:bg-dark-card border border-gray-300 dark:border-dark-border text-red-600 dark:text-red-400 hover:bg-red-50 dark:bg-red-500/15 hover:border-red-300 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 flex items-center gap-1.5 sm:gap-2 whitespace-nowrap"
+                            ? "opacity-50 px-2 sm:px-4 py-1.5 sm:py-2 bg-white dark:bg-dark-card border border-gray-300 dark:border-dark-border text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/15 hover:border-red-300 dark:hover:border-red-500/50 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 flex items-center gap-1.5 sm:gap-2 whitespace-nowrap cursor-not-allowed"
+                            : "px-2 sm:px-4 py-1.5 sm:py-2 bg-white dark:bg-dark-card border border-gray-300 dark:border-dark-border text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/15 hover:border-red-300 dark:hover:border-red-500/50 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 flex items-center gap-1.5 sm:gap-2 whitespace-nowrap"
                         }
                       >
                         <svg
@@ -481,7 +481,7 @@ const IssueDetails = () => {
                                 }}
                                 className={`px-2 sm:px-3 py-2 rounded-lg text-xs sm:text-sm font-medium capitalize transition-all duration-200 ${issue.status === status
                                   ? "bg-gray-900 text-white shadow-md"
-                                  : "bg-gray-100 dark:bg-dark-elevated text-gray-600 dark:text-dark-text-secondary hover:bg-gray-200 dark:bg-dark-border"
+                                    : "bg-gray-100 dark:bg-dark-elevated text-gray-600 dark:text-dark-text-secondary hover:bg-gray-200 dark:hover:bg-dark-border"
                                   }`}
                               >
                                 {status.replace("_", " ")}
@@ -512,7 +512,7 @@ const IssueDetails = () => {
                                         : priority === "medium"
                                           ? "bg-yellow-500 text-white"
                                           : "bg-green-500 text-white"
-                                    : "bg-gray-100 dark:bg-dark-elevated text-gray-600 dark:text-dark-text-secondary hover:bg-gray-200 dark:bg-dark-border"
+                                    : "bg-gray-100 dark:bg-dark-elevated text-gray-600 dark:text-dark-text-secondary hover:bg-gray-200 dark:hover:bg-dark-border"
                                     }`}
                                 >
                                   {priority}
@@ -576,7 +576,7 @@ const IssueDetails = () => {
                                   type="button"
                                   onClick={handleAssign}
                                   disabled={isAssigning || !selectedStaff}
-                                  className="px-4 py-2 bg-gray-900 text-white rounded-lg text-xs sm:text-sm font-medium hover:bg-gray-800 transition-colors whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed min-w-20"
+                                  className="px-4 py-2 bg-gray-900 dark:bg-indigo-600 text-white rounded-lg text-xs sm:text-sm font-medium hover:bg-gray-800 dark:hover:bg-indigo-700 transition-colors whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed min-w-20"
                                 >
                                   {isAssigning ? "..." : "Assign"}
                                 </button>
@@ -590,7 +590,7 @@ const IssueDetails = () => {
                 </div>
 
                 {issue.assigned_to ? (
-                  <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-linear-to-r from-blue-50 to-indigo-50 shadow-sm hover:shadow-md transition-shadow  rounded-xl border border-blue-100 mt-2 mb-2">
+                  <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-linear-to-r from-blue-50 dark:from-blue-500/10 to-indigo-50 dark:to-indigo-500/10 shadow-sm hover:shadow-md transition-shadow rounded-xl border border-blue-100 dark:border-blue-500/20 mt-2 mb-2">
                     {/* Avatar Circle */}
                     <div className="shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-linear-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-sm sm:text-base shadow-md">
                       {issue.assigned_to_name
@@ -602,7 +602,7 @@ const IssueDetails = () => {
                     </div>
 
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs text-blue-600 font-medium uppercase tracking-wider mb-0.5">
+                      <p className="text-xs text-blue-600 dark:text-blue-400 font-medium uppercase tracking-wider mb-0.5">
                         Assigned To
                       </p>
                       <p className="text-sm sm:text-base font-semibold text-gray-900 dark:text-dark-text truncate">
@@ -775,7 +775,7 @@ const IssueDetails = () => {
                                   className="w-full h-full object-cover"
                                 />
                                 {(currentImageIndex || 0) === index && (
-                                  <div className="absolute inset-0 bg-violet-50 dark:bg-violet-500/150/20" />
+                                  <div className="absolute inset-0 bg-violet-50 dark:bg-violet-500/20" />
                                 )}
                               </button>
                             ))}
@@ -1098,10 +1098,10 @@ const IssueDetails = () => {
 
                     {/* Location Info */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 mb-4 sm:mb-6">
-                      <div className="flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 bg-blue-50 rounded-lg border border-blue-100">
-                        <div className="p-1.5 sm:p-2 bg-blue-100 rounded-lg shrink-0">
+                      <div className="flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 bg-blue-50 dark:bg-blue-500/10 rounded-lg border border-blue-100 dark:border-blue-500/20">
+                        <div className="p-1.5 sm:p-2 bg-blue-100 dark:bg-blue-500/20 rounded-lg shrink-0">
                           <svg
-                            className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-600"
+                            className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-600 dark:text-blue-400"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -1129,10 +1129,10 @@ const IssueDetails = () => {
                           </p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 bg-indigo-50 rounded-lg border border-indigo-100">
-                        <div className="p-1.5 sm:p-2 bg-indigo-100 rounded-lg shrink-0">
+                      <div className="flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 bg-indigo-50 dark:bg-indigo-500/10 rounded-lg border border-indigo-100 dark:border-indigo-500/20">
+                        <div className="p-1.5 sm:p-2 bg-indigo-100 dark:bg-indigo-500/20 rounded-lg shrink-0">
                           <svg
-                            className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-indigo-600"
+                            className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-indigo-600 dark:text-indigo-400"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -1159,12 +1159,12 @@ const IssueDetails = () => {
                     {/* Description */}
                     <div className="mb-6 sm:mb-8">
                       <h2 className="text-xs sm:text-sm font-bold text-gray-900 dark:text-dark-text uppercase tracking-wider mb-2 sm:mb-3 flex items-center gap-2">
-                        <span className="w-6 sm:w-8 h-0.5 bg-violet-50 dark:bg-violet-500/150 rounded-full" />
+                        <span className="w-6 sm:w-8 h-0.5 bg-violet-50 dark:bg-violet-500/20 rounded-full" />
                         Description
                       </h2>
                       <div
                         className={`p-3 sm:p-4 rounded-xl border ${issue.is_spam
-                          ? "bg-orange-50/50 border-orange-100 text-gray-500 dark:text-dark-text-secondary"
+                          ? "bg-orange-50/50 dark:bg-orange-500/10 border-orange-100 dark:border-orange-500/20 text-gray-500 dark:text-dark-text-secondary"
                           : "bg-gray-50 dark:bg-dark-elevated border-gray-100 dark:border-dark-border/50 text-gray-700 dark:text-dark-text-secondary"
                           }`}
                       >
@@ -1181,7 +1181,7 @@ const IssueDetails = () => {
                           <span className="w-6 sm:w-8 h-0.5 bg-green-500 rounded-full" />
                           Resolution Details
                         </h2>
-                        <div className="p-3 sm:p-4 rounded-xl border bg-green-50/50 border-green-100 text-gray-700 dark:text-dark-text-secondary">
+                        <div className="p-3 sm:p-4 rounded-xl border bg-green-50/50 dark:bg-green-500/10 border-green-100 dark:border-green-500/20 text-gray-700 dark:text-dark-text-secondary">
                           {issue.resolution_notes && (
                             <p className="text-sm sm:text-base leading-relaxed mb-4">
                               <span className="font-semibold block mb-1">Staff Notes:</span>
@@ -1206,7 +1206,7 @@ const IssueDetails = () => {
                     {/* Engagement Stats */}
                     <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between pt-4 sm:pt-6 border-t border-gray-100 dark:border-dark-border/50 gap-3 sm:gap-0">
                       <div className="flex items-center gap-2 sm:gap-4 justify-between sm:justify-start">
-                        <div className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 bg-emerald-50 text-emerald-700 rounded-lg">
+                        <div className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 rounded-lg">
                           <svg
                             className="w-4 h-4 sm:w-5 sm:h-5"
                             fill="none"
@@ -1223,11 +1223,11 @@ const IssueDetails = () => {
                           <span className="font-semibold text-sm sm:text-base">
                             {issue.upvotes}
                           </span>
-                          <span className="text-xs sm:text-sm text-emerald-600 hidden sm:inline">
+                          <span className="text-xs sm:text-sm text-emerald-600 dark:text-emerald-400 hidden sm:inline">
                             upvotes
                           </span>
                         </div>
-                        <div className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 bg-rose-50 text-rose-700 rounded-lg">
+                        <div className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 bg-rose-50 dark:bg-rose-500/10 text-rose-700 dark:text-rose-400 rounded-lg">
                           <svg
                             className="w-4 h-4 sm:w-5 sm:h-5"
                             fill="none"
@@ -1244,7 +1244,7 @@ const IssueDetails = () => {
                           <span className="font-semibold text-sm sm:text-base">
                             {issue.downvotes}
                           </span>
-                          <span className="text-xs sm:text-sm text-rose-600 hidden sm:inline">
+                          <span className="text-xs sm:text-sm text-rose-600 dark:text-rose-400 hidden sm:inline">
                             downvotes
                           </span>
                         </div>
@@ -1339,7 +1339,7 @@ const IssueDetails = () => {
                     )}
                     {/* //created */}
                     <div className="flex items-start gap-2 sm:gap-3 p-2.5 sm:p-3 bg-gray-50 dark:bg-dark-elevated rounded-lg">
-                      <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-violet-50 dark:bg-violet-500/150 rounded-full mt-1.5 sm:mt-2 shrink-0" />
+                      <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-violet-50 dark:bg-violet-500/20 rounded-full mt-1.5 sm:mt-2 shrink-0" />
                       <div className="flex-1 min-w-0">
                         <p className="text-xs sm:text-sm text-gray-900 dark:text-dark-text">
                           Issue created by{" "}
@@ -1391,7 +1391,7 @@ const IssueDetails = () => {
         </div>
         {showBanModal && (
           <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
-            <div className="bg-white dark:bg-dark-card rounded-xl shadow-lg w-full max-w-md p-6">
+            <div className="bg-white dark:bg-dark-card text-gray-900 dark:text-dark-text rounded-xl shadow-lg w-full max-w-md p-6 border border-transparent dark:border-dark-border">
               <h2 className="text-xl font-semibold mb-4">Ban User</h2>
 
               {/* Reason */}
@@ -1401,7 +1401,7 @@ const IssueDetails = () => {
               <textarea
                 value={banReason}
                 onChange={(e) => setBanReason(e.target.value)}
-                className="w-full border rounded-lg p-2 mb-3 focus:outline-none focus:ring-2 focus:ring-red-400"
+                className="w-full bg-white dark:bg-dark-bg border border-gray-300 dark:border-dark-border text-gray-900 dark:text-dark-text rounded-lg p-2 mb-3 focus:outline-none focus:ring-2 focus:ring-red-400"
                 rows="3"
                 placeholder="Enter reason for banning..."
               />

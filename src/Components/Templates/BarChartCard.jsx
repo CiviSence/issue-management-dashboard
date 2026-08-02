@@ -49,13 +49,9 @@ const BarChartCard = ({ data }) => {
               contentStyle={{
                 borderRadius: "12px",
                 border: "none",
-                boxShadow:
-                  "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
-                backgroundColor: "rgba(255, 255, 255, 0.95)",
-                backdropFilter: "blur(8px)",
+                boxShadow: "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
                 fontWeight: 500,
               }}
-              itemStyle={{ color: "#1f2937" }}
             />
             <Bar
               dataKey="count"

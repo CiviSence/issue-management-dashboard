@@ -7,10 +7,10 @@ const IssueCard = ({ issue }) => {
       key={issue.id}
       className={`
         relative overflow-hidden
-        w-[calc(50%-3px)]
-        sm:w-[calc(50%-4px)]
-        md:w-[calc(50%-6px)]
-        lg:w-[calc(33.333%-11px)]
+        w-[calc(50%-6px)]
+        sm:w-[calc(50%-6px)]
+        md:w-[calc(50%-8px)]
+        lg:w-[calc(33.333%-14px)]
         xl:w-[calc(25%-12px)]
         2xl:w-[calc(25%-12px)]
         p-3 sm:p-4 lg:p-5

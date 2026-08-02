@@ -333,9 +333,9 @@ const ReportedIssues = () => {
                     {filteredIssues?.map((issue, i) => (
                       <tr
                         key={i}
-                        className="border-b border-zinc-200 last:border-none"
+                        className="border-b border-zinc-200 dark:border-dark-border last:border-none text-gray-700 dark:text-dark-text-secondary"
                       >
-                        <td className="p-3 font-medium">{issue.title}</td>
+                        <td className="p-3 font-medium text-gray-900 dark:text-dark-text">{issue.title}</td>
                         <td className="p-3">
                           <StatusBadge
                             type="category"
@@ -376,7 +376,7 @@ const ReportedIssues = () => {
                           {issue.assigned_to ? (
                             issue.assigned_to_name
                           ) : (
-                            <p className="text-red-400">unassigned</p>
+                            <p className="text-red-500 dark:text-red-400">unassigned</p>
                           )}
                         </td>
 
@@ -405,7 +405,7 @@ const ReportedIssues = () => {
                           {openDropdown === issue.id && (
                             <div
                               onMouseLeave={() => setActiveSubMenu(null)}
-                              className="absolute right-0  mt-2 w-52 bg-white dark:bg-dark-card rounded-xl shadow-lg border border-gray-100 dark:border-dark-border/50 z-50 text-sm"
+                              className="absolute right-0 mt-2 w-52 bg-white dark:bg-dark-card rounded-xl shadow-lg border border-gray-100 dark:border-dark-border/50 z-50 text-sm py-1"
                             >
                               {/* details*/}
                               <button
@@ -414,7 +414,7 @@ const ReportedIssues = () => {
                                     state: issue,
                                   })
                                 }
-                                className="w-full text-left px-4 py-2 hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated"
+                                className="w-full text-left px-4 py-2 text-gray-700 dark:text-dark-text-secondary hover:bg-gray-50 dark:hover:bg-dark-elevated"
                               >
                                 Details
                               </button>
@@ -424,14 +424,14 @@ const ReportedIssues = () => {
                                   onMouseEnter={() =>
                                     setActiveSubMenu("status")
                                   }
-                                  className="w-full text-left px-4 py-2 text-gray-700 dark:text-dark-text-secondary hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated flex justify-between items-center"
+                                  className="w-full text-left px-4 py-2 text-gray-700 dark:text-dark-text-secondary hover:bg-gray-50 dark:hover:bg-dark-elevated flex justify-between items-center"
                                 >
                                   Set Status
                                   <span>›</span>
                                 </button>
 
                                 {activeSubMenu === "status" && (
-                                  <div className="absolute right-full top-1 mr-1 w-44 bg-white dark:bg-dark-card rounded-xl shadow-lg border border-gray-100 dark:border-dark-border/50 z-50">
+                                  <div className="absolute right-full top-1 mr-1 w-44 bg-white dark:bg-dark-card rounded-xl shadow-lg border border-gray-100 dark:border-dark-border/50 z-50 py-1">
                                     {[
                                       "new",
                                       "acknowledged",
@@ -446,7 +446,7 @@ const ReportedIssues = () => {
                                           setActiveSubMenu(null);
                                           setOpenDropdown(null);
                                         }}
-                                        className="w-full text-left px-4 py-2 hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated"
+                                        className="w-full text-left px-4 py-2 text-gray-700 dark:text-dark-text-secondary hover:bg-gray-50 dark:hover:bg-dark-elevated"
                                       >
                                         {status.replace("_", " ")}
                                       </button>
@@ -461,7 +461,7 @@ const ReportedIssues = () => {
                                   onMouseEnter={() =>
                                     setActiveSubMenu("priority")
                                   }
-                                  className="w-full text-left px-4 py-2 text-gray-700 dark:text-dark-text-secondary hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated flex justify-between items-center"
+                                  className="w-full text-left px-4 py-2 text-gray-700 dark:text-dark-text-secondary hover:bg-gray-50 dark:hover:bg-dark-elevated flex justify-between items-center"
                                 >
                                   Set Priority
                                   <span>›</span>
@@ -469,8 +469,7 @@ const ReportedIssues = () => {
 
                                 {activeSubMenu === "priority" && (
                                   <div
-                                    className="absolute right-full mr-1 top-0
- w-44 bg-white dark:bg-dark-card rounded-xl shadow-lg border border-gray-100 dark:border-dark-border/50"
+                                    className="absolute right-full mr-1 top-0 w-44 bg-white dark:bg-dark-card rounded-xl shadow-lg border border-gray-100 dark:border-dark-border/50 py-1"
                                   >
                                     {["critical", "high", "medium", "low"].map(
                                       (level) => (
@@ -481,7 +480,7 @@ const ReportedIssues = () => {
                                             setActiveSubMenu(null);
                                             setOpenDropdown(null);
                                           }}
-                                          className="w-full text-left px-4 py-2 hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated"
+                                          className="w-full text-left px-4 py-2 text-gray-700 dark:text-dark-text-secondary hover:bg-gray-50 dark:hover:bg-dark-elevated"
                                         >
                                           {level}
                                         </button>
@@ -496,7 +495,7 @@ const ReportedIssues = () => {
                               {/* Assign */}
                               <button
                                 onClick={() => openAssignModal(issue.id)}
-                                className="w-full text-left px-4 py-2 hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated"
+                                className="w-full text-left px-4 py-2 text-gray-700 dark:text-dark-text-secondary hover:bg-gray-50 dark:hover:bg-dark-elevated"
                               >
                                 Assign
                               </button>
@@ -504,7 +503,7 @@ const ReportedIssues = () => {
                               {/* Mark Spam */}
                               <button
                                 onClick={() => handleMarkSpam(issue.id)}
-                                className="w-full text-left px-4 py-2 text-yellow-600 hover:bg-yellow-50"
+                                className="w-full text-left px-4 py-2 text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-500/10"
                               >
                                 Mark as Spam
                               </button>
@@ -512,7 +511,7 @@ const ReportedIssues = () => {
                               {/* Delete */}
                               <button
                                 onClick={() => handleDelete(issue.id)}
-                                className="w-full text-left px-4 py-2 text-red-600 dark:text-red-400 hover:bg-red-50"
+                                className="w-full text-left px-4 py-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10"
                               >
                                 Delete
                               </button>
@@ -611,11 +610,11 @@ const ReportedIssues = () => {
           ></div>
 
           {/* Modal Content */}
-          <div className="relative bg-white p-6 rounded-2xl w-96 shadow-2xl animate-scaleIn">
-            <h2 className="text-lg font-semibold mb-4">Assign Staff</h2>
+          <div className="relative bg-white dark:bg-dark-card p-6 rounded-2xl w-96 shadow-2xl animate-scaleIn border border-transparent dark:border-dark-border">
+            <h2 className="text-lg font-semibold mb-4 text-gray-900 dark:text-dark-text">Assign Staff</h2>
 
             <select
-              className="w-full border rounded-lg p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="w-full bg-white dark:bg-dark-bg border border-gray-300 dark:border-dark-border text-gray-700 dark:text-dark-text-secondary rounded-lg p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-purple-500"
               onChange={(e) => handleAssign(e.target.value)}
             >
               <option value="">Select Staff</option>
@@ -629,7 +628,7 @@ const ReportedIssues = () => {
             <div className="flex justify-end gap-3">
               <button
                 onClick={() => setShowAssignModal(false)}
-                className="px-4 py-2 border rounded-lg hover:bg-gray-100 dark:hover:bg-dark-elevated dark:bg-dark-elevated"
+                className="px-4 py-2 border border-gray-300 dark:border-dark-border text-gray-700 dark:text-dark-text-secondary rounded-lg hover:bg-gray-100 dark:hover:bg-dark-elevated"
               >
                 Cancel
               </button>

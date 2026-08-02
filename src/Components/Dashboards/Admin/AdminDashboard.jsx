@@ -218,7 +218,7 @@ const AdminDashboard = () => {
         >
           <div className="w-full px-2 lg:px-4">
             {/* ========== 1. STATUS CARDS — Instant overview ========== */}
-            <div className="w-full gap-1.5 sm:gap-2 md:gap-3 flex flex-wrap justify-between py-2 sm:py-2 md:py-3 lg:py-6 rounded-2xl ">
+            <div className="w-full gap-3 sm:gap-3 md:gap-3 lg:gap-3 xl:gap-3 2xl:gap-3 flex flex-wrap justify-between py-3 sm:py-3 md:py-3 lg:py-6 rounded-2xl ">
               {loadingStats ? (
                 <>
                   <CardSkeleton />
@@ -359,49 +359,49 @@ const AdminDashboard = () => {
             ) : (
               <div className="w-full mt-3 grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-3 md:gap-3 lg:gap-3">
                 {/* Left: Overall Assignment Counts */}
-                <div className="bg-card  p-5 rounded-2xl shadow-xs">
-                  <h3 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
-                    <i className="ri-bar-chart-box-line text-[#7E70EB] text-lg"></i>{" "}
+                <div className="bg-white dark:bg-dark-card border border-transparent dark:border-dark-border p-5 rounded-2xl shadow-sm">
+                  <h3 className="text-base font-bold text-gray-900 dark:text-dark-text mb-4 flex items-center gap-2">
+                    <i className="ri-bar-chart-box-line text-[#7E70EB] dark:text-indigo-400 text-lg"></i>{" "}
                     Overall Assignment Counts
                   </h3>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                    <div className="p-3 bg-muted/30 rounded-xl /50 text-center">
-                      <span className="text-xs text-muted-foreground block font-medium">
+                    <div className="p-3 bg-gray-50 dark:bg-dark-elevated border border-gray-100 dark:border-dark-border/50 rounded-xl text-center">
+                      <span className="text-xs text-gray-500 dark:text-dark-text-secondary block font-medium">
                         Total Assignments
                       </span>
-                      <span className="text-xl font-bold text-card-foreground mt-1 block">
+                      <span className="text-xl font-bold text-gray-900 dark:text-dark-text mt-1 block">
                         {statsData.total_assignments ?? 0}
                       </span>
                     </div>
-                    <div className="p-3 bg-muted/30 rounded-xl /50 text-center">
-                      <span className="text-xs text-muted-foreground block font-medium">
+                    <div className="p-3 bg-gray-50 dark:bg-dark-elevated border border-gray-100 dark:border-dark-border/50 rounded-xl text-center">
+                      <span className="text-xs text-gray-500 dark:text-dark-text-secondary block font-medium">
                         Pending
                       </span>
-                      <span className="text-xl font-bold text-card-foreground mt-1 block">
+                      <span className="text-xl font-bold text-gray-900 dark:text-dark-text mt-1 block">
                         {statsData.pending_assignments ?? 0}
                       </span>
                     </div>
-                    <div className="p-3 bg-muted/30 rounded-xl /50 text-center">
-                      <span className="text-xs text-muted-foreground block font-medium">
+                    <div className="p-3 bg-gray-50 dark:bg-dark-elevated border border-gray-100 dark:border-dark-border/50 rounded-xl text-center">
+                      <span className="text-xs text-gray-500 dark:text-dark-text-secondary block font-medium">
                         Accepted
                       </span>
-                      <span className="text-xl font-bold text-card-foreground mt-1 block">
+                      <span className="text-xl font-bold text-gray-900 dark:text-dark-text mt-1 block">
                         {statsData.accepted_assignments ?? 0}
                       </span>
                     </div>
-                    <div className="p-3 bg-muted/30 rounded-xl /50 text-center">
-                      <span className="text-xs text-muted-foreground block font-medium">
+                    <div className="p-3 bg-gray-50 dark:bg-dark-elevated border border-gray-100 dark:border-dark-border/50 rounded-xl text-center">
+                      <span className="text-xs text-gray-500 dark:text-dark-text-secondary block font-medium">
                         Rejected
                       </span>
-                      <span className="text-xl font-bold text-card-foreground mt-1 block">
+                      <span className="text-xl font-bold text-gray-900 dark:text-dark-text mt-1 block">
                         {statsData.rejected_assignments ?? 0}
                       </span>
                     </div>
-                    <div className="p-3 bg-muted/30 rounded-xl /50 text-center">
-                      <span className="text-xs text-muted-foreground block font-medium">
+                    <div className="p-3 bg-gray-50 dark:bg-dark-elevated border border-gray-100 dark:border-dark-border/50 rounded-xl text-center">
+                      <span className="text-xs text-gray-500 dark:text-dark-text-secondary block font-medium">
                         Completed
                       </span>
-                      <span className="text-xl font-bold text-card-foreground mt-1 block">
+                      <span className="text-xl font-bold text-gray-900 dark:text-dark-text mt-1 block">
                         {statsData.completed_assignments ?? 0}
                       </span>
                     </div>
@@ -409,21 +409,21 @@ const AdminDashboard = () => {
                 </div>
 
                 {/* Right: Performance & Efficiency Metrics */}
-                <div className="bg-card  p-5 rounded-2xl shadow-xs">
-                  <h3 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
-                    <i className="ri-pulse-line text-emerald-500 text-lg"></i>{" "}
+                <div className="bg-white dark:bg-dark-card border border-transparent dark:border-dark-border p-5 rounded-2xl shadow-sm">
+                  <h3 className="text-base font-bold text-gray-900 dark:text-dark-text mb-4 flex items-center gap-2">
+                    <i className="ri-pulse-line text-emerald-500 dark:text-emerald-400 text-lg"></i>{" "}
                     Performance & Efficiency Metrics
                   </h3>
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="p-3 bg-emerald-500/5 rounded-xl  flex items-center gap-3">
-                      <div className="h-9 w-9 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-600 shrink-0">
+                    <div className="p-3 bg-emerald-50 dark:bg-emerald-500/10 rounded-xl flex items-center gap-3">
+                      <div className="h-9 w-9 rounded-lg bg-emerald-100 dark:bg-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
                         <i className="ri-percent-line text-lg"></i>
                       </div>
                       <div>
-                        <span className="text-xs text-muted-foreground block font-medium">
+                        <span className="text-xs text-gray-500 dark:text-dark-text-secondary block font-medium">
                           Acceptance Rate
                         </span>
-                        <span className="text-lg font-bold text-card-foreground mt-0.5 block">
+                        <span className="text-lg font-bold text-gray-900 dark:text-dark-text mt-0.5 block">
                           {statsData.acceptance_rate !== undefined
                             ? `${Number(statsData.acceptance_rate).toFixed(1)}%`
                             : "N/A"}
@@ -431,15 +431,15 @@ const AdminDashboard = () => {
                       </div>
                     </div>
 
-                    <div className="p-3 bg-[#6366f1]/5 rounded-xl  flex items-center gap-3">
-                      <div className="h-9 w-9 rounded-lg bg-[#6366f1]/10 flex items-center justify-center text-[#6366f1] dark:text-indigo-400 shrink-0">
+                    <div className="p-3 bg-indigo-50 dark:bg-indigo-500/10 rounded-xl flex items-center gap-3">
+                      <div className="h-9 w-9 rounded-lg bg-indigo-100 dark:bg-indigo-500/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400 shrink-0">
                         <i className="ri-check-double-line text-lg"></i>
                       </div>
                       <div>
-                        <span className="text-xs text-muted-foreground block font-medium">
+                        <span className="text-xs text-gray-500 dark:text-dark-text-secondary block font-medium">
                           Completion Rate
                         </span>
-                        <span className="text-lg font-bold text-card-foreground mt-0.5 block">
+                        <span className="text-lg font-bold text-gray-900 dark:text-dark-text mt-0.5 block">
                           {statsData.completion_rate !== undefined
                             ? `${Number(statsData.completion_rate).toFixed(1)}%`
                             : "N/A"}
@@ -447,15 +447,15 @@ const AdminDashboard = () => {
                       </div>
                     </div>
 
-                    <div className="p-3 bg-amber-500/5 rounded-xl  flex items-center gap-3">
-                      <div className="h-9 w-9 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-600 shrink-0">
+                    <div className="p-3 bg-amber-50 dark:bg-amber-500/10 rounded-xl flex items-center gap-3">
+                      <div className="h-9 w-9 rounded-lg bg-amber-100 dark:bg-amber-500/20 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0">
                         <i className="ri-speed-up-line text-lg"></i>
                       </div>
                       <div>
-                        <span className="text-xs text-muted-foreground block font-medium">
+                        <span className="text-xs text-gray-500 dark:text-dark-text-secondary block font-medium">
                           Avg Response
                         </span>
-                        <span className="text-lg font-bold text-card-foreground mt-0.5 block">
+                        <span className="text-lg font-bold text-gray-900 dark:text-dark-text mt-0.5 block">
                           {statsData.avg_response_time_hours !== undefined
                             ? `${Number(statsData.avg_response_time_hours).toFixed(1)} hrs`
                             : "N/A"}
@@ -463,15 +463,15 @@ const AdminDashboard = () => {
                       </div>
                     </div>
 
-                    <div className="p-3 bg-rose-500/5 rounded-xl  flex items-center gap-3">
-                      <div className="h-9 w-9 rounded-lg bg-rose-500/10 flex items-center justify-center text-rose-600 shrink-0">
+                    <div className="p-3 bg-rose-50 dark:bg-rose-500/10 rounded-xl flex items-center gap-3">
+                      <div className="h-9 w-9 rounded-lg bg-rose-100 dark:bg-rose-500/20 flex items-center justify-center text-rose-600 dark:text-rose-400 shrink-0">
                         <i className="ri-time-line text-lg"></i>
                       </div>
                       <div>
-                        <span className="text-xs text-muted-foreground block font-medium">
+                        <span className="text-xs text-gray-500 dark:text-dark-text-secondary block font-medium">
                           Avg Completion
                         </span>
-                        <span className="text-lg font-bold text-card-foreground mt-0.5 block">
+                        <span className="text-lg font-bold text-gray-900 dark:text-dark-text mt-0.5 block">
                           {statsData.avg_completion_time_hours !== undefined
                             ? `${Number(statsData.avg_completion_time_hours).toFixed(1)} hrs`
                             : "N/A"}
@@ -485,7 +485,7 @@ const AdminDashboard = () => {
 
             {/* ========== 7. TOP REPORTERS — Community ========== */}
 
-            <div className="w-full md:mt-2 lg:mt-3">
+            <div className="w-full mt-3">
               {loadingStats ? <UserSectionSkeleton /> : <UserCard limit={3} />}
             </div>
           </div>
