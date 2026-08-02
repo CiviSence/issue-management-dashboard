@@ -170,7 +170,7 @@ const ProfilePopup = ({ profileData, onLogout, onClose }) => {
                     <button
                         key={label}
                         onClick={action}
-                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-gray-700 dark:text-dark-text-secondary hover:bg-violet-50 dark:bg-violet-500/15 dark:hover:bg-violet-50 dark:bg-violet-500/150/15 hover:text-violet-600 dark:text-violet-400 dark:hover:text-violet-400 transition-all text-left"
+                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-gray-700 dark:text-dark-text-secondary hover:bg-violet-50 dark:hover:bg-violet-500/15 hover:text-violet-600 dark:hover:text-violet-400 transition-all text-left"
                     >
                         <i className={`${icon} text-base w-5 text-center`} />
                         {label}

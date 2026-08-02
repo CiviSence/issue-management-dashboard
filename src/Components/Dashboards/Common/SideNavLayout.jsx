@@ -152,20 +152,20 @@ const SideNavLayout = ({ children }) => {
               <Link
                 to="/settings"
                 onClick={() => setShowProfileMenu(false)}
-                className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-violet-50 hover:text-violet-600 text-sm text-gray-700 transition-colors"
+                className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-violet-50 dark:hover:bg-violet-500/15 hover:text-violet-600 dark:hover:text-violet-400 text-sm text-gray-700 dark:text-dark-text-secondary transition-colors"
               >
                 <i className="ri-settings-3-line text-lg w-5 text-center"></i> Settings
               </Link>
               <Link
                 to="/help-support"
                 onClick={() => setShowProfileMenu(false)}
-                className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-violet-50 hover:text-violet-600 text-sm text-gray-700 transition-colors"
+                className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-violet-50 dark:hover:bg-violet-500/15 hover:text-violet-600 dark:hover:text-violet-400 text-sm text-gray-700 dark:text-dark-text-secondary transition-colors"
               >
                 <i className="ri-customer-service-2-line text-lg w-5 text-center"></i> Help & Support
               </Link>
             </div>
 
-            <hr className="my-2 border-gray-300" />
+            <hr className="my-2 border-gray-300 dark:border-dark-border" />
 
             <button
               onClick={handleLogoutClick}
