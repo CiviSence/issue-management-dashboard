@@ -8,6 +8,7 @@ import App from "./App.jsx";
 import { BrowserRouter } from "react-router-dom";
 import { IssueProvider } from "./Context/IssueContext.jsx";
 import { ProfileDataProvider } from "./Context/ProfileContext.jsx";
+import { OrganizationProvider } from "./Context/OrganizationContext.jsx";
 import { UserProvider } from "./Context/UserContext.jsx";
 import { IssuesProvider } from "./Context/IssuesContext.jsx";
 import { NotificationProvider } from "./Components/NotificationProvider.jsx";
@@ -22,13 +23,15 @@ createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <UserProvider>
       <ProfileDataProvider>
-        <IssuesProvider>
-          <IssueProvider>
-            <NotificationProvider>
-              <App />
-            </NotificationProvider>
-          </IssueProvider>
-        </IssuesProvider>
+        <OrganizationProvider>
+          <IssuesProvider>
+            <IssueProvider>
+              <NotificationProvider>
+                <App />
+              </NotificationProvider>
+            </IssueProvider>
+          </IssuesProvider>
+        </OrganizationProvider>
       </ProfileDataProvider>
     </UserProvider>
   </BrowserRouter>,

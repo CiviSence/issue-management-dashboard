@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useRef, useCallback } from 'react';
 import { initializeApp } from 'firebase/app';
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 import { toast } from 'react-toastify';
@@ -9,18 +9,18 @@ import { getAccessToken } from '../Utils/auth-utils';
 // Create a context so your app can check permission status or notifications
 const NotificationContext = createContext(null);
 
-// 1. Firebase Config for civisence-admin (Project 2)
+// 1. Firebase Config from environment variables
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyB0sJMchdyKjnK4AHqR7ecYn_G4XK2yMbE",
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "civisence-admin.firebaseapp.com",
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "civisence-admin",
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "civisence-admin.firebasestorage.app",
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "1073506164891",
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:1073506164891:web:9ce7d09a578b2396dbe63e"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
-// VAPID Public Key from your civisence-admin Firebase Console (Cloud Messaging settings)
-const VAPID_PUBLIC_KEY = import.meta.env.VITE_FIREBASE_VAPID_KEY || "BGYGaaEo2j5ftK0eMK5I4flQUkv_Iax4cuxKpljXtRGneoyov6zWLpigmqFJ1OEu_CGSW7yaeXVfQ3U8h280xDM";
+// VAPID Public Key from environment variables
+const VAPID_PUBLIC_KEY = import.meta.env.VITE_FIREBASE_VAPID_KEY;
 
 export const NotificationProvider = ({ children }) => {
   const [token, setToken] = useState(null);
@@ -28,8 +28,9 @@ export const NotificationProvider = ({ children }) => {
     Capacitor.isNativePlatform() ? 'granted' : Notification.permission
   );
   const [unreadCount, setUnreadCount] = useState(0);
+  const hasAttemptedRegistration = useRef(false);
 
-  const fetchUnreadCount = async () => {
+  const fetchUnreadCount = useCallback(async () => {
     const jwtToken = getAccessToken() || localStorage.getItem("auth_token") || localStorage.getItem("token");
     if (!jwtToken) return;
     try {
@@ -49,7 +50,7 @@ export const NotificationProvider = ({ children }) => {
     } catch (err) {
       // Quietly swallow error to keep clean console logs
     }
-  };
+  }, []);
 
   useEffect(() => {
     if (Capacitor.isNativePlatform()) {
@@ -92,7 +93,12 @@ export const NotificationProvider = ({ children }) => {
         msgListener.remove();
       };
     } else {
-      // 2. Initialize Firebase inside the provider
+      // 2. Initialize Firebase inside the provider if credentials exist
+      if (!firebaseConfig.apiKey) {
+        console.warn("[NotificationProvider] Firebase API key missing in environment variables. Web push notifications disabled.");
+        return;
+      }
+
       let app, messaging;
       try {
         app = initializeApp(firebaseConfig);
@@ -189,24 +195,31 @@ export const NotificationProvider = ({ children }) => {
     }
   };
 
-  // Automatically watch and trigger when a token becomes available in localStorage or cookies
+  // Trigger registration once when a valid JWT session exists and notification permission is granted
   useEffect(() => {
-    const checkTokenInterval = setInterval(() => {
-      const jwtToken = getAccessToken() || localStorage.getItem("auth_token") || localStorage.getItem("token");
-      if (jwtToken && !token) {
-        requestPermissionAndRegister();
-        clearInterval(checkTokenInterval);
-      }
-    }, 1000); // Check every 1 second until registered
+    const jwtToken = getAccessToken() || localStorage.getItem("auth_token") || localStorage.getItem("token");
+    if (jwtToken && !token && !hasAttemptedRegistration.current && permission === "granted") {
+      hasAttemptedRegistration.current = true;
+      requestPermissionAndRegister();
+    }
+  }, [permission, token]);
 
-    return () => clearInterval(checkTokenInterval);
-  }, [token]);
-
+  // Fetch unread count on mount, tab focus, and 60s background interval
   useEffect(() => {
+    const jwtToken = getAccessToken() || localStorage.getItem("auth_token") || localStorage.getItem("token");
+    if (!jwtToken) return;
+
     fetchUnreadCount();
-    const interval = setInterval(fetchUnreadCount, 15000); // Check every 15 seconds
-    return () => clearInterval(interval);
-  }, [token]);
+    const interval = setInterval(fetchUnreadCount, 60000); // 60s interval
+
+    const handleFocus = () => fetchUnreadCount();
+    window.addEventListener("focus", handleFocus);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("focus", handleFocus);
+    };
+  }, [fetchUnreadCount]);
 
   return (
     <NotificationContext.Provider value={{ 

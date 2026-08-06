@@ -1,12 +1,37 @@
-import { useState } from "react";
-import { submitOrgChangeRequest } from "../../Utils/organization-api";
+import { useState, useEffect } from "react";
+import { submitOrgChangeRequest, listOrganizations } from "../../Utils/organization-api";
 
 const OrgChangeRequestModal = ({ isOpen, onClose, onSuccess }) => {
   const [targetOrgId, setTargetOrgId] = useState("");
+  const [availableOrgs, setAvailableOrgs] = useState([]);
+  const [fetchingOrgs, setFetchingOrgs] = useState(false);
   const [reason, setReason] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [successMsg, setSuccessMsg] = useState(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      let isMounted = true;
+      const loadOrgs = async () => {
+        try {
+          setFetchingOrgs(true);
+          const orgs = await listOrganizations();
+          if (isMounted && Array.isArray(orgs)) {
+            setAvailableOrgs(orgs);
+          }
+        } catch (e) {
+          console.warn("Failed to load public orgs list", e);
+        } finally {
+          if (isMounted) setFetchingOrgs(false);
+        }
+      };
+      loadOrgs();
+      return () => {
+        isMounted = false;
+      };
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -21,9 +46,10 @@ const OrgChangeRequestModal = ({ isOpen, onClose, onSuccess }) => {
     setSuccessMsg(null);
 
     try {
-      // Backend POST /api/organizations/change-request accepts target_organization_id or organization_id & reason
+      // Backend POST /api/organizations/request-change accepts new_organization_id & reason
       const parsedId = isNaN(Number(targetOrgId)) ? targetOrgId.trim() : Number(targetOrgId);
       await submitOrgChangeRequest({
+        new_organization_id: parsedId,
         organization_id: parsedId,
         target_organization_id: parsedId,
         reason: reason.trim() || "Requesting organization change/transfer",
@@ -81,16 +107,32 @@ const OrgChangeRequestModal = ({ isOpen, onClose, onSuccess }) => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
-              Target Organization ID / Code <span className="text-rose-500">*</span>
+              Select Target Organization <span className="text-rose-500">*</span>
             </label>
-            <input
-              type="text"
-              required
-              value={targetOrgId}
-              onChange={(e) => setTargetOrgId(e.target.value)}
-              placeholder="e.g. 2 or ORG-102"
-              className="w-full px-3.5 py-2.5 bg-gray-50 dark:bg-dark-elevated border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-600 transition-all"
-            />
+            {availableOrgs.length > 0 ? (
+              <select
+                required
+                value={targetOrgId}
+                onChange={(e) => setTargetOrgId(e.target.value)}
+                className="w-full px-3.5 py-2.5 bg-gray-50 text-gray-900 dark:bg-dark-elevated border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-600 transition-all"
+              >
+                <option value="">-- Choose an Organization --</option>
+                {availableOrgs.map((org) => (
+                  <option key={org.id} value={org.id}>
+                    {org.name} {org.code ? `(${org.code})` : ""}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <input
+                type="text"
+                required
+                value={targetOrgId}
+                onChange={(e) => setTargetOrgId(e.target.value)}
+                placeholder={fetchingOrgs ? "Loading available organizations..." : "e.g. 2 or ORG-102"}
+                className="w-full px-3.5 py-2.5 bg-gray-50 dark:bg-dark-elevated border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-600 transition-all"
+              />
+            )}
           </div>
 
           <div>

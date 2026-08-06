@@ -72,15 +72,26 @@ export const uploadAvatar = async (file) => {
 
 import {
     getMyOrganization,
+    getMyOrganizations,
+    switchOrganization,
+    listOrganizations,
     updateOrgSettings,
     submitOrgChangeRequest,
-    createOrganization
+    createOrganization,
+    joinOrganization,
+    leaveOrganization
 } from './organization-api';
 
 export {
     getMyOrganization,
+    getMyOrganizations,
+    switchOrganization,
+    listOrganizations,
     updateOrgSettings,
     submitOrgChangeRequest,
-    createOrganization
+    createOrganization,
+    joinOrganization,
+    leaveOrganization
 };
+
 

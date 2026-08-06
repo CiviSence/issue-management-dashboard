@@ -6,6 +6,8 @@ import { Link, useNavigate } from "react-router-dom";
 import defaultPfpFemale from "../../assets/default-pfp/default-pfp-female.svg";
 import defaultPfpMale from "../../assets/default-pfp/default-pfp-male.svg";
 
+import { OrganizationSwitcher } from "../OrganizationSwitcher";
+
 const TopBar = ({ title }) => {
   const { profileData } = useUser();
   const { issues } = useIssues();
@@ -52,15 +54,18 @@ const TopBar = ({ title }) => {
       : defaultPfpMale);
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-[#ffffff] dark:bg-dark-card border-b border-gray-200/80 dark:border-dark-border px-4 sm:px-6 py-3 transition-colors">
-      <div className="flex items-center justify-between gap-4">
+    <header className="sticky top-0 z-50 w-full bg-[#ffffff] dark:bg-dark-card border-b border-gray-200/80 dark:border-dark-border px-3 sm:px-6 py-2.5 sm:py-3 transition-colors max-w-full overflow-x-clip">
+      <div className="flex items-center justify-between gap-2 sm:gap-4 min-w-0">
         {/* Title */}
-        <h1 className="text-gray-900 dark:text-dark-text font-semibold text-lg sm:text-xl truncate shrink-0">
+        <h1 className="text-gray-900 dark:text-dark-text font-semibold text-base sm:text-xl truncate min-w-0 flex-1">
           {title}
         </h1>
 
         {/* Right Actions */}
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
+          {/* Organization Context Switcher */}
+          <OrganizationSwitcher />
+
           {/* Search */}
           <div
             ref={searchRef}

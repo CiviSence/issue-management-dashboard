@@ -247,8 +247,13 @@ const Profile = () => {
       }
     };
     fetchOrg();
+
+    const handleOrgSwitched = () => fetchOrg();
+    window.addEventListener("organizationSwitched", handleOrgSwitched);
+
     return () => {
       isMounted = false;
+      window.removeEventListener("organizationSwitched", handleOrgSwitched);
     };
   }, []);
 

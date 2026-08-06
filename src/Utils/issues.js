@@ -194,3 +194,14 @@ export const addComment = async (issueId, text) => {
     throw new Error(error.response?.data?.message || "Failed to add comment");
   }
 };
+
+// Fetch waitlist dashboard data (for users with no active organization context)
+export const getWaitlistDashboard = async () => {
+  try {
+    const { data } = await instance.get("/issues/waitlist-dashboard");
+    return data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "Failed to fetch waitlist dashboard");
+  }
+};
+
