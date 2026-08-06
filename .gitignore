@@ -17,6 +17,7 @@ dist-ssr
 !.vscode/extensions.json
 .idea
 .DS_Store
+
 *.suo
 *.ntvs*
 *.njsproj
@@ -24,7 +25,7 @@ dist-ssr
 *.sw?
 
 .env
-.env.local
+.env.localz
 .env.*.local
 
 # Keystore & TWA Secrets
