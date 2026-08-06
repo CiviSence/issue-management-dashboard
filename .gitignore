@@ -30,3 +30,6 @@ dist-ssr
 # Keystore & TWA Secrets
 /webtoapp/
 /android/
+
+# OpenAPI Spec
+openapi.json
