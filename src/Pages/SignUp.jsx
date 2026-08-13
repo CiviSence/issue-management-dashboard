@@ -216,7 +216,7 @@ const SignUp = () => {
                         }
                         className={`py-2 px-3 outline-none rounded-lg border text-sm font-medium capitalize transition-all ${
                           formData.userType === type
-                            ? "bg-[#7E70EB] text-white border-[#7E70EB]"
+                            ? "bg-[#7E70EB] text-white border-[#7E70EB] dark:bg-indigo-600 dark:hover:bg-indigo-500"
                             : "bg-white dark:bg-dark-card text-gray-600 dark:text-dark-text-secondary border-gray-200 dark:border-dark-border hover:border-[#7E70EB] hover:text-[#7E70EB]"
                         }`}
                       >
