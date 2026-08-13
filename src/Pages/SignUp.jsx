@@ -64,8 +64,6 @@ const SignUp = () => {
     setLoading(true);
 
     try {
-      // Determine role based on userType
-
       const payload = {
         email: formData.email,
         name: formData.name,
@@ -75,12 +73,14 @@ const SignUp = () => {
       };
 
       const res = await registerUser(payload);
+      console.log("Regestration Api response",res);
 
       localStorage.setItem("pendingVerificationEmail", formData.email);
       navigate("/verify-otp");
     } catch (err) {
+      console.error("Registration error:", err);
       setError(
-        err.response?.data?.message || "Registration failed. Please try again.",
+        err.message || "Registration failed. Please try again.",
       );
     } finally {
       setLoading(false);

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { getMyOrganizations, switchOrganization } from "../Utils/organization-api";
 import { getMyProfile } from "../Utils/profile-api";
-import { setSession } from "../Utils/auth-utils";
+import { setSession, getAccessToken } from "../Utils/auth-utils";
 import { OrganizationContext } from "./OrganizationContext.js";
 
 export const OrganizationProvider = ({ children }) => {
@@ -12,6 +12,12 @@ export const OrganizationProvider = ({ children }) => {
   const [error, setError] = useState(null);
 
   const fetchMyOrganizations = useCallback(async (preferredActiveId = null) => {
+    const token = getAccessToken();
+    if (!token) {
+      setLoadingOrgs(false);
+      return;
+    }
+
     try {
       setLoadingOrgs(true);
       setError(null);
