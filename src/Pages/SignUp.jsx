@@ -171,7 +171,7 @@ const SignUp = () => {
             <div className="max-w-md mx-auto w-full">
               {/* Mobile Logo */}
               <div className="md:hidden flex flex-col items-center mb-3">
-                <div className="w-16 h-16 p-2 bg-white dark:bg-dark-card rounded-2xl mb-3 shadow-xs">
+                <div className="w-16 h-16 p-2 bg-white rounded-2xl mb-3 shadow-xs">
                   <img
                     src={csmlogo}
                     alt="CiviSence"
@@ -216,8 +216,8 @@ const SignUp = () => {
                         }
                         className={`py-2 px-3 outline-none rounded-lg border text-sm font-medium capitalize transition-all ${
                           formData.userType === type
-                            ? "bg-[#7E70EB] text-white border-[#7E70EB] dark:bg-indigo-600 dark:hover:bg-indigo-500"
-                            : "bg-white dark:bg-dark-card text-gray-600 dark:text-dark-text-secondary border-gray-200 dark:border-dark-border hover:border-[#7E70EB] hover:text-[#7E70EB]"
+                            ? "bg-[#7E70EB] text-white border-[#7E70EB] dark:bg-indigo-600 dark:border-indigo-600 dark:hover:bg-indigo-500"
+                            : "bg-white dark:bg-dark-card text-gray-600 dark:text-dark-text-secondary border-gray-200 dark:border-dark-border hover:border-[#7E70EB] hover:text-[#7E70EB] dark:hover:border-indigo-400 dark:hover:text-indigo-400"
                         }`}
                       >
                         {type}
