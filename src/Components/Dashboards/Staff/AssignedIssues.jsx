@@ -351,13 +351,20 @@ const AssignedIssues = () => {
                                 })
                               }
                             >
-                              <div className="flex items-center justify-between mb-3">
-                                <span
-                                  className={`text-[11px] font-semibold px-2.5 py-1 rounded-lg border ${badge.class}`}
-                                >
-                                  {badge.label}
-                                </span>
-                                <span className="text-xs text-muted-foreground font-mono">
+                              <div className="flex items-center justify-between mb-3 gap-2">
+                                <div className="flex items-center gap-1.5 flex-wrap">
+                                  <span
+                                    className={`text-[11px] font-semibold px-2.5 py-1 rounded-lg border ${badge.class}`}
+                                  >
+                                    {badge.label}
+                                  </span>
+                                  {issue.organization_name && (
+                                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-violet-50 dark:bg-violet-500/15 text-violet-700 dark:text-violet-400 border border-violet-200 dark:border-violet-500/20">
+                                      {issue.organization_name}
+                                    </span>
+                                  )}
+                                </div>
+                                <span className="text-xs text-muted-foreground font-mono shrink-0">
                                   #{issue.issue_id}
                                 </span>
                               </div>

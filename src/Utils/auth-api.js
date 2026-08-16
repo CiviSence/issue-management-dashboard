@@ -47,6 +47,33 @@ export const loginUser = async (credentials) => {
 };
 
 /**
+ * Authenticates user with Google ID token
+ * @param {string} idToken - The Google ID token from Google SDK or One-Tap
+ * @returns {Promise<object>} - Token and user payload
+ */
+export const googleLogin = async (idToken) => {
+  try {
+    const { data } = await axios.post("/auth/google", { id_token: idToken });
+    if (data.user) {
+      let roleStr =
+        data.user.role ||
+        data.user.intended_role ||
+        data.user.userType ||
+        data.user.user_type;
+      if (roleStr) {
+        let normalizedRole = roleStr.toLowerCase();
+        if (normalizedRole === "citizen") normalizedRole = "student";
+        if (normalizedRole === "official") normalizedRole = "staff";
+        data.user.role = normalizedRole;
+      }
+    }
+    return data;
+  } catch (error) {
+    throw new Error(error.response?.data?.detail || "Google Sign-In failed");
+  }
+};
+
+/**
  * Registers a new user
  * @param {object} userData - All registration fields
  * @returns {Promise<object>} - The response data

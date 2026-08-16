@@ -20,6 +20,7 @@ import {
   adminGetUserDetailed,
   adminReviewDocument,
   adminManualVerify,
+  adminPromoteToTrusted,
   adminRevokeVerification,
   adminBanUser,
   adminUnbanUser,
@@ -814,6 +815,12 @@ const AdminPanel = () => {
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [verificationRequests, setVerificationRequests] = useState([]);
   
+  // Verification Confirmation & Evidence Review Modal states
+  const [verifyingUser, setVerifyingUser] = useState(null);
+  const [verifyingUserDetails, setVerifyingUserDetails] = useState(null);
+  const [loadingVerifyModal, setLoadingVerifyModal] = useState(false);
+  const [confirmingVerification, setConfirmingVerification] = useState(false);
+  
   // Reports states
   const [reports, setReports] = useState([]);
   const [loadingReports, setLoadingReports] = useState(true);
@@ -1052,16 +1059,49 @@ const AdminPanel = () => {
 
   // Action Handlers
 
-  //verify user(by admin)
-  const handleVerifyUser = async (userId) => {
+  // Open Verify Confirmation & Evidence Review Modal
+  const handleOpenVerifyModal = async (userOrId) => {
+    const userId = typeof userOrId === "object" ? userOrId?.id : userOrId;
+    if (!userId) return;
+    const initialUser = typeof userOrId === "object" ? userOrId : users.find((u) => u.id === userId) || unverifiedUsers.find((u) => u.id === userId);
+    setVerifyingUser(initialUser || { id: userId });
+    setVerifyingUserDetails(null);
+    setLoadingVerifyModal(true);
     try {
-      await adminManualVerify(userId);
-      toast.success("User verified successfully");
+      const details = await adminGetUserDetailed(userId);
+      setVerifyingUserDetails(details);
+    } catch (err) {
+      console.warn("Failed to fetch detailed user info for verification modal:", err);
+    } finally {
+      setLoadingVerifyModal(false);
+    }
+  };
+
+  // Confirm verification execution
+  const handleConfirmVerification = async () => {
+    if (!verifyingUser?.id) return;
+    setConfirmingVerification(true);
+    try {
+      await adminManualVerify(verifyingUser.id);
+      toast.success(`User ${verifyingUserDetails?.user?.name || verifyingUser.name || "User"} verified successfully!`);
+      setVerifyingUser(null);
+      setVerifyingUserDetails(null);
       fetchUnverifiedUsers();
       fetchDashboardStats();
+      fetchVerificationRequests();
+      if (userDetails && userDetails.user?.id === verifyingUser.id) {
+        fetchUserDetails(verifyingUser.id);
+      }
     } catch (error) {
       toast.error(error.message || "Failed to verify user");
+    } finally {
+      setConfirmingVerification(false);
     }
+  };
+
+  // Alias handleVerifyUser to open verification review modal
+  const handleVerifyUser = (userOrId) => {
+    handleOpenVerifyModal(userOrId);
   };
 
   //Revoke Verification
@@ -1080,15 +1120,13 @@ const AdminPanel = () => {
   //promote to trusted
   const handlePromoteToTrusted = async (userId) => {
     try {
-      const response = await axios.post(`/admin/promote-to-trusted/${userId}`);
-      if (response.status === 200) {
-        toast.success("User promoted to trusted");
-        fetchDashboardStats();
-        if (userDetails) fetchUserDetails(userId);
-      }
+      await adminPromoteToTrusted(userId);
+      toast.success("User promoted to trusted status");
+      fetchDashboardStats();
+      if (userDetails) fetchUserDetails(userId);
     } catch (error) {
       console.error("Error promoting user:", error);
-      toast.error("Failed to promote user");
+      toast.error(error.message || "Failed to promote user");
     }
   };
 
@@ -2363,6 +2401,18 @@ const DashboardTab = ({
               <span>{user.reputation_points || 0} pts</span>
             </div>
           </div>
+          {(() => {
+            const userReqs = verificationRequests.filter((r) => String(r.requesting_user_id) === String(user.id));
+            const hasDocs = userReqs.some((r) => r.documents && r.documents.length > 0);
+            if (!hasDocs) return null;
+            const docCount = userReqs.reduce((acc, r) => acc + (r.documents?.length || 0), 0);
+            return (
+              <div className="mt-2.5 text-[11px] flex items-center gap-1.5 text-violet-700 dark:text-violet-300 bg-violet-50 dark:bg-violet-500/15 px-2.5 py-1 rounded-lg font-semibold border border-violet-100 dark:border-violet-500/20">
+                <FileText className="w-3.5 h-3.5" />
+                <span>{docCount} Evidence Document{docCount > 1 ? "s" : ""} Attached</span>
+              </div>
+            );
+          })()}
         </div>
         <div className="px-4 pb-4 flex gap-2">
           <button
@@ -2429,22 +2479,44 @@ const DashboardTab = ({
         )}
 
         {req.documents && req.documents.length > 0 && (
-          <div className="mb-4">
-            <p className="text-xs font-bold text-gray-400 dark:text-dark-text-muted uppercase mb-2">
-              Attached Proofs
+          <div className="mb-4 space-y-2">
+            <p className="text-xs font-bold text-gray-400 dark:text-dark-text-muted uppercase">
+              Attached Proofs & AI Verification Analysis
             </p>
-            <div className="flex flex-wrap gap-2">
+            <div className="space-y-2">
               {req.documents.map((doc, i) => (
-                <a
-                  key={i}
-                  href={doc.url || doc}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 dark:bg-dark-elevated hover:bg-gray-200 dark:hover:bg-dark-border rounded-lg text-xs font-medium text-gray-700 dark:text-dark-text-secondary transition-colors"
-                >
-                  <FileText className="w-3.5 h-3.5" />
-                  {doc.name || `Proof ${i + 1}`}
-                </a>
+                <div key={i} className="p-2.5 bg-gray-50 dark:bg-dark-elevated rounded-lg border border-gray-100 dark:border-dark-border/50 text-xs">
+                  <div className="flex items-center justify-between gap-2">
+                    <a
+                      href={doc.document_url || doc.url || doc}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 font-medium text-violet-600 dark:text-violet-400 hover:underline truncate"
+                    >
+                      <FileText className="w-3.5 h-3.5" />
+                      {doc.name || `Document Proof ${i + 1}`}
+                    </a>
+                    {doc.ai_status && (
+                      <span className={`px-2 py-0.5 text-[10px] font-bold rounded-full uppercase shrink-0 ${
+                        doc.ai_status === 'APPROVED' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
+                        doc.ai_status === 'REJECTED' ? 'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400' :
+                        'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400'
+                      }`}>
+                        AI: {doc.ai_status}
+                      </span>
+                    )}
+                  </div>
+                  {doc.ai_confidence_score !== undefined && doc.ai_confidence_score !== null && (
+                    <div className="mt-1.5 flex items-center gap-2 text-[11px] text-gray-500 dark:text-dark-text-secondary">
+                      <span>AI Confidence: <strong className="text-gray-700 dark:text-dark-text">{(doc.ai_confidence_score * 100).toFixed(0)}%</strong></span>
+                    </div>
+                  )}
+                  {doc.ai_analysis_reasoning && (
+                    <p className="mt-1 text-[11px] text-gray-600 dark:text-dark-text-secondary italic bg-white dark:bg-dark-card p-1.5 rounded border border-gray-100 dark:border-dark-border/40">
+                      "{doc.ai_analysis_reasoning}"
+                    </p>
+                  )}
+                </div>
               ))}
             </div>
           </div>
@@ -3349,6 +3421,89 @@ const DashboardTab = ({
                   </div>
                 </div>
 
+                {/* Uploaded Evidence & Verification Proofs */}
+                {(() => {
+                  const userReqs = verificationRequests.filter(
+                    (r) => String(r.requesting_user_id) === String(userDetails.user?.id)
+                  );
+                  return (
+                    <div className="bg-gray-50 dark:bg-dark-elevated rounded-2xl p-5 border border-gray-100 dark:border-dark-border/50 space-y-4">
+                      <h4 className="text-sm font-bold text-gray-400 dark:text-dark-text-muted uppercase tracking-wider flex items-center gap-2">
+                        <FileText className="w-4 h-4 text-violet-500" /> Verification Documents & Submitted Evidence
+                      </h4>
+                      {userReqs.length > 0 ? (
+                        <div className="space-y-3">
+                          {userReqs.map((req) => (
+                            <div key={req.id} className="p-4 bg-white dark:bg-dark-card rounded-xl border border-gray-200 dark:border-dark-border text-xs space-y-2.5">
+                              <div className="flex items-center justify-between gap-2">
+                                <span className="font-bold text-gray-900 dark:text-dark-text capitalize flex items-center gap-1.5">
+                                  <Shield className="w-3.5 h-3.5 text-violet-500" />
+                                  {req.verification_type} Request #{req.id}
+                                </span>
+                                <span className={`px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider rounded-full ${
+                                  req.status === 'approved' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
+                                  req.status === 'rejected' ? 'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400' :
+                                  'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400'
+                                }`}>
+                                  {req.status}
+                                </span>
+                              </div>
+                              {req.message && (
+                                <p className="text-gray-600 dark:text-dark-text-secondary italic">"{req.message}"</p>
+                              )}
+                              {req.documents && req.documents.length > 0 && (
+                                <div className="space-y-2 pt-1">
+                                  <p className="text-[11px] font-bold text-gray-400 uppercase">Attached Proof Documents & AI Result:</p>
+                                  <div className="space-y-2">
+                                    {req.documents.map((doc, i) => (
+                                      <div key={i} className="p-2.5 bg-gray-50 dark:bg-dark-elevated rounded-lg border border-gray-100 dark:border-dark-border/40">
+                                        <div className="flex items-center justify-between gap-2">
+                                          <a
+                                            href={doc.document_url || doc.url || doc}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="flex items-center gap-2 font-medium text-violet-600 dark:text-violet-400 hover:underline truncate"
+                                          >
+                                            <FileText className="w-3.5 h-3.5" />
+                                            {doc.name || `View Verification Proof ${i + 1}`}
+                                          </a>
+                                          {doc.ai_status && (
+                                            <span className={`px-2 py-0.5 text-[10px] font-bold rounded-full uppercase shrink-0 ${
+                                              doc.ai_status === 'APPROVED' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
+                                              doc.ai_status === 'REJECTED' ? 'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400' :
+                                              'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400'
+                                            }`}>
+                                              AI: {doc.ai_status}
+                                            </span>
+                                          )}
+                                        </div>
+                                        {doc.ai_confidence_score !== undefined && doc.ai_confidence_score !== null && (
+                                          <div className="mt-1 text-[11px] text-gray-500">
+                                            AI Confidence: <strong>{(doc.ai_confidence_score * 100).toFixed(0)}%</strong>
+                                          </div>
+                                        )}
+                                        {doc.ai_analysis_reasoning && (
+                                          <p className="mt-1 text-[11px] text-gray-600 dark:text-dark-text-secondary italic bg-white dark:bg-dark-card p-1.5 rounded border border-gray-100 dark:border-dark-border/40">
+                                            "{doc.ai_analysis_reasoning}"
+                                          </p>
+                                        )}
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-xs text-gray-500 dark:text-dark-text-secondary italic">
+                          No document verification evidence or peer requests submitted by this user.
+                        </p>
+                      )}
+                    </div>
+                  );
+                })()}
+
                 {/* Stats Grid */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                   <div className="bg-linear-to-br from-violet-50 to-purple-50 dark:from-violet-500/10 dark:to-purple-500/10 p-4 rounded-xl border border-violet-100 dark:border-violet-500/20">
@@ -3683,6 +3838,264 @@ const DashboardTab = ({
                     <span>Send Notification</span>
                   </button>
                 </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Verification Confirmation & Evidence Review Modal */}
+        {verifyingUser && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 z-[60] animate-in fade-in duration-200">
+            <div className="bg-white dark:bg-dark-card rounded-3xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl ring-1 ring-black/5 dark:ring-white/10 overflow-hidden">
+              {/* Header */}
+              <div className="bg-linear-to-r from-emerald-600 via-teal-600 to-emerald-700 p-5 sm:p-6 text-white relative shrink-0">
+                <button
+                  onClick={() => {
+                    setVerifyingUser(null);
+                    setVerifyingUserDetails(null);
+                  }}
+                  className="absolute top-4 right-4 p-2 bg-white/20 hover:bg-white/30 rounded-full transition-all duration-200 backdrop-blur-sm"
+                >
+                  <X className="w-5 h-5 text-white" />
+                </button>
+                <div className="flex items-center gap-3.5">
+                  <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-white ring-2 ring-white/30 shrink-0">
+                    <ShieldCheck className="w-7 h-7" />
+                  </div>
+                  <div className="min-w-0 pr-8">
+                    <h3 className="text-xl sm:text-2xl font-bold truncate">Confirm User Verification</h3>
+                    <p className="text-xs sm:text-sm text-emerald-100 mt-0.5">
+                      Review submitted evidence and verify identity details before approving
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Body with scrolling */}
+              <div className="p-5 sm:p-6 overflow-y-auto space-y-5 flex-1">
+                {loadingVerifyModal ? (
+                  <div className="py-12 flex flex-col items-center justify-center gap-3">
+                    <RefreshCw className="w-8 h-8 text-emerald-600 animate-spin" />
+                    <p className="text-sm text-gray-500 dark:text-dark-text-secondary">Loading user profile and attached evidence...</p>
+                  </div>
+                ) : (
+                  <>
+                    {/* User Identity Card */}
+                    <div className="p-4 bg-gray-50 dark:bg-dark-elevated rounded-2xl border border-gray-100 dark:border-dark-border/60">
+                      <div className="flex items-center gap-3.5 mb-3.5 pb-3 border-b border-gray-200 dark:border-dark-border/60">
+                        <img
+                          src={(verifyingUserDetails?.user?.avatar_url || verifyingUser.avatar_url) || getDefaultAvatar(verifyingUserDetails?.user?.gender || verifyingUser.gender)}
+                          alt={verifyingUserDetails?.user?.name || verifyingUser.name}
+                          className="w-12 h-12 rounded-full object-cover border-2 border-emerald-200 dark:border-emerald-500/30 shrink-0"
+                        />
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <h4 className="font-bold text-gray-900 dark:text-dark-text text-base truncate">
+                              {verifyingUserDetails?.user?.name || verifyingUser.name}
+                            </h4>
+                            <span className="px-2 py-0.5 bg-amber-50 dark:bg-amber-500/15 text-amber-600 dark:text-amber-400 text-[10px] font-black uppercase rounded-full border border-amber-200 dark:border-amber-500/30">
+                              {verifyingUserDetails?.user?.verification_status || verifyingUser.verification_status || "unverified"}
+                            </span>
+                          </div>
+                          <p className="text-xs text-gray-500 dark:text-dark-text-secondary truncate mt-0.5">
+                            {verifyingUserDetails?.user?.email || verifyingUser.email}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Grid details to match against proof */}
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
+                        <div className="p-2.5 bg-white dark:bg-dark-card rounded-xl border border-gray-100 dark:border-dark-border/40">
+                          <span className="text-[10px] font-bold uppercase text-gray-400 dark:text-dark-text-muted block">Registration No</span>
+                          <span className="font-bold text-gray-800 dark:text-dark-text font-mono text-xs mt-0.5 block">
+                            {verifyingUserDetails?.user?.registration_number || verifyingUser.registration_number || "N/A"}
+                          </span>
+                        </div>
+                        <div className="p-2.5 bg-white dark:bg-dark-card rounded-xl border border-gray-100 dark:border-dark-border/40">
+                          <span className="text-[10px] font-bold uppercase text-gray-400 dark:text-dark-text-muted block">Department</span>
+                          <span className="font-bold text-gray-800 dark:text-dark-text text-xs mt-0.5 block truncate">
+                            {verifyingUserDetails?.user?.department || verifyingUser.department || "N/A"}
+                          </span>
+                        </div>
+                        <div className="p-2.5 bg-white dark:bg-dark-card rounded-xl border border-gray-100 dark:border-dark-border/40">
+                          <span className="text-[10px] font-bold uppercase text-gray-400 dark:text-dark-text-muted block">Course / Year</span>
+                          <span className="font-bold text-gray-800 dark:text-dark-text text-xs mt-0.5 block truncate">
+                            {verifyingUserDetails?.user?.course || verifyingUser.course || "—"} {verifyingUserDetails?.user?.year ? `(${verifyingUserDetails.user.year} yr)` : ""}
+                          </span>
+                        </div>
+                        {verifyingUserDetails?.user?.designation && (
+                          <div className="p-2.5 bg-white dark:bg-dark-card rounded-xl border border-gray-100 dark:border-dark-border/40">
+                            <span className="text-[10px] font-bold uppercase text-gray-400 dark:text-dark-text-muted block">Designation</span>
+                            <span className="font-bold text-gray-800 dark:text-dark-text text-xs mt-0.5 block truncate">
+                              {verifyingUserDetails.user.designation}
+                            </span>
+                          </div>
+                        )}
+                        {verifyingUserDetails?.user?.phone_number && (
+                          <div className="p-2.5 bg-white dark:bg-dark-card rounded-xl border border-gray-100 dark:border-dark-border/40">
+                            <span className="text-[10px] font-bold uppercase text-gray-400 dark:text-dark-text-muted block">Phone</span>
+                            <span className="font-bold text-gray-800 dark:text-dark-text text-xs mt-0.5 block truncate">
+                              {verifyingUserDetails.user.phone_number}
+                            </span>
+                          </div>
+                        )}
+                        {verifyingUserDetails?.user?.is_hosteler && (
+                          <div className="p-2.5 bg-white dark:bg-dark-card rounded-xl border border-gray-100 dark:border-dark-border/40">
+                            <span className="text-[10px] font-bold uppercase text-gray-400 dark:text-dark-text-muted block">Hostel / Room</span>
+                            <span className="font-bold text-gray-800 dark:text-dark-text text-xs mt-0.5 block truncate">
+                              {verifyingUserDetails.user.hostel_name || "Hostel"} #{verifyingUserDetails.user.room_number || ""}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Evidence & Documents Section */}
+                    {(() => {
+                      const userReqs = verificationRequests.filter(
+                        (r) => String(r.requesting_user_id) === String(verifyingUser.id)
+                      );
+                      const hasDocs = userReqs.some(r => r.documents && r.documents.length > 0);
+                      return (
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between">
+                            <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-dark-text-muted flex items-center gap-1.5">
+                              <FileText className="w-4 h-4 text-emerald-600" /> Submitted Proof Evidence & Documents
+                            </h4>
+                            {hasDocs && (
+                              <span className="text-[10px] font-bold px-2 py-0.5 bg-emerald-50 dark:bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 rounded-full border border-emerald-200 dark:border-emerald-500/20">
+                                Evidence Found
+                              </span>
+                            )}
+                          </div>
+
+                          {userReqs.length > 0 ? (
+                            <div className="space-y-3">
+                              {userReqs.map((req) => (
+                                <div key={req.id} className="p-4 bg-white dark:bg-dark-elevated rounded-2xl border border-gray-200 dark:border-dark-border space-y-3">
+                                  <div className="flex items-center justify-between gap-2">
+                                    <span className="text-xs font-bold text-gray-800 dark:text-dark-text capitalize">
+                                      {req.verification_type} Application #{req.id}
+                                    </span>
+                                    <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full ${
+                                      req.status === 'approved' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
+                                      req.status === 'rejected' ? 'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400' :
+                                      'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400'
+                                    }`}>
+                                      {req.status}
+                                    </span>
+                                  </div>
+                                  {req.message && (
+                                    <p className="text-xs text-gray-600 dark:text-dark-text-secondary italic bg-gray-50 dark:bg-dark-card p-2.5 rounded-xl border border-gray-100 dark:border-dark-border/40">
+                                      "{req.message}"
+                                    </p>
+                                  )}
+                                  {req.documents && req.documents.length > 0 ? (
+                                    <div className="space-y-2">
+                                      <p className="text-[11px] font-bold text-gray-400 uppercase">Attached Files:</p>
+                                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                        {req.documents.map((doc, idx) => {
+                                          const docUrl = doc.document_url || doc.url || doc;
+                                          const isImg = typeof docUrl === "string" && (docUrl.endsWith(".jpg") || docUrl.endsWith(".jpeg") || docUrl.endsWith(".png") || docUrl.endsWith(".webp"));
+                                          return (
+                                            <div key={idx} className="p-2.5 bg-gray-50 dark:bg-dark-card rounded-xl border border-gray-200 dark:border-dark-border/50 text-xs flex flex-col justify-between gap-2">
+                                              {isImg && (
+                                                <div className="relative aspect-video rounded-lg overflow-hidden bg-gray-200 dark:bg-dark-elevated mb-1 border border-gray-200 dark:border-dark-border/40">
+                                                  <img src={docUrl} alt={`Proof ${idx + 1}`} className="w-full h-full object-cover" />
+                                                </div>
+                                              )}
+                                              <div className="flex items-center justify-between gap-2">
+                                                <span className="font-semibold text-gray-800 dark:text-dark-text truncate">
+                                                  {doc.name || `Proof Document ${idx + 1}`}
+                                                </span>
+                                                <a
+                                                  href={docUrl}
+                                                  target="_blank"
+                                                  rel="noopener noreferrer"
+                                                  className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 hover:underline shrink-0 flex items-center gap-1"
+                                                >
+                                                  <Eye className="w-3.5 h-3.5" /> View
+                                                </a>
+                                              </div>
+                                              {doc.ai_status && (
+                                                <div className="pt-1 border-t border-gray-200 dark:border-dark-border/40 flex items-center justify-between text-[10px]">
+                                                  <span className="font-bold uppercase text-gray-500">AI Status: {doc.ai_status}</span>
+                                                  {doc.ai_confidence_score !== undefined && (
+                                                    <span className="font-bold text-emerald-600">{(doc.ai_confidence_score * 100).toFixed(0)}%</span>
+                                                  )}
+                                                </div>
+                                              )}
+                                              {doc.ai_analysis_reasoning && (
+                                                <p className="text-[10px] text-gray-500 dark:text-dark-text-secondary italic">
+                                                  "{doc.ai_analysis_reasoning}"
+                                                </p>
+                                              )}
+                                            </div>
+                                          );
+                                        })}
+                                      </div>
+                                    </div>
+                                  ) : (
+                                    <p className="text-xs text-gray-500 dark:text-dark-text-secondary italic">
+                                      No uploaded file attachments on this request.
+                                    </p>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <div className="p-4 bg-amber-50/60 dark:bg-amber-500/10 rounded-2xl border border-amber-200/70 dark:border-amber-500/20 text-xs text-amber-800 dark:text-amber-300 flex items-start gap-2.5">
+                              <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-amber-600 dark:text-amber-400" />
+                              <div>
+                                <p className="font-bold">No uploaded document proofs found for this user.</p>
+                                <p className="text-[11px] mt-0.5 opacity-90">
+                                  Confirming verification will directly verify the user's account for your active organization.
+                                </p>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })()}
+
+                    {/* Instruction Checklist */}
+                    <div className="p-3.5 bg-blue-50/60 dark:bg-blue-500/10 rounded-xl border border-blue-100 dark:border-blue-500/20 text-xs text-blue-800 dark:text-blue-300 flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4 shrink-0 text-blue-600 dark:text-blue-400" />
+                      <span>Please ensure the Registration Number and Department match the user's official institution records before verifying.</span>
+                    </div>
+                  </>
+                )}
+              </div>
+
+              {/* Footer Actions */}
+              <div className="p-4 sm:p-5 bg-gray-50 dark:bg-dark-elevated border-t border-gray-200 dark:border-dark-border flex items-center justify-end gap-3 shrink-0">
+                <button
+                  onClick={() => {
+                    setVerifyingUser(null);
+                    setVerifyingUserDetails(null);
+                  }}
+                  disabled={confirmingVerification}
+                  className="px-4 py-2.5 bg-white dark:bg-dark-card hover:bg-gray-100 dark:hover:bg-dark-border text-gray-700 dark:text-dark-text rounded-xl text-xs sm:text-sm font-semibold border border-gray-200 dark:border-dark-border transition-colors disabled:opacity-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleConfirmVerification}
+                  disabled={confirmingVerification || loadingVerifyModal}
+                  className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs sm:text-sm font-bold shadow-md hover:shadow-lg transition-all flex items-center gap-2 disabled:opacity-50"
+                >
+                  {confirmingVerification ? (
+                    <>
+                      <RefreshCw className="w-4 h-4 animate-spin" />
+                      <span>Verifying User...</span>
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle className="w-4 h-4" />
+                      <span>Confirm & Verify User</span>
+                    </>
+                  )}
+                </button>
               </div>
             </div>
           </div>

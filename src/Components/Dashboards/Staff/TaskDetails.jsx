@@ -258,7 +258,12 @@ const TaskDetails = () => {
             >
               <ChevronLeft className="w-5 h-5 text-gray-700 dark:text-dark-text-secondary" />
             </button>
-            <div className="flex gap-2 ml-auto">
+            <div className="flex gap-2 ml-auto items-center">
+              {task.organization_name && (
+                <span className="text-xs font-bold px-2.5 py-1 rounded-lg bg-violet-50 dark:bg-violet-500/15 text-violet-700 dark:text-violet-400 border border-violet-200 dark:border-violet-500/20">
+                  {task.organization_name}
+                </span>
+              )}
               <StatusBadge type="status" value={task.status} />
               <StatusBadge type="priority" value={task.priority} />
             </div>

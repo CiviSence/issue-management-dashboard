@@ -149,10 +149,11 @@ export const adminGetUserDetailed = async (userId) => {
     }
 };
 
-export const adminReviewDocument = async (requestId, action) => {
+export const adminReviewDocument = async (requestId, action, adminNotes = "") => {
     try {
         const { data } = await instance.post(`/verification/admin/review-document/${requestId}`, {
-            action: action
+            action: action,
+            admin_notes: adminNotes
         });
         return data;
     } catch (error) {
@@ -162,10 +163,19 @@ export const adminReviewDocument = async (requestId, action) => {
 
 export const adminManualVerify = async (userId) => {
     try {
-        const { data } = await instance.post(`/verification/admin/manual-verify/${userId}`);
+        const { data } = await instance.post(`/admin/verify-user/${userId}`);
         return data;
     } catch (error) {
         throw new Error(error.response?.data?.detail || "Admin: Failed to manually verify user");
+    }
+};
+
+export const adminPromoteToTrusted = async (userId) => {
+    try {
+        const { data } = await instance.post(`/admin/promote-to-trusted/${userId}`);
+        return data;
+    } catch (error) {
+        throw new Error(error.response?.data?.detail || "Admin: Failed to promote user to trusted");
     }
 };
 
