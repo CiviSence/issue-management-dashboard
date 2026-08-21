@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useUser } from "../Context/ProfileContext";
 import { useTheme } from "../Context/ThemeContext.js";
@@ -17,333 +17,311 @@ import {
   revokeSession,
 } from "../Utils/auth-api";
 import { clearSession } from "../Utils/auth-utils";
-import { getMyOrganization, updateOrgSettings } from "../Utils/organization-api";
+import {
+  getMyOrganization,
+  updateOrgSettings,
+  getRoleRequests,
+  approveRoleRequest,
+  rejectRoleRequest,
+  leaveOrganization,
+} from "../Utils/organization-api";
 import OrgChangeRequestModal from "./common/OrgChangeRequestModal";
+import ChangePasswordModal from "./common/ChangePasswordModal";
+import OrgInviteModal from "./common/OrgInviteModal";
 
-
-// ─── Sessions Card (API-driven) ─────────────────────────────────────────────
-
-const SessionsCard = () => {
+// ─── Active Sessions Manager ────────────────────────────────────────────────
+const SessionsCard = ({ triggerToast }) => {
   const [sessions, setSessions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [revokingId, setRevokingId] = useState(null);
 
-  const fetchSessions = async () => {
+  const fetchSessions = useCallback(async () => {
     try {
       const data = await getActiveSessions();
-      setSessions(data);
+      setSessions(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error("Failed to fetch sessions", error);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchSessions();
-  }, []);
+  }, [fetchSessions]);
 
   const handleRevoke = async (sessionId) => {
-    if (!window.confirm("Are you sure you want to revoke this session?"))
-      return;
+    if (!window.confirm("Are you sure you want to revoke this session?")) return;
     setRevokingId(sessionId);
     try {
       await revokeSession(sessionId);
-      setSessions((prev) =>
-        prev.filter((s) => s !== sessionId && s.id !== sessionId),
-      );
+      setSessions((prev) => prev.filter((s) => s !== sessionId && s.id !== sessionId));
+      if (triggerToast) triggerToast("Session revoked successfully");
       fetchSessions();
     } catch (error) {
-      alert("Failed to revoke session", error);
+      alert("Failed to revoke session: " + error.message);
     } finally {
       setRevokingId(null);
     }
   };
 
+  const handleLogoutAll = async () => {
+    if (!window.confirm("This will log you out from all devices except this one. Continue?")) return;
+    try {
+      await logoutAllSessions();
+      if (triggerToast) triggerToast("Logged out of all other sessions");
+      fetchSessions();
+    } catch (err) {
+      alert("Failed to logout all sessions: " + err.message);
+    }
+  };
+
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <p className="text-sm font-bold text-gray-700 dark:text-dark-text-secondary">Your Active Devices</p>
-        <button
-          onClick={fetchSessions}
-          className="text-violet-600 dark:text-violet-400 hover:bg-violet-50 dark:bg-violet-500/15 dark:hover:bg-violet-50 dark:bg-violet-500/150/15 p-1.5 rounded-lg transition-colors"
-          title="Refresh"
-        >
-          <i className="ri-refresh-line"></i>
-        </button>
+        <div>
+          <h4 className="text-sm font-bold text-gray-800 dark:text-dark-text">Active Devices & Sessions</h4>
+          <p className="text-xs text-gray-500 dark:text-dark-text-secondary">Devices currently authenticated with your account</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={fetchSessions}
+            className="p-1.5 text-gray-500 hover:text-violet-600 dark:text-dark-text-secondary dark:hover:text-violet-400 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-elevated transition"
+            title="Refresh sessions"
+          >
+            <i className="ri-refresh-line text-base"></i>
+          </button>
+          {sessions.length > 1 && (
+            <button
+              type="button"
+              onClick={handleLogoutAll}
+              className="text-xs font-bold text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 dark:bg-red-500/10 dark:text-red-400 dark:hover:bg-red-500/20 px-2.5 py-1.5 rounded-lg transition"
+            >
+              Revoke All Others
+            </button>
+          )}
+        </div>
       </div>
 
       {loading ? (
-        <div className="space-y-3">
+        <div className="space-y-2.5">
           {[1, 2].map((i) => (
-            <div
-              key={i}
-              className="h-14 bg-gray-50 dark:bg-dark-elevated animate-pulse rounded-xl"
-            ></div>
+            <div key={i} className="h-14 bg-gray-100 dark:bg-dark-elevated animate-pulse rounded-xl" />
           ))}
         </div>
       ) : sessions.length > 0 ? (
-        <div className="space-y-3">
+        <div className="space-y-2.5">
           {sessions.map((session, index) => {
             const id = typeof session === "object" ? session.id : session;
-            const label =
-              typeof session === "object"
-                ? session.device_info || `Session ${id}`
-                : `Session ${index + 1}`;
+            const label = typeof session === "object" ? session.device_info || `Device #${index + 1}` : `Session #${index + 1}`;
+            const isCurrent = index === 0;
 
             return (
               <div
                 key={id || index}
-                className="flex items-center justify-between p-3 sm:p-4 bg-gray-50/50 dark:bg-dark-elevated/50 rounded-lg sm:rounded-xl border border-gray-100 dark:border-dark-border/50 hover:border-violet-200 hover:bg-white transition-all group"
+                className="flex items-center justify-between p-3.5 bg-gray-50/70 dark:bg-dark-elevated/60 rounded-xl border border-gray-100 dark:border-dark-border/60 hover:border-violet-200 transition group"
               >
                 <div className="flex items-center gap-3">
-                  <div className="p-2.5 bg-white dark:bg-dark-card shadow-sm border border-gray-100 dark:border-dark-border/50 text-violet-600 dark:text-violet-400 rounded-xl group-hover:bg-violet-600 group-hover:text-white transition-all">
-                    <i className="ri-device-line text-lg"></i>
+                  <div className="w-9 h-9 bg-white dark:bg-dark-card shadow-2xs border border-gray-100 dark:border-dark-border/60 text-violet-600 dark:text-violet-400 rounded-xl flex items-center justify-center">
+                    <i className="ri-device-line text-base"></i>
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-gray-800 dark:text-dark-text transition-colors">
-                      {label}
-                    </p>
-                    <p className="text-[10px] font-bold text-violet-500 dark:text-violet-400 uppercase tracking-widest mt-0.5">
-                      Active Now
+                    <p className="text-xs font-bold text-gray-800 dark:text-dark-text truncate max-w-[200px] sm:max-w-xs">{label}</p>
+                    <p className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider mt-0.5">
+                      {isCurrent ? "Current Session" : "Active"}
                     </p>
                   </div>
                 </div>
-                <button
-                  onClick={() => handleRevoke(id)}
-                  disabled={revokingId === id}
-                  className="text-xs text-red-500 hover:bg-red-50 dark:bg-red-500/15 font-bold px-3 py-2 rounded-lg transition-all border border-transparent hover:border-red-100 disabled:opacity-50 uppercase tracking-wider"
-                >
-                  {revokingId === id ? "Revoking..." : "Revoke"}
-                </button>
+                {!isCurrent && (
+                  <button
+                    type="button"
+                    onClick={() => handleRevoke(id)}
+                    disabled={revokingId === id}
+                    className="text-xs text-red-500 hover:bg-red-50 dark:hover:bg-red-500/15 font-bold px-2.5 py-1.5 rounded-lg transition disabled:opacity-50"
+                  >
+                    {revokingId === id ? "Revoking..." : "Revoke"}
+                  </button>
+                )}
               </div>
             );
           })}
         </div>
       ) : (
-        <div className="bg-gray-50 dark:bg-dark-elevated rounded-xl py-8 text-center border border-dashed border-gray-200 dark:border-dark-border">
-          <p className="text-gray-400 dark:text-dark-text-muted text-sm font-medium">
-            No other active sessions found.
-          </p>
+        <div className="p-6 bg-gray-50 dark:bg-dark-elevated rounded-xl text-center border border-dashed border-gray-200 dark:border-dark-border text-xs text-gray-500 dark:text-dark-text-secondary">
+          No other active device sessions found.
         </div>
       )}
     </div>
   );
 };
 
-// ─── Reusable LinkedIn-Style Grouped Settings Components ────────────────────
-
-const SettingsGroupCard = ({ title, children }) => (
-  <div className="bg-white dark:bg-dark-card rounded-xl sm:rounded-2xl border border-gray-200 dark:border-dark-border/80 dark:border-dark-border shadow-xs mb-6 overflow-hidden">
-    {title && (
-      <div className="px-5 sm:px-6 pt-5 sm:pt-6 pb-2 text-lg sm:text-xl font-bold text-gray-900 dark:text-dark-text">
-        {title}
+// ─── Settings Card Wrapper ──────────────────────────────────────────────────
+const Card = ({ title, description, children, action }) => (
+  <div className="bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border shadow-2xs p-5 sm:p-6 mb-6">
+    {(title || action) && (
+      <div className="flex items-start justify-between gap-4 pb-4 mb-4 border-b border-gray-100 dark:border-dark-border/60">
+        <div>
+          {title && <h3 className="text-base font-bold text-gray-900 dark:text-dark-text">{title}</h3>}
+          {description && <p className="text-xs text-gray-500 dark:text-dark-text-secondary mt-0.5">{description}</p>}
+        </div>
+        {action && <div>{action}</div>}
       </div>
     )}
-    <div className="divide-y divide-gray-100 dark:divide-dark-border/50">{children}</div>
+    <div className="space-y-4">{children}</div>
   </div>
 );
 
-const ActionRow = ({ label, sublabel, value, to, onClick, icon }) => {
-  const content = (
-    <div className="flex items-center justify-between w-full">
-      <div className="flex items-start gap-3.5 pr-4 min-w-0">
-        {icon && (
-          <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-dark-elevated flex items-center justify-center shrink-0 text-gray-600 dark:text-dark-text-secondary mt-0.5 group-hover:bg-violet-50 dark:bg-violet-500/15 dark:hover:bg-violet-50 dark:bg-violet-500/150/15 group-hover:text-violet-600 dark:text-violet-400 dark:hover:text-violet-400 transition-colors">
-            <i className={`${icon} text-lg`}></i>
-          </div>
-        )}
-        <div className="min-w-0">
-          <p className="text-sm sm:text-base font-semibold text-gray-800 dark:text-dark-text group-hover:text-violet-600 dark:text-violet-400 dark:hover:text-violet-400 transition-colors truncate">
-            {label}
-          </p>
-          {sublabel && (
-            <p className="text-xs sm:text-sm text-gray-500 dark:text-dark-text-secondary mt-0.5 leading-relaxed line-clamp-2">
-              {sublabel}
-            </p>
-          )}
-        </div>
-      </div>
-      <div className="flex items-center gap-2 shrink-0 ml-4">
-        {value && (
-          <span className="text-sm font-medium text-gray-500 dark:text-dark-text-secondary text-right">
-            {value}
-          </span>
-        )}
-        <i className="ri-arrow-right-s-line text-xl text-gray-400 dark:text-dark-text-muted group-hover:text-gray-700 dark:hover:text-dark-text dark:text-dark-text-secondary transition-colors"></i>
-      </div>
+// ─── Switch / Toggle Component ──────────────────────────────────────────────
+const Switch = ({ checked, onChange, label, description, disabled = false }) => (
+  <div className="flex items-center justify-between py-2.5 gap-4">
+    <div className="flex-1 min-w-0">
+      <p className="text-xs sm:text-sm font-semibold text-gray-800 dark:text-dark-text">{label}</p>
+      {description && <p className="text-xs text-gray-500 dark:text-dark-text-secondary mt-0.5">{description}</p>}
     </div>
-  );
-
-  if (to) {
-    return (
-      <Link
-        to={to}
-        className="p-4 sm:px-6 sm:py-4.5 hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated/80 dark:bg-dark-elevated/80 transition-colors group select-none block w-full text-left"
-      >
-        {content}
-      </Link>
-    );
-  }
-
-  return (
     <button
       type="button"
-      onClick={onClick}
-      className="p-4 sm:px-6 sm:py-4.5 hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated/80 dark:bg-dark-elevated/80 transition-colors cursor-pointer group select-none block w-full text-left"
+      disabled={disabled}
+      onClick={() => onChange(!checked)}
+      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none disabled:opacity-50 ${
+        checked ? "bg-violet-600" : "bg-gray-200 dark:bg-dark-border"
+      }`}
     >
-      {content}
+      <span
+        className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
+          checked ? "translate-x-5" : "translate-x-0"
+        }`}
+      />
     </button>
-  );
-};
+  </div>
+);
 
-const ExpandableRow = ({ label, sublabel, value, children, defaultExpanded = false, icon }) => {
-  const [expanded, setExpanded] = useState(defaultExpanded);
-  return (
-    <div className="transition-colors">
-      <div
-        onClick={() => setExpanded(!expanded)}
-        className="flex items-center justify-between p-4 sm:px-6 sm:py-4.5 hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated/80 dark:bg-dark-elevated/80 transition-colors cursor-pointer group select-none"
-      >
-        <div className="flex items-start gap-3.5 pr-4 min-w-0">
-          {icon && (
-            <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-dark-elevated flex items-center justify-center shrink-0 text-gray-600 dark:text-dark-text-secondary mt-0.5 group-hover:bg-violet-50 dark:bg-violet-500/15 dark:hover:bg-violet-50 dark:bg-violet-500/150/15 group-hover:text-violet-600 dark:text-violet-400 dark:hover:text-violet-400 transition-colors">
-              <i className={`${icon} text-lg`}></i>
-            </div>
-          )}
-          <div className="min-w-0">
-            <p className="text-sm sm:text-base font-semibold text-gray-800 dark:text-dark-text group-hover:text-violet-600 dark:text-violet-400 dark:hover:text-violet-400 transition-colors truncate">
-              {label}
-            </p>
-            {sublabel && (
-              <p className="text-xs sm:text-sm text-gray-500 dark:text-dark-text-secondary mt-0.5 leading-relaxed line-clamp-2">
-                {sublabel}
-              </p>
-            )}
-          </div>
-        </div>
-        <div className="flex items-center gap-2 shrink-0 ml-4">
-          {value && (
-            <span className="text-sm font-medium text-gray-500 dark:text-dark-text-secondary text-right">
-              {value}
-            </span>
-          )}
-          <i
-            className={`ri-arrow-${expanded ? "down" : "right"}-s-line text-xl text-gray-400 dark:text-dark-text-muted group-hover:text-gray-700 dark:hover:text-dark-text dark:text-dark-text-secondary transition-transform`}
-          ></i>
-        </div>
-      </div>
-      {expanded && (
-        <div className="p-4 sm:p-6 bg-gray-50 dark:bg-dark-elevated/70 dark:bg-dark-elevated/70 border-t border-gray-100 dark:border-dark-border/50 animate-fadeIn">
-          {children}
-        </div>
-      )}
-    </div>
-  );
-};
-
-const ToggleRow = ({ label, description, checked, onChange, valueText }) => {
-  const [expanded, setExpanded] = useState(false);
-  return (
-    <div className="transition-colors">
-      <div
-        onClick={() => setExpanded(!expanded)}
-        className="flex items-center justify-between p-4 sm:px-6 sm:py-4.5 hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated/80 dark:bg-dark-elevated/80 transition-colors cursor-pointer group select-none"
-      >
-        <div className="pr-4 min-w-0">
-          <p className="text-sm sm:text-base font-semibold text-gray-800 dark:text-dark-text group-hover:text-violet-600 dark:text-violet-400 dark:hover:text-violet-400 transition-colors truncate">
-            {label}
-          </p>
-        </div>
-        <div className="flex items-center gap-2 shrink-0 ml-4">
-          <span className="text-sm font-medium text-gray-500 dark:text-dark-text-secondary">
-            {valueText || (checked ? "On" : "Off")}
-          </span>
-          <i
-            className={`ri-arrow-${expanded ? "down" : "right"}-s-line text-xl text-gray-400 dark:text-dark-text-muted group-hover:text-gray-700 dark:hover:text-dark-text dark:text-dark-text-secondary transition-transform`}
-          ></i>
-        </div>
-      </div>
-      {expanded && (
-        <div className="px-4 sm:px-6 py-4 sm:py-5 bg-gray-50 dark:bg-dark-elevated/70 dark:bg-dark-elevated/70 border-t border-gray-100 dark:border-dark-border/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-fadeIn">
-          <p className="text-xs sm:text-sm text-gray-600 dark:text-dark-text-secondary leading-relaxed flex-1">
-            {description}
-          </p>
-          <div className="flex items-center gap-3 self-end sm:self-center">
-            <span className="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-dark-text-muted">
-              {checked ? "Enabled" : "Disabled"}
-            </span>
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                onChange(!checked);
-              }}
-              className={`relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 ${
-                checked ? "bg-violet-600" : "bg-gray-300"
-              }`}
-            >
-              <span
-                className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
-                  checked ? "translate-x-5" : "translate-x-0"
-                }`}
-              />
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
-
+// ─── Main Settings Component ────────────────────────────────────────────────
 const Settings = () => {
   const { profileData } = useUser();
+  const { theme, setTheme } = useTheme();
   const role = profileData?.role?.toLowerCase();
 
-  const [orgDetails, setOrgDetails] = useState(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeTab = searchParams.get("tab") || "general";
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // Modals state
   const [isOrgModalOpen, setIsOrgModalOpen] = useState(false);
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
+
+  // Organization state & handlers
+  const [orgDetails, setOrgDetails] = useState(null);
+  const [roleRequests, setRoleRequests] = useState([]);
+  const [loadingRoleRequests, setLoadingRoleRequests] = useState(false);
   const [updatingFeedSetting, setUpdatingFeedSetting] = useState(false);
   const [updatingAISetting, setUpdatingAISetting] = useState(false);
 
-  useEffect(() => {
-    let isMounted = true;
-    const fetchOrg = async () => {
+  // Local preferences state
+  const [preferences, setPreferences] = useState(() => {
+    const saved = localStorage.getItem("app_user_settings");
+    if (saved) {
       try {
-        const data = await getMyOrganization();
-        if (isMounted) setOrgDetails(data);
+        return JSON.parse(saved);
       } catch (e) {
-        console.error("Failed to fetch org details for settings", e);
+        console.error("Failed to parse settings", e);
       }
+    }
+    return {
+      density: "comfortable",
+      animations: true,
+      emailAlerts: true,
+      pushNotifications: true,
+      soundEffects: true,
+      digestFrequency: "daily",
+      twoFactorAuth: false,
+      publicProfile: true,
+      autoRefresh: true,
+      defaultSort: "newest",
     };
-    fetchOrg();
-    return () => {
-      isMounted = false;
-    };
+  });
+
+  // Toast feedback
+  const [toastMessage, setToastMessage] = useState("");
+  const triggerToast = (msg) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(""), 3500);
+  };
+
+  // Delete account state
+  const [deletePassword, setDeletePassword] = useState("");
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
+
+  const updatePreference = (key, value) => {
+    setPreferences((prev) => {
+      const next = { ...prev, [key]: value };
+      localStorage.setItem("app_user_settings", JSON.stringify(next));
+      return next;
+    });
+    triggerToast("Preference saved automatically");
+  };
+
+  // Fetch Organization details
+  const fetchOrg = useCallback(async () => {
+    try {
+      const data = await getMyOrganization();
+      setOrgDetails(data);
+    } catch (e) {
+      console.error("Failed to fetch org details", e);
+    }
   }, []);
 
-  const activeOrgItem = Array.isArray(orgDetails)
-    ? orgDetails.find((item) => item.status === "approved" || item.is_active || item.organization?.is_active) || orgDetails[0]
-    : orgDetails;
+  useEffect(() => {
+    fetchOrg();
+  }, [fetchOrg]);
+
+  const activeOrgItem = useMemo(() => {
+    if (!orgDetails) return null;
+    return Array.isArray(orgDetails)
+      ? orgDetails.find((item) => item.status === "approved" || item.is_active || item.organization?.is_active) || orgDetails[0]
+      : orgDetails;
+  }, [orgDetails]);
+
   const activeOrg = activeOrgItem?.organization || activeOrgItem;
 
+  const isOrgAdmin =
+    role === "admin" ||
+    role === "official" ||
+    activeOrgItem?.role === "admin" ||
+    activeOrgItem?.role === "owner" ||
+    activeOrg?.role === "admin";
+
+  // Fetch pending role elevation requests for org admin
+  const fetchOrgRoleRequests = useCallback(async () => {
+    if (!isOrgAdmin || !activeOrg?.id) return;
+    setLoadingRoleRequests(true);
+    try {
+      const data = await getRoleRequests(activeOrg.id);
+      setRoleRequests(Array.isArray(data) ? data : []);
+    } catch (e) {
+      console.error("Failed to fetch role requests", e);
+    } finally {
+      setLoadingRoleRequests(false);
+    }
+  }, [isOrgAdmin, activeOrg?.id]);
+
+  useEffect(() => {
+    if (activeTab === "organization") {
+      fetchOrgRoleRequests();
+    }
+  }, [activeTab, fetchOrgRoleRequests]);
+
+  // Organization policy toggles
   const handleToggleFeedRequirement = async () => {
     if (!activeOrg?.id) return;
     const nextVal = !activeOrg.require_verified_feed;
     setUpdatingFeedSetting(true);
     try {
-      const updated = await updateOrgSettings(activeOrg.id, { require_verified_feed: nextVal });
-      setOrgDetails((prev) => {
-        if (!prev) return updated;
-        if (Array.isArray(prev)) {
-          return prev.map((item) =>
-            (item.id === activeOrg.id || item.organization?.id === activeOrg.id)
-              ? { ...item, require_verified_feed: nextVal, organization: item.organization ? { ...item.organization, require_verified_feed: nextVal } : undefined }
-              : item
-          );
-        }
-        return { ...prev, require_verified_feed: nextVal, organization: prev.organization ? { ...prev.organization, require_verified_feed: nextVal } : undefined };
-      });
-      triggerToast(`Feed verification set to ${nextVal ? "Required" : "Optional"}`);
+      await updateOrgSettings(activeOrg.id, { require_verified_feed: nextVal });
+      fetchOrg();
+      triggerToast(`Feed verification set to ${nextVal ? "Required (Verified Members Only)" : "Open Feed"}`);
     } catch (err) {
       alert(err.message || "Failed to update feed verification setting");
     } finally {
@@ -357,19 +335,9 @@ const Settings = () => {
     const nextVal = !currentVal;
     setUpdatingAISetting(true);
     try {
-      const updated = await updateOrgSettings(activeOrg.id, { ai_verification_enabled: nextVal });
-      setOrgDetails((prev) => {
-        if (!prev) return updated;
-        if (Array.isArray(prev)) {
-          return prev.map((item) =>
-            (item.id === activeOrg.id || item.organization?.id === activeOrg.id)
-              ? { ...item, ai_verification_enabled: nextVal, organization: item.organization ? { ...item.organization, ai_verification_enabled: nextVal } : undefined }
-              : item
-          );
-        }
-        return { ...prev, ai_verification_enabled: nextVal, organization: prev.organization ? { ...prev.organization, ai_verification_enabled: nextVal } : undefined };
-      });
-      triggerToast(`AI Verification set to ${nextVal ? "Enabled (Auto-Approve)" : "Disabled (Manual Review Only)"}`);
+      await updateOrgSettings(activeOrg.id, { ai_verification_enabled: nextVal });
+      fetchOrg();
+      triggerToast(`AI Verification set to ${nextVal ? "Enabled (AI Auto-Approve)" : "Disabled (Manual Admin Review)"}`);
     } catch (err) {
       alert(err.message || "Failed to update AI verification setting");
     } finally {
@@ -377,8 +345,61 @@ const Settings = () => {
     }
   };
 
+  const handleApproveRole = async (reqId) => {
+    if (!activeOrg?.id) return;
+    try {
+      await approveRoleRequest(activeOrg.id, reqId);
+      triggerToast("Role request approved");
+      fetchOrgRoleRequests();
+    } catch (err) {
+      alert(err.message || "Failed to approve role request");
+    }
+  };
 
-  // Navigation render helpers based on role
+  const handleRejectRole = async (reqId) => {
+    const reason = window.prompt("Enter optional rejection reason:");
+    if (reason === null) return;
+    try {
+      await rejectRoleRequest(activeOrg.id, reqId, reason);
+      triggerToast("Role request rejected");
+      fetchOrgRoleRequests();
+    } catch (err) {
+      alert(err.message || "Failed to reject role request");
+    }
+  };
+
+  const handleLeaveOrg = async () => {
+    if (!activeOrg?.id) return;
+    if (!window.confirm(`Are you sure you want to leave ${activeOrg.name}?`)) return;
+    try {
+      await leaveOrganization(activeOrg.id);
+      triggerToast("You have left the organization");
+      fetchOrg();
+    } catch (err) {
+      alert(err.message || "Failed to leave organization");
+    }
+  };
+
+  const handleDeleteAccount = async (e) => {
+    e.preventDefault();
+    if (!deletePassword) {
+      setDeleteError("Please enter your current password to confirm deletion.");
+      return;
+    }
+    if (!window.confirm("WARNING: This will permanently delete your account and cannot be undone. Are you sure?")) return;
+    setIsDeletingAccount(true);
+    setDeleteError("");
+    try {
+      await deleteAccount({ password: deletePassword });
+      clearSession();
+      window.location.href = "/";
+    } catch (err) {
+      setDeleteError(err.message || "Failed to delete account. Please verify your password.");
+      setIsDeletingAccount(false);
+    }
+  };
+
+  // Nav helpers
   const renderSideNav = () => {
     if (role === "student") return <StudentSideNav />;
     if (role === "staff") return <StaffSideNav />;
@@ -390,1431 +411,630 @@ const Settings = () => {
     return <BottomNav />;
   };
 
-  // Use URL search params to manage which settings page is currently open
-  const [searchParams, setSearchParams] = useSearchParams();
-  const currentCategory = searchParams.get("category") || "list";
-
-  const navigateToCategory = (catId) => {
-    setSearchParams({ category: catId });
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  const navigateToList = () => {
-    setSearchParams({});
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  // Load preferences from localStorage or initialize defaults
-  const [settings, setSettings] = useState(() => {
-    const saved = localStorage.getItem("app_user_settings");
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch (e) {
-        console.error("Failed to parse settings", e);
-      }
-    }
-    return {
-      // Appearance
-      theme: "light", // Light mode as default per user preference
-      density: "comfortable",
-      animations: true,
-      highContrast: false,
-      roundedCorners: true,
-      // Notifications
-      emailAlerts: true,
-      pushNotifications: true,
-      soundEffects: true,
-      digestFrequency: "daily",
-      dndSchedule: false,
-      // Security
-      twoFactorAuth: false,
-      publicProfile: true,
-      showReputation: true,
-      loginAlerts: true,
-      // Workflow
-      landingPage: "dashboard",
-      autoRefresh: true,
-      defaultSort: "newest",
-      language: "en-US",
-      timezone: "UTC-5 (Eastern Time)",
-      // Account
-      orgAnnouncements: true,
-      marketingEmails: false,
-    };
-  });
-
-  // Toast notification feedback state
-  const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState("");
-
-  // Action button loading states
-  const [isClearingCache, setIsClearingCache] = useState(false);
-  const [cacheCleared, setCacheCleared] = useState(false);
-  const [isExporting, setIsExporting] = useState(false);
-  const [exported, setExported] = useState(false);
-  const [isResetting, setIsResetting] = useState(false);
-
-  // Delete Account states
-  const [deletePassword, setDeletePassword] = useState("");
-  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
-  const [deleteError, setDeleteError] = useState("");
-
-  // Logout states
-  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
-  const [logoutInput, setLogoutInput] = useState("");
-  const [logoutType, setLogoutType] = useState("current");
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
-
-  const handleDeleteAccount = async (e) => {
-    e.preventDefault();
-    if (!deletePassword) {
-      setDeleteError("Please enter your current password to confirm.");
-      return;
-    }
-    setIsDeletingAccount(true);
-    setDeleteError("");
-    try {
-      await deleteAccount({ password: deletePassword });
-      clearSession();
-      window.location.href = "/";
-    } catch (err) {
-      setDeleteError(
-        err.message || "Failed to delete account. Please check your password.",
-      );
-      setIsDeletingAccount(false);
-    }
-  };
-
-  const handleLogoutConfirm = async () => {
-    if (logoutInput.toLowerCase() !== "logout") return;
-    setIsLoggingOut(true);
-    try {
-      if (logoutType === "all") {
-        await logoutAllSessions();
-      } else {
-        await logoutUser();
-      }
-      clearSession();
-      window.location.href = "/";
-    } catch (e) {
-      console.error(e);
-      alert("Logout failed");
-    } finally {
-      setIsLoggingOut(false);
-    }
-  };
-
-  // Update setting handler with auto-save feedback
-  const { setTheme: setContextTheme } = useTheme();
-
-  const updateSetting = (key, value) => {
-    setSettings((prev) => {
-      const next = { ...prev, [key]: value };
-      localStorage.setItem("app_user_settings", JSON.stringify(next));
-      return next;
-    });
-    // Sync theme changes with ThemeContext
-    if (key === "theme") {
-      setContextTheme(value);
-    }
-    triggerToast("Setting updated & saved automatically");
-  };
-
-  const triggerToast = (msg) => {
-    setToastMessage(msg);
-    setShowToast(true);
-    setTimeout(() => {
-      setShowToast(false);
-    }, 3000);
-  };
-
-  const handleClearCache = () => {
-    setIsClearingCache(true);
-    setTimeout(() => {
-      setIsClearingCache(false);
-      setCacheCleared(true);
-      triggerToast("Local cache & temporary storage cleared");
-      setTimeout(() => setCacheCleared(false), 3000);
-    }, 1200);
-  };
-
-  const handleExportData = () => {
-    setIsExporting(true);
-    setTimeout(() => {
-      setIsExporting(false);
-      setExported(true);
-      triggerToast("Activity archive downloaded successfully");
-      setTimeout(() => setExported(false), 3000);
-    }, 1500);
-  };
-
-  const handleResetDefaults = () => {
-    setIsResetting(true);
-    setTimeout(() => {
-      const defaults = {
-        theme: "light",
-        density: "comfortable",
-        animations: true,
-        highContrast: false,
-        roundedCorners: true,
-        emailAlerts: true,
-        pushNotifications: true,
-        soundEffects: true,
-        digestFrequency: "daily",
-        dndSchedule: false,
-        twoFactorAuth: false,
-        publicProfile: true,
-        showReputation: true,
-        loginAlerts: true,
-        landingPage: "dashboard",
-        autoRefresh: true,
-        defaultSort: "newest",
-        language: "en-US",
-        timezone: "UTC-5 (Eastern Time)",
-        orgAnnouncements: true,
-        marketingEmails: false,
-      };
-      setSettings(defaults);
-      localStorage.setItem("app_user_settings", JSON.stringify(defaults));
-      setIsResetting(false);
-      triggerToast("All preferences reset to factory defaults");
-    }, 1000);
-  };
-
-  // Define the master list of settings categories
-  const categories = [
-    {
-      id: "account",
-      title: "Account Settings",
-      subtitle:
-        "Personal profile details, email address, role information, and organization membership.",
-      icon: "ri-user-settings-line",
-      color: "bg-blue-50 text-blue-600 border-blue-100",
-    },
-    {
-      id: "appearance",
-      title: "Appearance & Display",
-      subtitle:
-        "Color theme preferences (Light default), table density, micro-animations, and contrast.",
-      icon: "ri-palette-line",
-      color: "bg-purple-50 text-purple-600 border-purple-100",
-    },
-    {
-      id: "notifications",
-      title: "Notifications & Alerts",
-      subtitle:
-        "Email summaries, real-time push alerts, interactive sound effects, and digest frequency.",
-      icon: "ri-notification-3-line",
-      color: "bg-amber-50 text-amber-600 border-amber-100",
-    },
-    {
-      id: "security",
-      title: "Security & Privacy",
-      subtitle:
-        "Two-Factor Authentication (2FA), active device login sessions, and public profile visibility.",
-      icon: "ri-shield-keyhole-line",
-      color: "bg-emerald-50 text-emerald-600 border-emerald-100",
-    },
-    {
-      id: "workflow",
-      title: "Workflow & Preferences",
-      subtitle:
-        "Default start screen, live issue auto-refreshing, language selector, and default sorting.",
-      icon: "ri-flow-chart",
-      color: "bg-indigo-50 text-indigo-600 border-indigo-100",
-    },
-    {
-      id: "data",
-      title: "Data & Storage",
-      subtitle:
-        "Clear temporary application cache, download your CSV activity archive, or reset defaults.",
-      icon: "ri-database-2-line",
-      color: "bg-rose-50 text-rose-600 border-rose-100",
-    },
-    {
-      id: "legal",
-      title: "Help & Legal Links",
-      subtitle:
-        "Terms of Use, Privacy Policy, Trust Center documentation, and version information.",
-      icon: "ri-book-open-line",
-      color: "bg-teal-50 text-teal-600 border-teal-100",
-    },
+  const TABS = [
+    { id: "general", label: "General & Profile", icon: "ri-user-settings-line" },
+    { id: "organization", label: "Organization & Policy", icon: "ri-building-2-line", badge: isOrgAdmin ? "Admin" : null },
+    { id: "appearance", label: "Appearance & Theme", icon: "ri-palette-line" },
+    { id: "notifications", label: "Notifications & Alerts", icon: "ri-notification-3-line" },
+    { id: "security", label: "Security & Sessions", icon: "ri-shield-keyhole-line" },
+    { id: "data", label: "Data & Storage", icon: "ri-database-2-line" },
+    { id: "danger", label: "Danger Zone", icon: "ri-error-warning-line", danger: true },
   ];
+
+  const filteredTabs = useMemo(() => {
+    if (!searchQuery) return TABS;
+    const q = searchQuery.toLowerCase();
+    return TABS.filter(
+      (t) => t.label.toLowerCase().includes(q) || t.id.toLowerCase().includes(q)
+    );
+  }, [searchQuery]);
 
   return (
     <>
       <SEO
-        title="Account & System Settings"
-        description="Customize CiviSence notification alerts, appearance themes, campus privacy settings, session security, and workflow preferences."
-        keywords="campus settings, user preferences, account security, notification alerts"
+        title="Settings - CiviSence"
+        description="Configure account settings, organization policies, appearance, notification alerts, and security options."
+        keywords="settings, organization settings, verification policy, security"
       />
       {renderSideNav()}
       {renderBottomNav()}
 
-      <div className="mx-auto w-full overflow-y-auto bg-[#F8F9FF] dark:bg-dark-bg h-screen pb-28 md:pb-12">
+      <div className="mx-auto w-full overflow-y-auto bg-[#F8F9FF] dark:bg-dark-bg min-h-screen pb-24 md:pb-12">
         <TopBar title="Settings" />
 
-        {/* Floating Toast Notification */}
-        {showToast && (
-          <div className="fixed bottom-24 md:bottom-8 right-6 z-50 animate-bounce bg-gray-900 text-white px-5 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3 border border-gray-700">
-            <div className="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
-              <i className="ri-check-line font-bold"></i>
+        {/* Floating Toast */}
+        {toastMessage && (
+          <div className="fixed bottom-20 md:bottom-8 right-6 z-50 animate-bounce bg-gray-900 text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border border-gray-700">
+            <div className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+              <i className="ri-check-line text-sm"></i>
             </div>
-            <p className="text-sm font-semibold">{toastMessage}</p>
+            <p className="text-xs font-semibold">{toastMessage}</p>
           </div>
         )}
 
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-          {/* ── VIEW 1: SETTINGS OVERVIEW MENU LIST ── */}
-          {currentCategory === "list" && (
-            <div className="space-y-6">
-              <SettingsGroupCard title="Account & display">
-                {categories.slice(0, 2).map((cat) => (
-                  <ActionRow
-                    key={cat.id}
-                    label={cat.title}
-                    sublabel={cat.subtitle}
-                    icon={cat.icon}
-                    onClick={() => navigateToCategory(cat.id)}
-                  />
-                ))}
-              </SettingsGroupCard>
-
-              <SettingsGroupCard title="Preferences & security">
-                {categories.slice(2, 5).map((cat) => (
-                  <ActionRow
-                    key={cat.id}
-                    label={cat.title}
-                    sublabel={cat.subtitle}
-                    icon={cat.icon}
-                    onClick={() => navigateToCategory(cat.id)}
-                  />
-                ))}
-              </SettingsGroupCard>
-
-              <SettingsGroupCard title="System & support">
-                {categories.slice(5, 7).map((cat) => (
-                  <ActionRow
-                    key={cat.id}
-                    label={cat.title}
-                    sublabel={cat.subtitle}
-                    icon={cat.icon}
-                    onClick={() => navigateToCategory(cat.id)}
-                  />
-                ))}
-              </SettingsGroupCard>
-
-              {/* Quick Info Footer Card */}
-              <div className="p-4 sm:p-5 rounded-2xl bg-gray-50 dark:bg-dark-elevated/80 dark:bg-dark-elevated/80 border border-gray-200 dark:border-dark-border/80 flex items-center gap-3 text-xs sm:text-sm text-gray-600 dark:text-dark-text-secondary font-medium">
-                <i className="ri-information-line text-lg text-gray-700 dark:text-dark-text-secondary shrink-0"></i>
-                <p>
-                  All preference changes are automatically saved to your local
-                  session and synced with your account.
-                </p>
-              </div>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+          {/* Header & Instant Search Bar */}
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+            <div>
+              <h1 className="text-2xl font-black text-gray-900 dark:text-dark-text tracking-tight">
+                Account & Workspace Settings
+              </h1>
+              <p className="text-xs sm:text-sm text-gray-500 dark:text-dark-text-secondary mt-0.5">
+                Manage your personal identity, campus governance policies, notifications, and security.
+              </p>
             </div>
-          )}
+            <div className="relative w-full md:w-72">
+              <i className="ri-search-line absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 dark:text-dark-text-secondary text-sm"></i>
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search settings..."
+                className="w-full pl-9 pr-4 py-2 bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border rounded-xl text-xs sm:text-sm text-gray-800 dark:text-dark-text focus:outline-none focus:border-violet-500 shadow-2xs transition"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-dark-text"
+                >
+                  <i className="ri-close-circle-fill text-sm"></i>
+                </button>
+              )}
+            </div>
+          </div>
 
-          {/* ── VIEW 2: INDIVIDUAL SETTING CATEGORY PAGES ── */}
-          {currentCategory !== "list" && (
-            <div className="animate-fadeIn">
-              {/* ── CATEGORY 1: ACCOUNT SETTINGS ── */}
-              {currentCategory === "account" && (
-                <div className="space-y-6">
-                  <div className="flex items-center gap-3 mb-2">
-                    <button
-                      type="button"
-                      onClick={navigateToList}
-                      className="p-2 sm:p-2.5 rounded-xl bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated text-gray-700 dark:text-dark-text-secondary transition shadow-xs shrink-0"
-                    >
-                      <i className="ri-arrow-left-line text-lg"></i>
-                    </button>
-                    <div>
-                      <h2 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-dark-text">
-                        Account settings
-                      </h2>
-                      <p className="text-xs sm:text-sm text-gray-500 dark:text-dark-text-secondary font-medium">
-                        Manage your profile details and account standing
-                      </p>
+          {/* 2-Column Responsive Layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
+            {/* Left Column: Tab Navigation */}
+            <div className="lg:col-span-1 bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border rounded-2xl p-2.5 shadow-2xs space-y-1 sticky top-6">
+              {filteredTabs.map((tab) => {
+                const isActive = activeTab === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => setSearchParams({ tab: tab.id })}
+                    className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition text-left ${
+                      isActive
+                        ? "bg-violet-600 text-white shadow-sm"
+                        : tab.danger
+                        ? "text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10"
+                        : "text-gray-700 dark:text-dark-text hover:bg-gray-50 dark:hover:bg-dark-elevated"
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5 truncate">
+                      <i className={`${tab.icon} text-base`}></i>
+                      <span className="truncate">{tab.label}</span>
                     </div>
-                  </div>
+                    {tab.badge && (
+                      <span
+                        className={`text-[9px] px-1.5 py-0.5 rounded-md font-extrabold uppercase ${
+                          isActive
+                            ? "bg-white/20 text-white"
+                            : "bg-violet-50 text-violet-600 dark:bg-violet-500/20 dark:text-violet-400"
+                        }`}
+                      >
+                        {tab.badge}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
 
-                  <SettingsGroupCard title="Profile information">
-                    <ActionRow
-                      label="Name, email, and campus role"
-                      sublabel={`${profileData?.name || "Member Account"} • ${profileData?.email || "user@organization.edu"}`}
-                      value={
-                        profileData?.role
-                          ? `${profileData.role.charAt(0).toUpperCase() + profileData.role.slice(1)} Member`
-                          : "Student Member"
-                      }
-                      to="/profile"
-                      icon="ri-user-3-line"
-                    />
-                    <ExpandableRow
-                      label="Organization & campus verification"
-                      sublabel={activeOrg?.name || "Campus Organization"}
-                      value={activeOrgItem?.status ? (activeOrgItem.status.charAt(0).toUpperCase() + activeOrgItem.status.slice(1)) : "Member"}
-                      icon="ri-building-2-line"
-                    >
-                      <div className="space-y-3 text-sm max-w-lg">
-                        <div className="flex justify-between items-center py-2 border-b border-gray-200 dark:border-dark-border/60">
-                          <span className="text-gray-500 dark:text-dark-text-secondary font-medium">
-                            Organization
+            {/* Right Column: Tab Content */}
+            <div className="lg:col-span-3">
+              {/* ── TAB 1: GENERAL & PROFILE ── */}
+              {activeTab === "general" && (
+                <div className="animate-fadeIn">
+                  <Card
+                    title="Profile Information"
+                    description="Personal and identity details associated with your CiviSence account"
+                    action={
+                      <Link
+                        to="/profile"
+                        className="px-3 py-1.5 bg-violet-50 dark:bg-violet-500/15 text-violet-600 dark:text-violet-400 hover:bg-violet-100 rounded-xl text-xs font-bold transition flex items-center gap-1.5"
+                      >
+                        <i className="ri-edit-line"></i> Edit Profile
+                      </Link>
+                    }
+                  >
+                    <div className="flex items-center gap-4 p-4 bg-gray-50/70 dark:bg-dark-elevated/60 rounded-xl border border-gray-100 dark:border-dark-border/60">
+                      <img
+                        src={profileData?.avatar_url || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+                        alt={profileData?.name || "Avatar"}
+                        className="w-14 h-14 rounded-2xl object-cover border border-gray-200 dark:border-dark-border shrink-0"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <h4 className="text-base font-black text-gray-900 dark:text-dark-text truncate">
+                          {profileData?.name || "Anonymous Member"}
+                        </h4>
+                        <p className="text-xs text-gray-500 dark:text-dark-text-secondary truncate">
+                          {profileData?.email || "user@organization.edu"}
+                        </p>
+                        <div className="flex items-center gap-2 mt-1.5">
+                          <span className="px-2 py-0.5 bg-violet-100 dark:bg-violet-500/20 text-violet-700 dark:text-violet-300 text-[10px] font-bold rounded-md uppercase">
+                            {profileData?.role || "Citizen"}
                           </span>
-                          <span className="font-bold text-gray-800 dark:text-dark-text">
-                            {activeOrg?.name || "Global Tech Institute of Sciences"}
-                          </span>
-                        </div>
-                        {activeOrg?.code && (
-                          <div className="flex justify-between items-center py-2 border-b border-gray-200 dark:border-dark-border/60">
-                            <span className="text-gray-500 dark:text-dark-text-secondary font-medium">
-                              Organization Code
-                            </span>
-                            <span className="font-bold text-violet-600 dark:text-violet-400 uppercase">
-                              {activeOrg.code}
-                            </span>
-                          </div>
-                        )}
-                        <div className="flex justify-between items-center py-2 border-b border-gray-200 dark:border-dark-border/60">
-                          <span className="text-gray-500 dark:text-dark-text-secondary font-medium">
-                            Verification Status
-                          </span>
-                          <span className="text-emerald-600 font-bold flex items-center gap-1">
-                            <i className="ri-verified-badge-fill"></i> Verified
-                            Campus Member
-                          </span>
-                        </div>
-                        <div className="flex justify-between items-center py-2 border-b border-gray-200 dark:border-dark-border/60">
-                          <span className="text-gray-500 dark:text-dark-text-secondary font-medium">
-                            Feed Verification Requirement
-                          </span>
-                          {(role === "admin" || role === "official" || activeOrgItem?.role === "admin" || activeOrgItem?.role === "owner") ? (
-                            <button
-                              type="button"
-                              onClick={handleToggleFeedRequirement}
-                              disabled={updatingFeedSetting || !activeOrg?.id}
-                              className={`px-3 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 border ${
-                                activeOrg?.require_verified_feed
-                                  ? "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100"
-                                  : "bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100"
-                              }`}
-                            >
-                              {updatingFeedSetting && (
-                                <i className="ri-loader-4-line animate-spin"></i>
-                              )}
-                              {activeOrg?.require_verified_feed ? "Verified Only" : "Open Feed"}
-                            </button>
-                          ) : (
-                            <span
-                              className={`px-2.5 py-1 rounded text-xs font-bold border ${
-                                activeOrg?.require_verified_feed
-                                  ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                                  : "bg-gray-50 dark:bg-dark-elevated text-gray-600 dark:text-dark-text-secondary border-gray-200 dark:border-dark-border"
-                              }`}
-                            >
-                              {activeOrg?.require_verified_feed ? "Required" : "Optional"}
+                          {profileData?.department && (
+                            <span className="text-[10px] text-gray-500 dark:text-dark-text-secondary font-medium truncate">
+                              • {profileData.department}
                             </span>
                           )}
                         </div>
-                        <div className="flex justify-between items-center py-2 border-b border-gray-200 dark:border-dark-border/60">
-                          <div>
-                            <span className="text-gray-500 dark:text-dark-text-secondary font-medium block">
-                              AI Verification Engine
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                      <div className="p-3.5 bg-gray-50/50 dark:bg-dark-elevated/40 rounded-xl border border-gray-100 dark:border-dark-border/60">
+                        <span className="text-[10px] font-bold text-gray-400 dark:text-dark-text-secondary uppercase block">
+                          Phone Number
+                        </span>
+                        <span className="text-xs font-semibold text-gray-800 dark:text-dark-text mt-0.5 block">
+                          {profileData?.phone_number || "Not provided"}
+                        </span>
+                      </div>
+                      <div className="p-3.5 bg-gray-50/50 dark:bg-dark-elevated/40 rounded-xl border border-gray-100 dark:border-dark-border/60">
+                        <span className="text-[10px] font-bold text-gray-400 dark:text-dark-text-secondary uppercase block">
+                          Registration / Student ID
+                        </span>
+                        <span className="text-xs font-semibold text-gray-800 dark:text-dark-text mt-0.5 block">
+                          {profileData?.registration_number || "Not specified"}
+                        </span>
+                      </div>
+                    </div>
+                  </Card>
+                </div>
+              )}
+
+              {/* ── TAB 2: ORGANIZATION & POLICY ── */}
+              {activeTab === "organization" && (
+                <div className="animate-fadeIn space-y-6">
+                  {/* Org Overview */}
+                  <Card
+                    title="Active Organization"
+                    description="Your current campus or administrative organization context"
+                    action={
+                      <button
+                        onClick={() => setIsOrgModalOpen(true)}
+                        className="px-3 py-1.5 bg-violet-50 dark:bg-violet-500/15 text-violet-600 dark:text-violet-400 hover:bg-violet-100 rounded-xl text-xs font-bold transition flex items-center gap-1.5"
+                      >
+                        <i className="ri-arrow-left-right-line"></i> Switch / Join Org
+                      </button>
+                    }
+                  >
+                    {activeOrg ? (
+                      <div className="space-y-4">
+                        <div className="p-4 bg-linear-to-r from-violet-50/80 to-purple-50/80 dark:from-violet-950/20 dark:to-purple-950/20 border border-violet-100 dark:border-violet-800/30 rounded-xl flex items-start gap-3.5">
+                          <div className="w-10 h-10 rounded-xl bg-violet-600 text-white flex items-center justify-center text-lg shrink-0 shadow-sm">
+                            <i className="ri-building-2-fill"></i>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <h4 className="text-base font-black text-gray-900 dark:text-dark-text truncate">
+                                {activeOrg.name}
+                              </h4>
+                              {activeOrg.code && (
+                                <span className="px-2 py-0.5 bg-violet-100 dark:bg-violet-500/20 text-violet-700 dark:text-violet-300 text-[10px] font-bold rounded-md uppercase">
+                                  {activeOrg.code}
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-xs text-gray-500 dark:text-dark-text-secondary mt-0.5 truncate">
+                              {activeOrg.description || "Campus organization portal"}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                          <div className="p-3 bg-gray-50 dark:bg-dark-elevated rounded-xl border border-gray-100 dark:border-dark-border/60">
+                            <span className="text-[10px] font-bold text-gray-400 dark:text-dark-text-secondary uppercase block">
+                              Slug Identifier
                             </span>
-                            <span className="text-[10px] text-gray-400 dark:text-dark-text-muted">
+                            <span className="text-xs font-mono text-gray-800 dark:text-dark-text truncate block mt-0.5">
+                              {activeOrg.slug || "—"}
+                            </span>
+                          </div>
+                          <div className="p-3 bg-gray-50 dark:bg-dark-elevated rounded-xl border border-gray-100 dark:border-dark-border/60">
+                            <span className="text-[10px] font-bold text-gray-400 dark:text-dark-text-secondary uppercase block">
+                              Official Email
+                            </span>
+                            <span className="text-xs font-semibold text-gray-800 dark:text-dark-text truncate block mt-0.5">
+                              {activeOrg.official_email || "—"}
+                            </span>
+                          </div>
+                          <div className="p-3 bg-gray-50 dark:bg-dark-elevated rounded-xl border border-gray-100 dark:border-dark-border/60">
+                            <span className="text-[10px] font-bold text-gray-400 dark:text-dark-text-secondary uppercase block">
+                              Plan & Standing
+                            </span>
+                            <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider truncate block mt-0.5">
+                              {activeOrg.plan_type || "Basic"} • {activeOrg.status || "Active"}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="p-6 text-center text-xs text-gray-500">No active organization found.</div>
+                    )}
+                  </Card>
+
+                  {/* Governance & Policy Settings */}
+                  <Card
+                    title="Governance Policies"
+                    description="Configure document verification methods, feed privacy, and membership invitations"
+                    action={
+                      isOrgAdmin && (
+                        <button
+                          type="button"
+                          onClick={() => setIsInviteModalOpen(true)}
+                          className="px-3.5 py-1.5 bg-violet-600 hover:bg-violet-700 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm"
+                        >
+                          <i className="ri-user-add-line"></i> Generate Invite Link
+                        </button>
+                      )
+                    }
+                  >
+                    <div className="divide-y divide-gray-100 dark:divide-dark-border/60">
+                      {/* AI Verification Policy */}
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 py-3">
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs sm:text-sm font-bold text-gray-900 dark:text-dark-text">
+                              AI Document Verification
+                            </span>
+                            <span
+                              className={`text-[10px] px-2 py-0.5 rounded-full font-bold border ${
+                                activeOrg?.ai_verification_enabled !== false
+                                  ? "bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-500/10 dark:text-purple-400 dark:border-purple-500/20"
+                                  : "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20"
+                              }`}
+                            >
                               {activeOrg?.ai_verification_enabled !== false ? "AI Auto-Approve" : "Manual Admin Review"}
                             </span>
                           </div>
-                          {(role === "admin" || role === "official" || activeOrgItem?.role === "admin" || activeOrgItem?.role === "owner") ? (
-                            <button
-                              type="button"
-                              onClick={handleToggleAIVerification}
-                              disabled={updatingAISetting || !activeOrg?.id}
-                              className={`px-3 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 border ${
-                                activeOrg?.ai_verification_enabled !== false
-                                  ? "bg-purple-50 text-purple-700 border-purple-200 hover:bg-purple-100 dark:bg-purple-500/10 dark:text-purple-400 dark:border-purple-500/20"
-                                  : "bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20"
-                              }`}
-                            >
-                              {updatingAISetting && (
-                                <i className="ri-loader-4-line animate-spin"></i>
-                              )}
-                              {activeOrg?.ai_verification_enabled !== false ? "AI Enabled" : "Manual Only"}
-                            </button>
-                          ) : (
-                            <span
-                              className={`px-2.5 py-1 rounded text-xs font-bold border ${
-                                activeOrg?.ai_verification_enabled !== false
-                                  ? "bg-purple-50 text-purple-700 border-purple-200"
-                                  : "bg-gray-50 dark:bg-dark-elevated text-gray-600 dark:text-dark-text-secondary border-gray-200 dark:border-dark-border"
-                              }`}
-                            >
-                              {activeOrg?.ai_verification_enabled !== false ? "AI Enabled" : "Manual Only"}
-                            </span>
-                          )}
+                          <p className="text-xs text-gray-500 dark:text-dark-text-secondary mt-0.5">
+                            {activeOrg?.ai_verification_enabled !== false
+                              ? "Valid student ID uploads are processed and approved instantly by Gemini Vision AI."
+                              : "AI auto-approval is disabled. All document submissions are held for manual admin review."}
+                          </p>
                         </div>
-                        <div className="flex justify-between items-center py-2 border-b border-gray-200 dark:border-dark-border/60">
-                          <span className="text-gray-500 dark:text-dark-text-secondary font-medium">
-                            Official Email
-                          </span>
-                          <span className="font-semibold text-gray-800 dark:text-dark-text">
-                            {profileData?.email || "user@organization.edu"}
-                          </span>
-                        </div>
-                        <div className="pt-2 flex justify-end">
+                        {isOrgAdmin ? (
                           <button
                             type="button"
-                            onClick={() => setIsOrgModalOpen(true)}
-                            className="px-3.5 py-1.5 text-xs font-bold text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-500/15 hover:bg-violet-100 rounded-lg transition-colors flex items-center gap-1.5 border border-violet-100"
-                          >
-                            <i className="ri-arrow-left-right-line"></i>
-                            Request Organization Change
-                          </button>
-                        </div>
-                      </div>
-                    </ExpandableRow>
-
-                    <ExpandableRow
-                      label="Account status & standing"
-                      sublabel="Active & in good standing"
-                      value="Active"
-                      icon="ri-shield-check-line"
-                    >
-                      <div className="space-y-2 text-sm max-w-lg">
-                        <p className="text-gray-800 dark:text-dark-text font-semibold">
-                          Your account is currently active and in good standing.
-                        </p>
-                        <p className="text-xs text-gray-500 dark:text-dark-text-secondary leading-relaxed">
-                          Member since January 2026. No restrictions or warnings
-                          associated with your profile.
-                        </p>
-                      </div>
-                    </ExpandableRow>
-                  </SettingsGroupCard>
-
-                  <SettingsGroupCard title="Communication preferences">
-                    <ToggleRow
-                      label="Organizational announcements"
-                      description="Receive important broadcasts regarding system maintenance and campus-wide issue updates."
-                      checked={settings.orgAnnouncements}
-                      onChange={(val) => updateSetting("orgAnnouncements", val)}
-                    />
-                    <ToggleRow
-                      label="Monthly feature news & tips"
-                      description="Get occasional emails highlighting new dashboard features and issue tracking best practices."
-                      checked={settings.marketingEmails}
-                      onChange={(val) => updateSetting("marketingEmails", val)}
-                    />
-                  </SettingsGroupCard>
-
-                  <SettingsGroupCard title="Account management">
-                    <ExpandableRow
-                      label="Log out of your account"
-                      sublabel="Sign out of your current session or all active devices"
-                      icon="ri-logout-box-r-line"
-                    >
-                      <div className="space-y-5 py-2 max-w-md">
-                        <div className="flex items-center gap-2 text-gray-800 dark:text-dark-text font-bold text-base">
-                          <i className="ri-logout-box-r-line text-xl text-gray-700 dark:text-dark-text-secondary"></i>
-                          <h4>Choose logout scope</h4>
-                        </div>
-                        <div className="space-y-3">
-                          <label className="flex items-center gap-3 p-3.5 rounded-xl border border-gray-200 dark:border-dark-border bg-white cursor-pointer hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated transition-colors has-checked:border-violet-600 has-checked:bg-violet-50 dark:bg-violet-500/15/50 shadow-xs">
-                            <input
-                              type="radio"
-                              name="logoutType"
-                              value="current"
-                              checked={logoutType === "current"}
-                              onChange={(e) => setLogoutType(e.target.value)}
-                              className="w-4 h-4 text-violet-600 dark:text-violet-400 focus:ring-violet-500"
-                            />
-                            <div className="flex-1">
-                              <p className="text-sm font-semibold text-gray-800 dark:text-dark-text">
-                                This device only
-                              </p>
-                              <p className="text-xs text-gray-500 dark:text-dark-text-secondary">
-                                Logout from this session
-                              </p>
-                            </div>
-                          </label>
-
-                          <label className="flex items-center gap-3 p-3.5 rounded-xl border border-gray-200 dark:border-dark-border bg-white cursor-pointer hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated transition-colors has-checked:border-red-600 has-checked:bg-red-50/50 shadow-xs">
-                            <input
-                              type="radio"
-                              name="logoutType"
-                              value="all"
-                              checked={logoutType === "all"}
-                              onChange={(e) => setLogoutType(e.target.value)}
-                              className="w-4 h-4 text-red-600 dark:text-red-400 focus:ring-red-500"
-                            />
-                            <div className="flex-1">
-                              <p className="text-sm font-semibold text-gray-800 dark:text-dark-text">
-                                All devices
-                              </p>
-                              <p className="text-xs text-gray-500 dark:text-dark-text-secondary">
-                                Logout everywhere
-                              </p>
-                            </div>
-                          </label>
-                        </div>
-
-                        <div className="space-y-2 pt-1">
-                          <p className="text-xs text-gray-600 dark:text-dark-text-secondary font-medium">
-                            Type{" "}
-                            <span className="font-bold text-red-500">
-                              logout
-                            </span>{" "}
-                            to confirm.
-                          </p>
-                          <input
-                            type="text"
-                            value={logoutInput}
-                            onChange={(e) => setLogoutInput(e.target.value)}
-                            className="w-full bg-white dark:bg-dark-card border border-gray-300 dark:border-dark-border rounded-xl px-3.5 py-2.5 outline-none focus:border-violet-600 transition-all text-sm font-medium text-red-500"
-                            placeholder="Confirm logout"
-                          />
-                        </div>
-
-                        <button
-                          onClick={handleLogoutConfirm}
-                          disabled={
-                            logoutInput.toLowerCase() !== "logout" ||
-                            isLoggingOut
-                          }
-                          className="w-full py-3 bg-red-500 text-white font-bold text-sm rounded-xl hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm shadow-red-500/20"
-                        >
-                          {isLoggingOut ? "Logging out..." : "Log Out"}
-                        </button>
-                      </div>
-                    </ExpandableRow>
-
-                    <ExpandableRow
-                      label="Delete account permanently"
-                      sublabel="Permanently delete your profile and deactivate membership"
-                      icon="ri-delete-bin-7-line"
-                    >
-                      <div className="space-y-4 py-2 max-w-md">
-                        <div className="p-3.5 rounded-xl bg-red-100/70 border border-red-200 dark:border-red-500/30 text-red-900 text-xs sm:text-sm leading-relaxed">
-                          <span className="font-bold">
-                            Warning: This action cannot be undone!
-                          </span>{" "}
-                          All user data including issues, comments, and votes
-                          will be preserved but attributed to a deleted user.
-                        </div>
-                        <p className="text-xs sm:text-sm text-gray-700 dark:text-dark-text-secondary font-medium">
-                          Please enter your current password for verification.
-                        </p>
-                        <form
-                          onSubmit={handleDeleteAccount}
-                          className="space-y-3"
-                        >
-                          <input
-                            type="password"
-                            value={deletePassword}
-                            onChange={(e) => {
-                              setDeletePassword(e.target.value);
-                              if (deleteError) setDeleteError("");
-                            }}
-                            placeholder="Enter your current password"
-                            className="w-full bg-white dark:bg-dark-card border border-red-300 rounded-xl px-3.5 py-2.5 text-sm text-gray-800 dark:text-dark-text placeholder-gray-400 dark:placeholder-dark-text-muted focus:outline-none focus:ring-2 focus:ring-red-500 transition shadow-xs"
-                          />
-                          {deleteError && (
-                            <div className="p-3 rounded-xl bg-red-600 text-white text-xs font-bold flex items-center gap-2">
-                              <i className="ri-alert-line text-sm"></i>
-                              <span>{deleteError}</span>
-                            </div>
-                          )}
-                          <button
-                            type="submit"
-                            disabled={isDeletingAccount || !deletePassword}
-                            className={`w-full py-3 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 shadow-sm ${
-                              isDeletingAccount || !deletePassword
-                                ? "bg-red-300 text-white cursor-not-allowed"
-                                : "bg-red-600 hover:bg-red-700 text-white active:scale-95 shadow-red-200"
+                            disabled={updatingAISetting || !activeOrg?.id}
+                            onClick={handleToggleAIVerification}
+                            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition shrink-0 border ${
+                              activeOrg?.ai_verification_enabled !== false
+                                ? "bg-purple-600 text-white hover:bg-purple-700 border-purple-600"
+                                : "bg-gray-100 text-gray-700 dark:bg-dark-elevated dark:text-dark-text border-gray-200 dark:border-dark-border hover:bg-gray-200"
                             }`}
                           >
-                            {isDeletingAccount
-                              ? "Deleting Account..."
-                              : "Delete Account Permanently"}
+                            {updatingAISetting && <i className="ri-loader-4-line animate-spin mr-1"></i>}
+                            {activeOrg?.ai_verification_enabled !== false ? "Disable AI" : "Enable AI"}
                           </button>
-                        </form>
+                        ) : (
+                          <span className="text-xs text-gray-400">Admin Only</span>
+                        )}
                       </div>
-                    </ExpandableRow>
-                  </SettingsGroupCard>
-                </div>
-              )}
 
-              {/* ── CATEGORY 2: APPEARANCE & DISPLAY ── */}
-              {currentCategory === "appearance" && (
-                <div className="space-y-6">
-                  <div className="flex items-center gap-3 mb-2">
-                    <button
-                      type="button"
-                      onClick={navigateToList}
-                      className="p-2 sm:p-2.5 rounded-xl bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated text-gray-700 dark:text-dark-text-secondary transition shadow-xs shrink-0"
-                    >
-                      <i className="ri-arrow-left-line text-lg"></i>
-                    </button>
-                    <div>
-                      <h2 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-dark-text">
-                        Appearance & display
-                      </h2>
-                      <p className="text-xs sm:text-sm text-gray-500 dark:text-dark-text-secondary font-medium">
-                        Customize your visual experience and interface layout
-                      </p>
-                    </div>
-                  </div>
-
-                  <SettingsGroupCard title="Display">
-                    <ExpandableRow
-                      label="Color theme"
-                      sublabel="Select light, dark, or system synchronized color palette"
-                      value={
-                        settings.theme === "dark"
-                          ? "Dark mode"
-                          : settings.theme === "system"
-                            ? "System sync"
-                            : "Light mode"
-                      }
-                      icon="ri-palette-line"
-                    >
-                      <div className="space-y-4 max-w-2xl py-2">
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
-                          {[
-                            {
-                              id: "light",
-                              name: "Light mode",
-                              desc: "Active Default",
-                              icon: "ri-sun-line",
-                            },
-                            {
-                              id: "dark",
-                              name: "Dark mode",
-                              desc: "Night viewing",
-                              icon: "ri-moon-clear-line",
-                            },
-                            {
-                              id: "system",
-                              name: "System sync",
-                              desc: "Match device OS",
-                              icon: "ri-computer-line",
-                            },
-                          ].map((themeOpt) => (
-                            <button
-                              key={themeOpt.id}
-                              type="button"
-                              onClick={() =>
-                                updateSetting("theme", themeOpt.id)
-                              }
-                              className={`p-4 rounded-xl border-2 text-left transition-all flex flex-col justify-between relative bg-white ${
-                                settings.theme === themeOpt.id
-                                  ? "border-violet-600 bg-violet-50 dark:bg-violet-500/15/30 shadow-xs"
-                                  : "border-gray-200 dark:border-dark-border/80 hover:border-gray-300 dark:border-dark-border"
+                      {/* Feed Verification Policy */}
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 py-3">
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs sm:text-sm font-bold text-gray-900 dark:text-dark-text">
+                              Feed Verification Gate
+                            </span>
+                            <span
+                              className={`text-[10px] px-2 py-0.5 rounded-full font-bold border ${
+                                activeOrg?.require_verified_feed
+                                  ? "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20"
+                                  : "bg-gray-50 text-gray-600 border-gray-200 dark:bg-dark-elevated dark:text-dark-text-secondary dark:border-dark-border"
                               }`}
                             >
-                              {settings.theme === themeOpt.id && (
-                                <span className="absolute top-3 right-3 w-5 h-5 rounded-full bg-violet-600 text-white flex items-center justify-center text-xs">
-                                  <i className="ri-check-line font-bold"></i>
-                                </span>
-                              )}
-                              <div className="text-gray-700 dark:text-dark-text-secondary mb-3">
-                                <i className={`${themeOpt.icon} text-2xl`}></i>
-                              </div>
+                              {activeOrg?.require_verified_feed ? "Verified Only" : "Open Access"}
+                            </span>
+                          </div>
+                          <p className="text-xs text-gray-500 dark:text-dark-text-secondary mt-0.5">
+                            {activeOrg?.require_verified_feed
+                              ? "Only authenticated, verified campus members can view and interact with the feed."
+                              : "All joined members can view campus issue discussions."}
+                          </p>
+                        </div>
+                        {isOrgAdmin ? (
+                          <button
+                            type="button"
+                            disabled={updatingFeedSetting || !activeOrg?.id}
+                            onClick={handleToggleFeedRequirement}
+                            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition shrink-0 border ${
+                              activeOrg?.require_verified_feed
+                                ? "bg-emerald-600 text-white hover:bg-emerald-700 border-emerald-600"
+                                : "bg-gray-100 text-gray-700 dark:bg-dark-elevated dark:text-dark-text border-gray-200 dark:border-dark-border hover:bg-gray-200"
+                            }`}
+                          >
+                            {updatingFeedSetting && <i className="ri-loader-4-line animate-spin mr-1"></i>}
+                            {activeOrg?.require_verified_feed ? "Make Open" : "Require Verified"}
+                          </button>
+                        ) : (
+                          <span className="text-xs text-gray-400">Admin Only</span>
+                        )}
+                      </div>
+                    </div>
+                  </Card>
+
+                  {/* Role Elevation Requests (For Admins) */}
+                  {isOrgAdmin && (
+                    <Card
+                      title="Pending Role Requests"
+                      description="Review student and staff elevation requests for this organization"
+                    >
+                      {loadingRoleRequests ? (
+                        <div className="h-16 bg-gray-50 dark:bg-dark-elevated animate-pulse rounded-xl" />
+                      ) : roleRequests.length > 0 ? (
+                        <div className="space-y-3">
+                          {roleRequests.map((req) => (
+                            <div
+                              key={req.id}
+                              className="p-3.5 bg-gray-50/70 dark:bg-dark-elevated/60 rounded-xl border border-gray-100 dark:border-dark-border/60 flex items-center justify-between gap-3"
+                            >
                               <div>
-                                <p className="font-bold text-gray-900 dark:text-dark-text text-sm">
-                                  {themeOpt.name}
+                                <p className="text-xs font-bold text-gray-800 dark:text-dark-text">
+                                  User ID: {req.user_id.slice(0, 8)}...
                                 </p>
-                                <p className="text-xs text-gray-500 dark:text-dark-text-secondary mt-0.5">
-                                  {themeOpt.desc}
+                                <p className="text-[11px] text-violet-600 dark:text-violet-400 font-bold uppercase mt-0.5">
+                                  Requested Role: {req.requested_role}
                                 </p>
                               </div>
-                            </button>
+                              <div className="flex items-center gap-2">
+                                <button
+                                  type="button"
+                                  onClick={() => handleApproveRole(req.id)}
+                                  className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition"
+                                >
+                                  Approve
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleRejectRole(req.id)}
+                                  className="px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 dark:bg-red-500/15 dark:text-red-400 rounded-lg text-xs font-bold transition"
+                                >
+                                  Reject
+                                </button>
+                              </div>
+                            </div>
                           ))}
                         </div>
-                        <p className="text-xs text-gray-500 dark:text-dark-text-secondary font-medium flex items-center gap-1.5 pt-1">
-                          <i className="ri-information-line text-gray-600 dark:text-dark-text-secondary"></i>
-                          Light mode is active by default as per your primary
-                          workspace preference.
-                        </p>
-                      </div>
-                    </ExpandableRow>
+                      ) : (
+                        <div className="p-6 bg-gray-50 dark:bg-dark-elevated rounded-xl text-center border border-dashed border-gray-200 dark:border-dark-border text-xs text-gray-500 dark:text-dark-text-secondary">
+                          No pending role elevation requests.
+                        </div>
+                      )}
+                    </Card>
+                  )}
+                </div>
+              )}
 
-                    <ExpandableRow
-                      label="Table & issue card spacing"
-                      sublabel="Adjust spacing density across lists and dashboards"
-                      value={
-                        settings.density === "compact"
-                          ? "Compact"
-                          : "Comfortable"
-                      }
-                      icon="ri-layout-row-line"
-                    >
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 max-w-lg py-2">
-                        {[
-                          {
-                            id: "comfortable",
-                            label: "Comfortable",
-                            desc: "Spacious padding & large badges",
-                          },
-                          {
-                            id: "compact",
-                            label: "Compact",
-                            desc: "Dense rows to fit more items",
-                          },
-                        ].map((opt) => (
+              {/* ── TAB 3: APPEARANCE & THEME ── */}
+              {activeTab === "appearance" && (
+                <div className="animate-fadeIn space-y-6">
+                  <Card
+                    title="Theme & Visual Appearance"
+                    description="Choose your preferred color theme and interface density"
+                  >
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                      <button
+                        type="button"
+                        onClick={() => setTheme("light")}
+                        className={`p-4 rounded-xl border text-left transition flex items-center gap-3.5 ${
+                          theme === "light"
+                            ? "bg-violet-50/60 dark:bg-violet-950/20 border-violet-500 text-violet-900 dark:text-violet-200 ring-2 ring-violet-500/20"
+                            : "bg-gray-50 dark:bg-dark-elevated border-gray-200 dark:border-dark-border text-gray-700 dark:text-dark-text hover:border-gray-300"
+                        }`}
+                      >
+                        <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-lg shrink-0">
+                          <i className="ri-sun-line"></i>
+                        </div>
+                        <div>
+                          <p className="text-sm font-bold">Light Mode</p>
+                          <p className="text-xs text-gray-500 dark:text-dark-text-secondary mt-0.5">Crisp, high-contrast daylight aesthetic</p>
+                        </div>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setTheme("dark")}
+                        className={`p-4 rounded-xl border text-left transition flex items-center gap-3.5 ${
+                          theme === "dark"
+                            ? "bg-violet-50/60 dark:bg-violet-950/20 border-violet-500 text-violet-900 dark:text-violet-200 ring-2 ring-violet-500/20"
+                            : "bg-gray-50 dark:bg-dark-elevated border-gray-200 dark:border-dark-border text-gray-700 dark:text-dark-text hover:border-gray-300"
+                        }`}
+                      >
+                        <div className="w-10 h-10 rounded-xl bg-indigo-900 text-indigo-200 flex items-center justify-center text-lg shrink-0">
+                          <i className="ri-moon-clear-line"></i>
+                        </div>
+                        <div>
+                          <p className="text-sm font-bold">Dark Mode</p>
+                          <p className="text-xs text-gray-500 dark:text-dark-text-secondary mt-0.5">Sleek, low-light OLED optimized palette</p>
+                        </div>
+                      </button>
+                    </div>
+
+                    <div className="pt-4 border-t border-gray-100 dark:border-dark-border/60">
+                      <Switch
+                        checked={preferences.animations}
+                        onChange={(v) => updatePreference("animations", v)}
+                        label="Interface Micro-Animations"
+                        description="Enable smooth transitions and interactive micro-animations across all dashboards"
+                      />
+                    </div>
+                  </Card>
+                </div>
+              )}
+
+              {/* ── TAB 4: NOTIFICATIONS & ALERTS ── */}
+              {activeTab === "notifications" && (
+                <div className="animate-fadeIn space-y-6">
+                  <Card
+                    title="Notification Channels"
+                    description="Control how and when you receive critical campus updates"
+                  >
+                    <div className="divide-y divide-gray-100 dark:divide-dark-border/60">
+                      <Switch
+                        checked={preferences.pushNotifications}
+                        onChange={(v) => updatePreference("pushNotifications", v)}
+                        label="Push Notifications"
+                        description="Receive real-time alerts when issue status changes or urgent campus notifications are broadcasted"
+                      />
+                      <Switch
+                        checked={preferences.emailAlerts}
+                        onChange={(v) => updatePreference("emailAlerts", v)}
+                        label="Email Digests & Alerts"
+                        description="Send daily summaries and urgent resolution notes to your registered email address"
+                      />
+                      <Switch
+                        checked={preferences.soundEffects}
+                        onChange={(v) => updatePreference("soundEffects", v)}
+                        label="Interactive Sound Effects"
+                        description="Play subtle audio cues upon actions, status approvals, and notifications"
+                      />
+                    </div>
+                  </Card>
+                </div>
+              )}
+
+              {/* ── TAB 5: SECURITY & SESSIONS ── */}
+              {activeTab === "security" && (
+                <div className="animate-fadeIn space-y-6">
+                  <Card
+                    title="Account Authentication"
+                    description="Manage your login credentials and security credentials"
+                  >
+                    <div className="flex items-center justify-between p-4 bg-gray-50/70 dark:bg-dark-elevated/60 rounded-xl border border-gray-100 dark:border-dark-border/60">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-violet-50 dark:bg-violet-500/15 text-violet-600 dark:text-violet-400 flex items-center justify-center text-lg">
+                          <i className="ri-key-line"></i>
+                        </div>
+                        <div>
+                          <h4 className="text-xs sm:text-sm font-bold text-gray-800 dark:text-dark-text">Account Password</h4>
+                          <p className="text-[11px] text-gray-500 dark:text-dark-text-secondary">Last updated securely via SHA-256 / Bcrypt</p>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setIsPasswordModalOpen(true)}
+                        className="px-3.5 py-1.5 bg-violet-600 hover:bg-violet-700 text-white rounded-xl text-xs font-bold transition shadow-sm"
+                      >
+                        Change Password
+                      </button>
+                    </div>
+                  </Card>
+
+                  <Card>
+                    <SessionsCard triggerToast={triggerToast} />
+                  </Card>
+                </div>
+              )}
+
+              {/* ── TAB 6: DATA & STORAGE ── */}
+              {activeTab === "data" && (
+                <div className="animate-fadeIn space-y-6">
+                  <Card
+                    title="Data Management & Local Cache"
+                    description="Manage locally stored application state and export your activity"
+                  >
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between p-3.5 bg-gray-50/70 dark:bg-dark-elevated/60 rounded-xl border border-gray-100 dark:border-dark-border/60">
+                        <div>
+                          <p className="text-xs sm:text-sm font-bold text-gray-800 dark:text-dark-text">Clear Temporary Storage</p>
+                          <p className="text-xs text-gray-500 dark:text-dark-text-secondary">Wipe client cache, pending draft keys, and temporary tokens</p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            localStorage.removeItem("app_user_settings");
+                            triggerToast("Local storage cache reset");
+                          }}
+                          className="px-3.5 py-1.5 bg-gray-200 hover:bg-gray-300 dark:bg-dark-elevated dark:hover:bg-dark-border text-gray-700 dark:text-dark-text rounded-xl text-xs font-bold transition"
+                        >
+                          Clear Cache
+                        </button>
+                      </div>
+                    </div>
+                  </Card>
+                </div>
+              )}
+
+              {/* ── TAB 7: DANGER ZONE ── */}
+              {activeTab === "danger" && (
+                <div className="animate-fadeIn space-y-6">
+                  <Card
+                    title="Danger Zone"
+                    description="Irreversible actions regarding your account and organization memberships"
+                  >
+                    <div className="space-y-4">
+                      {/* Leave Organization */}
+                      {activeOrg && (
+                        <div className="p-4 bg-amber-50/50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/30 rounded-xl flex items-center justify-between gap-3">
+                          <div>
+                            <p className="text-xs sm:text-sm font-bold text-amber-900 dark:text-amber-300">Leave {activeOrg.name}</p>
+                            <p className="text-xs text-amber-700 dark:text-amber-400 mt-0.5">Revoke your membership and unbind your role from this campus organization</p>
+                          </div>
                           <button
-                            key={opt.id}
                             type="button"
-                            onClick={() => updateSetting("density", opt.id)}
-                            className={`p-4 rounded-xl border text-left font-bold transition bg-white ${
-                              settings.density === opt.id
-                                ? "border-violet-600 bg-violet-600 text-white shadow-xs"
-                                : "border-gray-200 dark:border-dark-border text-gray-700 dark:text-dark-text-secondary hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated"
-                            }`}
+                            onClick={handleLeaveOrg}
+                            className="px-3.5 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold transition shrink-0"
                           >
-                            <p className="text-sm">{opt.label}</p>
-                            <span
-                              className={`block text-xs font-normal mt-1 ${settings.density === opt.id ? "text-violet-200" : "text-gray-400 dark:text-dark-text-muted"}`}
-                            >
-                              {opt.desc}
-                            </span>
+                            Leave Org
                           </button>
-                        ))}
-                      </div>
-                    </ExpandableRow>
-                  </SettingsGroupCard>
+                        </div>
+                      )}
 
-                  <SettingsGroupCard title="Motion & accessibility">
-                    <ToggleRow
-                      label="Interface animations & transitions"
-                      description="Enable smooth micro-animations, card hover scales, and pull-to-refresh physics."
-                      checked={settings.animations}
-                      onChange={(val) => updateSetting("animations", val)}
-                    />
-                    <ToggleRow
-                      label="High contrast text mode"
-                      description="Increase typography font weights and border darkness for enhanced readability."
-                      checked={settings.highContrast}
-                      onChange={(val) => updateSetting("highContrast", val)}
-                    />
-                    <ToggleRow
-                      label="Modern rounded corners"
-                      description="Display soft rounded corners on cards, buttons, and navigation sidebars."
-                      checked={settings.roundedCorners}
-                      onChange={(val) => updateSetting("roundedCorners", val)}
-                    />
-                  </SettingsGroupCard>
-                </div>
-              )}
-
-              {/* ── CATEGORY 3: NOTIFICATIONS & ALERTS ── */}
-              {currentCategory === "notifications" && (
-                <div className="space-y-6">
-                  <div className="flex items-center gap-3 mb-2">
-                    <button
-                      type="button"
-                      onClick={navigateToList}
-                      className="p-2 sm:p-2.5 rounded-xl bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated text-gray-700 dark:text-dark-text-secondary transition shadow-xs shrink-0"
-                    >
-                      <i className="ri-arrow-left-line text-lg"></i>
-                    </button>
-                    <div>
-                      <h2 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-dark-text">
-                        Notifications & alerts
-                      </h2>
-                      <p className="text-xs sm:text-sm text-gray-500 dark:text-dark-text-secondary font-medium">
-                        Manage how and when you receive dashboard updates
-                      </p>
-                    </div>
-                  </div>
-
-                  <SettingsGroupCard title="Alert delivery channels">
-                    <ToggleRow
-                      label="Email alerts"
-                      description="Receive email notifications whenever an issue is assigned to you or solved."
-                      checked={settings.emailAlerts}
-                      onChange={(val) => updateSetting("emailAlerts", val)}
-                    />
-                    <ToggleRow
-                      label="Real-time browser push notifications"
-                      description="Get instant pop-up banners on your screen when new comments or status updates occur."
-                      checked={settings.pushNotifications}
-                      onChange={(val) =>
-                        updateSetting("pushNotifications", val)
-                      }
-                    />
-                    <ToggleRow
-                      label="Interactive sound effects"
-                      description="Play a subtle audio chime when a reported issue is officially marked as resolved."
-                      checked={settings.soundEffects}
-                      onChange={(val) => updateSetting("soundEffects", val)}
-                    />
-                  </SettingsGroupCard>
-
-                  <SettingsGroupCard title="Timing & frequency">
-                    <ExpandableRow
-                      label="Activity summary digest"
-                      sublabel="Consolidate updates into periodic summaries"
-                      value={
-                        settings.digestFrequency === "realtime"
-                          ? "Instant"
-                          : settings.digestFrequency === "weekly"
-                            ? "Weekly"
-                            : settings.digestFrequency === "never"
-                              ? "Never"
-                              : "Daily"
-                      }
-                      icon="ri-time-line"
-                    >
-                      <div className="space-y-3 max-w-lg py-2">
-                        <label className="text-sm font-bold text-gray-800 dark:text-dark-text block">
-                          Select Digest Frequency
-                        </label>
-                        <select
-                          value={settings.digestFrequency}
-                          onChange={(e) =>
-                            updateSetting("digestFrequency", e.target.value)
-                          }
-                          className="w-full bg-white dark:bg-dark-card border border-gray-300 dark:border-dark-border rounded-xl px-4 py-3 text-sm font-semibold text-gray-800 dark:text-dark-text focus:outline-none focus:ring-2 focus:ring-violet-500 transition"
-                        >
-                          <option value="realtime">
-                            Instant (Real-time emails as events happen)
-                          </option>
-                          <option value="daily">
-                            Daily Digest (Every morning at 8:00 AM)
-                          </option>
-                          <option value="weekly">
-                            Weekly Summary (Every Monday morning)
-                          </option>
-                          <option value="never">
-                            Never (Only in-app notifications)
-                          </option>
-                        </select>
-                      </div>
-                    </ExpandableRow>
-
-                    <ToggleRow
-                      label="Do Not Disturb (DND) schedule"
-                      description="Pause all push notifications and sound chimes automatically between 10:00 PM and 7:00 AM."
-                      checked={settings.dndSchedule}
-                      onChange={(val) => updateSetting("dndSchedule", val)}
-                    />
-                  </SettingsGroupCard>
-                </div>
-              )}
-
-              {/* ── CATEGORY 4: SECURITY & PRIVACY ── */}
-              {currentCategory === "security" && (
-                <div className="space-y-6">
-                  <div className="flex items-center gap-3 mb-2">
-                    <button
-                      type="button"
-                      onClick={navigateToList}
-                      className="p-2 sm:p-2.5 rounded-xl bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated text-gray-700 dark:text-dark-text-secondary transition shadow-xs shrink-0"
-                    >
-                      <i className="ri-arrow-left-line text-lg"></i>
-                    </button>
-                    <div>
-                      <h2 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-dark-text">
-                        Security & privacy
-                      </h2>
-                      <p className="text-xs sm:text-sm text-gray-500 dark:text-dark-text-secondary font-medium">
-                        Protect your account credentials and control public visibility
-                      </p>
-                    </div>
-                  </div>
-
-                  <SettingsGroupCard title="Authentication & account protection">
-                    <ToggleRow
-                      label="Two-Factor Authentication (2FA)"
-                      description="Require a secure verification code from your authenticator app when signing in from new devices."
-                      checked={settings.twoFactorAuth}
-                      onChange={(val) => updateSetting("twoFactorAuth", val)}
-                    />
-                    <ToggleRow
-                      label="Unrecognized login alerts"
-                      description="Receive immediate email alerts when a login occurs from an unfamiliar IP address or browser."
-                      checked={settings.loginAlerts}
-                      onChange={(val) => updateSetting("loginAlerts", val)}
-                    />
-                    <ExpandableRow
-                      label="Password & credentials"
-                      sublabel="Encrypted with bcrypt • Last changed 45 days ago"
-                      value="Change password"
-                      icon="ri-lock-password-line"
-                    >
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-2">
-                        <div className="max-w-md">
-                          <p className="font-bold text-gray-900 dark:text-dark-text text-sm">
-                            Reset your account password
-                          </p>
-                          <p className="text-xs text-gray-500 dark:text-dark-text-secondary mt-0.5">
-                            We will send a secure password reset link to your registered campus email address.
+                      {/* Delete Account Form */}
+                      <form onSubmit={handleDeleteAccount} className="p-4 bg-red-50/50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/30 rounded-xl space-y-3">
+                        <div>
+                          <p className="text-xs sm:text-sm font-bold text-red-900 dark:text-red-300">Permanently Delete Account</p>
+                          <p className="text-xs text-red-700 dark:text-red-400 mt-0.5">
+                            Once deleted, all personal records, vouch scores, and activity history will be erased immediately.
                           </p>
                         </div>
-                        <button
-                          type="button"
-                          onClick={() =>
-                            triggerToast(
-                              "Password reset link sent to your registered email"
-                            )
-                          }
-                          className="px-5 py-2.5 bg-white dark:bg-dark-card border border-gray-300 dark:border-dark-border hover:border-violet-500 hover:text-violet-600 dark:text-violet-400 dark:hover:text-violet-400 font-bold text-xs rounded-xl transition shadow-xs shrink-0 self-start sm:self-center"
-                        >
-                          Send Reset Link
-                        </button>
-                      </div>
-                    </ExpandableRow>
-                  </SettingsGroupCard>
-
-                  <SettingsGroupCard title="Community privacy">
-                    <ToggleRow
-                      label="Public profile visibility"
-                      description="Allow other students and staff to view your email and solved issues count on the leaderboards."
-                      checked={settings.publicProfile}
-                      onChange={(val) => updateSetting("publicProfile", val)}
-                    />
-                    <ToggleRow
-                      label="Show reputation points & badges"
-                      description="Display your earned reputation points and campus badges publicly next to your name."
-                      checked={settings.showReputation}
-                      onChange={(val) => updateSetting("showReputation", val)}
-                    />
-                  </SettingsGroupCard>
-
-                  <SettingsGroupCard title="Active login sessions">
-                    <ExpandableRow
-                      label="Active devices & sessions"
-                      sublabel="Review and manage web sessions currently signed into your account"
-                      value="Manage sessions"
-                      icon="ri-computer-line"
-                    >
-                      <div className="py-2">
-                        <SessionsCard />
-                      </div>
-                    </ExpandableRow>
-                  </SettingsGroupCard>
-                </div>
-              )}
-
-              {/* ── CATEGORY 5: WORKFLOW & PREFERENCES ── */}
-              {currentCategory === "workflow" && (
-                <div className="space-y-6">
-                  <div className="flex items-center gap-3 mb-2">
-                    <button
-                      type="button"
-                      onClick={navigateToList}
-                      className="p-2 sm:p-2.5 rounded-xl bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated text-gray-700 dark:text-dark-text-secondary transition shadow-xs shrink-0"
-                    >
-                      <i className="ri-arrow-left-line text-lg"></i>
-                    </button>
-                    <div>
-                      <h2 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-dark-text">
-                        Workflow & preferences
-                      </h2>
-                      <p className="text-xs sm:text-sm text-gray-500 dark:text-dark-text-secondary font-medium">
-                        Customize your startup screen, sorting rules, and language
-                      </p>
-                    </div>
-                  </div>
-
-                  <SettingsGroupCard title="Navigation & live sync">
-                    <ExpandableRow
-                      label="Default landing screen"
-                      sublabel="Choose which screen opens first after you log in"
-                      value={
-                        settings.landingPage === "feed"
-                          ? "Issue Feed"
-                          : settings.landingPage === "my-issues"
-                            ? "My Issues"
-                            : settings.landingPage === "leaderboard"
-                              ? "Leaderboard"
-                              : "My Dashboard"
-                      }
-                      icon="ri-home-4-line"
-                    >
-                      <div className="space-y-3 max-w-lg py-2">
-                        <label className="text-sm font-bold text-gray-800 dark:text-dark-text block">
-                          Select Landing Screen
-                        </label>
-                        <select
-                          value={settings.landingPage}
-                          onChange={(e) =>
-                            updateSetting("landingPage", e.target.value)
-                          }
-                          className="w-full bg-white dark:bg-dark-card border border-gray-300 dark:border-dark-border rounded-xl px-4 py-3 text-sm font-semibold text-gray-800 dark:text-dark-text focus:outline-none focus:ring-2 focus:ring-violet-500 transition"
-                        >
-                          <option value="dashboard">
-                            My Dashboard (Analytics Overview)
-                          </option>
-                          <option value="feed">
-                            Issue Feed (All campus reports)
-                          </option>
-                          <option value="my-issues">
-                            My Issues (Personal history)
-                          </option>
-                          <option value="leaderboard">
-                            Leaderboard & Standings
-                          </option>
-                        </select>
-                      </div>
-                    </ExpandableRow>
-
-                    <ExpandableRow
-                      label="Default issue sorting"
-                      sublabel="Control the default order of issues across feeds"
-                      value={
-                        settings.defaultSort === "priority"
-                          ? "Highest Priority"
-                          : settings.defaultSort === "upvotes"
-                            ? "Most Upvoted"
-                            : settings.defaultSort === "oldest"
-                              ? "Oldest First"
-                              : "Newest First"
-                      }
-                      icon="ri-sort-desc"
-                    >
-                      <div className="space-y-3 max-w-lg py-2">
-                        <label className="text-sm font-bold text-gray-800 dark:text-dark-text block">
-                          Select Default Sorting Order
-                        </label>
-                        <select
-                          value={settings.defaultSort}
-                          onChange={(e) =>
-                            updateSetting("defaultSort", e.target.value)
-                          }
-                          className="w-full bg-white dark:bg-dark-card border border-gray-300 dark:border-dark-border rounded-xl px-4 py-3 text-sm font-semibold text-gray-800 dark:text-dark-text focus:outline-none focus:ring-2 focus:ring-violet-500 transition"
-                        >
-                          <option value="newest">
-                            Newest First (Most recently reported)
-                          </option>
-                          <option value="priority">
-                            Highest Priority First
-                          </option>
-                          <option value="upvotes">
-                            Most Upvoted / Supported
-                          </option>
-                          <option value="oldest">Oldest First</option>
-                        </select>
-                      </div>
-                    </ExpandableRow>
-
-                    <ToggleRow
-                      label="Auto-refresh live issue feed"
-                      description="Automatically check and synchronize new issue reports in the background without reloading the page."
-                      checked={settings.autoRefresh}
-                      onChange={(val) => updateSetting("autoRefresh", val)}
-                    />
-                  </SettingsGroupCard>
-
-                  <SettingsGroupCard title="Localization & time">
-                    <ExpandableRow
-                      label="Language & region"
-                      sublabel="Set system interface language and date formatting"
-                      value="English (United States)"
-                      icon="ri-global-line"
-                    >
-                      <div className="space-y-3 max-w-lg py-2">
-                        <label className="text-sm font-bold text-gray-800 dark:text-dark-text block">
-                          Select Interface Language
-                        </label>
-                        <select
-                          value={settings.language}
-                          onChange={(e) =>
-                            updateSetting("language", e.target.value)
-                          }
-                          className="w-full bg-white dark:bg-dark-card border border-gray-300 dark:border-dark-border rounded-xl px-4 py-3 text-sm font-semibold text-gray-800 dark:text-dark-text focus:outline-none focus:ring-2 focus:ring-violet-500 transition"
-                        >
-                          <option value="en-US">
-                            English (United States)
-                          </option>
-                          <option value="en-UK">
-                            English (United Kingdom)
-                          </option>
-                          <option value="es-ES">Español (Spanish)</option>
-                          <option value="fr-FR">Français (French)</option>
-                          <option value="de-DE">Deutsch (German)</option>
-                          <option value="hi-IN">हिन्दी (Hindi)</option>
-                        </select>
-                      </div>
-                    </ExpandableRow>
-
-                    <ExpandableRow
-                      label="Timezone"
-                      sublabel="Control timestamp displays across comments and audit logs"
-                      value={settings.timezone || "UTC-5 (Eastern Time)"}
-                      icon="ri-time-zone-line"
-                    >
-                      <div className="space-y-3 max-w-lg py-2">
-                        <label className="text-sm font-bold text-gray-800 dark:text-dark-text block">
-                          Select Preferred Timezone
-                        </label>
-                        <select
-                          value={settings.timezone}
-                          onChange={(e) =>
-                            updateSetting("timezone", e.target.value)
-                          }
-                          className="w-full bg-white dark:bg-dark-card border border-gray-300 dark:border-dark-border rounded-xl px-4 py-3 text-sm font-semibold text-gray-800 dark:text-dark-text focus:outline-none focus:ring-2 focus:ring-violet-500 transition"
-                        >
-                          <option value="UTC-8">
-                            UTC-8 (Pacific Time - US & Canada)
-                          </option>
-                          <option value="UTC-6">
-                            UTC-6 (Central Time - US & Canada)
-                          </option>
-                          <option value="UTC-5 (Eastern Time)">
-                            UTC-5 (Eastern Time - US & Canada)
-                          </option>
-                          <option value="UTC+0">
-                            UTC+0 (London, Edinburgh, Dublin)
-                          </option>
-                          <option value="UTC+5:30">
-                            UTC+5:30 (India Standard Time)
-                          </option>
-                        </select>
-                      </div>
-                    </ExpandableRow>
-                  </SettingsGroupCard>
-                </div>
-              )}
-
-              {/* ── CATEGORY 6: DATA & STORAGE ── */}
-              {currentCategory === "data" && (
-                <div className="space-y-6">
-                  <div className="flex items-center gap-3 mb-2">
-                    <button
-                      type="button"
-                      onClick={navigateToList}
-                      className="p-2 sm:p-2.5 rounded-xl bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated text-gray-700 dark:text-dark-text-secondary transition shadow-xs shrink-0"
-                    >
-                      <i className="ri-arrow-left-line text-lg"></i>
-                    </button>
-                    <div>
-                      <h2 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-dark-text">
-                        Data & storage
-                      </h2>
-                      <p className="text-xs sm:text-sm text-gray-500 dark:text-dark-text-secondary font-medium">
-                        Manage local browser cache, export data, or restore defaults
-                      </p>
-                    </div>
-                  </div>
-
-                  <SettingsGroupCard title="Local storage & cache">
-                    <ExpandableRow
-                      label="Application cache size"
-                      sublabel="Includes cached issue images, offline drafts, and user preferences stored locally"
-                      value="~14.8 MB"
-                      icon="ri-hard-drive-2-line"
-                    >
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-2">
-                        <div className="max-w-md">
-                          <p className="font-bold text-gray-900 dark:text-dark-text text-sm">
-                            Clear temporary browser storage
-                          </p>
-                          <p className="text-xs text-gray-500 dark:text-dark-text-secondary mt-0.5">
-                            Free up local space without affecting your cloud data or login session.
-                          </p>
+                        {deleteError && <p className="text-xs font-bold text-red-600">{deleteError}</p>}
+                        <div className="flex flex-col sm:flex-row items-center gap-2.5 pt-1">
+                          <input
+                            type="password"
+                            required
+                            value={deletePassword}
+                            onChange={(e) => setDeletePassword(e.target.value)}
+                            placeholder="Enter password to confirm"
+                            className="w-full sm:w-64 px-3.5 py-2 bg-white dark:bg-dark-card border border-red-200 dark:border-red-900/40 rounded-xl text-xs text-gray-800 dark:text-dark-text focus:outline-none focus:border-red-500"
+                          />
+                          <button
+                            type="submit"
+                            disabled={isDeletingAccount}
+                            className="w-full sm:w-auto px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold transition disabled:opacity-50 shrink-0"
+                          >
+                            {isDeletingAccount ? "Deleting..." : "Delete Account"}
+                          </button>
                         </div>
-                        <button
-                          type="button"
-                          onClick={handleClearCache}
-                          disabled={isClearingCache || cacheCleared}
-                          className={`px-5 py-2.5 rounded-xl font-bold text-xs transition flex items-center gap-2 shrink-0 self-start sm:self-center ${
-                            cacheCleared
-                              ? "bg-emerald-600 text-white"
-                              : "bg-white dark:bg-dark-card border border-gray-300 dark:border-dark-border text-gray-700 dark:text-dark-text-secondary hover:bg-red-50 dark:bg-red-500/15 hover:text-red-600 dark:text-red-400 hover:border-red-200 dark:border-red-500/30 active:scale-95 shadow-xs"
-                          }`}
-                        >
-                          {isClearingCache ? (
-                            <>
-                              <i className="ri-loader-4-line animate-spin text-base"></i>
-                              Clearing...
-                            </>
-                          ) : cacheCleared ? (
-                            <>
-                              <i className="ri-check-line text-base font-black"></i>
-                              Cache Cleared!
-                            </>
-                          ) : (
-                            <>
-                              <i className="ri-eraser-line text-base"></i>
-                              Clear Local Cache
-                            </>
-                          )}
-                        </button>
-                      </div>
-                    </ExpandableRow>
-                  </SettingsGroupCard>
-
-                  <SettingsGroupCard title="Data portability & archives">
-                    <ExpandableRow
-                      label="Download activity report"
-                      sublabel="Get a complete CSV archive containing your reported issues, comments, and reputation log"
-                      value="CSV Archive"
-                      icon="ri-file-download-line"
-                    >
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-2">
-                        <div className="max-w-md">
-                          <p className="font-bold text-gray-900 dark:text-dark-text text-sm">
-                            Generate personal data archive
-                          </p>
-                          <p className="text-xs text-gray-500 dark:text-dark-text-secondary mt-0.5">
-                            Standard CSV export suitable for importing into spreadsheets or external analytics tools.
-                          </p>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={handleExportData}
-                          disabled={isExporting || exported}
-                          className={`px-5 py-2.5 rounded-xl font-bold text-xs transition flex items-center gap-2 shrink-0 self-start sm:self-center ${
-                            exported
-                              ? "bg-emerald-600 text-white"
-                              : "bg-violet-600 hover:bg-violet-700 text-white active:scale-95 shadow-xs"
-                          }`}
-                        >
-                          {isExporting ? (
-                            <>
-                              <i className="ri-loader-4-line animate-spin text-base"></i>
-                              Generating...
-                            </>
-                          ) : exported ? (
-                            <>
-                              <i className="ri-check-line text-base font-black"></i>
-                              Downloaded!
-                            </>
-                          ) : (
-                            <>
-                              <i className="ri-download-cloud-2-line text-base"></i>
-                              Export Archive (CSV)
-                            </>
-                          )}
-                        </button>
-                      </div>
-                    </ExpandableRow>
-                  </SettingsGroupCard>
-
-                  <SettingsGroupCard title="Factory reset">
-                    <ExpandableRow
-                      label="Reset all preferences to defaults"
-                      sublabel="Restores Light theme, daily digest notifications, comfortable density, and default sorting"
-                      value="Default settings"
-                      icon="ri-restart-line"
-                    >
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-2">
-                        <div className="max-w-md">
-                          <p className="font-bold text-amber-900 text-sm">
-                            Restore original application preferences
-                          </p>
-                          <p className="text-xs text-amber-700 mt-0.5">
-                            This will revert all customization toggles to factory state. Your issues and account data will remain untouched.
-                          </p>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={handleResetDefaults}
-                          disabled={isResetting}
-                          className="px-5 py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl transition shadow-xs shrink-0 active:scale-95 self-start sm:self-center"
-                        >
-                          {isResetting ? "Resetting..." : "Reset Preferences"}
-                        </button>
-                      </div>
-                    </ExpandableRow>
-                  </SettingsGroupCard>
-                </div>
-              )}
-
-              {/* ── CATEGORY 7: HELP & LEGAL ── */}
-              {currentCategory === "legal" && (
-                <div className="space-y-6">
-                  <div className="flex items-center gap-3 mb-2">
-                    <button
-                      type="button"
-                      onClick={navigateToList}
-                      className="p-2 sm:p-2.5 rounded-xl bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border hover:bg-gray-50 dark:bg-dark-elevated dark:hover:bg-dark-elevated text-gray-700 dark:text-dark-text-secondary transition shadow-xs shrink-0"
-                    >
-                      <i className="ri-arrow-left-line text-lg"></i>
-                    </button>
-                    <div>
-                      <h2 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-dark-text">
-                        Help & legal
-                      </h2>
-                      <p className="text-xs sm:text-sm text-gray-500 dark:text-dark-text-secondary font-medium">
-                        Documentation, user agreements, and version details
-                      </p>
+                      </form>
                     </div>
-                  </div>
-
-                  <SettingsGroupCard title="Legal documentation & compliance">
-                    <ActionRow
-                      label="Privacy Policy"
-                      sublabel="Learn how we collect, process, and protect your personal data"
-                      value="View"
-                      to="/privacy-policy"
-                      icon="ri-file-shield-line"
-                    />
-                    <ActionRow
-                      label="Terms of Use"
-                      sublabel="Review user guidelines, campus codes of conduct, and rules"
-                      value="View"
-                      to="/terms"
-                      icon="ri-file-text-line"
-                    />
-                    <ActionRow
-                      label="Trust Center"
-                      sublabel="Review security certifications, data compliance, and encryption protocols"
-                      value="View"
-                      to="/trust-center"
-                      icon="ri-shield-star-line"
-                    />
-                    <ActionRow
-                      label="Help & Support Desk"
-                      sublabel="Browse frequently asked questions or contact campus support"
-                      value="Get Help"
-                      to="/help-support"
-                      icon="ri-customer-service-2-line"
-                    />
-                  </SettingsGroupCard>
-
-                  <SettingsGroupCard title="Application information">
-                    <ActionRow
-                      label="Issue Management Dashboard"
-                      sublabel="Pro Edition Campus Suite • Built with React & Vite"
-                      value="v0.0.11 (Build 2026.07)"
-                      icon="ri-code-s-slash-line"
-                    />
-                  </SettingsGroupCard>
+                  </Card>
                 </div>
               )}
             </div>
-          )}
+          </div>
         </div>
 
-        {/* Universal Footer */}
-        <div className="flex justify-center items-center space-x-3 py-6 text-xs font-medium text-gray-400 dark:text-dark-text-muted border-t border-gray-200 dark:border-dark-border/60 mt-12 mx-6 md:mx-auto max-w-4xl">
-          <Link
-            to="/privacy-policy"
-            className="hover:text-violet-600 dark:text-violet-400 dark:hover:text-violet-400 transition-colors"
-          >
-            Privacy Policy
-          </Link>
-          <span>&bull;</span>
-          <Link to="/terms" className="hover:text-violet-600 dark:text-violet-400 dark:hover:text-violet-400 transition-colors">
-            Terms of Use
-          </Link>
-          <span>&bull;</span>
-          <Link
-            to="/trust-center"
-            className="hover:text-violet-600 dark:text-violet-400 dark:hover:text-violet-400 transition-colors"
-          >
-            Trust Center
-          </Link>
-        </div>
-
-        <OrgChangeRequestModal
-          isOpen={isOrgModalOpen}
-          onClose={() => setIsOrgModalOpen(false)}
+        {/* Global Modals */}
+        <OrgChangeRequestModal isOpen={isOrgModalOpen} onClose={() => setIsOrgModalOpen(false)} />
+        <ChangePasswordModal
+          isOpen={isPasswordModalOpen}
+          onClose={() => setIsPasswordModalOpen(false)}
+          onSuccess={(msg) => triggerToast(msg)}
+        />
+        <OrgInviteModal
+          isOpen={isInviteModalOpen}
+          onClose={() => setIsInviteModalOpen(false)}
+          orgName={activeOrg?.name}
+          orgId={activeOrg?.id}
         />
       </div>
     </>
