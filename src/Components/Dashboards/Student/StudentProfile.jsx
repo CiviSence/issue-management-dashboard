@@ -524,6 +524,16 @@ const StudentProfile = () => {
                                                     {org.require_verified_feed ? 'Verified Feed Required' : 'Open Feed'}
                                                 </span>
                                             </div>
+                                            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-sm gap-1 sm:gap-4 py-3 border-b border-gray-50">
+                                                <span className="text-gray-500 dark:text-dark-text-secondary font-medium">AI Verification</span>
+                                                <span className={`px-2 py-0.5 rounded text-xs font-bold ${
+                                                    org.ai_verification_enabled !== false
+                                                        ? 'bg-purple-50 text-purple-700 border border-purple-200 dark:bg-purple-500/10 dark:text-purple-400 dark:border-purple-500/20' 
+                                                        : 'bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20'
+                                                }`}>
+                                                    {org.ai_verification_enabled !== false ? 'AI Auto-Approval' : 'Manual Admin Review'}
+                                                </span>
+                                            </div>
                                             {orgItem.joined_at && (
                                                 <Info
                                                     label="Joined At"

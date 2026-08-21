@@ -303,6 +303,7 @@ const Settings = () => {
   const [orgDetails, setOrgDetails] = useState(null);
   const [isOrgModalOpen, setIsOrgModalOpen] = useState(false);
   const [updatingFeedSetting, setUpdatingFeedSetting] = useState(false);
+  const [updatingAISetting, setUpdatingAISetting] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -347,6 +348,32 @@ const Settings = () => {
       alert(err.message || "Failed to update feed verification setting");
     } finally {
       setUpdatingFeedSetting(false);
+    }
+  };
+
+  const handleToggleAIVerification = async () => {
+    if (!activeOrg?.id) return;
+    const currentVal = activeOrg.ai_verification_enabled !== false;
+    const nextVal = !currentVal;
+    setUpdatingAISetting(true);
+    try {
+      const updated = await updateOrgSettings(activeOrg.id, { ai_verification_enabled: nextVal });
+      setOrgDetails((prev) => {
+        if (!prev) return updated;
+        if (Array.isArray(prev)) {
+          return prev.map((item) =>
+            (item.id === activeOrg.id || item.organization?.id === activeOrg.id)
+              ? { ...item, ai_verification_enabled: nextVal, organization: item.organization ? { ...item.organization, ai_verification_enabled: nextVal } : undefined }
+              : item
+          );
+        }
+        return { ...prev, ai_verification_enabled: nextVal, organization: prev.organization ? { ...prev.organization, ai_verification_enabled: nextVal } : undefined };
+      });
+      triggerToast(`AI Verification set to ${nextVal ? "Enabled (Auto-Approve)" : "Disabled (Manual Review Only)"}`);
+    } catch (err) {
+      alert(err.message || "Failed to update AI verification setting");
+    } finally {
+      setUpdatingAISetting(false);
     }
   };
 
@@ -788,6 +815,43 @@ const Settings = () => {
                               }`}
                             >
                               {activeOrg?.require_verified_feed ? "Required" : "Optional"}
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex justify-between items-center py-2 border-b border-gray-200 dark:border-dark-border/60">
+                          <div>
+                            <span className="text-gray-500 dark:text-dark-text-secondary font-medium block">
+                              AI Verification Engine
+                            </span>
+                            <span className="text-[10px] text-gray-400 dark:text-dark-text-muted">
+                              {activeOrg?.ai_verification_enabled !== false ? "AI Auto-Approve" : "Manual Admin Review"}
+                            </span>
+                          </div>
+                          {(role === "admin" || role === "official" || activeOrgItem?.role === "admin" || activeOrgItem?.role === "owner") ? (
+                            <button
+                              type="button"
+                              onClick={handleToggleAIVerification}
+                              disabled={updatingAISetting || !activeOrg?.id}
+                              className={`px-3 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 border ${
+                                activeOrg?.ai_verification_enabled !== false
+                                  ? "bg-purple-50 text-purple-700 border-purple-200 hover:bg-purple-100 dark:bg-purple-500/10 dark:text-purple-400 dark:border-purple-500/20"
+                                  : "bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20"
+                              }`}
+                            >
+                              {updatingAISetting && (
+                                <i className="ri-loader-4-line animate-spin"></i>
+                              )}
+                              {activeOrg?.ai_verification_enabled !== false ? "AI Enabled" : "Manual Only"}
+                            </button>
+                          ) : (
+                            <span
+                              className={`px-2.5 py-1 rounded text-xs font-bold border ${
+                                activeOrg?.ai_verification_enabled !== false
+                                  ? "bg-purple-50 text-purple-700 border-purple-200"
+                                  : "bg-gray-50 dark:bg-dark-elevated text-gray-600 dark:text-dark-text-secondary border-gray-200 dark:border-dark-border"
+                              }`}
+                            >
+                              {activeOrg?.ai_verification_enabled !== false ? "AI Enabled" : "Manual Only"}
                             </span>
                           )}
                         </div>

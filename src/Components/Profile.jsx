@@ -62,6 +62,8 @@ const OrganizationCard = ({ orgData, loadingOrg }) => {
   const [isChangeModalOpen, setIsChangeModalOpen] = useState(false);
   const [updatingFeedSetting, setUpdatingFeedSetting] = useState(false);
   const [requireVerifiedFeed, setRequireVerifiedFeed] = useState(false);
+  const [updatingAISetting, setUpdatingAISetting] = useState(false);
+  const [aiVerificationEnabled, setAiVerificationEnabled] = useState(true);
 
   const orgItem = Array.isArray(orgData) 
     ? (orgData.find(item => item.status === 'approved' || item.is_active || (item.organization && item.organization.is_active)) || orgData[0]) 
@@ -72,6 +74,9 @@ const OrganizationCard = ({ orgData, loadingOrg }) => {
   useEffect(() => {
     if (org && org.require_verified_feed !== undefined) {
       setRequireVerifiedFeed(!!org.require_verified_feed);
+    }
+    if (org && org.ai_verification_enabled !== undefined) {
+      setAiVerificationEnabled(org.ai_verification_enabled !== false);
     }
   }, [org]);
 
@@ -107,6 +112,21 @@ const OrganizationCard = ({ orgData, loadingOrg }) => {
       alert(err.message || "Failed to update organization settings");
     } finally {
       setUpdatingFeedSetting(false);
+    }
+  };
+
+  const handleToggleAIVerification = async () => {
+    if (!org.id) return;
+    const newValue = !aiVerificationEnabled;
+    setUpdatingAISetting(true);
+    try {
+      await updateOrgSettings(org.id, { ai_verification_enabled: newValue });
+      setAiVerificationEnabled(newValue);
+      if (org) org.ai_verification_enabled = newValue;
+    } catch (err) {
+      alert(err.message || "Failed to update AI verification setting");
+    } finally {
+      setUpdatingAISetting(false);
     }
   };
 
@@ -208,6 +228,44 @@ const OrganizationCard = ({ orgData, loadingOrg }) => {
                 }`}
               >
                 {requireVerifiedFeed ? "Required" : "Optional"}
+              </span>
+            )}
+          </div>
+          {/* AI ID Verification Policy */}
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-sm gap-2 py-3 border-b border-gray-50 dark:border-dark-border/50">
+            <div>
+              <span className="text-gray-500 dark:text-dark-text-secondary font-medium flex items-center gap-1.5">
+                <i className="ri-brain-line text-purple-600 dark:text-purple-400"></i>
+                AI Document Verification
+              </span>
+              <span className="text-[10px] text-gray-400 dark:text-dark-text-muted block mt-0.5">
+                {aiVerificationEnabled ? "AI auto-approval active" : "Manual admin review required"}
+              </span>
+            </div>
+            {isOrgAdmin ? (
+              <button
+                onClick={handleToggleAIVerification}
+                disabled={updatingAISetting}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-2 border ${
+                  aiVerificationEnabled
+                    ? "bg-purple-50 text-purple-700 border-purple-200 hover:bg-purple-100 dark:bg-purple-500/10 dark:text-purple-400 dark:border-purple-500/20 dark:hover:bg-purple-500/20"
+                    : "bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20 dark:hover:bg-amber-500/20"
+                }`}
+              >
+                {updatingAISetting && (
+                  <i className="ri-loader-4-line animate-spin"></i>
+                )}
+                {aiVerificationEnabled ? "AI Enabled" : "Manual Review"}
+              </button>
+            ) : (
+              <span
+                className={`px-2.5 py-1 rounded-md text-xs font-bold border ${
+                  aiVerificationEnabled
+                    ? "bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-500/10 dark:text-purple-400 dark:border-purple-500/20"
+                    : "bg-gray-50 dark:bg-dark-elevated text-gray-600 dark:text-dark-text-secondary border-gray-200 dark:border-dark-border"
+                }`}
+              >
+                {aiVerificationEnabled ? "AI Enabled" : "Manual Only"}
               </span>
             )}
           </div>
